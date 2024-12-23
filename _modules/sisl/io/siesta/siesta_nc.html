@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -386,15 +386,16 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.read_hamiltonian requires the stored matrix to be in Ry!&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
             <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
 
         <span class="c1"># fix siesta specific notation</span>
-        <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+        <span class="n">_mat_siesta2sisl</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># Shift to the Fermi-level</span>
-        <span class="n">Ef</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;Ef&quot;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
-        <span class="n">H</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">Ef</span><span class="p">)</span>
+        <span class="n">Ef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;Ef&quot;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
+        <span class="n">H</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="n">Ef</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
 
@@ -427,11 +428,12 @@
         <span class="n">DM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_class_spin</span><span class="p">(</span><span class="n">DensityMatrix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
             <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;DM&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
 
         <span class="c1"># fix siesta specific notation</span>
-        <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">DM</span><span class="p">)</span>
+        <span class="n">_mat_siesta2sisl</span><span class="p">(</span><span class="n">DM</span><span class="p">)</span>
+        <span class="n">DM</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">DM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
 
@@ -448,13 +450,14 @@
             <span class="n">Ef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">Ef</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;SPARSE&quot;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
             <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;EDM&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ry2eV</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s2">&quot;DM&quot;</span> <span class="ow">in</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
                 <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="n">sp</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;DM&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">Ef</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
         <span class="c1"># fix siesta specific notation</span>
-        <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">EDM</span><span class="p">)</span>
+        <span class="n">_mat_siesta2sisl</span><span class="p">(</span><span class="n">EDM</span><span class="p">)</span>
+        <span class="n">EDM</span> <span class="o">=</span> <span class="n">EDM</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">EDM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
 
@@ -780,21 +783,23 @@
 <span class="sd">        Ef : float, optional</span>
 <span class="sd">           the Fermi level of the electronic structure (in eV), default to 0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">csr</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
-        <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.write_hamiltonian cannot write a zero element sparse matrix!&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># Convert to siesta CSR</span>
-        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
-        <span class="n">csr</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-        <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span>
+        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
+        <span class="n">H</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+
+        <span class="n">H</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">_mat_sisl2siesta</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
 
         <span class="c1"># Ensure that the geometry is written</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
@@ -810,23 +815,23 @@
         <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Qtot&quot;</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">q0</span><span class="p">))</span>
 
         <span class="c1"># Append the sparsity pattern</span>
-        <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
 
         <span class="c1"># Save sparse matrices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
             <span class="n">spgroup</span><span class="p">,</span>
             <span class="s2">&quot;H&quot;</span><span class="p">,</span>
             <span class="s2">&quot;f8&quot;</span><span class="p">,</span>
             <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">),</span>
-            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
+            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Hamiltonian&quot;</span>
         <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">Ry2eV</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">Ry2eV</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_settings</span><span class="p">()</span></div>
 
@@ -841,21 +846,23 @@
 <span class="sd">        DM : DensityMatrix</span>
 <span class="sd">           the model to be saved in the NC file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">csr</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
-        <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">DM</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.write_density_matrix cannot write a zero element sparse matrix!&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># Convert to siesta CSR (we don&#39;t need to sort this matrix)</span>
-        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
-        <span class="n">csr</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-        <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span>
+        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
+        <span class="n">DM</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+
+        <span class="n">DM</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">_mat_sisl2siesta</span><span class="p">(</span><span class="n">DM</span><span class="p">)</span>
 
         <span class="c1"># Ensure that the geometry is written</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">DM</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
@@ -871,22 +878,22 @@
             <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span>
 
         <span class="c1"># Append the sparsity pattern</span>
-        <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
 
         <span class="c1"># Save sparse matrices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">DM</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
             <span class="n">spgroup</span><span class="p">,</span>
             <span class="s2">&quot;DM&quot;</span><span class="p">,</span>
             <span class="s2">&quot;f8&quot;</span><span class="p">,</span>
             <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">),</span>
-            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
+            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Density matrix&quot;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_settings</span><span class="p">()</span></div>
 
@@ -901,21 +908,23 @@
 <span class="sd">        EDM : EnergyDensityMatrix</span>
 <span class="sd">           the model to be saved in the NC file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">csr</span> <span class="o">=</span> <span class="n">EDM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
-        <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">EDM</span> <span class="o">=</span> <span class="n">EDM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.write_energy_density_matrix cannot write a zero element sparse matrix!&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># no need to sort this matrix</span>
-        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
-        <span class="n">csr</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-        <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span>
+        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
+        <span class="n">EDM</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+
+        <span class="n">EDM</span> <span class="o">=</span> <span class="n">EDM</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">_mat_sisl2siesta</span><span class="p">(</span><span class="n">EDM</span><span class="p">)</span>
 
         <span class="c1"># Ensure that the geometry is written</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">EDM</span><span class="o">.</span><span class="n">dkind</span> <span class="o">!=</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
@@ -935,23 +944,23 @@
             <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span>
 
         <span class="c1"># Append the sparsity pattern</span>
-        <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="n">spgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_sparsity</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
 
         <span class="c1"># Save sparse matrices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_overlap</span><span class="p">(</span><span class="n">spgroup</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">EDM</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
             <span class="n">spgroup</span><span class="p">,</span>
             <span class="s2">&quot;EDM&quot;</span><span class="p">,</span>
             <span class="s2">&quot;f8&quot;</span><span class="p">,</span>
             <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">),</span>
-            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
+            <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="p">)),</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Energy density matrix&quot;</span>
         <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;Ry&quot;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">Ry2eV</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">EDM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">EDM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">Ry2eV</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_settings</span><span class="p">()</span></div>
 

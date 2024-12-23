@@ -21,7 +21,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=4c7be489"></script>
+      <script src="_static/documentation_options.js?v=345013b0"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -601,6 +601,26 @@
         <li><a href="api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon.asState">(sisl.physics.phonon.ModeCPhonon method)</a>
 </li>
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.asState">(sisl.physics.StateC method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.astype">astype() (sisl.physics.DensityMatrix method)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.physics.densitymatrix._densitymatrix.html#sisl.physics.densitymatrix._densitymatrix.astype">(sisl.physics.densitymatrix._densitymatrix method)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.astype">(sisl.physics.DynamicalMatrix method)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.astype">(sisl.physics.EnergyDensityMatrix method)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.astype">(sisl.physics.Hamiltonian method)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.Overlap.html#sisl.physics.Overlap.astype">(sisl.physics.Overlap method)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.astype">(sisl.physics.SparseOrbitalBZ method)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.astype">(sisl.physics.SparseOrbitalBZSpin method)</a>
+</li>
+        <li><a href="api/generated/sisl.SparseCSR.html#sisl.SparseCSR.astype">(sisl.SparseCSR method)</a>
 </li>
       </ul></li>
       <li><a href="api/basic.html#index-0">atom</a>
@@ -2446,8 +2466,6 @@
 </li>
         <li><a href="api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.dkind">(sisl.physics.SparseOrbitalBZSpin property)</a>
 </li>
-        <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.dkind">(sisl.physics.Spin property)</a>
-</li>
         <li><a href="api/generated/sisl.physics.State.html#sisl.physics.State.dkind">(sisl.physics.State property)</a>
 </li>
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.dkind">(sisl.physics.StateC property)</a>
@@ -2617,8 +2635,6 @@
         <li><a href="api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.dtype">(sisl.physics.SparseOrbitalBZ property)</a>
 </li>
         <li><a href="api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.dtype">(sisl.physics.SparseOrbitalBZSpin property)</a>
-</li>
-        <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.dtype">(sisl.physics.Spin property)</a>
 </li>
         <li><a href="api/generated/sisl.physics.State.html#sisl.physics.State.dtype">(sisl.physics.State property)</a>
 </li>
@@ -4153,6 +4169,8 @@
         <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.is_integer">(sisl.constant.PhysicalConstant method)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.is_nambu">is_nambu (sisl.physics.Spin property)</a>
+</li>
       <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.is_noncolinear">is_noncolinear (sisl.physics.Spin property)</a>
 </li>
       <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.is_orthogonal">is_orthogonal() (sisl.Lattice method)</a>
@@ -5030,6 +5048,8 @@
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.na_u">(sisl.io.tbtrans.tbtsencSileTBtrans property)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.NAMBU">NAMBU (sisl.physics.Spin attribute)</a>
+</li>
       <li><a href="api/geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory.name">name (sisl.geom.AtomCategory property)</a>
 </li>
       <li><a href="api/generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital.name">name() (sisl.AtomicOrbital method)</a>
@@ -6162,6 +6182,18 @@
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.projections">(sisl.io.tbtrans.tbtprojncSileTBtrans method)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.typing.ProjectionType.html#sisl.typing.ProjectionType">ProjectionType (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.ProjectionTypeDiag.html#sisl.typing.ProjectionTypeDiag">ProjectionTypeDiag (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.ProjectionTypeHadamard.html#sisl.typing.ProjectionTypeHadamard">ProjectionTypeHadamard (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.ProjectionTypeHadamardAtoms.html#sisl.typing.ProjectionTypeHadamardAtoms">ProjectionTypeHadamardAtoms (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.ProjectionTypeMatrix.html#sisl.typing.ProjectionTypeMatrix">ProjectionTypeMatrix (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.ProjectionTypeTrace.html#sisl.typing.ProjectionTypeTrace">ProjectionTypeTrace (in module sisl.typing)</a>
+</li>
       <li><a href="api/generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict">PropertyDict (class in sisl.utils)</a>
 </li>
       <li><a href="api/generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital.psi">psi() (sisl.AtomicOrbital method)</a>
@@ -7982,11 +8014,9 @@
       <li><a href="api/viz/generated/sisl.viz.SitesPlot.html#sisl.viz.SitesPlot">SitesPlot (class in sisl.viz)</a>
 </li>
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.size">size (sisl.Grid property)</a>
-
-      <ul>
-        <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.size">(sisl.physics.Spin property)</a>
 </li>
-      </ul></li>
+      <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.size">size() (sisl.physics.Spin method)</a>
+</li>
       <li><a href="api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.Sk">Sk() (sisl.physics.DensityMatrix method)</a>
 
       <ul>

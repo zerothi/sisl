@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -160,7 +160,7 @@
 <h1>wavefunction<a class="headerlink" href="#wavefunction" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.wavefunction">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">wavefunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#wavefunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.wavefunction" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">wavefunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin" title="sisl.physics.Spin"><span class="pre">Spin</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#wavefunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.wavefunction" title="Link to this definition"></a></dt>
 <dd><p>Add the wave-function (<em class="xref py py-obj">Orbital.psi</em>) component of each orbital to the grid</p>
 <p>This routine calculates the real-space wave-function components in the
 specified grid.</p>
@@ -183,7 +183,7 @@ spinor component (<em class="xref py py-obj">spinor</em>)</p>
 \[\psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(i\mathbf k\cdot \mathbf R)\]</div>
 <p>where <code class="docutils literal notranslate"><span class="pre">spinor</span> <span class="pre">in</span> <span class="pre">[0,</span> <span class="pre">1]</span></code> determines <span class="math notranslate nohighlight">\(\alpha\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span>, respectively.</p>
 <p class="rubric">Notes</p>
-<p>Currently this method only works for <em class="xref py py-obj">v</em> being coefficients of the gauge=”cell” method. In case
+<p>Currently this method only works for <em class="xref py py-obj">v</em> being coefficients of the <code class="docutils literal notranslate"><span class="pre">gauge=&quot;lattice&quot;</span></code> method. In case
 you are passing a <em class="xref py py-obj">v</em> with the incorrect gauge you will find a phase-shift according to:</p>
 <div class="math notranslate nohighlight">
 \[\tilde v_j = e^{i\mathbf k\cdot\mathbf r_j} v_j\]</div>
@@ -193,7 +193,7 @@ you are passing a <em class="xref py py-obj">v</em> with the incorrect gauge you
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – coefficients for the orbital expansion on the real-space grid.
 If <em class="xref py py-obj">v</em> is a complex array then the <em class="xref py py-obj">grid</em> <em>must</em> be complex as well. The coefficients
-must be using the <code class="docutils literal notranslate"><span class="pre">R</span></code> gauge.</p></li>
+must be using the <em>lattice</em> gauge.</p></li>
 <li><p><strong>grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code>) – grid on which the wavefunction will be plotted.
 If multiple eigenstates are in this object, they will be summed.</p></li>
 <li><p><strong>geometry</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code>, <em>optional</em>) – geometry where the orbitals are defined. This geometry’s orbital count must match
@@ -206,7 +206,7 @@ has not been created via <a class="reference internal" href="sisl.physics.Hamilt
 eigenstate object has been created from a parent object with a <code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin</span></code> object
 contained, <em>and</em> if the spin-configuration is non-colinear or spin-orbit coupling.
 Default to the first spinor component.</p></li>
-<li><p><strong>spin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Spin</span></code>, <em>optional</em>) – specification of the spin configuration of the orbital coefficients. This only has
+<li><p><strong>spin</strong> – specification of the spin configuration of the orbital coefficients. This only has
 influence for non-colinear wavefunctions where <em class="xref py py-obj">spinor</em> choice is important.</p></li>
 <li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – Display a console progressbar.</p></li>
 </ul>

@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -312,7 +312,8 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <p>The two gauges are related through:</p>
 <div class="math notranslate nohighlight">
 \[\tilde C_\alpha = e^{i\mathbf k\mathbf r_\alpha} C_\alpha\]</div>
-<p>where <span class="math notranslate nohighlight">\(C_\alpha\)</span> and <span class="math notranslate nohighlight">\(\tilde C_\alpha\)</span> belongs to the <code class="docutils literal notranslate"><span class="pre">atom</span></code> and <code class="docutils literal notranslate"><span class="pre">cell</span></code> gauge, respectively.</p>
+<p>where <span class="math notranslate nohighlight">\(C_\alpha\)</span> and <span class="math notranslate nohighlight">\(\tilde C_\alpha\)</span> belongs to the <code class="docutils literal notranslate"><span class="pre">atomic</span></code> and
+<code class="docutils literal notranslate"><span class="pre">lattice</span></code> gauge, respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -331,7 +332,7 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.State.inner">
-<span class="sig-name descname"><span class="pre">inner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'diag'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'atoms'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'basis'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'matrix'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'diag'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#State.inner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.State.inner" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">inner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ProjectionType</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ProjectionTypeHadamard</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ProjectionTypeHadamardAtoms</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'diagonal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#State.inner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.State.inner" title="Link to this definition"></a></dt>
 <dd><p>Calculate the inner product as <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle\)</span></p>
 <p>Inner product calculation allows for a variety of things.</p>
 <ul class="simple">
@@ -352,9 +353,9 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <ul class="simple">
 <li><p>for <code class="docutils literal notranslate"><span class="pre">atoms</span></code>, only do inner products for individual states, but return them atom-resolved</p></li>
 </ul>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
+<dd class="field-odd"><ul>
 <li><p><strong>ket</strong> (<a class="reference internal" href="#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a>, <em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
 <li><p><strong>matrix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
@@ -362,18 +363,21 @@ product with itself. The object itself will always be the bra <span class="math 
 <li><p><strong>projection</strong> – how to perform the final projection.
 This can be used to sum specific sub-elements, return the diagonal, or the
 full matrix.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">diag</span></code> only return the diagonal of the inner product</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">matrix</span></code> a matrix with diagonals and the off-diagonals</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">basis</span></code> only do inner products for individual states, but return them basis-resolved</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">atoms</span></code> only do inner products for individual states, but return them atom-resolved</p></li>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">diagonal</span></code> only return the diagonal of the inner product (‘ii’ elements)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">matrix</span></code> a matrix with diagonals and the off-diagonals (‘ij’ elements)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hadamard</span></code> only do element wise products for the states (equivalent to</p></li>
 </ul>
+<p>basis resolved inner-products)
+* <code class="docutils literal notranslate"><span class="pre">atoms</span></code> only do inner products for individual states, but return them atom-resolved</p>
 </li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used. One have to add the overlap matrix in the <em class="xref py py-obj">matrix</em> argument, if needed.</p>
+<p>This does <em>not</em> take into account a possible overlap matrix when
+non-orthogonal basis sets are used.
+One have to add the overlap matrix in the <em class="xref py py-obj">matrix</em> argument, if needed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -382,7 +386,7 @@ full matrix.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – a matrix with the sum of inner state products</p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – a matrix with the sum of inner state products</p>
 </dd>
 </dl>
 </dd></dl>
@@ -430,7 +434,7 @@ Otherwise an equivalent object is yielded.</p>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>state</strong> (<a class="reference internal" href="#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is false</p></li>
-<li><p><strong>state</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is true</p></li>
+<li><p><strong>state</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is true</p></li>
 </ul>
 </dd>
 </dl>
@@ -442,14 +446,14 @@ Otherwise an equivalent object is yielded.</p>
 <dd><p>Return a vector with the Euclidean norm of each state <span class="math notranslate nohighlight">\(\sqrt{\langle\psi|\psi\rangle}\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the Euclidean norm for each state</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the Euclidean norm for each state</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.State.norm2">
-<span class="sig-name descname"><span class="pre">norm2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'sum'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'atoms'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'basis'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#State.norm2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.State.norm2" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">norm2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ProjectionType</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ProjectionTypeHadamard</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ProjectionTypeHadamardAtoms</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'diagonal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#State.norm2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.State.norm2" title="Link to this definition"></a></dt>
 <dd><p>Return a vector with the norm of each state <span class="math notranslate nohighlight">\(\langle\psi|\psi\rangle\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -466,7 +470,7 @@ basis dimension.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the squared norm for each state</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the squared norm for each state</p>
 </dd>
 </dl>
 </dd></dl>
@@ -508,7 +512,7 @@ product with itself. The object itself will always be the bra <span class="math 
 <p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – a matrix with the sum of outer state products</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – a matrix with the sum of outer state products</p>
 </dd>
 </dl>
 </dd></dl>

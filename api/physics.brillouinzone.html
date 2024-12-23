@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../_static/documentation_options.js?v=345013b0"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -231,8 +231,8 @@ full quantity:</p>
 </pre></div>
 </div>
 <p>This will raise an error since <code class="docutils literal notranslate"><span class="pre">wrap_multiple</span></code> returns an <em class="xref py py-obj">oplist</em> (same as a <em class="xref py py-obj">list</em>)
-and thus is unable to convert this into an equivalent <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. Additionally
-this can not be merged together in a single <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> since the shapes of the returned
+and thus is unable to convert this into an equivalent <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. Additionally
+this can not be merged together in a single <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> since the shapes of the returned
 quantities are not commensurate. One cannot concatenate the 3 different quantities.</p>
 <p>To accomblish this one may use an <code class="docutils literal notranslate"><span class="pre">zip</span></code> flag where the two lines are equivalent:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DOS</span><span class="p">,</span> <span class="n">PDOS</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">renew</span><span class="p">(</span><span class="nb">zip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap_multiple</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

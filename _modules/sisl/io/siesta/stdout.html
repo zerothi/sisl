@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -161,6 +161,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse &#39;redata: Spin configuration *= &lt;value&gt;&#39;&quot;&quot;&quot;</span>
     <span class="n">opt</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;nambu&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;nambu&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;spin-orbit&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;spin-orbit&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;collinear&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">opt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;colinear&quot;</span><span class="p">):</span>
@@ -971,7 +973,7 @@
     <span class="k">def</span> <span class="nf">read_scf</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scf&quot;</span><span class="p">,</span>
-        <span class="n">iscf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">iscf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="bp">Ellipsis</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">as_dataframe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ret_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
@@ -983,7 +985,7 @@
 <span class="sd">            parse SCF information from Siesta SCF or TranSiesta SCF</span>
 <span class="sd">        iscf :</span>
 <span class="sd">            which SCF cycle should be stored. If ``-1`` only the final SCF step is stored,</span>
-<span class="sd">            for None *all* SCF cycles are returned. When `iscf` values queried are not found they</span>
+<span class="sd">            for `...`/`None` *all* SCF cycles are returned. When `iscf` values queried are not found they</span>
 <span class="sd">            will be truncated to the nearest SCF step.</span>
 <span class="sd">        as_dataframe:</span>
 <span class="sd">            whether the information should be returned as a `pandas.DataFrame`. The advantage of this</span>
@@ -997,7 +999,9 @@
         <span class="c1"># These are the properties that are written in SIESTA scf</span>
         <span class="n">props</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;iscf&quot;</span><span class="p">,</span> <span class="s2">&quot;Eharris&quot;</span><span class="p">,</span> <span class="s2">&quot;E_KS&quot;</span><span class="p">,</span> <span class="s2">&quot;FreeEng&quot;</span><span class="p">,</span> <span class="s2">&quot;dDmax&quot;</span><span class="p">,</span> <span class="s2">&quot;Ef&quot;</span><span class="p">,</span> <span class="s2">&quot;dHmax&quot;</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="bp">Ellipsis</span><span class="p">:</span>
+            <span class="n">iscf</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">iscf</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_scf requires iscf argument to *not* be 0!&quot;</span>
@@ -1230,8 +1234,8 @@
     <span class="k">def</span> <span class="nf">read_charge</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;voronoi&quot;</span><span class="p">,</span> <span class="s2">&quot;hirshfeld&quot;</span><span class="p">,</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">,</span> <span class="s2">&quot;mulliken:&lt;5.2&quot;</span><span class="p">],</span>
-        <span class="n">iscf</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
-        <span class="n">imd</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
+        <span class="n">iscf</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Opt</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="bp">Ellipsis</span><span class="p">]</span> <span class="o">=</span> <span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
+        <span class="n">imd</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Opt</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="bp">Ellipsis</span><span class="p">]</span> <span class="o">=</span> <span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
         <span class="n">key_scf</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scf&quot;</span><span class="p">,</span>
         <span class="n">as_dataframe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1273,15 +1277,15 @@
 <span class="sd">        ----------</span>
 <span class="sd">        name:</span>
 <span class="sd">            the name of the charges that you want to read</span>
-<span class="sd">        iscf: int or Opt, optional</span>
+<span class="sd">        iscf: int or Opt or `...`, optional</span>
 <span class="sd">            index (0-based) of the scf iteration you want the charges for.</span>
-<span class="sd">            If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then</span>
+<span class="sd">            If the enum specifier `Opt.ANY` or `Opt.ALL`/`...` are used, then</span>
 <span class="sd">            the returned quantities depend on what is present.</span>
 <span class="sd">            If ``None/Opt.NONE`` it will not return any SCF charges.</span>
 <span class="sd">            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.</span>
 <span class="sd">        imd: int or Opt, optional</span>
 <span class="sd">            index (0-based) of the md step you want the charges for.</span>
-<span class="sd">            If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then</span>
+<span class="sd">            If the enum specifier `Opt.ANY` or `Opt.ALL`/`...` are used, then</span>
 <span class="sd">            the returned quantities depend on what is present.</span>
 <span class="sd">            If ``None/Opt.NONE`` it will not return any MD charges.</span>
 <span class="sd">            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.</span>
@@ -1714,9 +1718,9 @@
                 <span class="n">md_scf_charge</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
                     <span class="p">[</span>
                         <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
-                            <span class="n">iscf</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">iscf</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;iscf&quot;</span><span class="p">)</span>
+                            <span class="n">iscf_</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">iscf_</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;iscf&quot;</span><span class="p">)</span>
                         <span class="p">)</span>
-                        <span class="k">for</span> <span class="n">iscf</span> <span class="ow">in</span> <span class="n">md_scf_charge</span>
+                        <span class="k">for</span> <span class="n">iscf_</span> <span class="ow">in</span> <span class="n">md_scf_charge</span>
                     <span class="p">],</span>
                     <span class="n">keys</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">md_scf_charge</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;imd&quot;</span><span class="p">),</span>
                 <span class="p">)</span>
@@ -1751,6 +1755,9 @@
 <span class="sd">            flag :</span>
 <span class="sd">                corrected flag</span>
 <span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">flag</span> <span class="ow">is</span> <span class="bp">Ellipsis</span><span class="p">:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="n">Opt</span><span class="o">.</span><span class="n">ALL</span>
+
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">Opt</span><span class="p">):</span>
                 <span class="c1"># correct flag depending on what `found` is</span>
                 <span class="c1"># If the values have been found we</span>

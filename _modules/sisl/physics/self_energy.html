@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1094,7 +1094,13 @@
         <span class="n">V_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_space_coupling</span><span class="p">(</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">orbs</span> <span class="o">=</span> <span class="n">P0</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">V_atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">P0</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">P0</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
+                <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
+                <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">3</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">3</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">P0</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
                 <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
                 <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
                 <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1603,7 +1609,13 @@
         <span class="c1"># Surface orbitals to put in the semi-infinite self-energy into.</span>
         <span class="n">orbs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
+                <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
+                <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">3</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">3</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
                 <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
                 <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
                 <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1857,7 +1869,13 @@
         <span class="n">V_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_space_coupling</span><span class="p">(</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">orbs</span> <span class="o">=</span> <span class="n">P0</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">V_atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">P0</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">P0</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
+                <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
+                <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">2</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">3</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">3</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">P0</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
                 <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
                 <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
                 <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>

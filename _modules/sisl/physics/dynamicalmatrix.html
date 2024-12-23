@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -178,7 +178,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -212,8 +212,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
-<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance</span>
+<span class="sd">        gauge :</span>
+<span class="sd">           the chosen gauge, `lattice` for lattice vector gauge, and `atomic` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -241,7 +241,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -276,8 +276,8 @@
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
-<span class="sd">        gauge : {&#39;cell&#39;, &#39;orbital&#39;}</span>
-<span class="sd">           the chosen gauge, `cell` for cell vector gauge, and `orbital` for atomic distance</span>
+<span class="sd">        gauge :</span>
+<span class="sd">           the chosen gauge, `lattice` for lattice vector gauge, and `atomic` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -303,7 +303,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -339,7 +339,7 @@
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
 <span class="sd">        gauge :</span>
-<span class="sd">           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance</span>
+<span class="sd">           the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -422,7 +422,7 @@
 <div class="viewcode-block" id="DynamicalMatrix.eigenvalue">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenvalue">[docs]</a>
     <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenvaluePhonon</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`</span>
 
@@ -430,7 +430,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        k : array_like*3, optional</span>
 <span class="sd">            the k-point at which to evaluate the eigenvalues at</span>
-<span class="sd">        gauge : str, optional</span>
+<span class="sd">        gauge :</span>
 <span class="sd">            the gauge used for calculating the eigenvalues</span>
 <span class="sd">        sparse : bool, optional</span>
 <span class="sd">            if ``True``, `eigsh` will be called, else `eigh` will be</span>
@@ -458,7 +458,7 @@
 <div class="viewcode-block" id="DynamicalMatrix.eigenmode">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenmode">[docs]</a>
     <span class="k">def</span> <span class="nf">eigenmode</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenmodePhonon</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes</span>
 
@@ -470,7 +470,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        k : array_like*3, optional</span>
 <span class="sd">            the k-point at which to evaluate the eigenmodes at</span>
-<span class="sd">        gauge : str, optional</span>
+<span class="sd">        gauge :</span>
 <span class="sd">            the gauge used for calculating the eigenmodes</span>
 <span class="sd">        sparse : bool, optional</span>
 <span class="sd">            if ``True``, `eigsh` will be called, else `eigh` will be</span>

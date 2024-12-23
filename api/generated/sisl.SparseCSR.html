@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -151,7 +151,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.SparseCSR">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">SparseCSR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nnzpr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nnz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseCSR" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lib.mixins.NDArrayOperatorsMixin.html#numpy.lib.mixins.NDArrayOperatorsMixin" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NDArrayOperatorsMixin</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lib.mixins.NDArrayOperatorsMixin.html#numpy.lib.mixins.NDArrayOperatorsMixin" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NDArrayOperatorsMixin</span></code></a></p>
 <p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p>
 <p>This class holds all required information regarding the CSR matrix format.</p>
 <p>Note that this sparse matrix of data does not retain the number of columns
@@ -187,7 +187,7 @@ creation of the sparse matrix.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arg1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>) – various initialization methods as described above</p></li>
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – number of elements stored per sparse element, only used if (M,N) is passed</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – data type of the matrix, defaults to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.float64</span></code></a></p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – data type of the matrix, defaults to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.float64</span></code></a></p></li>
 <li><p><strong>nnzpr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – initial number of non-zero elements per row.
 Only used if <a class="reference internal" href="#sisl.SparseCSR.nnz" title="sisl.SparseCSR.nnz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nnz</span></code></a> is not supplied</p></li>
 <li><p><strong>nnz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – initial total number of non-zero elements
@@ -212,70 +212,73 @@ This quantity has precedence over <em class="xref py py-obj">nnzpr</em></p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.align" title="sisl.SparseCSR.align"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align</span></code></a>(other)</p></td>
 <td><p>Aligns this sparse matrix with the sparse elements of the other sparse matrix</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.copy" title="sisl.SparseCSR.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([dims, dtype])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.astype" title="sisl.SparseCSR.astype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astype</span></code></a>(dtype[, copy])</p></td>
+<td><p>Convert the stored data-type to something else</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.copy" title="sisl.SparseCSR.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([dims, dtype])</p></td>
 <td><p>A deepcopy of the sparse matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.delete_columns" title="sisl.SparseCSR.delete_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_columns</span></code></a>(columns[, keep_shape])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.delete_columns" title="sisl.SparseCSR.delete_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_columns</span></code></a>(columns[, keep_shape])</p></td>
 <td><p>Delete all columns in <em class="xref py py-obj">columns</em> (in-place action)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.diagonal" title="sisl.SparseCSR.diagonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagonal</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.diagonal" title="sisl.SparseCSR.diagonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagonal</span></code></a>()</p></td>
 <td><p>Return the diagonal elements from the matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.diags" title="sisl.SparseCSR.diags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diags</span></code></a>(diagonals[, offsets, dim, dtype])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.diags" title="sisl.SparseCSR.diags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diags</span></code></a>(diagonals[, offsets, dim, dtype])</p></td>
 <td><p>Create a <a class="reference internal" href="#sisl.SparseCSR" title="sisl.SparseCSR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR</span></code></a> with diagonal elements with the same shape as the routine</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.edges" title="sisl.SparseCSR.edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges</span></code></a>(row[, exclude])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.edges" title="sisl.SparseCSR.edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges</span></code></a>(row[, exclude])</p></td>
 <td><p>Retrieve edges (connections) of a given <em class="xref py py-obj">row</em> or list of <em class="xref py py-obj">row</em>'s</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.eliminate_zeros" title="sisl.SparseCSR.eliminate_zeros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eliminate_zeros</span></code></a>([atol])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.eliminate_zeros" title="sisl.SparseCSR.eliminate_zeros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eliminate_zeros</span></code></a>([atol])</p></td>
 <td><p>Remove all zero elememts from the sparse matrix</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.empty" title="sisl.SparseCSR.empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty</span></code></a>([keep_nnz])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.empty" title="sisl.SparseCSR.empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty</span></code></a>([keep_nnz])</p></td>
 <td><p>Delete all sparse information from the sparsity pattern</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.finalize" title="sisl.SparseCSR.finalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalize</span></code></a>([sort])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.finalize" title="sisl.SparseCSR.finalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalize</span></code></a>([sort])</p></td>
 <td><p>Finalizes the sparse matrix by removing all non-set elements</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.fromsp" title="sisl.SparseCSR.fromsp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fromsp</span></code></a>(*sps[, dtype])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.fromsp" title="sisl.SparseCSR.fromsp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fromsp</span></code></a>(*sps[, dtype])</p></td>
 <td><p>Combine multiple single-dimension sparse matrices into one SparseCSR matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.iter_nnz" title="sisl.SparseCSR.iter_nnz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_nnz</span></code></a>([row])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.iter_nnz" title="sisl.SparseCSR.iter_nnz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_nnz</span></code></a>([row])</p></td>
 <td><p>Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.nonzero" title="sisl.SparseCSR.nonzero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nonzero</span></code></a>([rows, only_cols])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.nonzero" title="sisl.SparseCSR.nonzero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nonzero</span></code></a>([rows, only_cols])</p></td>
 <td><p>Row and column indices where non-zero elements exists</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.remove" title="sisl.SparseCSR.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(indices)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.remove" title="sisl.SparseCSR.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(indices)</p></td>
 <td><p>Return a new sparse CSR matrix with all the indices removed</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.scale_columns" title="sisl.SparseCSR.scale_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_columns</span></code></a>(cols, scale[, rows])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.scale_columns" title="sisl.SparseCSR.scale_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_columns</span></code></a>(cols, scale[, rows])</p></td>
 <td><p>Scale all values with certain column values with a number</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.sparsity_union" title="sisl.SparseCSR.sparsity_union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparsity_union</span></code></a>(*spmats[, dtype, dim, value])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.sparsity_union" title="sisl.SparseCSR.sparsity_union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparsity_union</span></code></a>(*spmats[, dtype, dim, value])</p></td>
 <td><p>Create a SparseCSR with constant fill value in all places that <em class="xref py py-obj">spmats</em> have nonzeros</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.spsame" title="sisl.SparseCSR.spsame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spsame</span></code></a>(other)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.spsame" title="sisl.SparseCSR.spsame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spsame</span></code></a>(other)</p></td>
 <td><p>Check whether two sparse matrices have the same non-zero elements</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.sub" title="sisl.SparseCSR.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(indices)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.sub" title="sisl.SparseCSR.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(indices)</p></td>
 <td><p>Create a new sparse CSR matrix with the data only for the given rows and columns</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.toarray" title="sisl.SparseCSR.toarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toarray</span></code></a>()</p></td>
-<td><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.toarray" title="sisl.SparseCSR.toarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toarray</span></code></a>()</p></td>
+<td><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.tocsr" title="sisl.SparseCSR.tocsr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocsr</span></code></a>([dim])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.tocsr" title="sisl.SparseCSR.tocsr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocsr</span></code></a>([dim])</p></td>
 <td><p>Convert dimension <a class="reference internal" href="#sisl.SparseCSR.dim" title="sisl.SparseCSR.dim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dim</span></code></a> into a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> format</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.todense" title="sisl.SparseCSR.todense"><code class="xref py py-obj docutils literal notranslate"><span class="pre">todense</span></code></a>()</p></td>
-<td><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.todense" title="sisl.SparseCSR.todense"><code class="xref py py-obj docutils literal notranslate"><span class="pre">todense</span></code></a>()</p></td>
+<td><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.transform" title="sisl.SparseCSR.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>(matrix[, dtype])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.transform" title="sisl.SparseCSR.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>(matrix[, dtype])</p></td>
 <td><p>Apply a linear transformation <span class="math notranslate nohighlight">\(R^n \rightarrow R^m\)</span> to the <span class="math notranslate nohighlight">\(n\)</span>-dimensional elements of the sparse matrix</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.translate_columns" title="sisl.SparseCSR.translate_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_columns</span></code></a>(old, new[, rows, clean])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.translate_columns" title="sisl.SparseCSR.translate_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_columns</span></code></a>(old, new[, rows, clean])</p></td>
 <td><p>Takes all <em class="xref py py-obj">old</em> columns and translates them to <em class="xref py py-obj">new</em>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.transpose" title="sisl.SparseCSR.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a>([sort])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.transpose" title="sisl.SparseCSR.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a>([sort])</p></td>
 <td><p>Create the transposed sparse matrix</p></td>
 </tr>
 </tbody>
@@ -331,6 +334,20 @@ object.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseCSR.astype">
+<span class="sig-name descname"><span class="pre">astype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.astype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.astype" title="Link to this definition"></a></dt>
+<dd><p>Convert the stored data-type to something else</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> – the new dtype for the sparse matrix</p></li>
+<li><p><strong>copy</strong> – copy when needed, or do not copy when not needed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseCSR.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.copy" title="Link to this definition"></a></dt>
 <dd><p>A deepcopy of the sparse matrix</p>
@@ -338,7 +355,7 @@ object.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dims</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <em>optional</em>) – which dimensions to store in the copy, defaults to all.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>) – this defaults to the dtype of the object,
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>) – this defaults to the dtype of the object,
 but one may change it if supplied.</p></li>
 </ul>
 </dd>
@@ -379,7 +396,7 @@ if <code class="docutils literal notranslate"><span class="pre">False</span></co
 to the diagonal)</p></li>
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the extra dimension of the new diagonal matrix (default to the current
 extra dimension)</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data-type to create (default to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.float64</span></code></a>)</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data-type to create (default to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.float64</span></code></a>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -389,7 +406,7 @@ extra dimension)</p></li>
 <dt class="sig sig-object py" id="sisl.SparseCSR.edges">
 <span class="sig-name descname"><span class="pre">edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.edges" title="Link to this definition"></a></dt>
 <dd><p>Retrieve edges (connections) of a given <em class="xref py py-obj">row</em> or list of <em class="xref py py-obj">row</em>’s</p>
-<p>The returned edges are unique and sorted (see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.unique</span></code></a>).</p>
+<p>The returned edges are unique and sorted (see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.unique</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -429,7 +446,7 @@ matrix from an old sparse matrix</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseCSR.finalize">
-<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.finalize" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.finalize" title="Link to this definition"></a></dt>
 <dd><p>Finalizes the sparse matrix by removing all non-set elements</p>
 <p>One may still interact with the sparse matrix as one would previously.</p>
 <p>NOTE: This is mainly an internal used routine to ensure data structure
@@ -450,7 +467,7 @@ when converting to <a class="reference external" href="https://docs.scipy.org/do
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*sps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sparse-matrix</span></code>) – any sparse matrix which can convert to a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.14.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> matrix</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – data-type to store in the matrix, default to largest <code class="docutils literal notranslate"><span class="pre">dtype</span></code> for the
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – data-type to store in the matrix, default to largest <code class="docutils literal notranslate"><span class="pre">dtype</span></code> for the
 passed sparse matrices</p></li>
 </ul>
 </dd>
@@ -611,7 +628,7 @@ By default the first given spmat decides the dimension.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseCSR.toarray">
 <span class="sig-name descname"><span class="pre">toarray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.toarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.toarray" title="Link to this definition"></a></dt>
-<dd><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p>
+<dd><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -631,7 +648,7 @@ By default the first given spmat decides the dimension.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseCSR.todense">
 <span class="sig-name descname"><span class="pre">todense</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.todense"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.todense" title="Link to this definition"></a></dt>
-<dd><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p>
+<dd><p>Return a dense <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which has 3 dimensions (self.shape)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -646,7 +663,7 @@ final dimension of the matrix.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>matrix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – transformation matrix of shape <span class="math notranslate nohighlight">\(m \times n\)</span>, <span class="math notranslate nohighlight">\(n\)</span> should correspond to
 the number of elements in <code class="docutils literal notranslate"><span class="pre">self.shape[2]</span></code></p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – defaults to the common dtype of the object and the transformation matrix</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – defaults to the common dtype of the object and the transformation matrix</p></li>
 </ul>
 </dd>
 </dl>

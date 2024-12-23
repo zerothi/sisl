@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -617,7 +617,22 @@
 
 <span class="sd">    Consider a regular 2 electrode setup with transport direction</span>
 <span class="sd">    along the 3rd lattice vector. Then the following example may</span>
-<span class="sd">    be used to calculate the eigen-channels:</span>
+<span class="sd">    be used to calculate the eigen-channels.</span>
+
+<span class="sd">    The below short-form of reading all variables should cover most variables</span>
+<span class="sd">    encountered in the FDF file.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">       G = DeviceGreen.from_fdf(&quot;RUN.fdf&quot;)</span>
+
+<span class="sd">       # Calculate the scattering state from the left electrode</span>
+<span class="sd">       # and then the eigen channels to the right electrode</span>
+<span class="sd">       state = G.scattering_state(&quot;Left&quot;, E=0.1)</span>
+<span class="sd">       eig_channel = G.eigenchannel(state, &quot;Right&quot;)</span>
+
+<span class="sd">    The above ``DeviceGreen.from_fdf`` is a short-hand for something</span>
+<span class="sd">    like the below (it actually does more than that, so prefer the `from_fdf`):</span>
 
 <span class="sd">    .. code-block:: python</span>
 
@@ -641,26 +656,20 @@
 <span class="sd">       H_elec.shift(tbt.mu(&quot;Left&quot;))</span>
 <span class="sd">       left = DownfoldSelfEnergy(&quot;Left&quot;, s.RecursiveSI(H_elec, &quot;-C&quot;, eta=tbt.eta(&quot;Left&quot;),</span>
 <span class="sd">                                 tbt, H)</span>
-<span class="sd">       H_elec.shift(tbt.mu(&quot;Right&quot;) - tbt.mu(&quot;Left&quot;))</span>
+<span class="sd">       H_elec.shift(tbt.mu(&quot;Right&quot;))</span>
 <span class="sd">       left = DownfoldSelfEnergy(&quot;Right&quot;, s.RecursiveSI(H_elec, &quot;+C&quot;, eta=tbt.eta(&quot;Right&quot;),</span>
 <span class="sd">                                 tbt, H)</span>
 
 <span class="sd">       G = DeviceGreen(H, [left, right], tbt)</span>
 
-<span class="sd">       # Calculate the scattering state from the left electrode</span>
-<span class="sd">       # and then the eigen channels to the right electrode</span>
-<span class="sd">       state = G.scattering_state(&quot;Left&quot;, E=0.1)</span>
-<span class="sd">       eig_channel = G.eigenchannel(state, &quot;Right&quot;)</span>
 
-<span class="sd">    To make this easier there exists a short-hand version that does the</span>
-<span class="sd">    above:</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">       G = DeviceGreen.from_fdf(&quot;RUN.fdf&quot;)</span>
-
-<span class="sd">    which reads all variables from the FDF file and parses them accordingly.</span>
-<span class="sd">    This does not take all things into consideration, but should cover most problems.</span>
+<span class="sd">    Currently one cannot use these classes to calculate the</span>
+<span class="sd">    scattering-states/eigenchannels for the spin-down component of a polarized</span>
+<span class="sd">    calculation. One has to explicitly remove the spin-up component of the Hamiltonians</span>
+<span class="sd">    before doing the calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># TODO we should speed this up by overwriting A with the inverse once</span>

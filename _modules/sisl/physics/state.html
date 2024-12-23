@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,6 +120,7 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatchmethod</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
@@ -134,9 +135,10 @@
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigh_destroy</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">CartesianAxes</span><span class="p">,</span> <span class="n">GaugeType</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">CartesianAxes</span><span class="p">,</span> <span class="n">GaugeType</span><span class="p">,</span> <span class="n">ProjectionType</span>
+<span class="kn">from</span> <span class="nn">sisl.typing._physics</span> <span class="kn">import</span> <span class="n">ProjectionTypeHadamard</span><span class="p">,</span> <span class="n">ProjectionTypeHadamardAtoms</span>
 
-<span class="kn">from</span> <span class="nn">._feature</span> <span class="kn">import</span> <span class="n">comply_gauge</span>
+<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">comply_gauge</span><span class="p">,</span> <span class="n">comply_projection</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;degenerate_decouple&quot;</span><span class="p">,</span> <span class="s2">&quot;Coefficient&quot;</span><span class="p">,</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span> <span class="s2">&quot;StateC&quot;</span><span class="p">]</span>
 
@@ -425,6 +427,16 @@
         <span class="k">return</span> <span class="n">deg</span></div>
 
 
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a subset of this instance&quot;&quot;&quot;</span>
+        <span class="c1"># defined in _ufuncs_*.py</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a subset of this instance, by removing some elements&quot;&quot;&quot;</span>
+        <span class="c1"># defined in _ufuncs_*.py</span>
+
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new coefficient object with only one associated coefficient</span>
 
@@ -526,6 +538,14 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the shape of the state&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span>
 
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a subset of this instance&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a subset of this instance, by removing some elements&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="State.translate">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.translate">[docs]</a>
     <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isc</span><span class="p">):</span>
@@ -623,7 +643,12 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;basis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">projection</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">ProjectionType</span><span class="p">,</span> <span class="n">ProjectionTypeHadamard</span><span class="p">,</span> <span class="n">ProjectionTypeHadamardAtoms</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;diagonal&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`</span>
 
 <span class="sd">        Parameters</span>
@@ -686,7 +711,7 @@
 <span class="sd">          order parameter for the IPR</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># This *has* to be a real value C * C^* == real</span>
-        <span class="n">state_abs2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;basis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">state_abs2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;hadamard&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
         <span class="k">assert</span> <span class="n">q</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.ipr requires q&gt;=2&quot;</span>
         <span class="c1"># abs2 is already having the exponent 2</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">state_abs2</span><span class="o">**</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">state_abs2</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">q</span></div>
@@ -805,7 +830,9 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ket</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;diag&quot;</span><span class="p">,</span> <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;basis&quot;</span><span class="p">,</span> <span class="s2">&quot;matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;diag&quot;</span><span class="p">,</span>
+        <span class="n">projection</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">ProjectionType</span><span class="p">,</span> <span class="n">ProjectionTypeHadamard</span><span class="p">,</span> <span class="n">ProjectionTypeHadamardAtoms</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;diagonal&quot;</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi&#39;_j\rangle`</span>
 
@@ -841,14 +868,17 @@
 <span class="sd">            This can be used to sum specific sub-elements, return the diagonal, or the</span>
 <span class="sd">            full matrix.</span>
 
-<span class="sd">            * ``diag`` only return the diagonal of the inner product</span>
-<span class="sd">            * ``matrix`` a matrix with diagonals and the off-diagonals</span>
-<span class="sd">            * ``basis`` only do inner products for individual states, but return them basis-resolved</span>
+<span class="sd">            * ``diagonal`` only return the diagonal of the inner product (&#39;ii&#39; elements)</span>
+<span class="sd">            * ``matrix`` a matrix with diagonals and the off-diagonals (&#39;ij&#39; elements)</span>
+<span class="sd">            * ``hadamard`` only do element wise products for the states (equivalent to</span>
+<span class="sd">            basis resolved inner-products)</span>
 <span class="sd">            * ``atoms`` only do inner products for individual states, but return them atom-resolved</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used. One have to add the overlap matrix in the `matrix` argument, if needed.</span>
+<span class="sd">        This does *not* take into account a possible overlap matrix when</span>
+<span class="sd">        non-orthogonal basis sets are used.</span>
+<span class="sd">        One have to add the overlap matrix in the `matrix` argument, if needed.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -904,19 +934,15 @@
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner requires the objects to have matching shapes bra @ M @ ket bra=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, M=</span><span class="si">{</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, ket=</span><span class="si">{</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
 
-        <span class="n">projection</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="c1"># temporary work-around for older codes where project/diag=T|F were allowed</span>
-            <span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;diag&quot;</span><span class="p">,</span>
-            <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;matrix&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;sum&quot;</span><span class="p">:</span> <span class="s2">&quot;diag&quot;</span><span class="p">,</span>  <span class="c1"># still allowed here (for bypass options)</span>
-            <span class="s2">&quot;atoms&quot;</span><span class="p">:</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span>  <span class="c1"># plural s allowed</span>
-            <span class="s2">&quot;orbitals&quot;</span><span class="p">:</span> <span class="s2">&quot;orbital&quot;</span><span class="p">,</span>  <span class="c1"># still allowed here (for bypass options)</span>
-        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">projection</span><span class="p">,</span> <span class="n">projection</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">projection</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">projection</span> <span class="o">=</span> <span class="s2">&quot;diagonal&quot;</span> <span class="k">if</span> <span class="n">projection</span> <span class="k">else</span> <span class="s2">&quot;matrix&quot;</span>
+        <span class="n">projection</span> <span class="o">=</span> <span class="n">comply_projection</span><span class="p">(</span><span class="n">projection</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">projection</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;diag&quot;</span><span class="p">,</span> <span class="s2">&quot;diagonal&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;diagonal&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner diagonal matrix product is &quot;</span>
+                    <span class="s2">&quot;non-square, please use projection!=diagonal or reduce number of vectors.&quot;</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ji-&gt;i&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">M</span> <span class="o">@</span> <span class="n">ket</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
@@ -925,7 +951,7 @@
             <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;i&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">ket</span><span class="p">)</span> <span class="o">*</span> <span class="n">M</span>
 
-        <span class="k">elif</span> <span class="n">projection</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;matrix&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;matrix&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">Aij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">)</span> <span class="o">@</span> <span class="p">(</span><span class="n">M</span> <span class="o">@</span> <span class="n">ket</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -933,34 +959,50 @@
             <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,kj-&gt;ik&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">ket</span><span class="p">)</span> <span class="o">*</span> <span class="n">M</span>
 
-        <span class="k">elif</span> <span class="n">projection</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;basis&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;hadamard&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">Aij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">@</span> <span class="n">ket</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">Aij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">)</span> <span class="o">*</span> <span class="n">ket</span> <span class="o">*</span> <span class="n">M</span>
 
-            <span class="c1"># Now do the projection</span>
-            <span class="k">if</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;atom&quot;</span><span class="p">:</span>
-                <span class="c1"># Now we need to convert it</span>
-                <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">Aij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="c1"># We have some kind of spin-configuration (hidden)</span>
-                    <span class="k">def</span> <span class="nf">mapper</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
-                            <span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atom</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
-                        <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;hadamard:atoms&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">Aij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">@</span> <span class="n">ket</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Aij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">)</span> <span class="o">*</span> <span class="n">ket</span> <span class="o">*</span> <span class="n">M</span>
 
-                <span class="k">elif</span> <span class="n">Aij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
+            <span class="c1"># Now we need to convert it</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">Aij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># We have some kind of spin-configuration (hidden)</span>
+                <span class="k">def</span> <span class="nf">mapper</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atom</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
 
-                    <span class="k">def</span> <span class="nf">mapper</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atom</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atom</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">Aij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
 
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner could not determine &quot;</span>
-                        <span class="s2">&quot;the correct atom conversions.&quot;</span>
-                    <span class="p">)</span>
-                <span class="n">Aij</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Aij</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">mapper</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atom</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atom</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner could not determine &quot;</span>
+                    <span class="s2">&quot;the correct atom conversions.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">Aij</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Aij</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;trace&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner diagonal matrix product is &quot;</span>
+                    <span class="s2">&quot;non-square, cannot do the trace.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ji-&gt;i&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">M</span> <span class="o">@</span> <span class="n">ket</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,j,ij-&gt;i&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">M</span><span class="p">,</span> <span class="n">ket</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">Aij</span> <span class="o">=</span> <span class="p">(</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;i&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">ket</span><span class="p">)</span> <span class="o">*</span> <span class="n">M</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner got unknown argument &#39;projection&#39;=</span><span class="si">{</span><span class="n">projection</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1074,8 +1116,8 @@
 <span class="sd">        --------</span>
 <span class="sd">        align_phase : rotate states such that their phases align</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">snorm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;basis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">onorm</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;basis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">snorm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;hadamard&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">onorm</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;hadamard&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 
         <span class="c1"># Now find new orderings</span>
         <span class="n">show_warn</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1121,7 +1163,8 @@
 
 <span class="sd">            \tilde C_\alpha = e^{i\mathbf k\mathbf r_\alpha} C_\alpha</span>
 
-<span class="sd">        where :math:`C_\alpha` and :math:`\tilde C_\alpha` belongs to the ``atom`` and ``cell`` gauge, respectively.</span>
+<span class="sd">        where :math:`C_\alpha` and :math:`\tilde C_\alpha` belongs to the ``atomic`` and</span>
+<span class="sd">        ``lattice`` gauge, respectively.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1161,12 +1204,14 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">g</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">gauge</span> <span class="o">==</span> <span class="s2">&quot;atom&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">gauge</span> <span class="o">==</span> <span class="s2">&quot;atomic&quot;</span><span class="p">:</span>
             <span class="c1"># R -&gt; r gauge tranformation.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">*=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">gauge</span> <span class="o">==</span> <span class="s2">&quot;cell&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">gauge</span> <span class="o">==</span> <span class="s2">&quot;lattice&quot;</span><span class="p">:</span>
             <span class="c1"># r -&gt; R gauge tranformation.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">*=</span> <span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">*=</span> <span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;change_gauge: gauge must be in [lattice, atomic]&quot;</span><span class="p">)</span></div>
 
 
     <span class="c1"># def toStateC(self, norm=1.):</span>

@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -151,7 +151,19 @@ the eigenchannels.</p>
 compared to the full matrices normally used.</p>
 <p>Consider a regular 2 electrode setup with transport direction
 along the 3rd lattice vector. Then the following example may
-be used to calculate the eigen-channels:</p>
+be used to calculate the eigen-channels.</p>
+<p>The below short-form of reading all variables should cover most variables
+encountered in the FDF file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">DeviceGreen</span><span class="o">.</span><span class="n">from_fdf</span><span class="p">(</span><span class="s2">&quot;RUN.fdf&quot;</span><span class="p">)</span>
+
+<span class="c1"># Calculate the scattering state from the left electrode</span>
+<span class="c1"># and then the eigen channels to the right electrode</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">scattering_state</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">eig_channel</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">eigenchannel</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;Right&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above <code class="docutils literal notranslate"><span class="pre">DeviceGreen.from_fdf</span></code> is a short-hand for something
+like the below (it actually does more than that, so prefer the <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.from_fdf" title="sisl_toolbox.btd.DeviceGreen.from_fdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_fdf</span></code></a>):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span>
 <span class="kn">from</span> <span class="nn">sisl_toolbox.btd</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="c1"># First read in the required data</span>
@@ -172,25 +184,18 @@ be used to calculate the eigen-channels:</p>
 <span class="n">H_elec</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">tbt</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">))</span>
 <span class="n">left</span> <span class="o">=</span> <span class="n">DownfoldSelfEnergy</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">RecursiveSI</span><span class="p">(</span><span class="n">H_elec</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">tbt</span><span class="o">.</span><span class="n">eta</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">),</span>
                           <span class="n">tbt</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
-<span class="n">H_elec</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">tbt</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">tbt</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">))</span>
+<span class="n">H_elec</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">tbt</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">))</span>
 <span class="n">left</span> <span class="o">=</span> <span class="n">DownfoldSelfEnergy</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">RecursiveSI</span><span class="p">(</span><span class="n">H_elec</span><span class="p">,</span> <span class="s2">&quot;+C&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">tbt</span><span class="o">.</span><span class="n">eta</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">),</span>
                           <span class="n">tbt</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">DeviceGreen</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="n">tbt</span><span class="p">)</span>
-
-<span class="c1"># Calculate the scattering state from the left electrode</span>
-<span class="c1"># and then the eigen channels to the right electrode</span>
-<span class="n">state</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">scattering_state</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">eig_channel</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">eigenchannel</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;Right&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To make this easier there exists a short-hand version that does the
-above:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">DeviceGreen</span><span class="o">.</span><span class="n">from_fdf</span><span class="p">(</span><span class="s2">&quot;RUN.fdf&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>which reads all variables from the FDF file and parses them accordingly.
-This does not take all things into consideration, but should cover most problems.</p>
+<p class="rubric">Notes</p>
+<p>Currently one cannot use these classes to calculate the
+scattering-states/eigenchannels for the spin-down component of a polarized
+calculation. One has to explicitly remove the spin-up component of the Hamiltonians
+before doing the calculations.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -357,7 +362,7 @@ A small value improves precision at the cost of bigger matrices.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>scat_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – for each <em class="xref py py-obj">elec_to</em> a scattering matrix will be returned. Its dimensions will be
+<dd class="field-even"><p><strong>scat_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – for each <em class="xref py py-obj">elec_to</em> a scattering matrix will be returned. Its dimensions will be
 depending on the <em class="xref py py-obj">cutoff</em> value at the cost of precision.</p>
 </dd>
 </dl>

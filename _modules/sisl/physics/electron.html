@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -163,7 +163,7 @@
 
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
@@ -205,7 +205,14 @@
     <span class="n">progressbar</span><span class="p">,</span>
     <span class="n">warn</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">CartesianAxisStrLiteral</span>
+<span class="kn">from</span> <span class="nn">sisl.physics._common</span> <span class="kn">import</span> <span class="n">comply_projection</span>
+<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CartesianAxisStrLiteral</span><span class="p">,</span>
+    <span class="n">ProjectionType</span><span class="p">,</span>
+    <span class="n">ProjectionTypeHadamard</span><span class="p">,</span>
+    <span class="n">ProjectionTypeHadamardAtoms</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sisl.typing._physics</span> <span class="kn">import</span> <span class="n">ProjectionTypeDiag</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">direction</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -218,7 +225,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DOS&quot;</span><span class="p">,</span> <span class="s2">&quot;PDOS&quot;</span><span class="p">,</span> <span class="s2">&quot;COP&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;spin_moment&quot;</span><span class="p">,</span> <span class="s2">&quot;spin_contamination&quot;</span><span class="p">]</span>
-<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;berry_phase&quot;</span><span class="p">,</span> <span class="s2">&quot;berry_curvature&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;berry_phase&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;ahc&quot;</span><span class="p">,</span> <span class="s2">&quot;shc&quot;</span><span class="p">,</span> <span class="s2">&quot;conductivity&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;wavefunction&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;CoefficientElectron&quot;</span><span class="p">,</span> <span class="s2">&quot;StateElectron&quot;</span><span class="p">,</span> <span class="s2">&quot;StateCElectron&quot;</span><span class="p">]</span>
@@ -346,6 +353,7 @@
 <span class="sd">        projected DOS calculated at energies, has dimension ``(1, state.shape[1], len(E))``.</span>
 <span class="sd">        For non-colinear calculations it will be ``(4, state.shape[1] // 2, len(E))``, ordered as</span>
 <span class="sd">        indicated in the above list.</span>
+<span class="sd">        For Nambu calculations it will be ``(8, state.shape[1] // 4, len(E))``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">distribution</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
@@ -358,11 +366,67 @@
         <span class="k">if</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">spin</span> <span class="o">=</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">)</span>
             <span class="n">S</span> <span class="o">=</span> <span class="n">S</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">spin</span> <span class="o">=</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;nambu&quot;</span><span class="p">)</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="n">S</span><span class="p">[::</span><span class="mi">4</span><span class="p">,</span> <span class="p">::</span><span class="mi">4</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">spin</span> <span class="o">=</span> <span class="n">Spin</span><span class="p">()</span>
 
     <span class="c1"># check for non-colinear (or SO)</span>
-    <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">:</span>
+        <span class="c1"># Non colinear eigenvectors</span>
+        <span class="k">if</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="c1"># Since we are going to reshape the eigen-vectors</span>
+            <span class="c1"># to more easily get the mixed states, we can reduce the overlap matrix</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="n">S</span><span class="p">[::</span><span class="mi">4</span><span class="p">,</span> <span class="p">::</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="c1"># Initialize data</span>
+        <span class="n">PDOS</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="c1"># Do spin-box calculations:</span>
+        <span class="c1">#  PDOS[:4] = electron</span>
+        <span class="c1">#  PDOS[0] = total DOS (diagonal)</span>
+        <span class="c1">#  PDOS[1] = x == &lt; psi | \sigma_x S | psi &gt;</span>
+        <span class="c1">#  PDOS[2] = y == &lt; psi | \sigma_y S | psi &gt;</span>
+        <span class="c1">#  PDOS[3] = z == &lt; psi | \sigma_z S | psi &gt;</span>
+        <span class="c1">#  PDOS[4:] = hole</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">eig</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">S</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>  <span class="c1"># uu,dd PDOS</span>
+        <span class="n">PDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">D1</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># total DOS</span>
+        <span class="n">PDOS</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># z-dos</span>
+        <span class="n">PDOS</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">D1</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># total DOS</span>
+        <span class="n">PDOS</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D1</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">D1</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># z-dos</span>
+        <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># d,u</span>
+        <span class="n">D2</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># u,d</span>
+        <span class="n">PDOS</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D1</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D2</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># x-dos</span>
+        <span class="n">PDOS</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D2</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D1</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># y-dos</span>
+        <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># d,u</span>
+        <span class="n">D2</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># u,d</span>
+        <span class="n">PDOS</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D1</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D2</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># x-dos</span>
+        <span class="n">PDOS</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D2</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D1</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># y-dos</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eig</span><span class="p">)):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">eig</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">S</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+            <span class="n">PDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">D1</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># total DOS</span>
+            <span class="n">PDOS</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">D1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># z-dos</span>
+            <span class="n">PDOS</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">D1</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># total DOS</span>
+            <span class="n">PDOS</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">D1</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">D1</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># z-dos</span>
+            <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># d,u</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># u,d</span>
+            <span class="n">PDOS</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">D1</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D2</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># x-dos</span>
+            <span class="n">PDOS</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">D2</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D1</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># y-dos</span>
+            <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># d,u</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># u,d</span>
+            <span class="n">PDOS</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">D1</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D2</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># x-dos</span>
+            <span class="n">PDOS</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">D2</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D1</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span>  <span class="c1"># y-dos</span>
+
+    <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span>
+        <span class="c1"># check for non-colinear (or SO)</span>
         <span class="c1"># Non colinear eigenvectors</span>
         <span class="k">if</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="c1"># Since we are going to reshape the eigen-vectors</span>
@@ -454,7 +518,7 @@
 <span class="sd">    distribution : func or str, optional</span>
 <span class="sd">       a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
 <span class="sd">       distribution function.</span>
-<span class="sd">    atol : float, optional</span>
+<span class="sd">    atol :</span>
 <span class="sd">       tolerance value where the distribution should be above before</span>
 <span class="sd">       considering an eigenstate to contribute to an energy point,</span>
 <span class="sd">       a higher value means that more energy points are discarded and so the calculation</span>
@@ -565,7 +629,20 @@
 <div class="viewcode-block" id="spin_moment">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">project</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="nd">@deprecate_argument</span><span class="p">(</span>
+    <span class="s2">&quot;project&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;projection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;argument project has been deprecated in favor of projection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span>
+    <span class="n">state</span><span class="p">,</span>
+    <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">projection</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+        <span class="n">ProjectionTypeTrace</span><span class="p">,</span> <span class="n">ProjectionTypeDiag</span><span class="p">,</span> <span class="n">ProjectionTypeHadamard</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;diagonal&quot;</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Spin magnetic moment (spin texture) and optionally orbitally resolved moments</span>
 
 <span class="sd">    This calculation only makes sense for non-colinear calculations.</span>
@@ -586,7 +663,7 @@
 <span class="sd">       \\</span>
 <span class="sd">       \mathbf{S}_\alpha^z &amp;= \langle \psi_\alpha | \boldsymbol\sigma_z \mathbf S | \psi_\alpha \rangle</span>
 
-<span class="sd">    If `project` is true, the above will be the orbitally resolved quantities.</span>
+<span class="sd">    If `projection` is orbitals/basis/true, the above will be the orbitally resolved quantities.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -596,8 +673,8 @@
 <span class="sd">       overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity</span>
 <span class="sd">       matrix is assumed. The overlap matrix should correspond to the system and :math:`\mathbf k` point the eigenvectors</span>
 <span class="sd">       has been evaluated at.</span>
-<span class="sd">    project: bool, optional</span>
-<span class="sd">       whether the spin-moments will be orbitally resolved or not</span>
+<span class="sd">    projection:</span>
+<span class="sd">       how the projection should be done</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -613,10 +690,15 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    numpy.ndarray</span>
-<span class="sd">        spin moments per state with final dimension ``(3, state.shape[0])``, or ``(3, state.shape[0], state.shape[1]//2)`` if project is true</span>
+<span class="sd">        spin moments per state with final dimension ``(3, state.shape[0])``, or ``(3,</span>
+<span class="sd">        state.shape[0], state.shape[1]//2)`` if projection is orbitals/basis/true</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">spin_moment</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">S</span><span class="p">,</span> <span class="n">project</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">spin_moment</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">S</span><span class="p">,</span> <span class="n">projection</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">projection</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="n">projection</span> <span class="o">=</span> <span class="s2">&quot;hadamard&quot;</span> <span class="k">if</span> <span class="n">projection</span> <span class="k">else</span> <span class="s2">&quot;diagonal&quot;</span>
+    <span class="n">projection</span> <span class="o">=</span> <span class="n">comply_projection</span><span class="p">(</span><span class="n">projection</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">S</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">S</span> <span class="o">=</span> <span class="n">_FakeMatrix</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
@@ -626,7 +708,7 @@
 
     <span class="c1"># see PDOS for details related to the spin-box calculations</span>
 
-    <span class="k">if</span> <span class="n">project</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;hadamard&quot;</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span>
             <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">],</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
@@ -642,7 +724,7 @@
             <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D1</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D2</span><span class="o">.</span><span class="n">real</span>
             <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D2</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D1</span><span class="o">.</span><span class="n">imag</span>
 
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;diagonal&quot;</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="c1"># TODO consider doing this all in a few lines</span>
@@ -656,6 +738,20 @@
             <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
             <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
             <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span>
+
+    <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s2">&quot;trace&quot;</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)):</span>
+            <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">Sstate</span> <span class="o">=</span> <span class="n">S</span> <span class="o">@</span> <span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">Sstate</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;spin_moment got wrong &#39;projection&#39; argument: </span><span class="si">{</span><span class="n">projection</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">s</span></div>
 
@@ -692,7 +788,7 @@
 <span class="sd">       have been evaluated at.</span>
 <span class="sd">    sum:</span>
 <span class="sd">        whether the spin-contamination should be summed for all states (a single number returned).</span>
-<span class="sd">        If false, a spin-contamination per state per spin-channel will be returned.</span>
+<span class="sd">        If sum, a spin-contamination per state per spin-channel will be returned.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -1060,7 +1156,11 @@
 
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
 
-    <span class="n">m</span> <span class="o">=</span> <span class="n">_create_sigma</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;csr&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
+        <span class="n">no</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">no</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">no</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">_create_sigma</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;csr&quot;</span><span class="p">))</span>
 
     <span class="c1"># To reduce (heavily) the computational load, we pre-setup the</span>
     <span class="c1"># operators here.</span>
@@ -1149,15 +1249,15 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.berry_phase.html#sisl.physics.electron.berry_phase">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">berry_phase</span><span class="p">(</span>
-    <span class="n">contour</span><span class="p">,</span>
+    <span class="n">contour</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span>
     <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">eigvals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">closed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;berry&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;berry&quot;</span><span class="p">,</span> <span class="s2">&quot;zak&quot;</span><span class="p">,</span> <span class="s2">&quot;berry:svd&quot;</span><span class="p">,</span> <span class="s2">&quot;zak:svd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;berry&quot;</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">ret_overlap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">apply_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">eigenstate_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">apply_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Berry-phase on a loop path</span>
 
@@ -1181,7 +1281,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    contour : BrillouinZone</span>
+<span class="sd">    contour :</span>
 <span class="sd">       containing the closed contour and has the ``contour.parent`` as an instance of Hamiltonian. The</span>
 <span class="sd">       first and last k-point must not be the same.</span>
 <span class="sd">    sub : None or list of int, optional</span>
@@ -1191,7 +1291,7 @@
 <span class="sd">    closed :</span>
 <span class="sd">       whether or not to include the connection of the last and first points in the loop</span>
 <span class="sd">       Forced true for Zak-phase calculations.</span>
-<span class="sd">    method : {&quot;berry&quot;, &quot;zak&quot;}</span>
+<span class="sd">    method :</span>
 <span class="sd">       &quot;berry&quot; will return the usual integral of the Berry connection over the specified contour</span>
 <span class="sd">       &quot;zak&quot; will compute the Zak phase for 1D systems by performing</span>
 <span class="sd">       a closed loop integration, see :cite:`Zak1989`.</span>
@@ -1202,10 +1302,10 @@
 <span class="sd">    eigenstate_kwargs : dict, optional</span>
 <span class="sd">       keyword arguments passed directly to the ``contour.eigenstate`` method.</span>
 <span class="sd">       One should *not* pass ``k`` as that is already used.</span>
-<span class="sd">    eigenstate_kwargs : dict, optional</span>
+<span class="sd">    eigenstate_kwargs :</span>
 <span class="sd">       keyword arguments passed directly to the ``contour.eigenstate`` method.</span>
 <span class="sd">       One should *not* pass ``k`` as that is already used.</span>
-<span class="sd">    apply_kwargs : dict, optional</span>
+<span class="sd">    apply_kwargs :</span>
 <span class="sd">       keyword arguments passed directly to ``contour.apply(**apply_kwargs)``.</span>
 
 <span class="sd">    Notes</span>
@@ -1265,10 +1365,10 @@
             <span class="k">pass</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">gauge</span> <span class="o">=</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">)</span>
+        <span class="n">gauge</span> <span class="o">=</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;change state to the lowdin state, assuming everything is in R gauge</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;change state to the lowdin state, assuming everything is in lattice gauge</span>
 <span class="sd">            So needs to be done before changing gauge&quot;&quot;&quot;</span>
             <span class="n">S12</span> <span class="o">=</span> <span class="n">sqrth</span><span class="p">(</span>
                 <span class="n">state</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">],</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">),</span>
@@ -1359,7 +1459,9 @@
 <div class="viewcode-block" id="wavefunction">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.wavefunction.html#sisl.physics.electron.wavefunction">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">wavefunction</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">wavefunction</span><span class="p">(</span>
+    <span class="n">v</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Spin</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add the wave-function (`Orbital.psi`) component of each orbital to the grid</span>
 
 <span class="sd">    This routine calculates the real-space wave-function components in the</span>
@@ -1392,7 +1494,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Currently this method only works for `v` being coefficients of the gauge=&quot;cell&quot; method. In case</span>
+<span class="sd">    Currently this method only works for `v` being coefficients of the ``gauge=&quot;lattice&quot;`` method. In case</span>
 <span class="sd">    you are passing a `v` with the incorrect gauge you will find a phase-shift according to:</span>
 
 <span class="sd">    .. math::</span>
@@ -1406,7 +1508,7 @@
 <span class="sd">    v : array_like</span>
 <span class="sd">       coefficients for the orbital expansion on the real-space grid.</span>
 <span class="sd">       If `v` is a complex array then the `grid` *must* be complex as well. The coefficients</span>
-<span class="sd">       must be using the ``R`` gauge.</span>
+<span class="sd">       must be using the *lattice* gauge.</span>
 <span class="sd">    grid : Grid</span>
 <span class="sd">       grid on which the wavefunction will be plotted.</span>
 <span class="sd">       If multiple eigenstates are in this object, they will be summed.</span>
@@ -1423,7 +1525,7 @@
 <span class="sd">       eigenstate object has been created from a parent object with a `Spin` object</span>
 <span class="sd">       contained, *and* if the spin-configuration is non-colinear or spin-orbit coupling.</span>
 <span class="sd">       Default to the first spinor component.</span>
-<span class="sd">    spin : Spin, optional</span>
+<span class="sd">    spin :</span>
 <span class="sd">       specification of the spin configuration of the orbital coefficients. This only has</span>
 <span class="sd">       influence for non-colinear wavefunctions where `spinor` choice is important.</span>
 <span class="sd">    eta : bool, optional</span>
@@ -1470,15 +1572,21 @@
 
     <span class="k">if</span> <span class="n">spin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
-            <span class="c1"># We can see from the input that the vector *must* be a non-colinear calculation</span>
+            <span class="c1"># the input corresponds to a non-collinear calculation</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[:,</span> <span class="n">spinor</span><span class="p">]</span>
             <span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;wavefunction: assumes the input wavefunction coefficients to originate from a non-colinear calculation!&quot;</span>
             <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">//</span> <span class="mi">4</span> <span class="o">==</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
+            <span class="c1"># the input corresponds to a NAMBU calculation</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)[:,</span> <span class="n">spinor</span><span class="p">]</span>
+            <span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;wavefunction: assumes the input wavefunction coefficients to originatefrom a nambu calculation!&quot;</span>
+            <span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span>
-        <span class="c1"># For non-colinear cases the user selects the spinor component.</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[:,</span> <span class="n">spinor</span><span class="p">]</span>
+        <span class="c1"># For non-colinear+nambu cases the user selects the spinor component.</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">spin</span><span class="o">.</span><span class="n">spinor</span><span class="p">)[:,</span> <span class="n">spinor</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">!=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1825,7 +1933,12 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;orbitals&quot;</span><span class="p">,</span> <span class="s2">&quot;basis&quot;</span><span class="p">,</span> <span class="s2">&quot;atoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">projection</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">ProjectionType</span><span class="p">,</span> <span class="n">ProjectionTypeHadamard</span><span class="p">,</span> <span class="n">ProjectionTypeHadamardAtoms</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;diagonal&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`</span>
 
 <span class="sd">        :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis</span>
@@ -1850,7 +1963,14 @@
 
 <div class="viewcode-block" id="_electron_State.spin_moment">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.spin_moment">[docs]</a>
-    <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;project&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;projection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument project has been deprecated in favor of projection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;diagonal&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate spin moment from the states</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.spin_moment` with appropriate arguments</span>
@@ -1860,10 +1980,10 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        project : bool, optional</span>
+<span class="sd">        projection:</span>
 <span class="sd">           whether the moments are orbitally resolved or not</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(),</span> <span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(),</span> <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="_electron_State.wavefunction">
@@ -1886,8 +2006,8 @@
             <span class="c1"># at least this makes it easier to parse</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-        <span class="c1"># Ensure we are dealing with the R gauge</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_gauge</span><span class="p">(</span><span class="s2">&quot;cell&quot;</span><span class="p">)</span>
+        <span class="c1"># Ensure we are dealing with the lattice gauge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_gauge</span><span class="p">(</span><span class="s2">&quot;lattice&quot;</span><span class="p">)</span>
 
         <span class="c1"># Retrieve k</span>
         <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>

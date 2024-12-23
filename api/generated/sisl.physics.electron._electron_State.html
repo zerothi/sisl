@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -132,7 +132,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron._electron_State.norm2" title="sisl.physics.electron._electron_State.norm2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm2</span></code></a>([projection])</p></td>
 <td><p>Return a vector with the norm of each state <span class="math notranslate nohighlight">\(\langle\psi|\mathbf S|\psi\rangle\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron._electron_State.spin_moment" title="sisl.physics.electron._electron_State.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a>([project])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron._electron_State.spin_moment" title="sisl.physics.electron._electron_State.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a>([projection])</p></td>
 <td><p>Calculate spin moment from the states</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron._electron_State.wavefunction" title="sisl.physics.electron._electron_State.wavefunction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wavefunction</span></code></a>(grid[, spinor, eta])</p></td>
@@ -156,7 +156,7 @@ non-orthogonal parents.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron._electron_State.norm2">
-<span class="sig-name descname"><span class="pre">norm2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'sum'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'orbitals'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'basis'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'atoms'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#_electron_State.norm2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron._electron_State.norm2" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">norm2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sisl.typing.ProjectionType</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">sisl.typing.ProjectionTypeHadamard</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">sisl.typing.ProjectionTypeHadamardAtoms</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'diagonal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#_electron_State.norm2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron._electron_State.norm2" title="Link to this definition"></a></dt>
 <dd><p>Return a vector with the norm of each state <span class="math notranslate nohighlight">\(\langle\psi|\mathbf S|\psi\rangle\)</span></p>
 <p><span class="math notranslate nohighlight">\(\mathbf S\)</span> is the overlap matrix (or basis), for orthogonal basis
 <span class="math notranslate nohighlight">\(\mathbf S \equiv \mathbf I\)</span>.</p>
@@ -174,21 +174,21 @@ non-orthogonal parents.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the squared norm for each state</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the squared norm for each state</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron._electron_State.spin_moment">
-<span class="sig-name descname"><span class="pre">spin_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#_electron_State.spin_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron._electron_State.spin_moment" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">spin_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'diagonal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#_electron_State.spin_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron._electron_State.spin_moment" title="Link to this definition"></a></dt>
 <dd><p>Calculate spin moment from the states</p>
 <p>This routine calls <a class="reference internal" href="sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment" title="sisl.physics.electron.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a> with appropriate arguments
 and returns the spin moment for the states.</p>
 <p>See <a class="reference internal" href="sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment" title="sisl.physics.electron.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a> for details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>project</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the moments are orbitally resolved or not</p>
+<dd class="field-odd"><p><strong>projection</strong> – whether the moments are orbitally resolved or not</p>
 </dd>
 </dl>
 </dd></dl>

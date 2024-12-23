@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -160,7 +160,7 @@
 <h1>spin_moment<a class="headerlink" href="#spin-moment" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.spin_moment">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">spin_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#spin_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.spin_moment" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">spin_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sisl.typing.ProjectionTypeTrace</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">sisl.typing.ProjectionTypeDiag</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">sisl.typing.ProjectionTypeHadamard</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="k"><span class="pre">True</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="k"><span class="pre">False</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'diagonal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#spin_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.spin_moment" title="Link to this definition"></a></dt>
 <dd><p>Spin magnetic moment (spin texture) and optionally orbitally resolved moments</p>
 <p>This calculation only makes sense for non-colinear calculations.</p>
 <p>The returned quantities are given in this order:</p>
@@ -176,7 +176,7 @@
 \mathbf{S}_\alpha^y &amp;= \langle \psi_\alpha | \boldsymbol\sigma_y \mathbf S | \psi_\alpha \rangle
 \\
 \mathbf{S}_\alpha^z &amp;= \langle \psi_\alpha | \boldsymbol\sigma_z \mathbf S | \psi_\alpha \rangle\end{split}\]</div>
-<p>If <em class="xref py py-obj">project</em> is true, the above will be the orbitally resolved quantities.</p>
+<p>If <em class="xref py py-obj">projection</em> is orbitals/basis/true, the above will be the orbitally resolved quantities.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -184,7 +184,7 @@
 <li><p><strong>S</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – overlap matrix used in the <span class="math notranslate nohighlight">\(\langle\psi|\mathbf S|\psi\rangle\)</span> calculation. If <em class="xref py py-obj">None</em> the identity
 matrix is assumed. The overlap matrix should correspond to the system and <span class="math notranslate nohighlight">\(\mathbf k\)</span> point the eigenvectors
 has been evaluated at.</p></li>
-<li><p><strong>project</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the spin-moments will be orbitally resolved or not</p></li>
+<li><p><strong>projection</strong> – how the projection should be done</p></li>
 </ul>
 </dd>
 </dl>
@@ -204,7 +204,8 @@ If a non-polarized eigenvector is passed to this routine, the output will have n
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – spin moments per state with final dimension <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">state.shape[0])</span></code>, or <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">state.shape[0],</span> <span class="pre">state.shape[1]//2)</span></code> if project is true</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – spin moments per state with final dimension <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">state.shape[0])</span></code>, or <code class="docutils literal notranslate"><span class="pre">(3,</span>
+<span class="pre">state.shape[0],</span> <span class="pre">state.shape[1]//2)</span></code> if projection is orbitals/basis/true</p>
 </dd>
 </dl>
 </dd></dl>

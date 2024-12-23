@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -192,7 +192,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.empty" title="sisl.SparseOrbital.empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty</span></code></a>([keep_nnz])</p></td>
 <td><p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">empty</span></code> for details</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.finalize" title="sisl.SparseOrbital.finalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalize</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.finalize" title="sisl.SparseOrbital.finalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalize</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Finalizes the model</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.fromsp" title="sisl.SparseOrbital.fromsp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fromsp</span></code></a>(geometry, P, **kwargs)</p></td>
@@ -303,7 +303,7 @@
 or an orbital vector matrix. The orbital matrix is equivalent to the atomic
 one with the same vectors repeated for the same atomic orbitals.
 The default is the same type as the parent class.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data-type of the sparse matrix.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data-type of the sparse matrix.</p></li>
 </ul>
 </dd>
 </dl>
@@ -488,7 +488,7 @@ up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
 <dd><p>A copy of this object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – it is possible to convert the data to a different data-type
+<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – it is possible to convert the data to a different data-type
 If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p>
 </dd>
 </dl>
@@ -536,7 +536,7 @@ for the all atoms within <code class="docutils literal notranslate"><span class=
 <dt class="sig sig-object py" id="sisl.SparseOrbital.edges">
 <span class="sig-name descname"><span class="pre">edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sisl.typing.AtomsIndex</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sisl.typing.AtomsIndex</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse_geometry.html#SparseOrbital.edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.edges" title="Link to this definition"></a></dt>
 <dd><p>Retrieve edges (connections) for all <em class="xref py py-obj">atoms</em></p>
-<p>The returned edges are unique and sorted (see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.unique</span></code></a>) and are returned
+<p>The returned edges are unique and sorted (see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.unique</span></code></a>) and are returned
 in supercell indices (i.e. <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">edge</span> <span class="pre">&lt;</span> <span class="pre">self.geometry.no_s</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -579,10 +579,11 @@ requested atom). The returned edges are also atoms.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseOrbital.finalize">
-<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.finalize" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.finalize" title="Link to this definition"></a></dt>
 <dd><p>Finalizes the model</p>
 <p>Finalizes the model so that all non-used elements are removed. I.e. this simply reduces the memory requirement for the sparse matrix.</p>
-<p>Note that adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
+<p class="rubric">Notes</p>
+<p>Adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
 internal data-representation.</p>
 </dd></dl>
 
@@ -898,7 +899,7 @@ created with.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> – number of dimensions per element, default to the current number of
 elements per matrix element.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the datatype of the sparse elements</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the datatype of the sparse elements</p></li>
 <li><p><strong>nnzpr</strong> – number of non-zero elements per row</p></li>
 </ul>
 </dd>
@@ -916,7 +917,7 @@ elements per matrix element.</p></li>
 or an orbital distance matrix. The orbital matrix is equivalent to the atomic
 one with the same distance repeated for the same atomic orbitals.
 The default is the same type as the parent class.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data-type of the sparse matrix.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data-type of the sparse matrix.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1099,7 +1100,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> – number of dimensions allocated in the SparseAtom object, default to the same</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – used data-type for the sparse object. Defaults to the same.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – used data-type for the sparse object. Defaults to the same.</p></li>
 </ul>
 </dd>
 </dl>

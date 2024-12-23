@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -222,13 +222,13 @@ calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p
 <li><p><strong>E</strong> – energy at which the calculation will take place</p></li>
 <li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point at which the Green function should be evaluated.
 the k-point should be in units of the reciprocal lattice vectors.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>) – the resulting data type</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>) – the resulting data type</p></li>
 <li><p><strong>atol</strong> – convergence criteria for the recursion</p></li>
 <li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.parent.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.parent.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the self-energy corresponding to the semi-infinite direction</p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the self-energy corresponding to the semi-infinite direction</p>
 </dd>
 </dl>
 </dd></dl>
@@ -256,7 +256,7 @@ the k-point should be in units of the reciprocal lattice vectors.</p></li>
 <li><p><strong>E</strong> – energy at which the calculation will take place</p></li>
 <li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point at which the self-energy should be evaluated.
 the k-point should be in units of the reciprocal lattice vectors.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>) – the resulting data type</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>) – the resulting data type</p></li>
 <li><p><strong>atol</strong> – convergence criteria for the recursion</p></li>
 <li><p><strong>bulk</strong> – if true, <span class="math notranslate nohighlight">\(E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma\)</span> is returned, else
 <span class="math notranslate nohighlight">\(\boldsymbol\Sigma\)</span> is returned (default).</p></li>
@@ -264,7 +264,7 @@ the k-point should be in units of the reciprocal lattice vectors.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the self-energy corresponding to the semi-infinite direction</p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – the self-energy corresponding to the semi-infinite direction</p>
 </dd>
 </dl>
 </dd></dl>
@@ -281,7 +281,7 @@ I.e. only when the reference energy is equivalent in the left/right schemes does
 <li><p><strong>E</strong> – energy at which the calculation will take place, if complex, the hosting <code class="docutils literal notranslate"><span class="pre">eta</span></code> won’t be used.</p></li>
 <li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point at which the self-energy should be evaluated.
 the k-point should be in units of the reciprocal lattice vectors.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
 <li><p><strong>atol</strong> – convergence criteria for the recursion</p></li>
 <li><p><strong>bulk</strong> – if true, <span class="math notranslate nohighlight">\(E\cdot \mathbf S - \mathbf H -\boldsymbol\Sigma\)</span> is returned, else
 <span class="math notranslate nohighlight">\(\boldsymbol\Sigma\)</span> is returned (default).</p></li>
@@ -290,8 +290,8 @@ the k-point should be in units of the reciprocal lattice vectors.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>left</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the left self-energy</p></li>
-<li><p><strong>right</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the right self-energy</p></li>
+<li><p><strong>left</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the left self-energy</p></li>
+<li><p><strong>right</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the right self-energy</p></li>
 </ul>
 </p>
 </dd>

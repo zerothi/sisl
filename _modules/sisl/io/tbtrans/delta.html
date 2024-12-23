@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -138,7 +138,8 @@
 <span class="kn">from</span> <span class="nn">..siesta._help</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_csr_from_sc_off</span><span class="p">,</span>
     <span class="n">_csr_to_siesta</span><span class="p">,</span>
-    <span class="n">_mat_spin_convert</span><span class="p">,</span>
+    <span class="n">_mat_siesta2sisl</span><span class="p">,</span>
+    <span class="n">_mat_sisl2siesta</span><span class="p">,</span>
     <span class="n">_siesta_sc_off</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_raise_write</span>
@@ -573,22 +574,23 @@
 <span class="sd">        The input options for `TBtrans`_ determine whether this is a self-energy term</span>
 <span class="sd">        or a Hamiltonian term.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">csr</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.write_overlap cannot write a zero element sparse matrix!&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># convert to siesta thing and store</span>
-        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># delta should always write sorted matrices</span>
-        <span class="n">csr</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span>
+        <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">_mat_sisl2siesta</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
 
         <span class="c1"># Ensure that the geometry is written</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
         <span class="c1"># Determine the type of delta we are storing...</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -600,17 +602,17 @@
         <span class="c1"># Append the sparsity pattern</span>
         <span class="c1"># Create basis group</span>
         <span class="k">if</span> <span class="s2">&quot;n_col&quot;</span> <span class="ow">in</span> <span class="n">lvl</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lvl</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;nnzs&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lvl</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s2">&quot;nnzs&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;The sparsity pattern stored in delta *MUST* be equivalent for &quot;</span>
                     <span class="s2">&quot;all delta entries [nnz].&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">lvl</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;n_col&quot;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">lvl</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;n_col&quot;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;The sparsity pattern stored in delta *MUST* be equivalent for &quot;</span>
                     <span class="s2">&quot;all delta entries [n_col].&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">lvl</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;list_col&quot;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[:]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">lvl</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;list_col&quot;</span><span class="p">][:]</span> <span class="o">!=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="p">[:]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;The sparsity pattern stored in delta *MUST* be equivalent for &quot;</span>
                     <span class="s2">&quot;all delta entries [list_col].&quot;</span>
@@ -624,20 +626,20 @@
                     <span class="s2">&quot;all delta entries [sc_off].&quot;</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="n">lvl</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_crt_dim</span><span class="p">(</span><span class="n">lvl</span><span class="p">,</span> <span class="s2">&quot;nnzs&quot;</span><span class="p">,</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span><span class="p">)</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">lvl</span><span class="p">,</span> <span class="s2">&quot;n_col&quot;</span><span class="p">,</span> <span class="s2">&quot;i4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;no_u&quot;</span><span class="p">,))</span>
             <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Number of non-zero elements per row&quot;</span>
-            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]</span>
+            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
                 <span class="n">lvl</span><span class="p">,</span>
                 <span class="s2">&quot;list_col&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;i4&quot;</span><span class="p">,</span>
                 <span class="p">(</span><span class="s2">&quot;nnzs&quot;</span><span class="p">,),</span>
-                <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">nnz</span><span class="p">,),</span>
+                <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span><span class="p">,),</span>
                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Supercell column indices in the sparse format&quot;</span>
-            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[:]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># correct for fortran indices</span>
+            <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="p">[:]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># correct for fortran indices</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span><span class="n">lvl</span><span class="p">,</span> <span class="s2">&quot;isc_off&quot;</span><span class="p">,</span> <span class="s2">&quot;i4&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;n_s&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">))</span>
             <span class="n">v</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;Index of supercell coordinates&quot;</span>
             <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">_siesta_sc_off</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
@@ -691,12 +693,12 @@
             <span class="n">csize</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span>
 
         <span class="c1"># Number of non-zero elements</span>
-        <span class="n">csize</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span>
+        <span class="n">csize</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span>
 
         <span class="k">if</span> <span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;</span> <span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_delta only allows spin-polarized delta values&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_delta only allows spin-polarized &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;delta values, got </span><span class="si">{</span><span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="si">!s}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">delta</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
@@ -718,10 +720,10 @@
                 <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="s2">&quot;Imaginary part of delta&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;Ry&quot;</span><span class="p">},</span>
                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
                 <span class="n">sl</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-                <span class="n">v1</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">eV2Ry</span>
-                <span class="n">v2</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">eV2Ry</span>
+                <span class="n">v1</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">eV2Ry</span>
+                <span class="n">v2</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">eV2Ry</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
@@ -733,9 +735,9 @@
                 <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;Ry&quot;</span><span class="p">},</span>
                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
                 <span class="n">sl</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-                <span class="n">v</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">eV2Ry</span></div>
+                <span class="n">v</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">eV2Ry</span></div>
 
 
     <span class="k">def</span> <span class="nf">_r_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -805,7 +807,9 @@
 
         <span class="c1"># Convert from isc to sisl isc</span>
         <span class="n">_csr_from_sc_off</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">lvl</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;isc_off&quot;</span><span class="p">][:,</span> <span class="p">:],</span> <span class="n">C</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
-        <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+
+        <span class="n">_mat_siesta2sisl</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">),</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">C</span>
 

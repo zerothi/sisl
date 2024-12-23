@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -126,7 +126,7 @@
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">GaugeType</span>
 
-<span class="kn">from</span> <span class="nn">._feature</span> <span class="kn">import</span> <span class="n">comply_gauge</span>
+<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">comply_gauge</span>
 <span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">get_distribution</span>
 <span class="kn">from</span> <span class="nn">.electron</span> <span class="kn">import</span> <span class="n">EigenstateElectron</span><span class="p">,</span> <span class="n">EigenvalueElectron</span>
 <span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZSpin</span>
@@ -227,7 +227,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -239,7 +239,7 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 
-<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+<span class="sd">        Currently the implemented gauge for the k-point is the lattice vector gauge:</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">           \mathbf H(\mathbf k) = \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}</span>
@@ -262,7 +262,7 @@
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
 <span class="sd">        gauge :</span>
-<span class="sd">           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance</span>
+<span class="sd">           the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -295,7 +295,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -307,7 +307,7 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 
-<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+<span class="sd">        Currently the implemented gauge for the k-point is the lattice vector gauge:</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">           \nabla_{\mathbf k} \mathbf H_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}</span>
@@ -331,7 +331,7 @@
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
 <span class="sd">        gauge :</span>
-<span class="sd">           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance</span>
+<span class="sd">           the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -361,7 +361,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span>
+        <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -373,7 +373,7 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 
-<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+<span class="sd">        Currently the implemented gauge for the k-point is the lattice vector gauge:</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">           \nabla_{\mathbf k^2} \mathbf H_{\alpha\beta}(\mathbf k) = - \mathbf R_\alpha \mathbf R_\beta \mathbf H_{ij} e^{i\mathbf k\cdot\mathbf R}</span>
@@ -397,7 +397,7 @@
 <span class="sd">           data-type for non-Gamma k.</span>
 <span class="sd">           The default data-type is `numpy.complex128`</span>
 <span class="sd">        gauge :</span>
-<span class="sd">           the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance</span>
+<span class="sd">           the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance</span>
 <span class="sd">           gauge.</span>
 <span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
 <span class="sd">           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,</span>
@@ -448,20 +448,25 @@
             <span class="c1"># When the energy is zero, there is no shift</span>
             <span class="k">return</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
+            <span class="n">nspin</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nspin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">spinor</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">spinor</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nspin</span><span class="p">):</span>
                     <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">E</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># For non-collinear and SO only the diagonal (real) components</span>
             <span class="c1"># should be shifted.</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">spinor</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nspin</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Hamiltonian.eigenvalue">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenvalue">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`</span>
 
 <span class="sd">        Parameters</span>
@@ -495,7 +500,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;gauge&quot;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,):</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -505,7 +510,7 @@
 
 <div class="viewcode-block" id="Hamiltonian.eigenstate">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenstate">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates</span>
 
 <span class="sd">        Parameters</span>
@@ -539,7 +544,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">e</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;gauge&quot;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,):</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

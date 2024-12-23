@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=4c7be489"></script>
+      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,9 +120,12 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Spin&quot;</span><span class="p">]</span>
 
@@ -143,6 +146,8 @@
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; Spin(Spin.SPINORBIT, dtype=np.complex128) == Spin(&quot;spin-orbit&quot;) == Spin(&quot;so&quot;) == Spin(&quot;soc&quot;)</span>
 <span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; Spin(Spin.NAMBU) == Spin(&quot;nambu&quot;) == Spin(&quot;bdg&quot;)</span>
+<span class="sd">    True</span>
 
 <span class="sd">    Note that a data-type may be associated with a spin-object. This is not to say</span>
 <span class="sd">    that the data-type is used in the configuration, but merely that it helps</span>
@@ -153,8 +158,6 @@
 <span class="sd">    ----------</span>
 <span class="sd">    kind : str or int, Spin, optional</span>
 <span class="sd">       specify the spin kind</span>
-<span class="sd">    dtype : numpy.dtype, optional</span>
-<span class="sd">       the data-type used for the spin-component. Default is ``np.float64``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: Constant for an un-polarized spin configuration</span>
@@ -165,6 +168,8 @@
     <span class="n">NONCOLINEAR</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="c1">#: Constant for a spin-orbit spin configuration</span>
     <span class="n">SPINORBIT</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="c1">#: Constant for a Nambu spin configuration</span>
+    <span class="n">NAMBU</span> <span class="o">=</span> <span class="mi">4</span>
 
     <span class="c1">#: The :math:`\boldsymbol\sigma_x` Pauli matrix</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
@@ -173,29 +178,19 @@
     <span class="c1">#: The :math:`\boldsymbol\sigma_z` Pauli matrix</span>
     <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_size&quot;</span><span class="p">,</span> <span class="s2">&quot;_kind&quot;</span><span class="p">,</span> <span class="s2">&quot;_dtype&quot;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_kind&quot;</span><span class="p">,)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;unpolarized&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">Spin</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">dtype</span> <span class="o">=</span> <span class="n">kind</span><span class="o">.</span><span class="n">_dtype</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span> <span class="o">=</span> <span class="n">kind</span><span class="o">.</span><span class="n">_kind</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">kind</span><span class="o">.</span><span class="n">_size</span>
             <span class="k">return</span>
-
-        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
-
-        <span class="c1"># Copy data-type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="n">kind</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;unpolarized&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">,</span>
             <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">,</span>
+            <span class="s2">&quot;unpolarized&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">,</span>
             <span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">,</span>
             <span class="s2">&quot;colinear&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">,</span>
             <span class="s2">&quot;collinear&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">,</span>
@@ -214,95 +209,105 @@
             <span class="s2">&quot;so&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span>
             <span class="s2">&quot;soc&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span>
             <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span>
+            <span class="s2">&quot;nambu&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NAMBU</span><span class="p">,</span>
+            <span class="s2">&quot;bdg&quot;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NAMBU</span><span class="p">,</span>
+            <span class="n">Spin</span><span class="o">.</span><span class="n">NAMBU</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NAMBU</span><span class="p">,</span>
         <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">kind</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> initialization went wrong because of wrong &quot;</span>
                 <span class="s2">&quot;kind specification. Could not determine the kind of spin!&quot;</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NAMBU</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Using untested Nambu spin-configuration, please be aware &quot;</span>
+                <span class="s2">&quot;that this is largely untested code!&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Now assert the checks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span> <span class="o">=</span> <span class="n">kind</span>
 
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
-            <span class="n">size</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-            <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">size</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-            <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">unpolarized, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">unpolarized</span><span class="se">}}</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">polarized, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">polarized</span><span class="se">}}</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">non-colinear, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">spin-orbit, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">non-colinear</span><span class="se">}}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_spinorbit</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">spin-orbit</span><span class="se">}}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">nambu</span><span class="se">}}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="Spin.copy">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.Spin.html#sisl.physics.Spin.copy">[docs]</a>
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a copy of the spin-object&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Spin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Spin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Spin.size">
+<a class="viewcode-back" href="../../../api/generated/sisl.physics.Spin.html#sisl.physics.Spin.size">[docs]</a>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of elements to describe the spin-components</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dtype:</span>
+<span class="sd">            data-type used to represent the spin-configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dkind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span>
+        <span class="k">if</span> <span class="n">dkind</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">NAMBU</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+            <span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">NAMBU</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+        <span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">]</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Data-type of the spin configuration&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
+    <span class="k">def</span> <span class="nf">spinor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of spinor components (1, 2 or 4)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">4</span>
+        <span class="k">return</span> <span class="mi">2</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dkind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Data-type kind&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of elements to describe the spin-components&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spinor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of spinor components (1 or 2)&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">kind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">kind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A unique ID for the kind of spin configuration&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_unpolarized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_unpolarized</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the configuration is not polarized&quot;&quot;&quot;</span>
         <span class="c1"># Regardless of data-type</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_polarized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_polarized</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the configuration is polarized&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span>
 
     <span class="n">is_colinear</span> <span class="o">=</span> <span class="n">is_polarized</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_noncolinear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_noncolinear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the configuration non-collinear&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the spin-box is only using the diagonal components</span>
 
 <span class="sd">        This will return true for non-polarized and polarized spin configurations.</span>
@@ -311,39 +316,39 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">,</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_spinorbit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_spinorbit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the configuration is spin-orbit&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_nambu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the configuration is Nambu&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NAMBU</span>
 
     <span class="c1"># Comparisons</span>
-    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">kind</span>
 
-    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">kind</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">kind</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">kind</span>
 
-    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">kind</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">}</span>
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;kind&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span>
 </pre></div>
 
            </div>
