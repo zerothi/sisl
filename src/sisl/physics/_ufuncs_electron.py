@@ -42,7 +42,7 @@ def velocity(state: StateCElectron, *args, **kwargs):
 
     Parameters
     ----------
-    *args, **kwargs:
+    *args, **kwargs :
         arguments passed directly to `derivative`, see that method
         for argument details.
 
@@ -96,21 +96,21 @@ def berry_curvature(
     state :
         the state describing the electronic states we wish to calculate the Berry curvature
         of.
-    sum:
+    sum :
         only return the summed Berry curvature (over all states).
-    distribution:
+    distribution :
         An optional distribution enabling one to automatically sum states
         across occupied/unoccupied states. This is useful when calculating AHC/SHC
         contributions since it can improve numerical accuracy.
         If this is None, it will do the above equation exactly.
-    derivative_kwargs:
+    derivative_kwargs :
         arguments passed to `derivative`. Since `operator` is defined here,
         one cannot have `operator` in `derivative_kwargs`.
-    operator:
+    operator :
         the operator to use for changing the `dPk` matrices.
         Note, that this may change the resulting units, and it will be up
         to the user to adapt the units accordingly.
-    eta:
+    eta :
         direct imaginary part broadening of the Lorentzian.
 
     See Also
@@ -122,7 +122,7 @@ def berry_curvature(
 
     Returns
     -------
-    bc: numpy.ndarray
+    bc :
         If `sum` is False, it will be at least a 3D array with the 3rd dimension
         having the contribution from state `i`.
         If one passes `axes` to the `derivative_kwargs` argument one will get
@@ -298,13 +298,13 @@ def spin_berry_curvature(
 
     Parameters
     ----------
-    sigma:
+    sigma :
         which Pauli matrix is used, alternatively one can pass a custom spin matrix,
         or the full sigma.
-    J_axes:
+    J_axes :
         the direction(s) where the :math:`J^\sigma` operator will be applied, defaults
         to all.
-    **kwargs:
+    **kwargs :
         see `berry_curvature` for the remaining arguments.
 
     See Also
@@ -316,7 +316,7 @@ def spin_berry_curvature(
 
     Returns
     -------
-    bc: numpy.ndarray
+    bc :
         Spin Berry curvature + (possibly Berry curvature) returned in certain dimensions.
         If one passes `axes` to the `derivative_kwargs` argument one will get
         dimensions according to the number of axes requested, by default all

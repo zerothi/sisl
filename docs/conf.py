@@ -51,7 +51,7 @@ print("  is directory: ", sisl_files_tests.is_dir())
 if sisl_files_tests.is_dir():
     print("  content:")
     for _child in sisl_files_tests.iterdir():
-        print(f"    {_child}")
+        print(f"    ./{_child.relative_to(sisl_files_tests)}")
 
 
 # Setting up generic things
@@ -123,6 +123,16 @@ napoleon_preprocess_types = True
 
 # If numpydoc is available, then let sphinx report warnings
 numpydoc_validation_checks = {"all", "EX01", "SA01", "ES01"}
+
+# These two options should solve the "toctree contains reference to nonexisting document"
+# problem.
+# See here: numpydoc #69
+# class_members_toctree = False
+# If this is false we do not have double method sections
+# numpydoc_show_class_members = False
+
+# Attributes section will be formatted as methods
+numpydoc_attributes_as_param_list = False
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -243,7 +253,7 @@ autodoc_member_order = "groupwise"
 # Show them *as-is*.
 autodoc_preserve_defaults = True
 
-# Show type-hints in only the discription, in this way the
+# Show type-hints in only the description, in this way the
 # signature is readable and the argument order can easily
 # be inferred.
 autodoc_typehints = "description"
@@ -258,7 +268,7 @@ autodoc_typehints_format = "short"
 # Automatically create the autodoc_type_aliases
 # This is handy for commonly used terminologies.
 # It currently puts everything into a `<>` which
-# is sub-optimal (i.e. one cannot do "`umpy.ndarray` or `any`")
+# is sub-optimal (i.e. one cannot do "`numpy.ndarray` or `any`")
 # Perhaps just a small tweak and it works.
 autodoc_type_aliases = {
     # general terms
@@ -301,6 +311,8 @@ for name in sisl_types:
     # that sisl typing is always preferred
     autodoc_type_aliases[name] = f"~sisl.typing.{name}"
 
+# just for ease...
+napoleon_type_aliases = autodoc_type_aliases
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -411,16 +423,6 @@ latex_documents = [
 #####
 # Custom sisl documentation stuff down here
 #####
-
-# These two options should solve the "toctree contains reference to nonexisting document"
-# problem.
-# See here: numpydoc #69
-# class_members_toctree = False
-# If this is false we do not have double method sections
-# numpydoc_show_class_members = False
-
-# Attributes section will be formatted as methods
-numpydoc_attributes_as_param_list = False
 
 # Plot directives for matplotlib
 plot_include_source = True

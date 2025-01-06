@@ -11,8 +11,8 @@ unit cells and grid functions.
 
 
 
-Simple objects
-==============
+Generic objects
+===============
 
 .. index:: basic, geometry, lattice, supercell, atom
 

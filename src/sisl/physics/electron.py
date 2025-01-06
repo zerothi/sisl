@@ -758,9 +758,9 @@ def ahc(
 
     Parameters
     ----------
-    bz : BrillouinZone
+    bz :
         containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.
-    k_average:
+    k_average :
         if `True`, the returned quantity is averaged over `bz`, else all k-point
         contributions will be collected (in the 1st dimension).
         Note, for large `bz` integrations this may explode the memory usage.
@@ -804,14 +804,14 @@ def ahc(
 
     See Also
     --------
-    derivative: method for calculating the exact derivatives
-    berry_curvature: method used to calculate the Berry curvature for calculating the conductivity
-    Lattice.volumef: volume calculation of the lattice
+    ~sisl.physics.derivative: method for calculating the exact derivatives
+    ~sisl.physics.berry_curvature: method used to calculate the Berry curvature for calculating the conductivity
+    ~sisl.Lattice.volumef: volume calculation of the lattice
     shc: spin Hall conductivity
 
     Returns
     -------
-    ahc: numpy.ndarray
+    ahc:
         Anomalous Hall conductivity returned in certain dimensions ``ahc[:, :]``.
         If `sum` is False, it will be at least a 3D array with the 3rd dimension
         having the contribution from state `i`.

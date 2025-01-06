@@ -6,9 +6,10 @@ from __future__ import annotations
 from collections.abc import Callable
 from functools import reduce
 from numbers import Integral
-from typing import Literal, Optional, Union
+from typing import Any, Literal, Optional, Protocol, Union
 
 import numpy as np
+import numpy.typing as npt
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
@@ -75,15 +76,22 @@ def write(geometry: Geometry, sile: SileLike, *args, **kwargs) -> None:
             fh.write_geometry(geometry, *args, **kwargs)
 
 
+class ApplyFunc(Protocol):
+    def __call__(self, data: npt.ArrayLike, axis: int) -> Any:
+        pass
+
+
 @register_sisl_dispatch(Geometry, module="sisl")
 def apply(
     geometry: Geometry,
-    data,
-    func,
+    data: npt.ArrayLike,
+    func: Union[ApplyFunc, str],
     mapper: Union[Callable[[int], int], str],
     axis: int = 0,
-    segments: Union[Literal["atoms", "orbitals", "all"], Iterator[int]] = "atoms",
-) -> ndarray:
+    segments: Union[
+        Literal["atoms", "orbitals", "all"], Union[Iterator[int], Iterator[List[int]]]
+    ] = "atoms",
+) -> np.ndarray:
     r"""Apply a function `func` to the data along axis `axis` using the method specified
 
     This can be useful for applying conversions from orbital data to atomic data through
@@ -94,12 +102,12 @@ def apply(
 
     Parameters
     ----------
-    data : array_like
+    data :
         the data to be converted
-    func : callable or str
+    func :
         a callable function that transforms the data in some way.
         If a `str`, will use ``getattr(numpy, func)``.
-    mapper : func, optional
+    mapper :
         a function transforming the `segments` into some other segments that
         is present in `data`.
         It can accept anything the `segments` returns.
@@ -119,7 +127,7 @@ def apply(
     >>> orbital_data = np.random.rand(10, g.no, 3)
     >>> atomic_data = g.apply(orbital_data, np.sum, mapper=partial(g.a2o, all=True), axis=1)
 
-    The same can be accomblished by passing an explicit segment iterator,
+    The same can be accomplished by passing an explicit segment iterator,
     note that ``iter(g) == range(g.na)``
 
     >>> atomic_data = g.apply(orbital_data, np.sum, mapper=partial(g.a2o, all=True), axis=1,

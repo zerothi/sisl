@@ -80,7 +80,9 @@ def register_sisl_function(name: str, cls: type, module: Optional[str] = None):
         # I.e. the numpydoc converts it to include rst stuff which isn't parseable.
         # This becomes problematic as it produces completely unreadable documentation
         # func.__doc__ = str(fdoc).strip()
-        func.__signature__ = sig
+        # This will also change the signature specification
+        # in the overload method. That is not desired... :(
+        # func.__signature__ = sig
 
         # Assign the function
         setattr(cls, name, func)
@@ -93,18 +95,23 @@ def register_sisl_function(name: str, cls: type, module: Optional[str] = None):
     return decorator
 
 
-def _append_doc_dispatch(method: FuncType, cls: type):
+def _append_doc_dispatch(
+    method: FuncType, cls: type, module: Optional[str] = None
+) -> None:
     """Append to the doc-string of the dispatch method retrieved by `method` that the `cls` class can be used"""
     global _registry
 
     # get method name
     name = method.__name__
 
+    if module is None:
+        module = cls.__module__
+
     # retrieve dispatch method
     method_registry = _registry[name]
 
     # Append to doc string
-    doc = f"\n{cls.__name__}.{name} : equivalent to ``{name}({cls.__name__.lower()}, ...)``."
+    doc = f"\n{module}.{cls.__name__}.{name} : equivalent to ``{name}({cls.__name__.lower()}, ...)``."
     method_registry.__doc__ += doc
 
 
@@ -127,6 +134,10 @@ def register_sisl_dispatch(
         if cls_name is None:
             cls_name = name
 
+        if module is None and cls is not None:
+            # default the module
+            module = cls.__module__
+
         if name not in _registry:
             # create a new method that will be stored
             # as a place-holder for the dispatch methods.
@@ -138,9 +149,9 @@ def register_sisl_dispatch(
 
             doc = dedent(
                 f"""\
-                    Dispatcher for '{name}'
+                    Dispatcher for `{name}`
 
-                    See also
+                    See Also
                     --------
                     """
             )
