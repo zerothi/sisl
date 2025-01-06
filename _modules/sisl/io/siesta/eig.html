@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.siesta.eig &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,25 +118,25 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">get_distribution</span>
-<span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">units</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">strmap</span>
-<span class="kn">from</span> <span class="nn">sisl.utils.cmd</span> <span class="kn">import</span> <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">default_namespace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_distribution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">strmap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.cmd</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">default_namespace</span>
 
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
-<span class="kn">from</span> <span class="nn">.kp</span> <span class="kn">import</span> <span class="n">kpSileSiesta</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.kp</span><span class="w"> </span><span class="kn">import</span> <span class="n">kpSileSiesta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileSiesta</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;eigSileSiesta&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">eigSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">eigSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Eigenvalues as calculated in the SCF loop, easy plots using `sdata`</span>
 
 <span class="sd">    The .EIG file from Siesta contains the eigenvalues for k-points used during the SCF.</span>
@@ -195,7 +195,7 @@
 <div class="viewcode-block" id="eigSileSiesta.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_fermi_level">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Query the Fermi-level contained in the file</span>
 
 <span class="sd">        Returns</span>
@@ -208,7 +208,7 @@
 <div class="viewcode-block" id="eigSileSiesta.read_data">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read eigenvalues, as calculated and written by Siesta</span>
 
 <span class="sd">        Returns</span>
@@ -231,7 +231,7 @@
 
         <span class="n">readline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span>
 
-        <span class="k">def</span> <span class="nf">iterE</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">iterE</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
             <span class="n">ne</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="n">ne</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
@@ -250,13 +250,13 @@
 
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Manipulate Siesta EIG file.&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="c1"># limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
         <span class="c1"># short = kwargs.get(&quot;short&quot;, False)</span>
 
         <span class="c1"># We limit the import to occur here</span>
-        <span class="kn">import</span> <span class="nn">argparse</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 
         <span class="c1"># The first thing we do is adding the geometry to the NameSpace of the</span>
         <span class="c1"># parser.</span>
@@ -285,8 +285,8 @@
         <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
 
         <span class="c1"># Energy grabs</span>
-        <span class="k">class</span> <span class="nc">ERange</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">ERange</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span> <span class="o">=</span> <span class="n">strmap</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -297,8 +297,8 @@
         <span class="p">)</span>
 
         <span class="c1"># k-point weights</span>
-        <span class="k">class</span> <span class="nc">KP</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">KP</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_weights</span> <span class="o">=</span> <span class="n">kpSileSiesta</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">read_data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -311,8 +311,8 @@
         <span class="p">)</span>
 
         <span class="c1"># Energy grabs</span>
-        <span class="k">class</span> <span class="nc">DOS</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">DOS</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span>
                 <span class="n">dos_self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span>
             <span class="p">):</span>  <span class="c1"># pylint: disable=E0213</span>
                 <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s2">&quot;_weights&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -404,7 +404,7 @@
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Energy&quot;</span><span class="p">)</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
-                <span class="k">def</span> <span class="nf">calc_dos</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">calc_dos</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
                     <span class="k">nonlocal</span> <span class="n">distribution</span>
                     <span class="n">DOS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>
                     <span class="k">for</span> <span class="n">w_band</span><span class="p">,</span> <span class="n">e_band</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">eig</span><span class="p">):</span>
@@ -433,10 +433,10 @@
             <span class="s2">&quot;The arguments will be the new defaults for later --dos calls.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">_plot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">Plot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_plot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;Plot data as contained in ns._data&quot;&quot;&quot;</span>
-                <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
                 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
@@ -464,8 +464,8 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">_plot_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-                <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_plot_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
                 <span class="n">E</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span>
                 <span class="c1"># Emin = np.min(E)</span>
@@ -475,7 +475,7 @@
                 <span class="c1"># plots</span>
                 <span class="n">s</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># 20. / max(Emax - Emin, n)</span>
 
-                <span class="k">def</span> <span class="nf">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
                     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
                     <span class="n">ik</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                     <span class="k">for</span> <span class="n">ib</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
@@ -503,7 +503,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_plot_eig</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -518,8 +518,8 @@
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot the currently collected information (at its current invocation), or the eigenspectrum&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">class</span> <span class="nc">Out</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">Out</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -533,7 +533,7 @@
                         <span class="s2">&quot;There are multiple non-commensurate energy-grids, saving data requires a single energy-grid.&quot;</span>
                     <span class="p">)</span>
 
-                <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">tableSile</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">tableSile</span>
 
                 <span class="n">tableSile</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="p">)</span>
 
@@ -558,7 +558,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

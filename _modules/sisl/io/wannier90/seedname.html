@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.wannier90.seedname &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,28 +118,28 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Sile object for reading/writing Wannier90 in/output</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sps</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">lil_matrix</span>
 
-<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
-<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
-<span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">unit_convert</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_a</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hamiltonian</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
 
-<span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="n">parse_order</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_order</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># Import sile objects</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileWannier90</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileWannier90</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;winSileWannier90&quot;</span><span class="p">,</span>
@@ -149,7 +149,7 @@
 <span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_construct_hamiltonian</span><span class="p">(</span><span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Hsc</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_construct_hamiltonian</span><span class="p">(</span><span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Hsc</span><span class="p">):</span>
     <span class="c1"># Get supercell size</span>
     <span class="n">nsc</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">isc</span> <span class="ow">in</span> <span class="n">Hsc</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -172,7 +172,7 @@
 
 <div class="viewcode-block" id="winSileWannier90">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90">[docs]</a>
-<span class="k">class</span> <span class="nc">winSileWannier90</span><span class="p">(</span><span class="n">SileWannier90</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">winSileWannier90</span><span class="p">(</span><span class="n">SileWannier90</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wannier seedname input file object</span>
 
 <span class="sd">    This `Sile` enables easy interaction with the Wannier90 code.</span>
@@ -213,13 +213,13 @@
 <span class="sd">    &gt;&gt;&gt; H = wan90.read_hamiltonian(cutoff=0.00001)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup `winSileWannier90` after initialization&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;!&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.win&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_r_lattice_tb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_lattice_tb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defered routine&quot;&quot;&quot;</span>
 
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">+</span> <span class="s2">&quot;_tb.dat&quot;</span><span class="p">)</span>
@@ -229,7 +229,7 @@
         <span class="k">return</span> <span class="n">lattice</span>
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_r_lattice_win</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_lattice_win</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deferred routine&quot;&quot;&quot;</span>
 
         <span class="n">f</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;unit_cell_cart&quot;</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -262,7 +262,7 @@
 
 <div class="viewcode-block" id="winSileWannier90.read_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.read_lattice">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a `Lattice` and creates the Wannier90 cell</span>
 
 <span class="sd">        Parameters</span>
@@ -284,7 +284,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_r_geometry_centres</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_geometry_centres</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defered routine&quot;&quot;&quot;</span>
 
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">+</span> <span class="s2">&quot;_centres.xyz&quot;</span><span class="p">)</span>
@@ -294,7 +294,7 @@
         <span class="k">return</span> <span class="n">geometry</span>
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_r_geometry_win</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_geometry_win</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defered routine&quot;&quot;&quot;</span>
 
         <span class="n">is_frac</span> <span class="o">=</span> <span class="kc">True</span>
@@ -345,7 +345,7 @@
 <div class="viewcode-block" id="winSileWannier90.read_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.read_geometry">[docs]</a>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a `Geometry` and creates the Wannier90 cell</span>
 
 
@@ -378,7 +378,7 @@
 
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the supercel to the contained file&quot;&quot;&quot;</span>
         <span class="c1"># Check that we can write to the file</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -395,13 +395,13 @@
 <div class="viewcode-block" id="winSileWannier90.write_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.write_lattice">[docs]</a>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the supercell to the contained file&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_lattice</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the geometry to the contained file&quot;&quot;&quot;</span>
         <span class="c1"># Check that we can write to the file</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -430,12 +430,12 @@
 
 <div class="viewcode-block" id="winSileWannier90.write_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.write_geometry">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the geometry to the contained file&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_r_wigner_seitz_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_wigner_seitz_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Number of Wigner-Seitz degeneracy points</span>
         <span class="n">npts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
 
@@ -449,7 +449,7 @@
         <span class="n">ws</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ws</span>
 
-    <span class="k">def</span> <span class="nf">_r_hamiltonian_tb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_hamiltonian_tb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read Hamiltonian from the ``&lt;&gt;_tb.dat`` file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">+</span> <span class="s2">&quot;_tb.dat&quot;</span><span class="p">)</span>
         <span class="n">H</span> <span class="o">=</span> <span class="kc">None</span>
@@ -457,7 +457,7 @@
             <span class="n">H</span> <span class="o">=</span> <span class="n">tbSileWannier90</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">H</span>
 
-    <span class="k">def</span> <span class="nf">_r_hamiltonian_hr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_hamiltonian_hr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a Hamiltonian model from the ``&lt;&gt;_hr.dat`` file&quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">+</span> <span class="s2">&quot;_hr.dat&quot;</span><span class="p">)</span>
         <span class="n">H</span> <span class="o">=</span> <span class="kc">None</span>
@@ -467,7 +467,7 @@
 
 <div class="viewcode-block" id="winSileWannier90.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.winSileWannier90.html#sisl.io.wannier90.winSileWannier90.read_hamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the electronic structure of the Wannier90 output by reading the ``&lt;&gt;_tb.dat``, ``&lt;&gt;_hr.dat``</span>
 
 <span class="sd">        Parameters</span>
@@ -507,7 +507,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -517,13 +517,13 @@
 
 <div class="viewcode-block" id="centresSileWannier90">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.centresSileWannier90.html#sisl.io.wannier90.centresSileWannier90">[docs]</a>
-<span class="k">class</span> <span class="nc">centresSileWannier90</span><span class="p">(</span><span class="n">SileWannier90</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">centresSileWannier90</span><span class="p">(</span><span class="n">SileWannier90</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wannier90 centres file ``_centres.xyz``&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="centresSileWannier90.read_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.centresSileWannier90.html#sisl.io.wannier90.centresSileWannier90.read_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read geometry information from Wannier90&#39;s charge centres file.&quot;&quot;&quot;</span>
 
         <span class="n">nc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
@@ -546,9 +546,9 @@
 
 
 
-<span class="k">class</span> <span class="nc">hamSileWannier90</span><span class="p">(</span><span class="n">SileWannier90</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">hamSileWannier90</span><span class="p">(</span><span class="n">SileWannier90</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">_r_wigner_seitz_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_wigner_seitz_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Number of Wigner-Seitz degeneracy points</span>
         <span class="n">npts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
 
@@ -565,13 +565,13 @@
 
 <div class="viewcode-block" id="tbSileWannier90">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.tbSileWannier90.html#sisl.io.wannier90.tbSileWannier90">[docs]</a>
-<span class="k">class</span> <span class="nc">tbSileWannier90</span><span class="p">(</span><span class="n">hamSileWannier90</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">tbSileWannier90</span><span class="p">(</span><span class="n">hamSileWannier90</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wannier90 Hamiltonian file&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="tbSileWannier90.read_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.tbSileWannier90.html#sisl.io.wannier90.tbSileWannier90.read_lattice">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a cell information from the ``&lt;&gt;_tb.dat`` file.&quot;&quot;&quot;</span>
 
         <span class="c1"># Time of creation</span>
@@ -588,7 +588,7 @@
 <div class="viewcode-block" id="tbSileWannier90.read_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.tbSileWannier90.html#sisl.io.wannier90.tbSileWannier90.read_geometry">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a geometry information from the ``&lt;&gt;_tb.dat`` file.</span>
 
 <span class="sd">        Wannier centres are not stored in the file, so we use dummy coordinates</span>
@@ -605,7 +605,7 @@
 <div class="viewcode-block" id="tbSileWannier90.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.tbSileWannier90.html#sisl.io.wannier90.tbSileWannier90.read_hamiltonian">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_hamiltonian</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a Hamiltonian model from the &lt;&gt;_tb.dat file</span>
@@ -690,13 +690,13 @@
 
 <div class="viewcode-block" id="hrSileWannier90">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.hrSileWannier90.html#sisl.io.wannier90.hrSileWannier90">[docs]</a>
-<span class="k">class</span> <span class="nc">hrSileWannier90</span><span class="p">(</span><span class="n">hamSileWannier90</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">hrSileWannier90</span><span class="p">(</span><span class="n">hamSileWannier90</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wannier90 Hamiltonian file&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="hrSileWannier90.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.wannier90.hrSileWannier90.html#sisl.io.wannier90.hrSileWannier90.read_hamiltonian">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_hamiltonian</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a Hamiltonian model from the ``&lt;&gt;_hr.dat`` file</span>
@@ -795,7 +795,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

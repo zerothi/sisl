@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl._core.sparse &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,18 +118,18 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span><span class="p">,</span> <span class="n">singledispatchmethod</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span><span class="p">,</span> <span class="n">singledispatchmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># To speed up the _extend algorithm we limit lookups</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="nb">all</span> <span class="k">as</span> <span class="n">np_all</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">allclose</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="nb">any</span> <span class="k">as</span> <span class="n">np_any</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">all</span> <span class="k">as</span> <span class="n">np_all</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">allclose</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">any</span> <span class="k">as</span> <span class="n">np_any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">arange</span><span class="p">,</span>
     <span class="n">argsort</span><span class="p">,</span>
     <span class="n">asarray</span><span class="p">,</span>
@@ -158,18 +158,18 @@
     <span class="n">unique</span><span class="p">,</span>
     <span class="n">zeros</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">numpy.lib.mixins</span> <span class="kn">import</span> <span class="n">NDArrayOperatorsMixin</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">issparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.lib.mixins</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArrayOperatorsMixin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">issparse</span>
 
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
-<span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">array_arange</span>
-<span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">array_fill_repeat</span><span class="p">,</span> <span class="n">isiterable</span>
-<span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indices_only</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">intersect_and_diff_sets</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="kn">import</span> <span class="n">array_arange</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">array_fill_repeat</span><span class="p">,</span> <span class="n">isiterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._indices</span><span class="w"> </span><span class="kn">import</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indices_only</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.mathematics</span><span class="w"> </span><span class="kn">import</span> <span class="n">intersect_and_diff_sets</span>
 
-<span class="kn">from</span> <span class="nn">._sparse</span> <span class="kn">import</span> <span class="n">sparse_dense</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparse_dense</span>
 
 <span class="c1"># Although this re-implements the CSR in scipy.sparse.csr_matrix</span>
 <span class="c1"># we use it slightly differently and thus require this new sparse pattern.</span>
@@ -177,7 +177,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SparseCSR&quot;</span><span class="p">,</span> <span class="s2">&quot;ispmatrix&quot;</span><span class="p">,</span> <span class="s2">&quot;ispmatrixd&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_to_coo</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_to_coo</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the CSR information in a sanitized manner</span>
 
 <span class="sd">    I.e. as COO format with data stripped, or only rows and columns</span>
@@ -218,7 +218,7 @@
     <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span>
 
 
-<span class="k">def</span> <span class="nf">_ncol_to_indptr</span><span class="p">(</span><span class="n">ncol</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ncol_to_indptr</span><span class="p">(</span><span class="n">ncol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the ncol array into a pointer array&quot;&quot;&quot;</span>
     <span class="n">ptr</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyi</span><span class="p">(</span><span class="n">ncol</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -227,7 +227,7 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SparseCSR</span><span class="p">(</span><span class="n">NDArrayOperatorsMixin</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SparseCSR</span><span class="p">(</span><span class="n">NDArrayOperatorsMixin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_matrix`.</span>
 
@@ -287,7 +287,7 @@
     <span class="c1"># to keep a good overview of which variables are present</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_shape&quot;</span><span class="p">,</span> <span class="s2">&quot;_ns&quot;</span><span class="p">,</span> <span class="s2">&quot;_finalized&quot;</span><span class="p">,</span> <span class="s2">&quot;_nnz&quot;</span><span class="p">,</span> <span class="s2">&quot;ptr&quot;</span><span class="p">,</span> <span class="s2">&quot;ncol&quot;</span><span class="p">,</span> <span class="s2">&quot;col&quot;</span><span class="p">,</span> <span class="s2">&quot;_D&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a new sparse CSR matrix&quot;&quot;&quot;</span>
 
         <span class="c1"># step size in sparse elements</span>
@@ -361,7 +361,7 @@
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_finalized</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">__init_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># The shape of the data...</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="c1"># extend to extra dimension</span>
@@ -422,7 +422,7 @@
 <div class="viewcode-block" id="SparseCSR.sparsity_union">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.sparsity_union">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">sparsity_union</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">spmats</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sparsity_union</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">spmats</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a SparseCSR with constant fill value in all places that `spmats` have nonzeros</span>
 
 <span class="sd">        By default the returned matrix will be sorted.</span>
@@ -482,7 +482,7 @@
 
 <div class="viewcode-block" id="SparseCSR.diagonal">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.diagonal">[docs]</a>
-    <span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the diagonal elements from the matrix&quot;&quot;&quot;</span>
         <span class="c1"># get the diagonal components</span>
         <span class="n">diag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -502,7 +502,7 @@
 
 <div class="viewcode-block" id="SparseCSR.diags">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.diags">[docs]</a>
-    <span class="k">def</span> <span class="nf">diags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diagonals</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diagonals</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a `SparseCSR` with diagonal elements with the same shape as the routine</span>
 
 <span class="sd">        Parameters</span>
@@ -553,7 +553,7 @@
 
 <div class="viewcode-block" id="SparseCSR.empty">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.empty">[docs]</a>
-    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_nnz</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_nnz</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete all sparse information from the sparsity pattern</span>
 
 <span class="sd">        Essentially this deletes all entries.</span>
@@ -579,47 +579,47 @@
             <span class="c1"># they may be obscure data any-way.</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The shape of the sparse matrix&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The extra dimensionality of the sparse matrix (elements per matrix element)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Data contained in the sparse matrix (numpy array of elements)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_D</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The data-type in the sparse matrix&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_D</span><span class="o">.</span><span class="n">dtype</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dkind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dkind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The data-type in the sparse matrix (in str)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_D</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of non-zero elements in the sparse matrix&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nnz</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of rows in the sparse matrix&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">finalized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the contained data is finalized and non-used elements have been removed&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finalized</span>
 
 <div class="viewcode-block" id="SparseCSR.finalize">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.finalize">[docs]</a>
-    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Finalizes the sparse matrix by removing all non-set elements</span>
 
 <span class="sd">        One may still interact with the sparse matrix as one would previously.</span>
@@ -699,7 +699,7 @@
 
 
     <span class="nd">@singledispatchmethod</span>
-    <span class="k">def</span> <span class="nf">_sanitize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sanitize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sanitize the input indices to a conforming numpy array&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">axis</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -713,13 +713,13 @@
         <span class="k">return</span> <span class="n">idx</span>
 
     <span class="nd">@_sanitize</span><span class="o">.</span><span class="n">register</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">idx</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">bool_</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">idx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@_sanitize</span><span class="o">.</span><span class="n">register</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">step</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
@@ -734,7 +734,7 @@
 
 <div class="viewcode-block" id="SparseCSR.edges">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.edges">[docs]</a>
-    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve edges (connections) of a given `row` or list of `row`&#39;s</span>
 
 <span class="sd">        The returned edges are unique and sorted (see `numpy.unique`).</span>
@@ -767,7 +767,7 @@
 
 <div class="viewcode-block" id="SparseCSR.delete_columns">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.delete_columns">[docs]</a>
-    <span class="k">def</span> <span class="nf">delete_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete all columns in `columns` (in-place action)</span>
 
 <span class="sd">        Parameters</span>
@@ -851,7 +851,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_clean_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clean_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all intrinsic columns that are not defined in the sparse matrix&quot;&quot;&quot;</span>
         <span class="c1"># Grab pointers</span>
         <span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span>
@@ -888,7 +888,7 @@
 
 <div class="viewcode-block" id="SparseCSR.translate_columns">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.translate_columns">[docs]</a>
-    <span class="k">def</span> <span class="nf">translate_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Takes all `old` columns and translates them to `new`.</span>
 
 <span class="sd">        Parameters</span>
@@ -941,7 +941,7 @@
 
 <div class="viewcode-block" id="SparseCSR.scale_columns">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.scale_columns">[docs]</a>
-    <span class="k">def</span> <span class="nf">scale_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scale_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scale all values with certain column values with a number</span>
 
 <span class="sd">        This will multiply all values with certain column values with `scale`</span>
@@ -981,21 +981,21 @@
 
 <div class="viewcode-block" id="SparseCSR.toarray">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.toarray">[docs]</a>
-    <span class="k">def</span> <span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dense `numpy.ndarray` which has 3 dimensions (self.shape)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">sparse_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SparseCSR.todense">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.todense">[docs]</a>
-    <span class="k">def</span> <span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dense `numpy.ndarray` which has 3 dimensions (self.shape)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">sparse_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SparseCSR.spsame">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.spsame">[docs]</a>
-    <span class="k">def</span> <span class="nf">spsame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spsame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether two sparse matrices have the same non-zero elements</span>
 
 <span class="sd">        Parameters</span>
@@ -1037,7 +1037,7 @@
 
 <div class="viewcode-block" id="SparseCSR.align">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.align">[docs]</a>
-    <span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">align</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Aligns this sparse matrix with the sparse elements of the other sparse matrix</span>
 
 <span class="sd">        Routine for ensuring that all non-zero elements in `other` are also in this</span>
@@ -1081,7 +1081,7 @@
 
 <div class="viewcode-block" id="SparseCSR.iter_nnz">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.iter_nnz">[docs]</a>
-    <span class="k">def</span> <span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements</span>
 
 <span class="sd">        An iterator returning the current row index and the corresponding column index.</span>
@@ -1117,7 +1117,7 @@
     <span class="c1"># Define default iterator</span>
     <span class="fm">__iter__</span> <span class="o">=</span> <span class="n">iter_nnz</span>
 
-    <span class="k">def</span> <span class="nf">_slice2list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slc</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_slice2list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slc</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a slice to a list depending on the provided details&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">slc</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">slc</span>
@@ -1128,7 +1128,7 @@
         <span class="n">idx</span> <span class="o">=</span> <span class="n">slc</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">idx</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">ret_indices</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">ret_indices</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extends the sparsity pattern to retain elements `j` in row `i`</span>
 
 <span class="sd">        Parameters</span>
@@ -1259,7 +1259,7 @@
         <span class="k">if</span> <span class="n">ret_indices</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">indices</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">ptr_i</span><span class="p">:</span><span class="n">ncol_ptr_i</span><span class="p">],</span> <span class="n">j</span><span class="p">,</span> <span class="n">ptr_i</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_extend_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extend_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extends the sparsity pattern with `n` elements in row `i`</span>
 
 <span class="sd">        Parameters</span>
@@ -1304,7 +1304,7 @@
         <span class="c1"># new non-zero elements</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">i1</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">int32</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``</span>
 
 <span class="sd">        Parameters</span>
@@ -1328,7 +1328,7 @@
             <span class="k">return</span> <span class="n">indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">ptr</span> <span class="p">:</span> <span class="n">ptr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">j</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">ptr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">ptr</span> <span class="p">:</span> <span class="n">ptr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">j</span><span class="p">,</span> <span class="n">ptr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_only</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_only</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the data pointer arrays of the elements, only return elements in the sparse array</span>
 
 <span class="sd">        Parameters</span>
@@ -1350,7 +1350,7 @@
 
         <span class="k">return</span> <span class="n">indices_only</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">ptr</span> <span class="p">:</span> <span class="n">ptr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="n">ptr</span>
 
-    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove items from the sparse patterns&quot;&quot;&quot;</span>
         <span class="c1"># Get indices of sparse data (-1 if non-existing)</span>
         <span class="n">key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -1401,7 +1401,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_finalized</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nnz</span> <span class="o">-=</span> <span class="n">n_index</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Intrinsic sparse matrix retrieval of a non-zero element&quot;&quot;&quot;</span>
 
         <span class="c1"># Get indices of sparse data (-1 if non-existing)</span>
@@ -1441,7 +1441,7 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span>
 
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Intrinsic sparse matrix assignment of the item.</span>
 
 <span class="sd">        It will only allow to set the data in the sparse</span>
@@ -1565,14 +1565,14 @@
                 <span class="c1"># each element have different data</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="p">:]</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether a sparse index is non-zero&quot;&quot;&quot;</span>
         <span class="c1"># Get indices of sparse data (-1 if non-existing)</span>
         <span class="k">return</span> <span class="n">np_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SparseCSR.nonzero">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.nonzero">[docs]</a>
-    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Row and column indices where non-zero elements exists</span>
 
 <span class="sd">        Parameters</span>
@@ -1607,7 +1607,7 @@
 
 <div class="viewcode-block" id="SparseCSR.eliminate_zeros">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.eliminate_zeros">[docs]</a>
-    <span class="k">def</span> <span class="nf">eliminate_zeros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eliminate_zeros</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all zero elememts from the sparse matrix</span>
 
 <span class="sd">        This is an *in-place* operation</span>
@@ -1649,7 +1649,7 @@
 
 <div class="viewcode-block" id="SparseCSR.copy">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A deepcopy of the sparse matrix</span>
 
 <span class="sd">        Parameters</span>
@@ -1696,7 +1696,7 @@
 
 <div class="viewcode-block" id="SparseCSR.tocsr">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.tocsr">[docs]</a>
-    <span class="k">def</span> <span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert dimension `dim` into a :class:`~scipy.sparse.csr_matrix` format</span>
 
 <span class="sd">        Parameters</span>
@@ -1733,7 +1733,7 @@
 
 <div class="viewcode-block" id="SparseCSR.transform">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.transform">[docs]</a>
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix</span>
 
 <span class="sd">        Notes</span>
@@ -1785,7 +1785,7 @@
 
 <div class="viewcode-block" id="SparseCSR.astype">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.astype">[docs]</a>
-    <span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the stored data-type to something else</span>
 
 <span class="sd">        Parameters</span>
@@ -1811,7 +1811,7 @@
 <div class="viewcode-block" id="SparseCSR.fromsp">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.fromsp">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">fromsp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">sps</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fromsp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">sps</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Combine multiple single-dimension sparse matrices into one SparseCSR matrix</span>
 
 <span class="sd">        The different sparse matrices need not have the same sparsity pattern.</span>
@@ -1857,7 +1857,7 @@
 
 <div class="viewcode-block" id="SparseCSR.remove">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.remove">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new sparse CSR matrix with all the indices removed</span>
 
 <span class="sd">        Parameters</span>
@@ -1879,7 +1879,7 @@
 
 <div class="viewcode-block" id="SparseCSR.sub">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.sub">[docs]</a>
-    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new sparse CSR matrix with the data only for the given rows and columns</span>
 
 <span class="sd">        All rows and columns in `indices` are retained, everything else is removed.</span>
@@ -1969,7 +1969,7 @@
 
 <div class="viewcode-block" id="SparseCSR.transpose">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.transpose">[docs]</a>
-    <span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the transposed sparse matrix</span>
 
 <span class="sd">        Parameters</span>
@@ -2046,7 +2046,7 @@
         <span class="k">return</span> <span class="n">T</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Representation of the sparse matrix model&quot;&quot;&quot;</span>
         <span class="n">ints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="p">,)</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -2056,20 +2056,20 @@
             <span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> shape=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="s2">, nnz=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
     <span class="c1"># numpy dispatch methods</span>
     <span class="n">__array_priority__</span> <span class="o">=</span> <span class="mi">14</span>
 
-    <span class="k">def</span> <span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">out</span>
         <span class="c1"># Always no copy, since it will always be a copy!</span>
         <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__array_ufunc__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ufunc</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__array_ufunc__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ufunc</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="s2">&quot;signature&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2113,7 +2113,7 @@
             <span class="n">out</span> <span class="o">=</span> <span class="bp">NotImplemented</span>
         <span class="k">return</span> <span class="n">out</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dictionary with the current state (finalizing the object may reduce memory footprint)&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[:],</span>
@@ -2126,7 +2126,7 @@
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;ptr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">d</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset state of the object&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">][:])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;ncol&quot;</span><span class="p">]</span>
@@ -2140,7 +2140,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;ptr&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_get_reduced_shape</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_reduced_shape</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
     <span class="c1"># return the reduced shape by removing any dimensions with length 1</span>
     <span class="k">if</span> <span class="n">isscalar</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">()</span>
@@ -2152,7 +2152,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 
 
-<span class="k">def</span> <span class="nf">_ufunc</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ufunc</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="n">SparseCSR</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="n">SparseCSR</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">return</span> <span class="n">_ufunc_sp_sp</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2162,7 +2162,7 @@
     <span class="k">return</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_sp_data_cast</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sp_data_cast</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts the data in `sp` to the result data-type&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">dtype</span>
@@ -2170,7 +2170,7 @@
         <span class="n">sp</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">_D</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_ufunc_sp_ndarray</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ufunc_sp_ndarray</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_get_reduced_shape</span><span class="p">(</span><span class="n">b</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># there are shapes for individiual</span>
         <span class="c1"># we will now calculate a full matrix</span>
@@ -2193,7 +2193,7 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">_ufunc_ndarray_sp</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ufunc_ndarray_sp</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_get_reduced_shape</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># there are shapes for individiual</span>
         <span class="c1"># we will now calculate a full matrix</span>
@@ -2216,17 +2216,17 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">_ufunc_sp_sp</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ufunc_sp_sp</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate ufunc on sparse matrices&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">SparseCSR</span><span class="o">.</span><span class="n">fromsp</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">SparseCSR</span><span class="o">.</span><span class="n">fromsp</span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">accessors</span><span class="p">(</span><span class="n">mat</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accessors</span><span class="p">(</span><span class="n">mat</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">SparseCSR</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">rowslice</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">rowslice</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
                 <span class="k">return</span> <span class="nb">slice</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">mat</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">+</span> <span class="n">mat</span><span class="o">.</span><span class="n">ncol</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
 
             <span class="n">accessors</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">mat</span><span class="o">.</span><span class="n">col</span><span class="p">,</span> <span class="n">mat</span><span class="o">.</span><span class="n">_D</span><span class="p">,</span> <span class="n">rowslice</span>
@@ -2243,7 +2243,7 @@
             <span class="n">mat</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
             <span class="n">mat</span><span class="o">.</span><span class="n">sort_indices</span><span class="p">()</span>
 
-            <span class="k">def</span> <span class="nf">rowslice</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">rowslice</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
                 <span class="k">return</span> <span class="nb">slice</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">mat</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
 
             <span class="n">accessors</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">mat</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">mat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">rowslice</span>
@@ -2306,7 +2306,7 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">_ufunc_call</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="o">*</span><span class="n">in_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ufunc_call</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="o">*</span><span class="n">in_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># first process in_args to args</span>
     <span class="c1"># by numpy-fying and checking for sparsecsr</span>
     <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2335,13 +2335,13 @@
             <span class="k">del</span> <span class="n">idx</span>
         <span class="k">return</span> <span class="n">out</span>
 
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_ufunc</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_ufunc_reduce</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ufunc_reduce</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># currently the initial argument does not work properly if the</span>
     <span class="c1"># size isn&#39;t correct</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;initial&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -2354,7 +2354,7 @@
             <span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">wrap_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">wrap_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">axis</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">axis</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">axis</span>
@@ -2402,7 +2402,7 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ispmatrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">map_row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ispmatrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">map_row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)</span>
 
 <span class="sd">    If either `map_row` or `map_col` are not None the generator will only yield</span>
@@ -2511,7 +2511,7 @@
         <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_ispmatrix_all</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ispmatrix_all</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterator for iterating rows and columns for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)</span>
 
 <span class="sd">    Parameters</span>
@@ -2556,7 +2556,7 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ispmatrixd</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">map_row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ispmatrixd</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">map_row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">map_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterator for iterating rows, columns and data for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)</span>
 
 <span class="sd">    Parameters</span>
@@ -2629,7 +2629,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

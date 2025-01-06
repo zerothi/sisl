@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ahc &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -22,11 +22,11 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -160,7 +160,7 @@
 <h1>ahc<a class="headerlink" href="#ahc" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.ahc">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">ahc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><span class="pre">BrillouinZone</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_average</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_TDist</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'step'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenstate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">berry_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#ahc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.ahc" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">ahc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'step'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenstate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">berry_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#ahc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.ahc" title="Link to this definition"></a></dt>
 <dd><p>Electronic anomalous Hall conductivity for a given <em class="xref py py-obj">BrillouinZone</em> integral</p>
 <div class="math notranslate nohighlight">
 \[\sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_i f_i\Omega_{i,\alpha\beta}(\mathbf k)\]</div>
@@ -170,25 +170,28 @@ for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
 Hence the unit of <a class="reference internal" href="#sisl.physics.electron.ahc" title="sisl.physics.electron.ahc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ahc</span></code></a> depends on the periodic unit cell.
 See <code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volumef</span></code> for details.</p>
 <p>See <span id="id1">[<a class="reference internal" href="../../references.html#id11" title="Xinjie Wang, Jonathan R. Yates, Ivo Souza, and David Vanderbilt. Ab initio calculation of the anomalous hall conductivity by wannier interpolation. Phys. Rev. B, November 2006. URL: https://doi.org/10.1103/physrevb.74.195118, doi:10.1103/physrevb.74.195118.">14</a>]</span> for details on the implementation.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>bz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BrillouinZone</span></code>) – containing the integration grid and has the <code class="docutils literal notranslate"><span class="pre">bz.parent</span></code> as an instance of Hamiltonian.</p></li>
-<li><p><strong>k_average</strong> – if <em class="xref py py-obj">True</em>, the returned quantity is averaged over <em class="xref py py-obj">bz</em>, else all k-point
+<li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if <em class="xref py py-obj">True</em>, the returned quantity is averaged over <em class="xref py py-obj">bz</em>, else all k-point
 contributions will be collected (in the 1st dimension).
 Note, for large <em class="xref py py-obj">bz</em> integrations this may explode the memory usage.</p></li>
-<li><p><strong>distribution</strong> – An optional distribution enabling one to automatically sum states
+<li><p><strong>distribution</strong> (<em>_TDist</em>) – An optional distribution enabling one to automatically sum states
 across occupied/unoccupied states.</p></li>
 <li><p><strong>eigenstate_kwargs</strong> – keyword arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">contour.eigenstate</span></code> method.
 One should <em>not</em> pass a <code class="docutils literal notranslate"><span class="pre">k</span></code> or a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword argument as they are
 already used.</p></li>
 <li><p><strong>apply_kwargs</strong> – keyword arguments passed directly to <code class="docutils literal notranslate"><span class="pre">bz.apply(**apply_kwargs)</span></code>.</p></li>
-<li><p><strong>**berry_kwargs</strong> – arguments passed directly to the <em class="xref py py-obj">berry_curvature</em> method.</p>
+<li><p><strong>**berry_kwargs</strong> – <p>arguments passed directly to the <em class="xref py py-obj">berry_curvature</em> method.</p>
 <p>Here one can pass <em class="xref py py-obj">derivative_kwargs</em> to pass flags to the
 <em class="xref py py-obj">derivative</em> method. In particular <code class="docutils literal notranslate"><span class="pre">axes</span></code> can be used
 to speedup the calculation (by omitting certain directions).</p>
-</li>
+</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -226,7 +229,7 @@ Here it is calculated at <span class="math notranslate nohighlight">\(E=0\)</spa
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ahc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Anomalous Hall conductivity returned in certain dimensions <code class="docutils literal notranslate"><span class="pre">ahc[:,</span> <span class="pre">:]</span></code>.
+<dd class="field-odd"><p><strong>ahc</strong> – Anomalous Hall conductivity returned in certain dimensions <code class="docutils literal notranslate"><span class="pre">ahc[:,</span> <span class="pre">:]</span></code>.
 If <em class="xref py py-obj">sum</em> is False, it will be at least a 3D array with the 3rd dimension
 having the contribution from state <em class="xref py py-obj">i</em>.
 If <em class="xref py py-obj">k_average</em> is False, it will have a dimension prepended with
@@ -237,6 +240,16 @@ axes will be used (even if they are non-periodic).
 The dtype will be imaginary.
 When <span class="math notranslate nohighlight">\(D\)</span> is the dimensionality of the system we find the unit to be
 <span class="math notranslate nohighlight">\(\mathrm S/\mathrm{Ang}^{D-2}\)</span>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>)</p></li>
+<li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
+<li><p><strong>distribution</strong> (<em>_TDist</em>)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -254,7 +267,7 @@ When <span class="math notranslate nohighlight">\(D\)</span> is the dimensionali
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

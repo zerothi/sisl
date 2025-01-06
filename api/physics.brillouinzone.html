@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brillouin zone &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -22,11 +22,11 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/copybutton.js?v=7800a641"></script>
       <script src="../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -155,7 +155,7 @@ over a number of k-points. In this regard the Brillouin zone objects can help.</
 <p>The BrillouinZone object allows direct looping of contained k-points while invoking
 particular methods from the contained object.
 This is best shown with an example:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">si</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">BrillouinZone</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
@@ -180,7 +180,7 @@ calculating the average:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mp</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">wrap_DOS</span><span class="p">(</span><span class="n">eigenstate</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">wrap_DOS</span><span class="p">(</span><span class="n">eigenstate</span><span class="p">):</span>
 <span class="gp">... </span>   <span class="c1"># Calculate the DOS for the eigenstates</span>
 <span class="gp">... </span>   <span class="n">DOS</span> <span class="o">=</span> <span class="n">eigenstate</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 <span class="gp">... </span>   <span class="c1"># Calculate the velocity for the eigenstates</span>
@@ -201,7 +201,7 @@ weight:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mp</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">wrap_DOS</span><span class="p">(</span><span class="n">eigenstate</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">wrap_DOS</span><span class="p">(</span><span class="n">eigenstate</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
 <span class="gp">... </span>   <span class="c1"># Calculate the DOS for the eigenstates and weight by k_x and weight</span>
 <span class="gp">... </span>   <span class="k">return</span> <span class="n">eigenstate</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">weight</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DOS</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">sum</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap_DOS</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -212,7 +212,7 @@ to use <a class="reference internal" href="generated/sisl.oplist.html#sisl.oplis
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mp</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">wrap_multiple</span><span class="p">(</span><span class="n">eigenstate</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">wrap_multiple</span><span class="p">(</span><span class="n">eigenstate</span><span class="p">):</span>
 <span class="gp">... </span>   <span class="c1"># Calculate DOS/PDOS for eigenstates</span>
 <span class="gp">... </span>   <span class="n">DOS</span> <span class="o">=</span> <span class="n">eigenstate</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 <span class="gp">... </span>   <span class="n">PDOS</span> <span class="o">=</span> <span class="n">eigenstate</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
@@ -273,7 +273,7 @@ HPC environment).</p>
 <p>which will request 2 processors (regardless of core-count).
 As a last resort you can pass your own <code class="docutils literal notranslate"><span class="pre">Pool</span></code> of workers that
 will be used for the parallel processing.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mp</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
@@ -286,13 +286,13 @@ existing in the <code class="docutils literal notranslate"><span class="pre">pat
 and <code class="docutils literal notranslate"><span class="pre">imap</span></code> and <code class="docutils literal notranslate"><span class="pre">uimap</span></code> methods. See the <code class="docutils literal notranslate"><span class="pre">pathos</span></code> documentation for detalis.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a>(parent[, k, weight])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a></p></td>
 <td><p>A class to construct Brillouin zone related quantities</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MonkhorstPack</span></code></a>(parent, nkpt[, displacement, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MonkhorstPack</span></code></a></p></td>
 <td><p>Create a Monkhorst-Pack grid for the Brillouin zone</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure" title="sisl.physics.BandStructure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandStructure</span></code></a>(parent, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure" title="sisl.physics.BandStructure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandStructure</span></code></a></p></td>
 <td><p>Create a path in the Brillouin zone for plotting band-structures etc.</p></td>
 </tr>
 </tbody>
@@ -311,7 +311,7 @@ and <code class="docutils literal notranslate"><span class="pre">imap</span></co
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

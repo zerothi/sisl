@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.siesta.stdout &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,29 +118,29 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
-<span class="kn">from</span> <span class="nn">sisl._common</span> <span class="kn">import</span> <span class="n">Opt</span>
-<span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">voigt_matrix</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">Spin</span>
-<span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">PropertyDict</span>
-<span class="kn">from</span> <span class="nn">sisl.utils.cmd</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_a</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._common</span><span class="w"> </span><span class="kn">import</span> <span class="n">Opt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">voigt_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.siesta</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PropertyDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.cmd</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
-<span class="kn">from</span> <span class="nn">.._multiple</span> <span class="kn">import</span> <span class="n">SileBinder</span><span class="p">,</span> <span class="n">postprocess_tuple</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._multiple</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileBinder</span><span class="p">,</span> <span class="n">postprocess_tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileSiesta</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;stdoutSileSiesta&quot;</span><span class="p">,</span> <span class="s2">&quot;outSileSiesta&quot;</span><span class="p">]</span>
 
@@ -148,7 +148,7 @@
 <span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_ensure_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ensure_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensures that the atoms list is a list with entries (converts `None` to a list).&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">150</span><span class="p">)]</span>
@@ -157,7 +157,7 @@
     <span class="k">return</span> <span class="n">atoms</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_spin</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_spin</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse &#39;redata: Spin configuration *= &lt;value&gt;&#39;&quot;&quot;&quot;</span>
     <span class="n">opt</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
@@ -172,13 +172,13 @@
     <span class="k">return</span> <span class="n">Spin</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_read_scf_empty</span><span class="p">(</span><span class="n">scf</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_scf_empty</span><span class="p">(</span><span class="n">scf</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scf</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">scf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span>
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">scf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
 
 
-<span class="k">def</span> <span class="nf">_read_scf_md_process</span><span class="p">(</span><span class="n">scfs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_scf_md_process</span><span class="p">(</span><span class="n">scfs</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scfs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -210,7 +210,7 @@
         <span class="k">return</span> <span class="n">scfs</span>
 
     <span class="c1"># We are dealing with a dataframe</span>
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
         <span class="n">scfs</span><span class="p">,</span>
@@ -222,7 +222,7 @@
     <span class="k">return</span> <span class="n">df</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_in_dynamics</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_in_dynamics</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines whether we are in the dynamics section or in the *Final* section.</span>
 
 <span class="sd">    Basically it returns ``not instance.info._in_final_analysis``.</span>
@@ -230,7 +230,7 @@
     <span class="k">return</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_in_final_analysis</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_version</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_version</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">match</span><span class="p">):</span>
     <span class="n">opt</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="n">version</span><span class="p">,</span> <span class="o">*</span><span class="n">spec</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -247,12 +247,12 @@
     <span class="k">return</span> <span class="n">version</span>
 
 
-<span class="k">def</span> <span class="nf">_in_final</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_in_final</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">_in_final_analysis_tell</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">stdoutSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">stdoutSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Output file from Siesta</span>
 
 <span class="sd">    This enables reading the output quantities from the Siesta output.</span>
@@ -326,7 +326,7 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the full file has been read and &quot;Job completed&quot; was found.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">completed</span><span class="p">()</span></div>
 
@@ -335,7 +335,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_basis">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the basis as found in the output file</span>
 
 <span class="sd">        This parses 3 things:</span>
@@ -379,7 +379,7 @@
             <span class="n">block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
-        <span class="kn">from</span> <span class="nn">.fdf</span> <span class="kn">import</span> <span class="n">fdfSileSiesta</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.fdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">fdfSileSiesta</span>
 
         <span class="n">atom_orbs</span> <span class="o">=</span> <span class="n">fdfSileSiesta</span><span class="o">.</span><span class="n">_parse_pao_basis</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">orbs</span> <span class="ow">in</span> <span class="n">atom_orbs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -388,7 +388,7 @@
         <span class="k">return</span> <span class="n">Atoms</span><span class="p">([</span><span class="n">Atom</span><span class="p">(</span><span class="o">**</span><span class="n">atoms</span><span class="p">[</span><span class="n">tag</span><span class="p">])</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">order</span><span class="p">])</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_r_lattice_outcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_lattice_outcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper for reading the unit-cell from the outcoor block&quot;&quot;&quot;</span>
 
         <span class="c1"># Read until outcell is found</span>
@@ -415,7 +415,7 @@
 
         <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_r_geometry_outcoor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_geometry_outcoor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper for reading the geometry as in the outcoor output&quot;&quot;&quot;</span>
         <span class="n">atoms_order</span> <span class="o">=</span> <span class="n">_ensure_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
         <span class="n">is_final</span> <span class="o">=</span> <span class="s2">&quot;Relaxed&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">or</span> <span class="s2">&quot;Final (unrelaxed)&quot;</span> <span class="ow">in</span> <span class="n">line</span>
@@ -463,7 +463,7 @@
 
         <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">cell</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_r_geometry_atomic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_geometry_atomic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper for reading the geometry as in the outcoor output&quot;&quot;&quot;</span>
         <span class="n">atoms_order</span> <span class="o">=</span> <span class="n">_ensure_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
 
@@ -497,7 +497,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_geometry">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_input</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_input</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the geometry from the Siesta output file</span>
 
 <span class="sd">        Parameters</span>
@@ -515,7 +515,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_basis</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Wrapper to return None&quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -534,7 +534,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_force">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">postprocess_tuple</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">))</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_force</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">total</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="nb">max</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -635,7 +635,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_stress">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">)</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_stress</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_stress</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">key</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;static&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">,</span> <span class="s2">&quot;Voigt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;static&quot;</span><span class="p">,</span>
         <span class="n">skip_final</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -706,7 +706,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_moment">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">)</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_moment</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_moment</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;S&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the moments from the Siesta output file</span>
@@ -784,7 +784,7 @@
 <div class="viewcode-block" id="stdoutSileSiesta.read_energy">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_energy">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PropertyDict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PropertyDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the final energy distribution</span>
 
 <span class="sd">        Currently the energies translated are:</span>
@@ -870,7 +870,7 @@
             <span class="s2">&quot;(Free)E + p_basis*V_orbitals&quot;</span><span class="p">:</span> <span class="s2">&quot;basis.enthalpy&quot;</span><span class="p">,</span>  <span class="c1"># we may correct the missing space</span>
         <span class="p">}</span>
 
-        <span class="k">def</span> <span class="nf">assign</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">assign</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">name_conv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
@@ -909,7 +909,7 @@
 
 <div class="viewcode-block" id="stdoutSileSiesta.read_data">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read specific content in the Siesta out file</span>
 
 <span class="sd">        The currently implemented things are denoted in</span>
@@ -970,7 +970,7 @@
         <span class="n">default_slice</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">check_empty</span><span class="o">=</span><span class="n">_read_scf_empty</span><span class="p">,</span> <span class="n">postprocess</span><span class="o">=</span><span class="n">_read_scf_md_process</span>
     <span class="p">)</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_scf</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_scf</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scf&quot;</span><span class="p">,</span>
         <span class="n">iscf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="bp">Ellipsis</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
@@ -1007,7 +1007,7 @@
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_scf requires iscf argument to *not* be 0!&quot;</span>
                 <span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">reset_d</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">reset_d</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;SCF cycle converged&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
                 <span class="s2">&quot;SCF_NOT_CONV&quot;</span>
             <span class="p">):</span>
@@ -1016,7 +1016,7 @@
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;SCF cycle continued&quot;</span><span class="p">):</span>
                 <span class="n">d</span><span class="p">[</span><span class="s2">&quot;_final_iscf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">def</span> <span class="nf">common_parse</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">common_parse</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">props</span>
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ts-Vha:&quot;</span><span class="p">):</span>
                 <span class="n">d</span><span class="p">[</span><span class="s2">&quot;ts-Vha&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])]</span>
@@ -1066,7 +1066,7 @@
 
         <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;scf&quot;</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">parse_next</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">parse_next</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
                 <span class="n">reset_d</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">common_parse</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
@@ -1104,7 +1104,7 @@
 
         <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;ts-scf&quot;</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">parse_next</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">parse_next</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span>
                 <span class="n">reset_d</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">common_parse</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
@@ -1156,7 +1156,7 @@
             <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="p">[],</span>
         <span class="p">}</span>
 
-        <span class="k">def</span> <span class="nf">construct_data</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">construct_data</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]:</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
@@ -1209,7 +1209,7 @@
 
         <span class="c1"># Define the function that is going to convert the information of a MDstep to a Dataset</span>
         <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;iscf&quot;</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">props</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
@@ -1231,7 +1231,7 @@
 <div class="viewcode-block" id="stdoutSileSiesta.read_charge">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_charge">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_charge</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_charge</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;voronoi&quot;</span><span class="p">,</span> <span class="s2">&quot;hirshfeld&quot;</span><span class="p">,</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">,</span> <span class="s2">&quot;mulliken:&lt;5.2&quot;</span><span class="p">],</span>
         <span class="n">iscf</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Opt</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="bp">Ellipsis</span><span class="p">]</span> <span class="o">=</span> <span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
@@ -1307,9 +1307,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">namel</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-            <span class="k">def</span> <span class="nf">_empty_charge</span><span class="p">():</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_empty_charge</span><span class="p">():</span>
                 <span class="c1"># build a fake dataframe with no indices</span>
                 <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
                     <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
@@ -1318,12 +1318,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pd</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="k">def</span> <span class="nf">_empty_charge</span><span class="p">():</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_empty_charge</span><span class="p">():</span>
                 <span class="c1"># return for single value with nan values</span>
                 <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayf</span><span class="p">([[</span><span class="kc">None</span><span class="p">]])</span>
 
         <span class="c1"># define helper function for reading voronoi+hirshfeld charges</span>
-        <span class="k">def</span> <span class="nf">_charges</span><span class="p">():</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_charges</span><span class="p">():</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Read output from Voronoi/Hirshfeld/Mulliken charges&quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">pd</span>
 
@@ -1352,7 +1352,7 @@
             <span class="p">)[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
             <span class="c1"># Define the function that parses the charges</span>
-            <span class="k">def</span> <span class="nf">_parse_charge</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_parse_charge</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
                 <span class="n">atom_idx</span><span class="p">,</span> <span class="o">*</span><span class="n">vals</span><span class="p">,</span> <span class="n">symbol</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="c1"># assert that this is a proper line</span>
                 <span class="c1"># this should catch cases where the following line of charge output</span>
@@ -1389,7 +1389,7 @@
             <span class="p">)</span>
 
         <span class="c1"># define helper function for reading voronoi+hirshfeld charges</span>
-        <span class="k">def</span> <span class="nf">_mulliken_charges_pre52</span><span class="p">():</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_mulliken_charges_pre52</span><span class="p">():</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Read output from Mulliken charges&quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">pd</span>
 
@@ -1416,7 +1416,7 @@
             <span class="c1">#     1     Total     6.99733   0.41305     -0.288  -0.296   0.007</span>
 
             <span class="c1"># Define the function that parses the charges</span>
-            <span class="k">def</span> <span class="nf">_parse_charge_total_nc</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>  <span class="c1"># non-colinear and soc</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_parse_charge_total_nc</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>  <span class="c1"># non-colinear and soc</span>
                 <span class="n">atom_idx</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="o">*</span><span class="n">vals</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="c1"># assert that this is a proper line</span>
                 <span class="c1"># this should catch cases where the following line of charge output</span>
@@ -1424,12 +1424,12 @@
                 <span class="c1"># atom_idx = int(atom_idx)</span>
                 <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">vals</span><span class="p">))</span>
 
-            <span class="k">def</span> <span class="nf">_parse_charge_total</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>  <span class="c1"># unpolarized and colinear spin</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_parse_charge_total</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>  <span class="c1"># unpolarized and colinear spin</span>
                 <span class="n">atom_idx</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
             <span class="c1"># Define the function that parses a single species</span>
-            <span class="k">def</span> <span class="nf">_parse_species_nc</span><span class="p">():</span>  <span class="c1"># non-colinear and soc</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_parse_species_nc</span><span class="p">():</span>  <span class="c1"># non-colinear and soc</span>
                 <span class="k">nonlocal</span> <span class="n">header</span><span class="p">,</span> <span class="n">atom_idx</span><span class="p">,</span> <span class="n">atom_charges</span>
 
                 <span class="c1"># The mulliken charges are organized per species where the charges</span>
@@ -1457,7 +1457,7 @@
                         <span class="n">atom_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span>
                         <span class="n">atom_charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge_vals</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">_parse_spin_pol</span><span class="p">():</span>  <span class="c1"># unpolarized and colinear spin</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_parse_spin_pol</span><span class="p">():</span>  <span class="c1"># unpolarized and colinear spin</span>
                 <span class="k">nonlocal</span> <span class="n">atom_idx</span><span class="p">,</span> <span class="n">atom_charges</span>
 
                 <span class="c1"># The mulliken charges are organized per spin</span>
@@ -1465,7 +1465,7 @@
                 <span class="c1"># block is marked by a Qtot</span>
 
                 <span class="c1"># Read until we encounter &quot;mulliken: Qtot&quot;</span>
-                <span class="k">def</span> <span class="nf">try_parse_int</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">try_parse_int</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -1733,7 +1733,7 @@
                 <span class="n">nan_array</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyf</span><span class="p">(</span><span class="n">md_scf_charge</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                 <span class="n">nan_array</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
-                <span class="k">def</span> <span class="nf">get_md_scf_charge</span><span class="p">(</span><span class="n">scf_charge</span><span class="p">,</span> <span class="n">iscf</span><span class="p">):</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">get_md_scf_charge</span><span class="p">(</span><span class="n">scf_charge</span><span class="p">,</span> <span class="n">iscf</span><span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">scf_charge</span><span class="p">[</span><span class="n">iscf</span><span class="p">]</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -1745,7 +1745,7 @@
         <span class="c1"># option parsing is a bit *difficult* with flag enums</span>
         <span class="c1"># So first figure out what is there, and handle this based</span>
         <span class="c1"># on arguments</span>
-        <span class="k">def</span> <span class="nf">_p</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">found</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_p</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">found</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Helper routine to do the following:</span>
 
 <span class="sd">            Returns</span>
@@ -1882,7 +1882,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

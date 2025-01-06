@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.geom.UniqueNeighborList &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -22,11 +22,11 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -149,7 +149,7 @@
 <h1>sisl.geom.UniqueNeighborList<a class="headerlink" href="#sisl-geom-uniqueneighborlist" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.geom.UniqueNeighborList">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">UniqueNeighborList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">finder_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.geom.UniqueNeighborList" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">UniqueNeighborList</span></span><a class="headerlink" href="#sisl.geom.UniqueNeighborList" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsNeighborList</span></code></p>
 <p>Full neighbors list of a system, but <strong>containing only the upper triangle of the adjacency matrix</strong>.</p>
 <p>What this means, is that the the object only contains one direction of each interaction.</p>
@@ -158,7 +158,7 @@ thresholds for interaction do not depend on direction).</p>
 <p class="rubric">Examples</p>
 <p>You can get a unique neighbors list from the <em class="xref py py-obj">find_unique_pairs</em> method of a <a class="reference internal" href="sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder" title="sisl.geom.NeighborFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NeighborFinder</span></code></a> object.
 Then, you can retreive the neighbors from it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
 
 <span class="c1"># Build a graphene supercell with a vacancy</span>
 <span class="n">graphene</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -216,8 +216,13 @@ Then, you can retreive the neighbors from it:</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.geom.UniqueNeighborList.to_full">
-<span class="sig-name descname"><span class="pre">to_full</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList" title="sisl.geom.FullNeighborList"><span class="pre">FullNeighborList</span></a></span></span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_neighborlists.html#UniqueNeighborList.to_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.UniqueNeighborList.to_full" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_full</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_neighborlists.html#UniqueNeighborList.to_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.UniqueNeighborList.to_full" title="Link to this definition"></a></dt>
 <dd><p>Converts the unique neighbors list to a full neighbors list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList" title="sisl.geom.FullNeighborList"><em>FullNeighborList</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -271,7 +276,7 @@ Then, you can retreive the neighbors from it:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

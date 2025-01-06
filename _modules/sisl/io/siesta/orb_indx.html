@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.siesta.orb_indx &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,21 +118,21 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">AtomicOrbital</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">AtomUnknown</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">PeriodicTable</span>
-<span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">arrayi</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
-<span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">AtomicOrbital</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">AtomUnknown</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">PeriodicTable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="kn">import</span> <span class="n">arrayi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.siesta</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
 
-<span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="n">_fill_basis_empty</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">_fill_basis_empty</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileSiesta</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;orbindxSileSiesta&quot;</span><span class="p">]</span>
 
@@ -141,13 +141,13 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">orbindxSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">orbindxSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Orbital information file&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="orbindxSileSiesta.read_lattice_nsc">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.read_lattice_nsc">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_lattice_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_lattice_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the supercell number of supercell information&quot;&quot;&quot;</span>
         <span class="c1"># First line contains no no_s</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -156,7 +156,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
 
-        <span class="k">def</span> <span class="nf">int_abs</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">int_abs</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no_s</span><span class="p">):</span>
@@ -183,7 +183,7 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file</span>
 
 <span class="sd">        The specie names have a short field in the ORB_INDX file, hence the name may</span>
@@ -209,7 +209,7 @@
 
         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">crt_atom</span><span class="p">(</span><span class="n">i_s</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">orbs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">crt_atom</span><span class="p">(</span><span class="n">i_s</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">orbs</span><span class="p">):</span>
                 <span class="c1"># The user has not specified an atomic basis</span>
                 <span class="n">i</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -220,7 +220,7 @@
 
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">crt_atom</span><span class="p">(</span><span class="n">i_s</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">orbs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">crt_atom</span><span class="p">(</span><span class="n">i_s</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">orbs</span><span class="p">):</span>
                 <span class="c1"># Get the atom and add the orbitals</span>
                 <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">if</span> <span class="n">atoms</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span><span class="o">.</span><span class="n">tag</span> <span class="o">!=</span> <span class="n">tag</span><span class="p">:</span>
@@ -287,7 +287,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

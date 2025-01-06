@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.orca.stdout &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,27 +118,27 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span>
-<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">UnitsVar</span>
-<span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">serialize_units_arg</span><span class="p">,</span> <span class="n">unit_convert</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">PropertyDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitsVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit</span><span class="w"> </span><span class="kn">import</span> <span class="n">serialize_units_arg</span><span class="p">,</span> <span class="n">unit_convert</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PropertyDict</span>
 
-<span class="kn">from</span> <span class="nn">.._multiple</span> <span class="kn">import</span> <span class="n">SileBinder</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileORCA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._multiple</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileBinder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileORCA</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;outputSileORCA&quot;</span><span class="p">,</span> <span class="s2">&quot;stdoutSileORCA&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.orca&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">stdoutSileORCA</span><span class="p">(</span><span class="n">SileORCA</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">stdoutSileORCA</span><span class="p">(</span><span class="n">SileORCA</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Output file from ORCA&quot;&quot;&quot;</span>
 
     <span class="n">_info_attributes_</span> <span class="o">=</span> <span class="p">[</span>
@@ -177,7 +177,7 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the full file has been read and &quot;ORCA TERMINATED NORMALLY&quot; was found.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">completed</span></div>
 
@@ -188,7 +188,7 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">na</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">na</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of atoms&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">na</span>
 
@@ -198,7 +198,7 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">no</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">no</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of orbitals (basis functions)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">no</span>
 
@@ -206,7 +206,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.read_electrons">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_electrons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_electrons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read number of electrons (alpha, beta)</span>
 
 <span class="sd">        Returns</span>
@@ -227,7 +227,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.read_charge">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_charge</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_charge</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;mulliken&quot;</span><span class="p">,</span> <span class="s2">&quot;loewdin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">,</span>
         <span class="n">projection</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;orbital&quot;</span><span class="p">,</span>
@@ -277,7 +277,7 @@
             <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;loewdin&quot;</span><span class="p">:</span>
                 <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;LOEWDIN ATOMIC CHARGES&quot;</span>
 
-            <span class="k">def</span> <span class="nf">read_block</span><span class="p">(</span><span class="n">step_to</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">read_block</span><span class="p">(</span><span class="n">step_to</span><span class="p">):</span>
                 <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">step_to</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">None</span>
@@ -305,7 +305,7 @@
             <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;loewdin&quot;</span><span class="p">:</span>
                 <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;LOEWDIN REDUCED ORBITAL CHARGES&quot;</span>
 
-            <span class="k">def</span> <span class="nf">read_reduced_orbital_block</span><span class="p">():</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">read_reduced_orbital_block</span><span class="p">():</span>
                 <span class="n">D</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -321,7 +321,7 @@
                     <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">D</span>
 
-            <span class="k">def</span> <span class="nf">read_block</span><span class="p">(</span><span class="n">step_to</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">read_block</span><span class="p">(</span><span class="n">step_to</span><span class="p">):</span>
                 <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">step_to</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">None</span>
@@ -356,7 +356,7 @@
             <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;loewdin&quot;</span><span class="p">:</span>
                 <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;LOEWDIN ORBITAL CHARGES&quot;</span>
 
-            <span class="k">def</span> <span class="nf">read_block</span><span class="p">(</span><span class="n">step_to</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">read_block</span><span class="p">(</span><span class="n">step_to</span><span class="p">):</span>
                 <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">step_to</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="s2">&quot;SPIN&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                     <span class="n">spin_block</span> <span class="o">=</span> <span class="kc">True</span>
@@ -403,7 +403,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.read_energy">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PropertyDict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PropertyDict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the energy blocks</span>
 
 <span class="sd">        Parameters</span>
@@ -459,7 +459,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.read_orbital_energies">[docs]</a>
     <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_orbital_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_orbital_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">UnitsVar</span> <span class="o">=</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the &quot;ORBITAL ENERGIES&quot; blocks</span>
 
 <span class="sd">        Parameters</span>
@@ -525,7 +525,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

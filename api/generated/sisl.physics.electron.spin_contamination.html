@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>spin_contamination &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -22,11 +22,11 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -160,7 +160,7 @@
 <h1>spin_contamination<a class="headerlink" href="#spin-contamination" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.spin_contamination">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">spin_contamination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#spin_contamination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.spin_contamination" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">spin_contamination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#spin_contamination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.spin_contamination" title="Link to this definition"></a></dt>
 <dd><p>Calculate the spin contamination value between two spin states</p>
 <p>This calculation only makes sense for spin-polarized calculations.</p>
 <p>The contamination value is calculated using the following formula:</p>
@@ -178,7 +178,7 @@ S^2_{\beta,j} &amp;= \sum_i |\langle \psi_i^\alpha | \mathbf S | \psi_j^\beta \r
 <li><p><strong>S</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – overlap matrix used in the <span class="math notranslate nohighlight">\(\langle\psi|\mathbf S|\psi\rangle\)</span> calculation. If <em class="xref py py-obj">None</em> the identity
 matrix is assumed. The overlap matrix should correspond to the system and <span class="math notranslate nohighlight">\(\mathbf k\)</span> point the eigenvectors
 have been evaluated at.</p></li>
-<li><p><strong>sum</strong> – whether the spin-contamination should be summed for all states (a single number returned).
+<li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the spin-contamination should be summed for all states (a single number returned).
 If sum, a spin-contamination per state per spin-channel will be returned.</p></li>
 </ul>
 </dd>
@@ -187,9 +187,15 @@ If sum, a spin-contamination per state per spin-channel will be returned.</p></l
 <p><em class="xref py py-obj">state_alpha</em> and <em class="xref py py-obj">state_beta</em> need not have the same number of states.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oplist</span></code> – spin squared expectation value per spin channel <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>.
+<dd class="field-odd"><p>spin squared expectation value per spin channel <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>.
 If <em class="xref py py-obj">sum</em> is true, only a single number is returned (not an <code class="xref py py-obj docutils literal notranslate"><span class="pre">oplist</span></code>, otherwise a list for each
 state.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">oplist</span></code></p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -207,7 +213,7 @@ state.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

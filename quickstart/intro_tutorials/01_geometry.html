@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creating common geometries &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,11 +23,11 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -165,8 +165,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">si</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </pre></div>
 </div>
 </div>
@@ -254,7 +254,12 @@ Geometry{na: 1, no: 1,
 }
 </pre></div></div>
 </div>
-<p>This shows a greater detail of the geometry. - it shows there is 1 atom (<code class="docutils literal notranslate"><span class="pre">na:</span> <span class="pre">1</span></code>), and 1 orbital (<code class="docutils literal notranslate"><span class="pre">no:</span> <span class="pre">1</span></code>) - a complete list of atoms (<code class="docutils literal notranslate"><span class="pre">Atoms{...}</span></code>), their atomic number, mass and associated orbitals - the associated <code class="docutils literal notranslate"><span class="pre">Lattice</span></code> object describes the lattice vectors, and which lattice vectors uses periodicity</p>
+<p>This shows a greater detail of the geometry.</p>
+<ul class="simple">
+<li><p>it shows there is 1 atom (<code class="docutils literal notranslate"><span class="pre">na:</span> <span class="pre">1</span></code>), and 1 orbital (<code class="docutils literal notranslate"><span class="pre">no:</span> <span class="pre">1</span></code>)</p></li>
+<li><p>a complete list of atoms (<code class="docutils literal notranslate"><span class="pre">Atoms{...}</span></code>), their atomic number, mass and associated orbitals</p></li>
+<li><p>the associated <code class="docutils literal notranslate"><span class="pre">Lattice</span></code> object describes the lattice vectors, and which lattice vectors uses periodicity</p></li>
+</ul>
 <hr class="docutils" />
 <p>The geometry also has associated coordinates of the atomic structure, these can be accessed through the <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> attribute:</p>
 <div class="nbinput docutils container">
@@ -464,7 +469,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |  __str__(self) from sisl._core.atom.Atom
  |      Return str(self).
  |
- |  copy(atom: &#39;Atom&#39;, Z: &#39;Optional[Union[int, str]]&#39; = None, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None) -&gt; &#39;Atom&#39; from sisl
+ |  copy(self, Z: &#39;Optional[Union[int, str]]&#39; = None, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None) -&gt; &#39;Atom&#39; from sisl
  |      Return copy of this object
  |
  |  equal(self, other, R: &#39;bool&#39; = True, psi: &#39;bool&#39; = False) from sisl._core.atom.Atom
@@ -505,7 +510,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |
  |      See `PeriodicTable.radius` for details on the argument.
  |
- |  remove(atom: &#39;Atom&#39;, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
+ |  remove(self, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Return the same atom without a specific set of orbitals
  |
  |      Parameters
@@ -522,7 +527,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |      --------
  |      Atom.sub : retain a selected set of orbitals
  |
- |  scale(atom: &#39;Atom&#39;, scale: &#39;float&#39;) -&gt; &#39;Atom&#39; from sisl
+ |  scale(self, scale: &#39;float&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Scale the atomic radii and return an equivalent atom.
  |
  |      Parameters
@@ -530,7 +535,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |      scale :
  |         the scale factor for the atomic radii
  |
- |  sub(atom: &#39;Atom&#39;, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
+ |  sub(self, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Return the same atom with only a subset of the orbitals present
  |
  |      Parameters
@@ -700,7 +705,7 @@ Geometry{na: 4, no: 4,
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

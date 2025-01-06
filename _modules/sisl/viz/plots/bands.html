@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.viz.plots.bands &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,33 +118,33 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl.viz.types</span> <span class="kn">import</span> <span class="n">Colorscale</span><span class="p">,</span> <span class="n">OrbitalQueries</span><span class="p">,</span> <span class="n">StyleSpec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.viz.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Colorscale</span><span class="p">,</span> <span class="n">OrbitalQueries</span><span class="p">,</span> <span class="n">StyleSpec</span>
 
-<span class="kn">from</span> <span class="nn">..data.bands</span> <span class="kn">import</span> <span class="n">BandsData</span>
-<span class="kn">from</span> <span class="nn">..figure</span> <span class="kn">import</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">get_figure</span>
-<span class="kn">from</span> <span class="nn">..plot</span> <span class="kn">import</span> <span class="n">Plot</span>
-<span class="kn">from</span> <span class="nn">..plotters.plot_actions</span> <span class="kn">import</span> <span class="n">combined</span>
-<span class="kn">from</span> <span class="nn">..plotters.xarray</span> <span class="kn">import</span> <span class="n">draw_xarray_xy</span>
-<span class="kn">from</span> <span class="nn">..plotutils</span> <span class="kn">import</span> <span class="n">random_color</span>
-<span class="kn">from</span> <span class="nn">..processors.bands</span> <span class="kn">import</span> <span class="n">calculate_gap</span><span class="p">,</span> <span class="n">draw_gaps</span><span class="p">,</span> <span class="n">filter_bands</span><span class="p">,</span> <span class="n">style_bands</span>
-<span class="kn">from</span> <span class="nn">..processors.data</span> <span class="kn">import</span> <span class="n">accept_data</span>
-<span class="kn">from</span> <span class="nn">..processors.orbital</span> <span class="kn">import</span> <span class="n">get_orbital_queries_manager</span><span class="p">,</span> <span class="n">reduce_orbital_data</span>
-<span class="kn">from</span> <span class="nn">..processors.xarray</span> <span class="kn">import</span> <span class="n">scale_variable</span>
-<span class="kn">from</span> <span class="nn">.orbital_groups_plot</span> <span class="kn">import</span> <span class="n">OrbitalGroupsPlot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..data.bands</span><span class="w"> </span><span class="kn">import</span> <span class="n">BandsData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..figure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">get_figure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..plot</span><span class="w"> </span><span class="kn">import</span> <span class="n">Plot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..plotters.plot_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">combined</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..plotters.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_xarray_xy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..plotutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">random_color</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..processors.bands</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_gap</span><span class="p">,</span> <span class="n">draw_gaps</span><span class="p">,</span> <span class="n">filter_bands</span><span class="p">,</span> <span class="n">style_bands</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..processors.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">accept_data</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..processors.orbital</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_orbital_queries_manager</span><span class="p">,</span> <span class="n">reduce_orbital_data</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..processors.xarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">scale_variable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.orbital_groups_plot</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrbitalGroupsPlot</span>
 
 
-<span class="k">def</span> <span class="nf">_default_random_color</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_default_random_color</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">random_color</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_group_traces</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">group_legend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_group_traces</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">group_legend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">group_legend</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">actions</span>
@@ -168,7 +168,7 @@
     <span class="k">return</span> <span class="n">new_actions</span>
 
 
-<span class="k">def</span> <span class="nf">bands_plot</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bands_plot</span><span class="p">(</span>
     <span class="n">bands_data</span><span class="p">:</span> <span class="n">BandsData</span><span class="p">,</span>
     <span class="n">Erange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">E0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -302,7 +302,7 @@
 
 <span class="c1"># I keep the fatbands plot here so that one can see how similar they are.</span>
 <span class="c1"># I am yet to find a nice solution for extending workflows.</span>
-<span class="k">def</span> <span class="nf">fatbands_plot</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fatbands_plot</span><span class="p">(</span>
     <span class="n">bands_data</span><span class="p">:</span> <span class="n">BandsData</span><span class="p">,</span>
     <span class="n">Erange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">E0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -479,14 +479,14 @@
 
 <div class="viewcode-block" id="BandsPlot">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot">[docs]</a>
-<span class="k">class</span> <span class="nc">BandsPlot</span><span class="p">(</span><span class="n">Plot</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BandsPlot</span><span class="p">(</span><span class="n">Plot</span><span class="p">):</span>
     <span class="n">function</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">bands_plot</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="FatbandsPlot">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.FatbandsPlot.html#sisl.viz.FatbandsPlot">[docs]</a>
-<span class="k">class</span> <span class="nc">FatbandsPlot</span><span class="p">(</span><span class="n">OrbitalGroupsPlot</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FatbandsPlot</span><span class="p">(</span><span class="n">OrbitalGroupsPlot</span><span class="p">):</span>
     <span class="n">function</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">fatbands_plot</span><span class="p">)</span></div>
 
 </pre></div>
@@ -498,7 +498,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

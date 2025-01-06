@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.viz.figure.figure &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,22 +118,22 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChainMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl.viz.plotutils</span> <span class="kn">import</span> <span class="n">values_to_colors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.viz.plotutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">values_to_colors</span>
 
 <span class="n">BACKENDS</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <div class="viewcode-block" id="Figure">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure">[docs]</a>
-<span class="k">class</span> <span class="nc">Figure</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base figure class that all backends should inherit from.</span>
 
 <span class="sd">    It contains all the plotting actions that should be supported by a figure.</span>
@@ -163,11 +163,11 @@
 
     <span class="n">plot_actions</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_actions</span> <span class="o">=</span> <span class="n">plot_actions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="n">plot_actions</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">plot_actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_plot_actions</span><span class="p">(</span><span class="n">plot_actions</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_coloraxes</span> <span class="o">=</span> <span class="p">{}</span>
@@ -192,7 +192,7 @@
 <div class="viewcode-block" id="Figure.fig_has_attr">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.fig_has_attr">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">fig_has_attr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fig_has_attr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the figure that this class generates has a given attribute.</span>
 
 <span class="sd">        Parameters</span>
@@ -204,8 +204,8 @@
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_sanitize_plot_actions</span><span class="p">(</span><span class="n">plot_actions</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">_flatten</span><span class="p">(</span><span class="n">plot_actions</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">root_i</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sanitize_plot_actions</span><span class="p">(</span><span class="n">plot_actions</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_flatten</span><span class="p">(</span><span class="n">plot_actions</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">root_i</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">section_actions</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plot_actions</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
@@ -238,7 +238,7 @@
 
 <div class="viewcode-block" id="Figure.init_figure">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.init_figure">[docs]</a>
-    <span class="k">def</span> <span class="nf">init_figure</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_figure</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">composite_method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
             <span class="kc">None</span><span class="p">,</span>
@@ -284,15 +284,15 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown composite method &#39;</span><span class="si">{</span><span class="n">composite_method</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_init_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t implement a _init_figure method.&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_init_figure_same_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_figure_same_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_figure</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_init_figure_multiple_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multi_axes</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_figure_multiple_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multi_axes</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">figure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_figure</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_axes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -305,22 +305,22 @@
 
         <span class="k">return</span> <span class="n">figure</span>
 
-    <span class="k">def</span> <span class="nf">_init_multiaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_multiaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t implement a _init_multiaxis method.&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_init_figure_animated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_figure_animated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t implement a _init_figure_animated method.&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_init_figure_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_figure_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t implement a _init_figure_subplots method.&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_subplots_rows_and_cols</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_subplots_rows_and_cols</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -357,7 +357,7 @@
 
         <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span>
 
-    <span class="k">def</span> <span class="nf">_composite_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_composite_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_NONE</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">plot_actions</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAME_AXES</span><span class="p">:</span>
@@ -371,47 +371,47 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown composite mode &#39;</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_iter_same_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_iter_same_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">plot_actions</span>
 
-    <span class="k">def</span> <span class="nf">_iter_multiaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_iter_multiaxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t implement a _iter_multiaxis method.&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_iter_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_iter_subplots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t implement a _iter_subplots method.&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_iter_animation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_iter_animation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t implement a _iter_animation method.&quot;</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="Figure.clear">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.clear">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the figure so that we can draw again.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="Figure.show">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.show">[docs]</a>
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="Figure.init_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.init_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">init_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Called if functions that draw in 3D are going to be called.&quot;&quot;&quot;</span>
         <span class="k">return</span></div>
 
 
 <div class="viewcode-block" id="Figure.init_coloraxis">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.init_coloraxis">[docs]</a>
-    <span class="k">def</span> <span class="nf">init_coloraxis</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_coloraxis</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">,</span>
         <span class="n">cmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -434,7 +434,7 @@
 
 <div class="viewcode-block" id="Figure.draw_line">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_line">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_line</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_line</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">,</span>
         <span class="n">y</span><span class="p">,</span>
@@ -481,7 +481,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multicolor_line">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multicolor_line">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multicolor_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="p">{},</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multicolor_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="p">{},</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;By default, multicoloured lines are drawn simply by drawing scatter points.&quot;&quot;&quot;</span>
         <span class="n">marker</span> <span class="o">=</span> <span class="p">{</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;marker&quot;</span><span class="p">,</span> <span class="p">{}),</span>
@@ -495,7 +495,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multisize_line">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multisize_line">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multisize_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="p">{},</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multisize_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="p">{},</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;By default, multisized lines are drawn simple by drawing scatter points.&quot;&quot;&quot;</span>
         <span class="n">marker</span> <span class="o">=</span> <span class="p">{</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;marker&quot;</span><span class="p">,</span> <span class="p">{}),</span>
@@ -509,7 +509,7 @@
 
 <div class="viewcode-block" id="Figure.draw_area_line">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_area_line">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_area_line</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_area_line</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">,</span>
         <span class="n">y</span><span class="p">,</span>
@@ -557,7 +557,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multicolor_area_line">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multicolor_area_line">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multicolor_area_line</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multicolor_area_line</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">,</span>
         <span class="n">y</span><span class="p">,</span>
@@ -605,7 +605,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multisize_area_line">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multisize_area_line">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multisize_area_line</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multisize_area_line</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">,</span>
         <span class="n">y</span><span class="p">,</span>
@@ -664,7 +664,7 @@
 
 <div class="viewcode-block" id="Figure.draw_scatter">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_scatter">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_scatter</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_scatter</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">{},</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws a scatter satisfying the specifications</span>
@@ -700,7 +700,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multicolor_scatter">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multicolor_scatter">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multicolor_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multicolor_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws a multicoloured scatter.</span>
 
 <span class="sd">        Usually the normal scatter can already support this.</span>
@@ -711,7 +711,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multisize_scatter">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multisize_scatter">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multisize_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multisize_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws a multisized scatter.</span>
 
 <span class="sd">        Usually the normal scatter can already support this.</span>
@@ -722,7 +722,7 @@
 
 <div class="viewcode-block" id="Figure.draw_arrows">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_arrows">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_arrows</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_arrows</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">,</span>
         <span class="n">y</span><span class="p">,</span>
@@ -814,7 +814,7 @@
 
 <div class="viewcode-block" id="Figure.draw_line_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_line_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_line_3D</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_line_3D</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">,</span>
         <span class="n">y</span><span class="p">,</span>
@@ -864,21 +864,21 @@
 
 <div class="viewcode-block" id="Figure.draw_multicolor_line_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multicolor_line_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multicolor_line_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multicolor_line_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws a multicoloured 3D line.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw_line_3D</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Figure.draw_multisize_line_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multisize_line_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multisize_line_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multisize_line_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws a multisized 3D line.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw_line_3D</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Figure.draw_scatter_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_scatter_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_scatter_3D</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_scatter_3D</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">{},</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws a 3D scatter satisfying the specifications</span>
@@ -915,7 +915,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multicolor_scatter_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multicolor_scatter_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multicolor_scatter_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multicolor_scatter_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws a multicoloured 3D scatter.</span>
 
 <span class="sd">        Usually the normal 3D scatter can already support this.</span>
@@ -926,7 +926,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multisize_scatter_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multisize_scatter_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multisize_scatter_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multisize_scatter_3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws a multisized 3D scatter.</span>
 
 <span class="sd">        Usually the normal 3D scatter can already support this.</span>
@@ -937,7 +937,7 @@
 
 <div class="viewcode-block" id="Figure.draw_balls_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_balls_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_balls_3D</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_balls_3D</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="p">{},</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws points as 3D spheres.&quot;&quot;&quot;</span>
@@ -948,7 +948,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multicolor_balls_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multicolor_balls_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multicolor_balls_3D</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multicolor_balls_3D</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">{},</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws points as 3D spheres with different colours.</span>
@@ -971,7 +971,7 @@
 
 <div class="viewcode-block" id="Figure.draw_multisize_balls_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_multisize_balls_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_multisize_balls_3D</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_multisize_balls_3D</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="p">{},</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draws points as 3D spheres with different sizes.</span>
@@ -985,7 +985,7 @@
 
 <div class="viewcode-block" id="Figure.draw_arrows_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_arrows_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_arrows_3D</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_arrows_3D</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">,</span>
         <span class="n">y</span><span class="p">,</span>
@@ -1097,7 +1097,7 @@
 
 <div class="viewcode-block" id="Figure.draw_heatmap">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_heatmap">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_heatmap</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_heatmap</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">values</span><span class="p">,</span>
         <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1120,7 +1120,7 @@
 
 <div class="viewcode-block" id="Figure.draw_mesh_3D">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.draw_mesh_3D">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_mesh_3D</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_mesh_3D</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">vertices</span><span class="p">,</span>
         <span class="n">faces</span><span class="p">,</span>
@@ -1139,7 +1139,7 @@
 
 <div class="viewcode-block" id="Figure.set_axis">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.set_axis">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the axis parameters.</span>
 
 <span class="sd">        The specification for the axes is exactly the plotly one. This is to have a good</span>
@@ -1150,7 +1150,7 @@
 
 <div class="viewcode-block" id="Figure.set_axes_equal">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.set_axes_equal">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_axes_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_axes_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the axes equal.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t implement a set_axes_equal method.&quot;</span>
@@ -1159,7 +1159,7 @@
 
 <div class="viewcode-block" id="Figure.to">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.to">[docs]</a>
-    <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the figure to another backend.</span>
 
 <span class="sd">        Parameters</span>
@@ -1174,7 +1174,7 @@
 
 <div class="viewcode-block" id="get_figure">
 <a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.get_figure.html#sisl.viz.get_figure">[docs]</a>
-<span class="k">def</span> <span class="nf">get_figure</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_figure</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plot_actions</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a figure object.</span>
 
 <span class="sd">    Parameters</span>
@@ -1197,7 +1197,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

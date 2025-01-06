@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl_toolbox.btd.DeviceGreen &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -22,11 +22,11 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -138,7 +138,7 @@
 <h1>sisl_toolbox.btd.DeviceGreen<a class="headerlink" href="#sisl-toolbox-btd-devicegreen" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.btd.</span></span><span class="sig-name descname"><span class="pre">DeviceGreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pivot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.btd.</span></span><span class="sig-name descname"><span class="pre">DeviceGreen</span></span><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Block-tri-diagonal Green function calculator</p>
 <p>This class enables the extraction and calculation of some important
@@ -164,8 +164,8 @@ encountered in the FDF file.</p>
 </div>
 <p>The above <code class="docutils literal notranslate"><span class="pre">DeviceGreen.from_fdf</span></code> is a short-hand for something
 like the below (it actually does more than that, so prefer the <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.from_fdf" title="sisl_toolbox.btd.DeviceGreen.from_fdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_fdf</span></code></a>):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span>
-<span class="kn">from</span> <span class="nn">sisl_toolbox.btd</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl_toolbox.btd</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="c1"># First read in the required data</span>
 <span class="n">H_elec</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;ELECTRODE.nc&quot;</span><span class="p">)</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;DEVICE.nc&quot;</span><span class="p">)</span>
@@ -307,7 +307,7 @@ or calculate them on the fly.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the energy to calculate at, may be a complex value.</p></li>
 <li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point to calculate the Green function at</p></li>
-<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;array&quot;,</span> <span class="pre">&quot;btd&quot;,</span> <span class="pre">&quot;bm&quot;,</span> <span class="pre">&quot;bd&quot;,</span> <span class="pre">&quot;sparse&quot;}</span></code>) – return the matrix in a specific format</p>
+<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;array&quot;,</span> <span class="pre">&quot;btd&quot;,</span> <span class="pre">&quot;bm&quot;,</span> <span class="pre">&quot;bd&quot;,</span> <span class="pre">&quot;sparse&quot;}</span></code>) – <p>return the matrix in a specific format</p>
 <ul>
 <li><p>array: a regular numpy array (full matrix)</p></li>
 <li><p>btd: a block-matrix object with only the diagonals and first off-diagonals</p></li>
@@ -315,7 +315,7 @@ or calculate them on the fly.</p></li>
 <li><p>bd: a block-matrix object with only diagonals (no off-diagonals)</p></li>
 <li><p>sparse: a sparse-csr matrix for the sparse elements as found in the Hamiltonian</p></li>
 </ul>
-</li>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -362,15 +362,18 @@ A small value improves precision at the cost of bigger matrices.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>scat_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – for each <em class="xref py py-obj">elec_to</em> a scattering matrix will be returned. Its dimensions will be
+<dd class="field-even"><p><strong>scat_matrix</strong> – for each <em class="xref py py-obj">elec_to</em> a scattering matrix will be returned. Its dimensions will be
 depending on the <em class="xref py py-obj">cutoff</em> value at the cost of precision.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.scattering_state">
-<span class="sig-name descname"><span class="pre">scattering_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'svd:gamma'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.scattering_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scattering_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'svd:gamma'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.scattering_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="Link to this definition"></a></dt>
 <dd><p>Calculate the scattering states for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point from a given electrode</p>
 <p>The scattering states are the eigen states of the spectral function:</p>
 <div class="math notranslate nohighlight">
@@ -404,18 +407,21 @@ also applies here.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>scat</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">StateCElectron</span></code>) – the scattering states from the spectral function. The <code class="docutils literal notranslate"><span class="pre">scat.state</span></code> contains
+<dd class="field-even"><p><strong>scat</strong> – the scattering states from the spectral function. The <code class="docutils literal notranslate"><span class="pre">scat.state</span></code> contains
 the scattering state vectors (eigenvectors of the spectral function).
 <code class="docutils literal notranslate"><span class="pre">scat.c</span></code> contains the DOS of the scattering states scaled by <span class="math notranslate nohighlight">\(1/(2\pi)\)</span>
 so ensure correct density of states.
 One may recreate the spectral function with <code class="docutils literal notranslate"><span class="pre">scat.outer(matrix=scat.c</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">pi)</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">StateCElectron</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.spectral">
-<span class="sig-name descname"><span class="pre">spectral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'column'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">herm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.spectral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.spectral" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">spectral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'column'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">herm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.spectral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.spectral" title="Link to this definition"></a></dt>
 <dd><p>Calculate the spectral function for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point from a given electrode</p>
 <p>The spectral function is calculated as:</p>
 <div class="math notranslate nohighlight">
@@ -427,19 +433,19 @@ One may recreate the spectral function with <code class="docutils literal notran
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the spectral function from</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the energy to calculate at, may be a complex value.</p></li>
 <li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point to calculate the spectral function at</p></li>
-<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;array&quot;,</span> <span class="pre">&quot;btd&quot;,</span> <span class="pre">&quot;bm&quot;,</span> <span class="pre">&quot;bd&quot;}</span></code>) – return the matrix in a specific format</p>
+<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;array&quot;,</span> <span class="pre">&quot;btd&quot;,</span> <span class="pre">&quot;bm&quot;,</span> <span class="pre">&quot;bd&quot;}</span></code>) – <p>return the matrix in a specific format</p>
 <ul>
 <li><p>array: a regular numpy array (full matrix)</p></li>
 <li><p>btd: a block-matrix object with only the diagonals and first off-diagonals</p></li>
 <li><p>bm: a block-matrix object with diagonals and all off-diagonals</p></li>
 <li><p>bd: same as btd, since they are already calculated</p></li>
 </ul>
-</li>
+</p></li>
 <li><p><strong>method</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;column&quot;,</span> <span class="pre">&quot;propagate&quot;}</span></code>) – which method to use for calculating the spectral function.
 Depending on the size of the BTD blocks one may be faster than the
 other. For large systems you are recommended to time the different methods
 and stick with the fastest one, they are numerically identical.</p></li>
-<li><p><strong>herm</strong> – The spectral function is a Hermitian matrix, by default (True), the methods
+<li><p><strong>herm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – The spectral function is a Hermitian matrix, by default (True), the methods
 that can utilize the Hermitian property only calculates the lower triangular
 part of <span class="math notranslate nohighlight">\(\mathbf A\)</span>, and then copies the Hermitian to the upper part.
 By setting this to <em class="xref py py-obj">False</em> the entire matrix is explicitly calculated.</p></li>
@@ -463,7 +469,7 @@ By setting this to <em class="xref py py-obj">False</em> the entire matrix is ex
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.siesta.kp &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,20 +118,20 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">LatticeChild</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
-<span class="kn">from</span> <span class="nn">sisl.physics.brillouinzone</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
-<span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">LatticeChild</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.brillouinzone</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrillouinZone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.siesta</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
 
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileSiesta</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;kpSileSiesta&quot;</span><span class="p">,</span> <span class="s2">&quot;rkpSileSiesta&quot;</span><span class="p">]</span>
 
@@ -141,14 +141,14 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">kpSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">kpSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;k-points file in 1/Bohr units&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="kpSileSiesta.read_data">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.read_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns K-points from the file (note that these are in reciprocal units)</span>
 
 <span class="sd">        Parameters</span>
@@ -181,7 +181,7 @@
 <div class="viewcode-block" id="kpSileSiesta.write_data">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.write_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes K-points to file</span>
 
 <span class="sd">        Parameters</span>
@@ -207,7 +207,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.read_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns K-points from the file (note that these are in reciprocal units)</span>
 
 <span class="sd">        Parameters</span>
@@ -220,7 +220,7 @@
 <span class="sd">        bz : BrillouinZone</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">sisl.physics.brillouinzone</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.brillouinzone</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrillouinZone</span>
 
         <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
         <span class="n">bz</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
@@ -231,7 +231,7 @@
 <div class="viewcode-block" id="kpSileSiesta.write_brillouinzone">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.write_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes BrillouinZone-points to file</span>
 
 <span class="sd">        Parameters</span>
@@ -248,7 +248,7 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">rkpSileSiesta</span><span class="p">(</span><span class="n">kpSileSiesta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">rkpSileSiesta</span><span class="p">(</span><span class="n">kpSileSiesta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Special k-point file with units in reciprocal lattice vectors</span>
 
 <span class="sd">    Its main usage is as input for the kgrid.File fdf-option, in which case this</span>
@@ -258,7 +258,7 @@
 <div class="viewcode-block" id="rkpSileSiesta.read_data">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.read_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns K-points from the file (note that these are in reciprocal units)</span>
 
 <span class="sd">        Returns</span>
@@ -282,7 +282,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.read_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns K-points from the file</span>
 
 <span class="sd">        Parameters</span>
@@ -295,7 +295,7 @@
 <span class="sd">        bz : BrillouinZone</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">()</span>
-        <span class="kn">from</span> <span class="nn">sisl.physics.brillouinzone</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.brillouinzone</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrillouinZone</span>
 
         <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
         <span class="n">bz</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
@@ -306,7 +306,7 @@
 <div class="viewcode-block" id="rkpSileSiesta.write_brillouinzone">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.write_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes BrillouinZone-points to file</span>
 
 <span class="sd">        Parameters</span>
@@ -331,7 +331,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

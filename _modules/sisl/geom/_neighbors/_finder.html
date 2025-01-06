@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.geom._neighbors._finder &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,20 +118,20 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">AtomsIndex</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">size_to_elements</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomsIndex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">size_to_elements</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_operations</span>
-<span class="kn">from</span> <span class="nn">._neighborlists</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_operations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._neighborlists</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">FullNeighborList</span><span class="p">,</span>
     <span class="n">PartialNeighborList</span><span class="p">,</span>
     <span class="n">PointsNeighborList</span><span class="p">,</span>
@@ -144,7 +144,7 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">NeighborFinder</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NeighborFinder</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fast and linear scaling finding of neighbors.</span>
 
 <span class="sd">    Once this class is instantiated, a table is built. Then,</span>
@@ -256,7 +256,7 @@
     <span class="n">_heads</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># (total_nbins, )</span>
     <span class="n">_counts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># (total_nbins, )</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -267,7 +267,7 @@
 
 <div class="viewcode-block" id="NeighborFinder.setup">
 <a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.setup">[docs]</a>
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -409,7 +409,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_table</span><span class="p">(</span><span class="n">scalar_bin_indices</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_build_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bin_indices</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bin_indices</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Builds the tables that will allow efficient linear scaling neighbor search.</span>
 
 <span class="sd">        Parameters</span>
@@ -424,7 +424,7 @@
 
 <div class="viewcode-block" id="NeighborFinder.assert_consistency">
 <a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.assert_consistency">[docs]</a>
-    <span class="k">def</span> <span class="nf">assert_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assert_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Asserts that the data structure (self._list, self._heads, self._counts) is consistent.</span>
 
 <span class="sd">        It also stores that the shape is consistent with the stored geometry and the store total_nbins.</span>
@@ -446,7 +446,7 @@
             <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Bin </span><span class="si">{</span><span class="n">i_bin</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">bin_count</span><span class="si">}</span><span class="s2"> atoms but we found </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> atoms&quot;</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_search_atom_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scalar_bin_indices</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_search_atom_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scalar_bin_indices</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the number of atoms that will be explored for each search</span>
 
 <span class="sd">        Parameters</span>
@@ -462,7 +462,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="p">[</span><span class="n">scalar_bin_indices</span><span class="o">.</span><span class="n">ravel</span><span class="p">()]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_bin_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fxyz</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">floor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_bin_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fxyz</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">floor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the bin indices for a given fractional coordinate.</span>
 
 <span class="sd">        Parameters</span>
@@ -502,7 +502,7 @@
 
         <span class="k">return</span> <span class="n">bin_indices</span>
 
-    <span class="k">def</span> <span class="nf">_get_search_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fxyz</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_search_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fxyz</span><span class="p">,</span> <span class="n">cartesian</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the bin indices to explore for a given fractional coordinate.</span>
 
 <span class="sd">        Given a fractional coordinate, we will need to look for neighbors</span>
@@ -556,7 +556,7 @@
 
         <span class="k">return</span> <span class="n">search_indices</span><span class="p">,</span> <span class="n">isc</span>
 
-    <span class="k">def</span> <span class="nf">_cartesian_to_scalar_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cartesian_to_scalar_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts cartesian indices to scalar indices&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -564,7 +564,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">dot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
-    <span class="k">def</span> <span class="nf">_scalar_to_cartesian_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scalar_to_cartesian_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts cartesian indices to scalar indices&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_nbins</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -575,7 +575,7 @@
         <span class="n">second</span><span class="p">,</span> <span class="n">first</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">third</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_correct_pairs_R_too_big</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_correct_pairs_R_too_big</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">neighbor_pairs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># (n_pairs, 5)</span>
         <span class="n">split_ind</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>  <span class="c1"># (n_queried_atoms, )</span>
@@ -614,7 +614,7 @@
 
 <div class="viewcode-block" id="NeighborFinder.find_neighbors">
 <a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_neighbors">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_neighbors</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_neighbors</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">self_interaction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -701,7 +701,7 @@
 
 <div class="viewcode-block" id="NeighborFinder.find_unique_pairs">
 <a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_unique_pairs">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_unique_pairs</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_unique_pairs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">self_interaction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UniqueNeighborList</span><span class="p">:</span>
@@ -785,7 +785,7 @@
 
 <div class="viewcode-block" id="NeighborFinder.find_close">
 <a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder.find_close">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_close</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_close</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">xyz</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PointsNeighborList</span><span class="p">:</span>
@@ -859,7 +859,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

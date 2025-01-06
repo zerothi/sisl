@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.tbtrans.tbtproj &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,24 +118,24 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">StringIO</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl._core</span> <span class="kn">import</span> <span class="n">Geometry</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">DensityMatrix</span>
-<span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">collect_action</span><span class="p">,</span> <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">list2str</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">DensityMatrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.siesta</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">collect_action</span><span class="p">,</span> <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">list2str</span>
 
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">missing_input_fdf</span>
-<span class="kn">from</span> <span class="nn">.tbt</span> <span class="kn">import</span> <span class="n">EType</span><span class="p">,</span> <span class="n">NormType</span><span class="p">,</span> <span class="n">tbtncSileTBtrans</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">missing_input_fdf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.tbt</span><span class="w"> </span><span class="kn">import</span> <span class="n">EType</span><span class="p">,</span> <span class="n">NormType</span><span class="p">,</span> <span class="n">tbtncSileTBtrans</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tbtprojncSileTBtrans&quot;</span><span class="p">]</span>
 
@@ -146,13 +146,13 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.tbtrans&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">tbtprojncSileTBtrans</span><span class="p">(</span><span class="n">tbtncSileTBtrans</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">tbtprojncSileTBtrans</span><span class="p">(</span><span class="n">tbtncSileTBtrans</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;TBtrans projection file object&quot;&quot;&quot;</span>
 
     <span class="n">_trans_type</span> <span class="o">=</span> <span class="s2">&quot;TBT.Proj&quot;</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_mol_proj_elec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mol_proj_elec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the electrode-molecule-projection str/tuple into the molecule-projected-electrode</span>
 
 <span class="sd">        Parameters</span>
@@ -171,7 +171,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">elec_mol_proj</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">elecs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">elecs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List of electrodes&quot;&quot;&quot;</span>
         <span class="n">elecs</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -186,7 +186,7 @@
         <span class="k">return</span> <span class="n">elecs</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">molecules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">molecules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List of regions where state projections may happen&quot;&quot;&quot;</span>
         <span class="n">mols</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -197,7 +197,7 @@
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.projections">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.projections">[docs]</a>
-    <span class="k">def</span> <span class="nf">projections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">projections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List of projections on `molecule`</span>
 
 <span class="sd">        Parameters</span>
@@ -212,7 +212,7 @@
 <div class="viewcode-block" id="tbtprojncSileTBtrans.ADOS">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.ADOS">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.DOS.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">ADOS</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ADOS</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec_mol_proj</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -268,7 +268,7 @@
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.orbital_transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.orbital_transmission">[docs]</a>
-    <span class="k">def</span> <span class="nf">orbital_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orbital_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">mol_proj_elec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mol_proj_elec</span><span class="p">(</span><span class="n">elec_mol_proj</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">orbital_transmission</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mol_proj_elec</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -280,7 +280,7 @@
 <div class="viewcode-block" id="tbtprojncSileTBtrans.transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.transmission">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.T.All&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj_from</span><span class="p">,</span> <span class="n">elec_mol_proj_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj_from</span><span class="p">,</span> <span class="n">elec_mol_proj_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transmission from `mol_proj_elec_from` to `mol_proj_elec_to`</span>
 
 <span class="sd">        Parameters</span>
@@ -306,7 +306,7 @@
 <div class="viewcode-block" id="tbtprojncSileTBtrans.transmission_eig">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.transmission_eig">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.T.Eig&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;int&gt;&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">transmission_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj_from</span><span class="p">,</span> <span class="n">elec_mol_proj_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transmission_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj_from</span><span class="p">,</span> <span class="n">elec_mol_proj_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transmission eigenvalues from `elec_mol_proj_from` to `elec_mol_proj_to`</span>
 
 <span class="sd">        Parameters</span>
@@ -332,7 +332,7 @@
 <div class="viewcode-block" id="tbtprojncSileTBtrans.Adensity_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.Adensity_matrix">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.DM.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">Adensity_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Adensity_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec_mol_proj</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
@@ -401,7 +401,7 @@
 <div class="viewcode-block" id="tbtprojncSileTBtrans.orbital_ACOOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.orbital_ACOOP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.COOP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">orbital_ACOOP</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orbital_ACOOP</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the projected spectral function</span>
@@ -473,7 +473,7 @@
 <div class="viewcode-block" id="tbtprojncSileTBtrans.orbital_ACOHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.orbital_ACOHP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.Projs.COHP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">orbital_ACOHP</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orbital_ACOHP</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Orbital COHP analysis of the projected spectral function</span>
@@ -519,17 +519,17 @@
 
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extract data from a TBT.Proj.nc file&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># We limit the import to occur here</span>
-        <span class="kn">import</span> <span class="nn">argparse</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 
-        <span class="k">def</span> <span class="nf">ensure_E</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">ensure_E</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;This decorater ensures that E is the first element in the _data container&quot;&quot;&quot;</span>
 
-            <span class="k">def</span> <span class="nf">assign_E</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">assign_E</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="n">ns</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c1"># We immediately extract the energies</span>
@@ -539,8 +539,8 @@
 
             <span class="k">return</span> <span class="n">assign_E</span>
 
-        <span class="k">class</span> <span class="nc">InfoMols</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">InfoMols</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_tbt</span><span class="o">.</span><span class="n">molecules</span><span class="p">))</span>
 
         <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -551,8 +551,8 @@
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Show molecules in the projection file&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">class</span> <span class="nc">InfoProjs</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">InfoProjs</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_tbt</span><span class="o">.</span><span class="n">projections</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
 
         <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -564,10 +564,10 @@
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Show projections on molecule.&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">class</span> <span class="nc">DataDOS</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">DataDOS</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="nd">@collect_action</span>
             <span class="nd">@ensure_E</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_tbt</span><span class="o">.</span><span class="n">ADOS</span><span class="p">(</span>
                     <span class="n">value</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">_krng</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">_Orng</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">_norm</span>
                 <span class="p">)</span>
@@ -599,10 +599,10 @@
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Store projected spectral DOS&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">class</span> <span class="nc">DataT</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">DataT</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="nd">@collect_action</span>
             <span class="nd">@ensure_E</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">elec_mol_proj1</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">elec_mol_proj2</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
@@ -628,10 +628,10 @@
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Store transmission between two projections.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">class</span> <span class="nc">DataTEig</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">DataTEig</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="nd">@collect_action</span>
             <span class="nd">@ensure_E</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">elec_mol_proj1</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">elec_mol_proj2</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
@@ -664,7 +664,7 @@
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.info">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.info">[docs]</a>
-    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Information about the calculated quantities available for extracting in this file</span>
 
 <span class="sd">        Parameters</span>
@@ -676,14 +676,14 @@
         <span class="n">out</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
 
         <span class="c1"># Create wrapper function</span>
-        <span class="k">def</span> <span class="nf">prnt</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">prnt</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="n">option</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;option&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">option</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:70s}</span><span class="s2">[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">option</span><span class="p">)),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">true</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">fdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">true</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">fdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
             <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">+ </span><span class="si">{}</span><span class="s2">: true&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">suf</span><span class="p">,</span> <span class="n">string</span><span class="p">),</span> <span class="n">option</span><span class="o">=</span><span class="n">fdf</span><span class="p">)</span>
 
         <span class="c1"># Retrieve the device atoms</span>
@@ -723,7 +723,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">molecule</span><span class="p">]</span>
 
-        <span class="k">def</span> <span class="nf">_get_all</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="nb">vars</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_get_all</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="nb">vars</span><span class="p">):</span>
             <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">vars</span><span class="p">):</span>
@@ -735,7 +735,7 @@
                 <span class="nb">vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">out</span>
 
-        <span class="k">def</span> <span class="nf">_print_to</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_print_to</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
             <span class="n">elec_mol_proj</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elec_mol_proj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">ns</span> <span class="o">+</span> <span class="s2">&quot;-&gt; </span><span class="si">{elec}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elec</span><span class="o">=</span><span class="n">elec_mol_proj</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
@@ -743,7 +743,7 @@
                 <span class="n">elec2</span><span class="p">,</span> <span class="n">mol2</span><span class="p">,</span> <span class="n">proj2</span> <span class="o">=</span> <span class="n">elec_mol_proj</span>
                 <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">ns</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;-&gt; </span><span class="si">{</span><span class="n">elec2</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">mol2</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">proj2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">_print_to_full</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">vars</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_print_to_full</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">vars</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">vars</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="n">ns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
@@ -878,7 +878,7 @@
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.eigenstate">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.eigenstate">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the eigenstate on the projected `molecule`</span>
 
 <span class="sd">        The eigenstate object will contain the geometry as the parent object.</span>
@@ -901,9 +901,9 @@
 <span class="sd">        EigenstateElectron</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;PHT&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trans_type</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">EigenmodePhonon</span> <span class="k">as</span> <span class="bp">cls</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">EigenmodePhonon</span> <span class="k">as</span> <span class="bp">cls</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">EigenstateElectron</span> <span class="k">as</span> <span class="bp">cls</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">EigenstateElectron</span> <span class="k">as</span> <span class="bp">cls</span>
 
         <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">molecule</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">all</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;states&quot;</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">variables</span> <span class="ow">or</span> <span class="s2">&quot;Restates&quot;</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
@@ -962,7 +962,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

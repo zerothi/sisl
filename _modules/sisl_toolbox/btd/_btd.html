@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl_toolbox.btd._btd &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,7 +118,7 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="sd">&quot;&quot;&quot; Eigenchannel calculator for any number of electrodes</span>
 
@@ -141,17 +141,17 @@
 <span class="sd">    Note that since you&#39;ll always do a 0 V calculation this isn&#39;t making</span>
 <span class="sd">    any implications for the requirement of the TBT.nc file.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">ssp</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">svds</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ssp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">svds</span>
 
-<span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">si</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">cholesky</span><span class="p">,</span>
     <span class="n">eigh</span><span class="p">,</span>
     <span class="n">eigh_destroy</span><span class="p">,</span>
@@ -160,8 +160,8 @@
     <span class="n">solve</span><span class="p">,</span>
     <span class="n">svd_destroy</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">PropertyDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">PropertyDict</span>
 
 <span class="n">arangei</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span>
 <span class="n">indices_only</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">_indices</span><span class="o">.</span><span class="n">indices_only</span>
@@ -171,11 +171,11 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PivotSelfEnergy&quot;</span><span class="p">,</span> <span class="s2">&quot;DownfoldSelfEnergy&quot;</span><span class="p">,</span> <span class="s2">&quot;DeviceGreen&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">dagger</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dagger</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">conj</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_scat_state_svd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_scat_state_svd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculating the SVD of matrix A for the scattering state</span>
 
 <span class="sd">    Parameters</span>
@@ -240,13 +240,13 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">PivotSelfEnergy</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">SelfEnergy</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PivotSelfEnergy</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">SelfEnergy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for the self-energy object</span>
 
 <span class="sd">    This may either be a `tbtsencSileTBtrans`, a `tbtgfSileTBtrans` or a sisl.SelfEnergy objectfile</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">se</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">se</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Name of electrode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
@@ -259,18 +259,18 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">tbtrans</span><span class="o">.</span><span class="n">tbtsencSileTBtrans</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">se_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">se_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">broad_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">broad_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">se_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">se_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">broad_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">broad_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">broadening_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Store the pivoting for faster indexing</span>
@@ -311,35 +311,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_se_func</span> <span class="o">=</span> <span class="n">se_func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_broad_func</span> <span class="o">=</span> <span class="n">broad_func</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">no: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pvt_dev</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PivotSelfEnergy.self_energy">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.self_energy">[docs]</a>
-    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PivotSelfEnergy.broadening_matrix">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broad_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">DownfoldSelfEnergy</span><span class="p">(</span><span class="n">PivotSelfEnergy</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownfoldSelfEnergy</span><span class="p">(</span><span class="n">PivotSelfEnergy</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">se</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">Hdevice</span><span class="p">,</span> <span class="n">eta_device</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bloch</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">se</span><span class="p">,</span> <span class="n">pivot</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">bloch</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">_bloch</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_bloch</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span> <span class="o">=</span> <span class="n">_bloch</span>
@@ -403,7 +403,7 @@
         <span class="c1"># Create BTD indices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">cumbtd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">eta</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">eta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">eta</span>
@@ -412,10 +412,10 @@
         <span class="n">se</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">no: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">, blocks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span><span class="si">}</span><span class="s2">, eta: </span><span class="si">{</span><span class="n">eta</span><span class="si">}</span><span class="s2">, eta_device: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta_device</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">se</span><span class="si">}</span><span class="se">\n}}</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">dev</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_check_Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
                 <span class="c1"># we have already prepared the calculation</span>
@@ -434,7 +434,7 @@
 
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_Ek</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
             <span class="k">return</span>
 
@@ -449,7 +449,7 @@
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">bulk</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">hsk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">hsk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="c1"># constructor for the H and S part</span>
                 <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">electrode</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">*</span> <span class="n">Eb</span> <span class="o">-</span> <span class="n">H</span><span class="o">.</span><span class="n">electrode</span><span class="o">.</span><span class="n">Hk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -459,7 +459,7 @@
 
 <div class="viewcode-block" id="DownfoldSelfEnergy.self_energy">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy">[docs]</a>
-    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
         <span class="n">se</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">self_energy</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -472,7 +472,7 @@
         <span class="n">pvt</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dev</span>
         <span class="n">cbtd</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">cumbtd</span>
 
-        <span class="k">def</span> <span class="nf">gM</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">gM</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="n">pvt</span><span class="p">[</span><span class="n">idx1</span><span class="p">],</span> <span class="n">pvt</span><span class="p">[</span><span class="n">idx2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">]</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
 
         <span class="n">Mr</span> <span class="o">=</span> <span class="mi">0</span>
@@ -493,38 +493,38 @@
 
 <div class="viewcode-block" id="DownfoldSelfEnergy.broadening_matrix">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.broadening_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">se2broadening</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">BlockMatrixIndexer</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bm</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BlockMatrixIndexer</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bm</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bm</span> <span class="o">=</span> <span class="n">bm</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bm</span><span class="o">.</span><span class="n">blocks</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Loop contained indices in the BlockMatrix&quot;&quot;&quot;</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bm</span><span class="o">.</span><span class="n">_M</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> index deletion must be done with a tuple.&quot;</span>
             <span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bm</span><span class="o">.</span><span class="n">_M</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> index checking must be done with a tuple.&quot;</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bm</span><span class="o">.</span><span class="n">_M</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> index retrieval must be done with a tuple.&quot;</span>
@@ -536,7 +536,7 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_bm</span><span class="o">.</span><span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bm</span><span class="o">.</span><span class="n">blocks</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
         <span class="k">return</span> <span class="n">M</span>
 
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> index setting must be done with a tuple.&quot;</span>
@@ -550,18 +550,18 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">BlockMatrix</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BlockMatrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class that holds a block matrix&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blocks</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blocks</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_M</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="n">blocks</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span>
 
-    <span class="k">def</span> <span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">BI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_indexer</span>
         <span class="n">nb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">BI</span><span class="p">)</span>
         <span class="c1"># stack stuff together</span>
@@ -570,7 +570,7 @@
             <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">tobtd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tobtd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return only the block tridiagonal part of the matrix&quot;&quot;&quot;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">)</span>
         <span class="n">sBI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_indexer</span>
@@ -581,7 +581,7 @@
                 <span class="n">rBI</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">sBI</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-    <span class="k">def</span> <span class="nf">tobd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tobd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return only the block diagonal part of the matrix&quot;&quot;&quot;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">)</span>
         <span class="n">sBI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_indexer</span>
@@ -591,17 +591,17 @@
             <span class="n">rBI</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sBI</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-    <span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">BI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_indexer</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">BI</span><span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">BI</span><span class="p">))])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">block_indexer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_indexer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">BlockMatrixIndexer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">DeviceGreen</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeviceGreen</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Block-tri-diagonal Green function calculator</span>
 
 <span class="sd">    This class enables the extraction and calculation of some important</span>
@@ -677,7 +677,7 @@
     <span class="c1">#      That would probably require us to use a method to retrieve</span>
     <span class="c1">#      the elements which determines if it has been calculated or not.</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">elecs</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">elecs</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Green function with Hamiltonian and BTD matrix elements&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span>
 
@@ -702,7 +702,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">btd_cum0</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">no: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">, blocks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span><span class="si">}</span><span class="s2">, eta: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="si">:</span><span class="s2">.3e</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">elec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elecs</span><span class="p">:</span>
             <span class="n">e</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="p">)</span>
@@ -712,7 +712,7 @@
 <div class="viewcode-block" id="DeviceGreen.from_fdf">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.from_fdf">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_fdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fdf</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;TBT&quot;</span><span class="p">,</span> <span class="n">use_tbt_se</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_fdf</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fdf</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;TBT&quot;</span><span class="p">,</span> <span class="n">use_tbt_se</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new `DeviceGreen` using information gathered from the fdf</span>
 
 <span class="sd">        Parameters</span>
@@ -748,20 +748,20 @@
         <span class="c1"># Read the device H, only valid for TBT stuff</span>
         <span class="n">Hdev</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;TBT.HS&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">slabel</span><span class="si">}</span><span class="s2">.TSHS&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">get_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse lines in the %block constructs of fdf&#39;s&quot;&quot;&quot;</span>
             <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">read_electrode</span><span class="p">(</span><span class="n">elec_prefix</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">read_electrode</span><span class="p">(</span><span class="n">elec_prefix</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse the electrode information and return a dictionary with content&quot;&quot;&quot;</span>
-            <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.siesta</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
 
             <span class="n">ret</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">is_tbtrans</span><span class="p">:</span>
 
-                <span class="k">def</span> <span class="nf">block_get</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">block_get</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tbt.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">))</span>
                     <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                         <span class="k">return</span> <span class="n">ret</span>
@@ -770,7 +770,7 @@
 
             <span class="k">else</span><span class="p">:</span>
 
-                <span class="k">def</span> <span class="nf">block_get</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">block_get</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                         <span class="k">return</span> <span class="n">ret</span>
@@ -968,15 +968,15 @@
 
 <div class="viewcode-block" id="DeviceGreen.reset">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.reset">[docs]</a>
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean any memory used by this object&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pvt</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_elec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_elec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a string electrode to the proper linear index&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">iel</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elecs</span><span class="p">):</span>
@@ -986,7 +986,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">elec</span>
 
-    <span class="k">def</span> <span class="nf">_elec_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_elec_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert an electrode index or str to the name of the electrode&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">elec</span>
@@ -994,7 +994,7 @@
             <span class="k">return</span> <span class="n">elec</span><span class="o">.</span><span class="n">name</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elecs</span><span class="p">[</span><span class="n">elec</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 
-    <span class="k">def</span> <span class="nf">_check_Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
                 <span class="c1"># we have already prepared the calculation</span>
@@ -1012,7 +1012,7 @@
 
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_se</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_se</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_Ek</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
             <span class="k">return</span>
         <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">E</span>
@@ -1029,7 +1029,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">se</span> <span class="o">=</span> <span class="n">se</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_tgamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_tgamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_Ek</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="s2">&quot;tgamma&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cutoff</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma_cutoff</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-13</span><span class="p">:</span>
                 <span class="k">return</span>
@@ -1038,7 +1038,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_se</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 
         <span class="c1"># Get the sqrt of the level broadening matrix</span>
-        <span class="k">def</span> <span class="nf">eigh_sqrt</span><span class="p">(</span><span class="n">gam</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">eigh_sqrt</span><span class="p">(</span><span class="n">gam</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
             <span class="n">eig</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">gam</span><span class="p">)</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">eig</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">eig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">emath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">eig</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
@@ -1051,7 +1051,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma</span> <span class="o">=</span> <span class="n">tgamma</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma_cutoff</span> <span class="o">=</span> <span class="n">cutoff</span>
 
-    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_Ek</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span>
             <span class="k">return</span>
 
@@ -1135,7 +1135,7 @@
         <span class="n">data</span><span class="o">.</span><span class="n">tX</span> <span class="o">=</span> <span class="n">tX</span>
         <span class="n">data</span><span class="o">.</span><span class="n">tY</span> <span class="o">=</span> <span class="n">tY</span>
 
-    <span class="k">def</span> <span class="nf">_matrix_to_btd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_matrix_to_btd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
         <span class="n">BM</span> <span class="o">=</span> <span class="n">BlockMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span>
         <span class="n">BI</span> <span class="o">=</span> <span class="n">BM</span><span class="o">.</span><span class="n">block_indexer</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">btd_cum0</span>
@@ -1152,7 +1152,7 @@
 
 <div class="viewcode-block" id="DeviceGreen.Sk">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.Sk">[docs]</a>
-    <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">is_btd</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="s2">&quot;format&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;btd&quot;</span><span class="p">:</span>
@@ -1168,7 +1168,7 @@
 
 <div class="viewcode-block" id="DeviceGreen.Hk">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.Hk">[docs]</a>
-    <span class="k">def</span> <span class="nf">Hk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Hk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">is_btd</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="s2">&quot;format&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;btd&quot;</span><span class="p">:</span>
@@ -1182,7 +1182,7 @@
         <span class="k">return</span> <span class="n">M</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="c1"># Figure out which blocks are requested</span>
         <span class="n">block1</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">btd_cum0</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">block2</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">btd_cum0</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -1194,7 +1194,7 @@
 
 <div class="viewcode-block" id="DeviceGreen.green">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.green">[docs]</a>
-    <span class="k">def</span> <span class="nf">green</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">green</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Green function for a given `E` and `k` point</span>
 
 <span class="sd">        The Green function is calculated as:</span>
@@ -1230,7 +1230,7 @@
         <span class="k">return</span> <span class="n">func</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_green_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_green_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Green function on a full np.array matrix&quot;&quot;&quot;</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pvt</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -1282,7 +1282,7 @@
 
         <span class="k">return</span> <span class="n">G</span>
 
-    <span class="k">def</span> <span class="nf">_green_btd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_green_btd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Green function only in the BTD matrix elements.</span>
 
 <span class="sd">        Stored in a `BlockMatrix` class.&quot;&quot;&quot;</span>
@@ -1314,7 +1314,7 @@
 
         <span class="k">return</span> <span class="n">G</span>
 
-    <span class="k">def</span> <span class="nf">_green_bm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_green_bm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the full Green function.</span>
 
 <span class="sd">        Stored in a `BlockMatrix` class.&quot;&quot;&quot;</span>
@@ -1337,7 +1337,7 @@
 
         <span class="k">return</span> <span class="n">G</span>
 
-    <span class="k">def</span> <span class="nf">_green_bd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_green_bd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Green function only along the diagonal block matrices.</span>
 
 <span class="sd">        Stored in a `BlockMatrix` class.&quot;&quot;&quot;</span>
@@ -1359,7 +1359,7 @@
 
         <span class="k">return</span> <span class="n">G</span>
 
-    <span class="k">def</span> <span class="nf">_green_sparse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_green_sparse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Green function only in where the sparse H and S are non-zero.</span>
 
 <span class="sd">        Stored in a `scipy.sparse.csr_matrix` class.&quot;&quot;&quot;</span>
@@ -1375,7 +1375,7 @@
         <span class="n">row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">ncol</span><span class="p">[</span><span class="n">row</span><span class="p">])</span>
         <span class="n">col</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">indices</span>
 
-        <span class="k">def</span> <span class="nf">get_idx</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">row_b</span><span class="p">,</span> <span class="n">col_b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_idx</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">row_b</span><span class="p">,</span> <span class="n">col_b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">col_b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">col_b</span> <span class="o">=</span> <span class="n">row_b</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">row_b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -1427,7 +1427,7 @@
 
         <span class="k">return</span> <span class="n">G</span>
 
-    <span class="k">def</span> <span class="nf">_green_diag_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_green_diag_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the Green function only on specific (neighboring) diagonal block matrices.</span>
 
 <span class="sd">        Stored in a `np.array` class.&quot;&quot;&quot;</span>
@@ -1492,7 +1492,7 @@
 
         <span class="k">return</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">G</span>
 
-    <span class="k">def</span> <span class="nf">_green_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_green_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the full Green function column for a subset of columns.</span>
 
 <span class="sd">        Stored in a `np.array` class.&quot;&quot;&quot;</span>
@@ -1577,7 +1577,7 @@
 
 <div class="viewcode-block" id="DeviceGreen.spectral">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.spectral">[docs]</a>
-    <span class="k">def</span> <span class="nf">spectral</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spectral</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">,</span>
         <span class="n">E</span><span class="p">,</span>
@@ -1641,13 +1641,13 @@
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_spectral_column_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_spectral_column_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Spectral function from a column array (`herm` not used)&quot;&quot;&quot;</span>
         <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_green_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elecs_pvt_dev</span><span class="p">[</span><span class="n">elec</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
         <span class="c1"># Now calculate the full spectral function</span>
         <span class="k">return</span> <span class="n">G</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">gamma</span><span class="p">[</span><span class="n">elec</span><span class="p">]</span> <span class="o">@</span> <span class="n">dagger</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_spectral_column_bm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_spectral_column_bm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Spectral function from a column array</span>
 
 <span class="sd">        Returns a `BlockMatrix` class with all elements calculated.</span>
@@ -1692,7 +1692,7 @@
 
         <span class="k">return</span> <span class="n">btd</span>
 
-    <span class="k">def</span> <span class="nf">_spectral_column_btd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_spectral_column_btd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Spectral function from a column array</span>
 
 <span class="sd">        Returns a `BlockMatrix` class with only BTD blocks calculated.</span>
@@ -1736,7 +1736,7 @@
 
         <span class="k">return</span> <span class="n">btd</span>
 
-    <span class="k">def</span> <span class="nf">_spectral_propagate_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_spectral_propagate_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
         <span class="n">nb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span>
         <span class="n">nbm1</span> <span class="o">=</span> <span class="n">nb</span> <span class="o">-</span> <span class="mi">1</span>
 
@@ -1756,7 +1756,7 @@
         <span class="n">tX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tX</span>
         <span class="n">tY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tY</span>
 
-        <span class="k">def</span> <span class="nf">gs</span><span class="p">(</span><span class="n">ib</span><span class="p">,</span> <span class="n">jb</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">gs</span><span class="p">(</span><span class="n">ib</span><span class="p">,</span> <span class="n">jb</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">slice</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">ib</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="n">ib</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]),</span> <span class="nb">slice</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">jb</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="n">jb</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">herm</span><span class="p">:</span>
@@ -1831,7 +1831,7 @@
 
         <span class="k">return</span> <span class="n">S</span>
 
-    <span class="k">def</span> <span class="nf">_spectral_propagate_bm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_spectral_propagate_bm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
         <span class="n">btd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">btd</span>
         <span class="n">nb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">btd</span><span class="p">)</span>
         <span class="n">nbm1</span> <span class="o">=</span> <span class="n">nb</span> <span class="o">-</span> <span class="mi">1</span>
@@ -1922,7 +1922,7 @@
 
         <span class="k">return</span> <span class="n">BM</span>
 
-    <span class="k">def</span> <span class="nf">_spectral_propagate_btd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_spectral_propagate_btd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">herm</span><span class="p">):</span>
         <span class="n">btd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">btd</span>
         <span class="n">nb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">btd</span><span class="p">)</span>
         <span class="n">nbm1</span> <span class="o">=</span> <span class="n">nb</span> <span class="o">-</span> <span class="mi">1</span>
@@ -1975,7 +1975,7 @@
 
         <span class="k">return</span> <span class="n">BM</span>
 
-    <span class="k">def</span> <span class="nf">_scattering_state_reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scattering_state_reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;U on input is a fortran-index as returned from eigh or svd&quot;&quot;&quot;</span>
         <span class="c1"># Select only the first N components where N is the</span>
         <span class="c1"># number of orbitals in the electrode (there can&#39;t be</span>
@@ -1999,7 +1999,7 @@
 
 <div class="viewcode-block" id="DeviceGreen.scattering_state">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.scattering_state">[docs]</a>
-    <span class="k">def</span> <span class="nf">scattering_state</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scattering_state</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">,</span>
         <span class="n">E</span><span class="p">,</span>
@@ -2069,7 +2069,7 @@
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_scattering_state_full</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scattering_state_full</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># We know that scattering_state has called prepare!</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -2092,7 +2092,7 @@
         <span class="c1"># always have the first state with the largest values</span>
         <span class="k">return</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_scattering_state_svd_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scattering_state_svd_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_green_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elecs_pvt_dev</span><span class="p">[</span><span class="n">elec</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
 
         <span class="c1"># This calculation uses the cholesky decomposition of Gamma</span>
@@ -2115,7 +2115,7 @@
         <span class="c1"># always have the first state with the largest values</span>
         <span class="k">return</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_scattering_state_svd_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scattering_state_svd_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Parse the cutoff value</span>
         <span class="c1"># Here we may use 2 values, one for cutting off the initial space</span>
         <span class="c1"># and one for the returned space.</span>
@@ -2205,7 +2205,7 @@
 
 <div class="viewcode-block" id="DeviceGreen.scattering_matrix">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.scattering_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix (S-matrix) between `elec_from` and `elec_to`</span>
 
 <span class="sd">        The scattering matrix is calculated as</span>
@@ -2275,7 +2275,7 @@
         <span class="n">tG</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma</span>
 
         <span class="c1"># Now calculate the S matrices</span>
-        <span class="k">def</span> <span class="nf">calc_S</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">jtgam_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">tgam_to</span><span class="p">,</span> <span class="n">G</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">calc_S</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">jtgam_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">tgam_to</span><span class="p">,</span> <span class="n">G</span><span class="p">):</span>
             <span class="n">pvt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elecs_pvt_dev</span><span class="p">[</span><span class="n">elec_to</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
             <span class="n">g</span> <span class="o">=</span> <span class="n">G</span><span class="p">[</span><span class="n">pvt</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">dagger</span><span class="p">(</span><span class="n">tgam_to</span><span class="p">)</span> <span class="o">@</span> <span class="n">g</span> <span class="o">@</span> <span class="n">jtgam_from</span>
@@ -2294,7 +2294,7 @@
 
 <div class="viewcode-block" id="DeviceGreen.eigenchannel">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.eigenchannel">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigenchannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">ret_coeff</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigenchannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">ret_coeff</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the eigenchannel from scattering states entering electrodes `elec_to`</span>
 
 <span class="sd">        The energy and k-point is inferred from the `state` object as returned from</span>
@@ -2395,7 +2395,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl_toolbox.siesta.atom._atom &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,7 +118,7 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atom input/output writer</span>
 
@@ -141,21 +141,21 @@
 <span class="sd">which will show 4 plots for different sections. A command-line tool is also</span>
 <span class="sd">made available through the `stoolbox`.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">trapezoid</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">trapezoid</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">trapz</span> <span class="k">as</span> <span class="n">trapezoid</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">trapz</span> <span class="k">as</span> <span class="n">trapezoid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
 
-<span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">NotNonePropertyDict</span><span class="p">,</span> <span class="n">PropertyDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">si</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotNonePropertyDict</span><span class="p">,</span> <span class="n">PropertyDict</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AtomInput&quot;</span><span class="p">,</span> <span class="s2">&quot;atom_plot_cli&quot;</span><span class="p">]</span>
 
@@ -213,7 +213,7 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.siesta.atom&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">AtomInput</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AtomInput</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Input for the ``atom`` program see [AtomLicense]_</span>
 
 <span class="sd">    This class enables the construction of the ``INP`` file to be fed to ``atom``.</span>
@@ -240,7 +240,7 @@
 <span class="sd">    .. [AtomLicense] https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">define</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;NEW_CC&quot;</span><span class="p">,</span> <span class="s2">&quot;FREE_FORMAT_RC_INPUT&quot;</span><span class="p">,</span> <span class="s2">&quot;NO_PS_CUTOFFS&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">opts</span>
     <span class="p">):</span>
         <span class="c1"># opts = {</span>
@@ -343,7 +343,7 @@
 <div class="viewcode-block" id="AtomInput.from_input">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.from_input">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_input</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_input</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return atom object respecting the input</span>
 
 <span class="sd">        Parameters</span>
@@ -352,7 +352,7 @@
 <span class="sd">           create `AtomInput` from the content of `inp`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">_get_content</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_get_content</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
                 <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -381,12 +381,12 @@
         <span class="n">defines</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">bypass_comments</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">bypass_comments</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">inp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
                 <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">bypass_comments</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">bypass</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">defines</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">bypass</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">defines</span><span class="p">):</span>
             <span class="n">bypass_comments</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">inp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">efine&quot;</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -459,9 +459,9 @@
 <div class="viewcode-block" id="AtomInput.from_yaml">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.from_yaml">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">()):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">()):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the yaml file&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">sisl_toolbox.siesta.minimizer._yaml_reader</span> <span class="kn">import</span> <span class="n">parse_variable</span><span class="p">,</span> <span class="n">read_yaml</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sisl_toolbox.siesta.minimizer._yaml_reader</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_variable</span><span class="p">,</span> <span class="n">read_yaml</span>
 
         <span class="n">dic</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
 
@@ -499,7 +499,7 @@
 
 <div class="viewcode-block" id="AtomInput.write_header">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.write_header">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# This file is generated by sisl pseudo</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># Define all names</span>
         <span class="k">for</span> <span class="n">define</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">define</span><span class="p">:</span>
@@ -508,7 +508,7 @@
 
 <div class="viewcode-block" id="AtomInput.write_generation">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.write_generation">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">cc</span><span class="p">:</span>
             <span class="c1"># use core corrections</span>
             <span class="n">pg</span> <span class="o">=</span> <span class="s2">&quot;pe&quot;</span>
@@ -549,7 +549,7 @@
 
 <div class="viewcode-block" id="AtomInput.write_all_electron">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.write_all_electron">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_all_electron</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">charges</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,)):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_all_electron</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">charges</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,)):</span>
         <span class="n">q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">xc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">xc</span>
         <span class="n">equation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">equation</span>
@@ -577,7 +577,7 @@
 
 <div class="viewcode-block" id="AtomInput.write_test">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.write_test">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">charges</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">charges</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
         <span class="n">q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">xc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">xc</span>
         <span class="n">equation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">equation</span>
@@ -603,33 +603,33 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">l</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">orb</span><span class="o">.</span><span class="n">q0</span><span class="si">:</span><span class="s2">10.3f</span><span class="si">}{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">10.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AtomInput.__call__">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.__call__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Open a file and return self&quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_out</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_enter</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_enter&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_enter&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter</span>
 
 <div class="viewcode-block" id="AtomInput.ae">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.ae">[docs]</a>
-    <span class="k">def</span> <span class="nf">ae</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ae</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_all_electron</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
@@ -637,7 +637,7 @@
 
 <div class="viewcode-block" id="AtomInput.pg">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.pg">[docs]</a>
-    <span class="k">def</span> <span class="nf">pg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_generation</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
@@ -645,7 +645,7 @@
 
 <div class="viewcode-block" id="AtomInput.excite">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.excite">[docs]</a>
-    <span class="k">def</span> <span class="nf">excite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">charge</span><span class="p">,</span> <span class="o">**</span><span class="n">lq</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">excite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">charge</span><span class="p">,</span> <span class="o">**</span><span class="n">lq</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Excite contained atom to another charge</span>
 
 <span class="sd">        Notes</span>
@@ -672,7 +672,7 @@
             <span class="n">_shell_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orb</span><span class="o">.</span><span class="n">n</span><span class="si">}{</span><span class="n">_spdfgh</span><span class="p">[</span><span class="n">orb</span><span class="o">.</span><span class="n">l</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span>
         <span class="p">]</span>
 
-        <span class="k">def</span> <span class="nf">_charge</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_charge</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
             <span class="c1"># while the g and h shells are never used, we just have them...</span>
             <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">22</span><span class="p">}[</span>
                 <span class="n">_shell_order</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
@@ -710,7 +710,7 @@
 
 <div class="viewcode-block" id="AtomInput.plot">
 <a class="viewcode-back" href="../../../../toolbox/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.plot">[docs]</a>
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">plot</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;wavefunction&quot;</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="s2">&quot;potential&quot;</span><span class="p">),</span>
@@ -735,14 +735,14 @@
 <span class="sd">        fig : figure for axes</span>
 <span class="sd">        axs : axes used for plotting</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">get_xy</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_xy</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Return x, y data from file `f` with y being calculated as the factors between the columns&quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">path</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">f</span>
@@ -779,7 +779,7 @@
         <span class="c1"># And convert to Bohr</span>
         <span class="n">atom_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="s2">&quot;calc&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">_Ang2Bohr</span>
 
-        <span class="k">def</span> <span class="nf">plot_wavefunction</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">plot_wavefunction</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
             <span class="c1"># somewhat similar to ae.gplot</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Wavefunction&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Bohr]&quot;</span><span class="p">)</span>
@@ -802,7 +802,7 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">plot_charge</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">plot_charge</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Charge&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Bohr]&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;(4.pi.r^2) Charge [electrons/Bohr]&quot;</span><span class="p">)</span>
@@ -866,7 +866,7 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">plot_log</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">plot_log</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;d-log of wavefunction&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Energy [Ry]&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Derivative of wavefunction&quot;</span><span class="p">)</span>
@@ -903,7 +903,7 @@
 
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">plot_potential</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">plot_potential</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Pseudopotential&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Bohr]&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Potential [Ry]&quot;</span><span class="p">)</span>
@@ -927,7 +927,7 @@
             <span class="n">ncols</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
-        <span class="k">def</span> <span class="nf">next_rc</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">ic</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">next_rc</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">ic</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">):</span>
             <span class="n">ic</span> <span class="o">=</span> <span class="n">ic</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="n">ic</span> <span class="o">==</span> <span class="n">ncols</span><span class="p">:</span>
                 <span class="n">ic</span> <span class="o">=</span> <span class="mi">0</span>
@@ -953,7 +953,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">atom_plot_cli</span><span class="p">(</span><span class="n">subp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">atom_plot_cli</span><span class="p">(</span><span class="n">subp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run plotting command for the output of atom&quot;&quot;&quot;</span>
 
     <span class="n">is_sub</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">subp</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -964,7 +964,7 @@
         <span class="n">_script</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2"> atom-plot&quot;</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">subp</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;atom-plot&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">argparse</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
 
@@ -999,14 +999,14 @@
 
 
 <span class="c1"># Import object holding all the CLI</span>
-<span class="kn">from</span> <span class="nn">sisl_toolbox.cli</span> <span class="kn">import</span> <span class="n">register_toolbox_cli</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl_toolbox.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_toolbox_cli</span>
 
 <span class="n">register_toolbox_cli</span><span class="p">(</span><span class="n">atom_plot_cli</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.siesta.atom&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">atom_plot</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">atom_plot</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
     <span class="nb">input</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
     <span class="n">atom</span> <span class="o">=</span> <span class="n">AtomInput</span><span class="o">.</span><span class="n">from_input</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
@@ -1038,7 +1038,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

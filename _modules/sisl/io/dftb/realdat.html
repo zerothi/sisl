@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.dftb.realdat &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -119,37 +119,37 @@
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sps</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">lil_matrix</span>
 
-<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
-<span class="kn">from</span> <span class="nn">sisl._core</span> <span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">AtomicOrbital</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Overlap</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_a</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">AtomicOrbital</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">Overlap</span>
 
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileDFTB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileDFTB</span>
 
 
-<span class="k">def</span> <span class="nf">_lt2full</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_lt2full</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
     <span class="n">csr</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">_csr</span>
     <span class="n">diag</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">diags</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">diagonal</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">M</span> <span class="o">+</span> <span class="n">M</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">-</span> <span class="n">diag</span>
 
 
-<span class="k">class</span> <span class="nc">_realSileDFTB</span><span class="p">(</span><span class="n">SileDFTB</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_realSileDFTB</span><span class="p">(</span><span class="n">SileDFTB</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_r_geometry_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_geometry_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses the top content of the file for basic info&quot;&quot;&quot;</span>
 
         <span class="c1"># 1. Line will contain the number of atoms</span>
@@ -176,7 +176,7 @@
 
         <span class="k">return</span> <span class="n">na</span><span class="p">,</span> <span class="n">nos</span><span class="p">,</span> <span class="n">atom_neighbors</span>
 
-    <span class="k">def</span> <span class="nf">_r_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">nos</span><span class="p">,</span> <span class="n">nneighs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">nos</span><span class="p">,</span> <span class="n">nneighs</span><span class="p">):</span>
 
         <span class="c1"># Create some minor variables that aids in the</span>
         <span class="c1"># Hamiltonian construction.</span>
@@ -211,10 +211,10 @@
 
         <span class="k">return</span> <span class="n">Hsc</span>
 
-    <span class="k">def</span> <span class="nf">_get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">nos</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">nos</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a ficticious `Atoms` object containing orbitals using the default ordering&quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">get_orbital</span><span class="p">(</span><span class="n">io</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_orbital</span><span class="p">(</span><span class="n">io</span><span class="p">):</span>
             <span class="c1"># This is taken directly from the documentation</span>
             <span class="c1"># The documentation lists only these shells to be functional</span>
             <span class="n">name</span> <span class="o">=</span> <span class="p">[</span>
@@ -240,7 +240,7 @@
 
         <span class="n">nos_uniqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">nos</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">get_atom</span><span class="p">(</span><span class="n">ia</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_atom</span><span class="p">(</span><span class="n">ia</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">nos</span><span class="p">,</span> <span class="n">nos_uniqs</span>
             <span class="n">no</span> <span class="o">=</span> <span class="n">nos</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span>
             <span class="n">Z</span> <span class="o">=</span> <span class="p">(</span><span class="n">nos_uniqs</span> <span class="o">==</span> <span class="n">no</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
@@ -249,7 +249,7 @@
         <span class="k">return</span> <span class="n">Atoms</span><span class="p">([</span><span class="n">get_atom</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span> <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)])</span>
 
     <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_r_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read content in the current file and return the actual matrices&quot;&quot;&quot;</span>
         <span class="n">na</span><span class="p">,</span> <span class="n">nos</span><span class="p">,</span> <span class="n">atom_neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_info</span><span class="p">()</span>
         <span class="n">Msc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_matrix</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nos</span><span class="p">,</span> <span class="n">atom_neighbors</span><span class="p">)</span>
@@ -288,11 +288,11 @@
 
 <div class="viewcode-block" id="overrealSileDFTB">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB">[docs]</a>
-<span class="k">class</span> <span class="nc">overrealSileDFTB</span><span class="p">(</span><span class="n">_realSileDFTB</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">overrealSileDFTB</span><span class="p">(</span><span class="n">_realSileDFTB</span><span class="p">):</span>
 
 <div class="viewcode-block" id="overrealSileDFTB.read_overlap">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.dftb.overrealSileDFTB.html#sisl.io.dftb.overrealSileDFTB.read_overlap">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parse the output overlap matrix created by DFTB+&quot;&quot;&quot;</span>
         <span class="n">geometry</span><span class="p">,</span> <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_file</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
         <span class="n">S</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
@@ -306,11 +306,11 @@
 
 <div class="viewcode-block" id="hamrealSileDFTB">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB">[docs]</a>
-<span class="k">class</span> <span class="nc">hamrealSileDFTB</span><span class="p">(</span><span class="n">_realSileDFTB</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">hamrealSileDFTB</span><span class="p">(</span><span class="n">_realSileDFTB</span><span class="p">):</span>
 
 <div class="viewcode-block" id="hamrealSileDFTB.read_overlap">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.read_overlap">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the overlap matrix from the ``overreal.dat`` file</span>
 
 <span class="sd">        Parameters</span>
@@ -338,7 +338,7 @@
 
 <div class="viewcode-block" id="hamrealSileDFTB.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.dftb.hamrealSileDFTB.html#sisl.io.dftb.hamrealSileDFTB.read_hamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parse the output Hamiltonian created by DFTB+</span>
 
 <span class="sd">        This will automatically try to discover the ``hamreal[1-4].dat``</span>
@@ -400,7 +400,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

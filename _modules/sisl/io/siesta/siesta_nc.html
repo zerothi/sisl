@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.io.siesta.siesta_nc &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -118,31 +118,31 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">AtomGhost</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">SphericalOrbital</span>
-<span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">aranged</span><span class="p">,</span> <span class="n">array_arange</span>
-<span class="kn">from</span> <span class="nn">sisl._core.sparse</span> <span class="kn">import</span> <span class="n">_ncol_to_indptr</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span>
-<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">AtomGhost</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">SphericalOrbital</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="kn">import</span> <span class="n">aranged</span><span class="p">,</span> <span class="n">array_arange</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">_ncol_to_indptr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DensityMatrix</span><span class="p">,</span>
     <span class="n">DynamicalMatrix</span><span class="p">,</span>
     <span class="n">EnergyDensityMatrix</span><span class="p">,</span>
     <span class="n">Hamiltonian</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">sisl.physics.overlap</span> <span class="kn">import</span> <span class="n">Overlap</span>
-<span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.overlap</span><span class="w"> </span><span class="kn">import</span> <span class="n">Overlap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.siesta</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
 
-<span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="n">grid_reduce_indices</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_raise_write</span>
-<span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileCDFSiesta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">grid_reduce_indices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_raise_write</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._help</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">SileCDFSiesta</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ncSileSiesta&quot;</span><span class="p">]</span>
 
@@ -151,13 +151,13 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ncSileSiesta</span><span class="p">(</span><span class="n">SileCDFSiesta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ncSileSiesta</span><span class="p">(</span><span class="n">SileCDFSiesta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic NetCDF output file containing a large variety of information&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ncSileSiesta.read_lattice_nsc">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_lattice_nsc">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_lattice_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_lattice_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns number of supercell connections&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;nsc&quot;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
 
@@ -165,7 +165,7 @@
 <div class="viewcode-block" id="ncSileSiesta.read_lattice">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_lattice">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a Lattice object from a Siesta.nc file&quot;&quot;&quot;</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;cell&quot;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="c1"># Yes, this is ugly, I really should implement my unit-conversion tool</span>
@@ -180,7 +180,7 @@
 <div class="viewcode-block" id="ncSileSiesta.read_basis">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_basis">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atoms</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a set of atoms corresponding to the basis-sets in the nc file&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;BASIS&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -261,7 +261,7 @@
 <div class="viewcode-block" id="ncSileSiesta.read_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_geometry">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns Geometry object from a Siesta.nc file&quot;&quot;&quot;</span>
 
         <span class="c1"># Read supercell</span>
@@ -285,7 +285,7 @@
 <div class="viewcode-block" id="ncSileSiesta.read_force">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_force">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a vector with final forces contained.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;fa&quot;</span><span class="p">))</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">/</span> <span class="n">Bohr2Ang</span></div>
 
@@ -293,12 +293,12 @@
 <div class="viewcode-block" id="ncSileSiesta.read_fermi_level">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_fermi_level">[docs]</a>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the fermi-level&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s2">&quot;Ef&quot;</span><span class="p">)[:]</span> <span class="o">*</span> <span class="n">Ry2eV</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_r_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Get the default spin channel</span>
         <span class="c1"># First read the geometry</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
@@ -324,7 +324,7 @@
 
         <span class="k">return</span> <span class="n">C</span>
 
-    <span class="k">def</span> <span class="nf">_r_class_spin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_r_class_spin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Get the default spin channel</span>
         <span class="n">spin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">))</span>
 
@@ -364,7 +364,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.read_overlap">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_overlap">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Overlap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a overlap matrix from the underlying NetCDF file&quot;&quot;&quot;</span>
         <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_class</span><span class="p">(</span><span class="n">Overlap</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -376,7 +376,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.read_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_hamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hamiltonian</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a Hamiltonian from the underlying NetCDF file&quot;&quot;&quot;</span>
         <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_class_spin</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -402,7 +402,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.read_dynamical_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_dynamical_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DynamicalMatrix</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DynamicalMatrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dynamical matrix from the underlying NetCDF file</span>
 
 <span class="sd">        This assumes that the dynamical matrix is stored in the field &quot;H&quot; as would the</span>
@@ -422,7 +422,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.read_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_density_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DensityMatrix</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DensityMatrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a density matrix from the underlying NetCDF file&quot;&quot;&quot;</span>
         <span class="c1"># This also adds the spin matrix</span>
         <span class="n">DM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_class_spin</span><span class="p">(</span><span class="n">DensityMatrix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -440,7 +440,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.read_energy_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_energy_density_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnergyDensityMatrix</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnergyDensityMatrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns energy density matrix from the underlying NetCDF file&quot;&quot;&quot;</span>
         <span class="n">EDM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_class_spin</span><span class="p">(</span><span class="n">EnergyDensityMatrix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -464,7 +464,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.read_hessian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_hessian">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads the force-constant stored in the nc file</span>
 
 <span class="sd">        Returns</span>
@@ -489,14 +489,14 @@
 
     <span class="nd">@property</span>
     <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">grids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">grids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of available grids in this file.&quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;GRID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ncSileSiesta.read_grid">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_grid">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Grid</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Grid</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads a grid in the current Siesta.nc file</span>
 
 <span class="sd">        Enables the reading and processing of the grids created by Siesta</span>
@@ -568,7 +568,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.write_basis">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_basis">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Atoms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the current atoms orbitals as the basis</span>
 
 <span class="sd">        Parameters</span>
@@ -605,7 +605,7 @@
                 <span class="n">ba</span><span class="o">.</span><span class="n">Number_of_orbitals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">no</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_write_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method for writing settings.</span>
 
 <span class="sd">        Sadly the settings are not correct since we have no recollection of</span>
@@ -628,7 +628,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.write_geometry">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_geometry">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates the NetCDF file and writes the geometry information&quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -667,7 +667,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;lasto&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lasto</span> <span class="o">+</span> <span class="mi">1</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_write_sparsity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">nsc</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_sparsity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">nsc</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2">._write_sparsity *must* be a finalized sparsity matrix&quot;</span>
@@ -706,7 +706,7 @@
             <span class="n">v</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_siesta_sc_off</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sp</span>
 
-    <span class="k">def</span> <span class="nf">_write_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">orthogonal</span><span class="p">,</span> <span class="n">S_idx</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgroup</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">orthogonal</span><span class="p">,</span> <span class="n">S_idx</span><span class="p">):</span>
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crt_var</span><span class="p">(</span>
             <span class="n">spgroup</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;f8&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;nnzs&quot;</span><span class="p">,),</span> <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">),),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_cmp_args</span>
         <span class="p">)</span>
@@ -750,7 +750,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.write_overlap">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_overlap">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the overlap matrix to the NetCDF file&quot;&quot;&quot;</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">_csr</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -773,7 +773,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.write_hamiltonian">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_hamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes Hamiltonian model to file</span>
 
 <span class="sd">        Parameters</span>
@@ -838,7 +838,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.write_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_density_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DM</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DM</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes density matrix model to file</span>
 
 <span class="sd">        Parameters</span>
@@ -900,7 +900,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.write_energy_density_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_energy_density_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EDM</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EDM</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes energy density matrix model to file</span>
 
 <span class="sd">        Parameters</span>
@@ -967,7 +967,7 @@
 
 <div class="viewcode-block" id="ncSileSiesta.write_dynamical_matrix">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.write_dynamical_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">write_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes dynamical matrix model to file</span>
 
 <span class="sd">        Parameters</span>
@@ -1025,7 +1025,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_settings</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the arguments that is available for this Sile&quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1042,7 +1042,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sisl.physics.electron &mdash; sisl</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -21,11 +21,11 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=345013b0"></script>
+      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
       <script src="../../../_static/tabs.js?v=3ee01567"></script>
       <script>let toggleHintShow = 'Click to show';</script>
       <script>let toggleHintHide = 'Click to hide';</script>
@@ -159,16 +159,16 @@
 <span class="sd">   EigenstateElectron</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">scs</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">scs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">add</span><span class="p">,</span>
     <span class="n">ceil</span><span class="p">,</span>
     <span class="n">conj</span><span class="p">,</span>
@@ -185,19 +185,19 @@
     <span class="n">sort</span><span class="p">,</span>
     <span class="n">zeros</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">hstack</span><span class="p">,</span> <span class="n">issparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">hstack</span><span class="p">,</span> <span class="n">issparse</span>
 
-<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">BoundaryCondition</span> <span class="k">as</span> <span class="n">BC</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">C</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Lattice</span>
-<span class="kn">from</span> <span class="nn">sisl._core.oplist</span> <span class="kn">import</span> <span class="n">oplist</span>
-<span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_le</span>
-<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">xyz_to_spherical_cos_phi</span>
-<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">det</span>
-<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigvals</span> <span class="k">as</span> <span class="n">la_eigvals</span>
-<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">sqrth</span><span class="p">,</span> <span class="n">svd_destroy</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_a</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoundaryCondition</span> <span class="k">as</span> <span class="n">BC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">C</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Lattice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core.oplist</span><span class="w"> </span><span class="kn">import</span> <span class="n">oplist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._indices</span><span class="w"> </span><span class="kn">import</span> <span class="n">indices_le</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._math_small</span><span class="w"> </span><span class="kn">import</span> <span class="n">xyz_to_spherical_cos_phi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">det</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">eigvals</span> <span class="k">as</span> <span class="n">la_eigvals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">sqrth</span><span class="p">,</span> <span class="n">svd_destroy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">SislError</span><span class="p">,</span>
     <span class="n">deprecate_argument</span><span class="p">,</span>
     <span class="n">deprecation</span><span class="p">,</span>
@@ -205,23 +205,23 @@
     <span class="n">progressbar</span><span class="p">,</span>
     <span class="n">warn</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">sisl.physics._common</span> <span class="kn">import</span> <span class="n">comply_projection</span>
-<span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics._common</span><span class="w"> </span><span class="kn">import</span> <span class="n">comply_projection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CartesianAxisStrLiteral</span><span class="p">,</span>
     <span class="n">ProjectionType</span><span class="p">,</span>
     <span class="n">ProjectionTypeHadamard</span><span class="p">,</span>
     <span class="n">ProjectionTypeHadamardAtoms</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">sisl.typing._physics</span> <span class="kn">import</span> <span class="n">ProjectionTypeDiag</span>
-<span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">direction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing._physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionTypeDiag</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">direction</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.brillouinzone</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.brillouinzone</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrillouinZone</span>
 
-<span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">get_distribution</span>
-<span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZSpin</span>
-<span class="kn">from</span> <span class="nn">.spin</span> <span class="kn">import</span> <span class="n">Spin</span>
-<span class="kn">from</span> <span class="nn">.state</span> <span class="kn">import</span> <span class="n">Coefficient</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">StateC</span><span class="p">,</span> <span class="n">_FakeMatrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_distribution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseOrbitalBZSpin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.spin</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">Coefficient</span><span class="p">,</span> <span class="n">State</span><span class="p">,</span> <span class="n">StateC</span><span class="p">,</span> <span class="n">_FakeMatrix</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DOS&quot;</span><span class="p">,</span> <span class="s2">&quot;PDOS&quot;</span><span class="p">,</span> <span class="s2">&quot;COP&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;spin_moment&quot;</span><span class="p">,</span> <span class="s2">&quot;spin_contamination&quot;</span><span class="p">]</span>
@@ -235,7 +235,7 @@
 <div class="viewcode-block" id="DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.DOS.html#sisl.physics.electron.DOS">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{DOS}(E)` is calculated as:</span>
@@ -279,7 +279,7 @@
 <div class="viewcode-block" id="PDOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{PDOS}(E)` is calculated as:</span>
@@ -489,7 +489,7 @@
     <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
     <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Crystal Orbital Population for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{COP}(E)` is calculated as:</span>
@@ -563,7 +563,7 @@
         <span class="c1"># then finally we recreate the full matrix dimensions.</span>
         <span class="n">cop</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)))</span>
 
-        <span class="k">def</span> <span class="nf">new_list</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">new_list</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">bl</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">bl</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">tmp</span> <span class="o">*</span> <span class="n">w</span>
@@ -581,7 +581,7 @@
         <span class="c1"># Now recreate the full size (in sparse form)</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">no</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">tosize</span><span class="p">(</span><span class="n">diag</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">tosize</span><span class="p">(</span><span class="n">diag</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">csr_matrix</span><span class="p">((</span><span class="n">diag</span><span class="p">,</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
         <span class="n">cop</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">(</span><span class="n">tosize</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">cop</span><span class="p">)</span>
@@ -595,7 +595,7 @@
         <span class="c1"># split M, then we will rejoin afterwards</span>
         <span class="n">Ms</span> <span class="o">=</span> <span class="p">[</span><span class="n">M</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">no</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">no</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_s</span><span class="p">)]</span>
 
-        <span class="k">def</span> <span class="nf">new_list</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">new_list</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">bl</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">bl</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">tmp</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
@@ -636,7 +636,7 @@
     <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
     <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">spin_moment</span><span class="p">(</span>
     <span class="n">state</span><span class="p">,</span>
     <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">projection</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
@@ -760,7 +760,7 @@
 <div class="viewcode-block" id="spin_contamination">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.spin_contamination.html#sisl.physics.electron.spin_contamination">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">spin_contamination</span><span class="p">(</span><span class="n">state_alpha</span><span class="p">,</span> <span class="n">state_beta</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">spin_contamination</span><span class="p">(</span><span class="n">state_alpha</span><span class="p">,</span> <span class="n">state_beta</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the spin contamination value between two spin states</span>
 
 <span class="sd">    This calculation only makes sense for spin-polarized calculations.</span>
@@ -867,7 +867,7 @@
 <div class="viewcode-block" id="ahc">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.ahc.html#sisl.physics.electron.ahc">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ahc</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ahc</span><span class="p">(</span>
     <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span>
     <span class="n">k_average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -958,7 +958,7 @@
 <span class="sd">        When :math:`D` is the dimensionality of the system we find the unit to be</span>
 <span class="sd">        :math:`\mathrm S/\mathrm{Ang}^{D-2}`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.hamiltonian</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hamiltonian</span>
 
     <span class="n">H</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">parent</span>
 
@@ -971,7 +971,7 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">distribution</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_ahc</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ahc</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="c1"># the latter arguments are merely for speeding up the procedure</span>
         <span class="k">nonlocal</span> <span class="n">berry_kwargs</span><span class="p">,</span> <span class="n">distribution</span>
         <span class="k">return</span> <span class="n">es</span><span class="o">.</span><span class="n">berry_curvature</span><span class="p">(</span><span class="o">**</span><span class="n">berry_kwargs</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">distribution</span><span class="p">)</span>
@@ -994,7 +994,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_create_sigma</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_sigma</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;This will return the Pauli matrix filled in a diagonal of the matrix</span>
 
 <span class="sd">    It will not return the spin operator, which has the pre-factor \hbar/2</span>
@@ -1030,7 +1030,7 @@
 <div class="viewcode-block" id="shc">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.shc.html#sisl.physics.electron.shc">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">shc</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shc</span><span class="p">(</span>
     <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span>
     <span class="n">k_average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">sigma</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CartesianAxisStrLiteral</span><span class="p">,</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span>
@@ -1134,7 +1134,7 @@
 <span class="sd">        * SHC: ``shc[J_axes, :]`` :math:`\hbar/e S/\mathrm{Ang}^{D-2}`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.hamiltonian</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hamiltonian</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">J_axes</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
         <span class="n">J_axes</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">J_axes</span><span class="p">)</span>
@@ -1164,14 +1164,14 @@
 
     <span class="c1"># To reduce (heavily) the computational load, we pre-setup the</span>
     <span class="c1"># operators here.</span>
-    <span class="k">def</span> <span class="nf">J</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">J</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="k">nonlocal</span> <span class="n">m</span><span class="p">,</span> <span class="n">J_axes</span>
         <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">J_axes</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">M</span> <span class="o">@</span> <span class="n">m</span> <span class="o">+</span> <span class="n">m</span> <span class="o">@</span> <span class="n">M</span>
 
         <span class="k">return</span> <span class="n">M</span>
 
-    <span class="k">def</span> <span class="nf">noop</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">noop</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">M</span>
 
     <span class="n">axes</span> <span class="o">=</span> <span class="n">berry_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;derivative_kwargs&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
@@ -1222,7 +1222,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.conductivity.html#sisl.physics.electron.conductivity">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;conductivity is deprecated, please use &#39;ahc&#39; instead.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">conductivity</span><span class="p">(</span>
     <span class="n">bz</span><span class="p">,</span>
     <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi-dirac&quot;</span><span class="p">,</span>
     <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ahc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ahc&quot;</span><span class="p">,</span>
@@ -1248,7 +1248,7 @@
 <div class="viewcode-block" id="berry_phase">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.berry_phase.html#sisl.physics.electron.berry_phase">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">berry_phase</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">berry_phase</span><span class="p">(</span>
     <span class="n">contour</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span>
     <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">eigvals</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1346,7 +1346,7 @@
 
 <span class="sd">    &gt;&gt;&gt; phase = berry_phase(contour, method=&quot;berry:svd&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.hamiltonian</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hamiltonian</span>
 
     <span class="c1"># Currently we require the Berry phase calculation to *only* accept Hamiltonians</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">):</span>
@@ -1361,13 +1361,13 @@
 
     <span class="k">if</span> <span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
             <span class="k">pass</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="n">gauge</span> <span class="o">=</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;change state to the lowdin state, assuming everything is in lattice gauge</span>
 <span class="sd">            So needs to be done before changing gauge&quot;&quot;&quot;</span>
             <span class="n">S12</span> <span class="o">=</span> <span class="n">sqrth</span><span class="p">(</span>
@@ -1389,14 +1389,14 @@
 
     <span class="k">if</span> <span class="s2">&quot;svd&quot;</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">overlap</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">overlap</span><span class="p">):</span>
             <span class="n">U</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">svd_destroy</span><span class="p">(</span><span class="n">overlap</span><span class="p">)</span>
             <span class="c1"># We have to use dot, since @ does not allow scalars</span>
             <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">U</span> <span class="o">@</span> <span class="n">V</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">sub</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
             <span class="c1"># Grab the first one to be able to form a loop</span>
             <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">)</span>
             <span class="n">_lowdin</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
@@ -1421,7 +1421,7 @@
 
     <span class="k">else</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">sub</span>
             <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">)</span>
             <span class="n">first</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1459,7 +1459,7 @@
 <div class="viewcode-block" id="wavefunction">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.wavefunction.html#sisl.physics.electron.wavefunction">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">wavefunction</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">wavefunction</span><span class="p">(</span>
     <span class="n">v</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Spin</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add the wave-function (`Orbital.psi`) component of each orbital to the grid</span>
@@ -1631,7 +1631,7 @@
 
     <span class="n">addouter</span> <span class="o">=</span> <span class="n">add</span><span class="o">.</span><span class="n">outer</span>
 
-    <span class="k">def</span> <span class="nf">idx2spherical</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iz</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">idx2spherical</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iz</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the spherical coordinates from indices&quot;&quot;&quot;</span>
         <span class="n">rx</span> <span class="o">=</span> <span class="n">addouter</span><span class="p">(</span>
             <span class="n">addouter</span><span class="p">(</span><span class="n">ix</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">iy</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">iz</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1874,11 +1874,11 @@
 
 <div class="viewcode-block" id="_electron_State">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State">[docs]</a>
-<span class="k">class</span> <span class="nc">_electron_State</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_electron_State</span><span class="p">:</span>
     <span class="c1"># pylint: disable=E1101</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__is_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Spin</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__is_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Spin</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal routine to check whether this is a non-colinear calculation&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">spin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="ow">not</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span>
@@ -1889,7 +1889,7 @@
 
 <div class="viewcode-block" id="_electron_State.Sk">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.Sk">[docs]</a>
-    <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Retrieve the overlap matrix corresponding to the originating parent structure.</span>
 
 <span class="sd">        When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(\mathbf k)` for the</span>
@@ -1933,7 +1933,7 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">norm2</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">projection</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
             <span class="n">ProjectionType</span><span class="p">,</span> <span class="n">ProjectionTypeHadamard</span><span class="p">,</span> <span class="n">ProjectionTypeHadamardAtoms</span>
@@ -1970,7 +1970,7 @@
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;diagonal&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;diagonal&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate spin moment from the states</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.spin_moment` with appropriate arguments</span>
@@ -1988,7 +1988,7 @@
 
 <div class="viewcode-block" id="_electron_State.wavefunction">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron._electron_State.html#sisl.physics.electron._electron_State.wavefunction">[docs]</a>
-    <span class="k">def</span> <span class="nf">wavefunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavefunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Expand the coefficients as the wavefunction on `grid` *as-is*</span>
 
 <span class="sd">        See `~sisl.physics.electron.wavefunction` for argument details, the arguments not present</span>
@@ -2022,7 +2022,7 @@
 <div class="viewcode-block" id="CoefficientElectron">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.CoefficientElectron.html#sisl.physics.electron.CoefficientElectron">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">CoefficientElectron</span><span class="p">(</span><span class="n">Coefficient</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CoefficientElectron</span><span class="p">(</span><span class="n">Coefficient</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Coefficients describing some physical quantity related to electrons&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span></div>
@@ -2032,7 +2032,7 @@
 <div class="viewcode-block" id="StateElectron">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">StateElectron</span><span class="p">(</span><span class="n">_electron_State</span><span class="p">,</span> <span class="n">State</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateElectron</span><span class="p">(</span><span class="n">_electron_State</span><span class="p">,</span> <span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A state describing a physical quantity related to electrons&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span></div>
@@ -2042,14 +2042,14 @@
 <div class="viewcode-block" id="StateCElectron">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">StateCElectron</span><span class="p">(</span><span class="n">_electron_State</span><span class="p">,</span> <span class="n">StateC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateCElectron</span><span class="p">(</span><span class="n">_electron_State</span><span class="p">,</span> <span class="n">StateC</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A state describing a physical quantity related to electrons, with associated coefficients of the state&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="StateCElectron.effective_mass">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.effective_mass">[docs]</a>
-    <span class="k">def</span> <span class="nf">effective_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">effective_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate effective mass tensor for the states, units are (ps/Ang)^2</span>
 
 <span class="sd">        This routine calls ``derivative(2, *args, **kwargs)`` and</span>
@@ -2087,7 +2087,7 @@
 <div class="viewcode-block" id="EigenvalueElectron">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">EigenvalueElectron</span><span class="p">(</span><span class="n">CoefficientElectron</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EigenvalueElectron</span><span class="p">(</span><span class="n">CoefficientElectron</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Eigenvalues of electronic states, no eigenvectors retained</span>
 
 <span class="sd">    This holds routines that enable the calculation of density of states.</span>
@@ -2096,13 +2096,13 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">eig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Eigenvalues&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
 
 <div class="viewcode-block" id="EigenvalueElectron.occupation">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron.occupation">[docs]</a>
-    <span class="k">def</span> <span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
@@ -2122,7 +2122,7 @@
 
 <div class="viewcode-block" id="EigenvalueElectron.DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron.DOS">[docs]</a>
-    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate DOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `sisl.physics.electron.DOS` with appropriate arguments</span>
@@ -2138,7 +2138,7 @@
 <div class="viewcode-block" id="EigenvectorElectron">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvectorElectron.html#sisl.physics.electron.EigenvectorElectron">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">EigenvectorElectron</span><span class="p">(</span><span class="n">StateElectron</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EigenvectorElectron</span><span class="p">(</span><span class="n">StateElectron</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Eigenvectors of electronic states, no eigenvalues retained</span>
 
 <span class="sd">    This holds routines that enable the calculation of spin moments.</span>
@@ -2151,7 +2151,7 @@
 <div class="viewcode-block" id="EigenstateElectron">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">EigenstateElectron</span><span class="p">(</span><span class="n">StateCElectron</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EigenstateElectron</span><span class="p">(</span><span class="n">StateCElectron</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Eigen states of electrons with eigenvectors and eigenvalues.</span>
 
 <span class="sd">    This holds routines that enable the calculation of (projected) density of states,</span>
@@ -2161,13 +2161,13 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">eig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Eigenvalues for each state&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
 
 <div class="viewcode-block" id="EigenstateElectron.occupation">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.occupation">[docs]</a>
-    <span class="k">def</span> <span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
@@ -2187,7 +2187,7 @@
 
 <div class="viewcode-block" id="EigenstateElectron.DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.DOS">[docs]</a>
-    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate DOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `sisl.physics.electron.DOS` with appropriate arguments</span>
@@ -2200,7 +2200,7 @@
 
 <div class="viewcode-block" id="EigenstateElectron.PDOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.PDOS">[docs]</a>
-    <span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate PDOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.PDOS` with appropriate arguments</span>
@@ -2220,7 +2220,7 @@
 
 <div class="viewcode-block" id="EigenstateElectron.COP">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COP">[docs]</a>
-    <span class="k">def</span> <span class="nf">COP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">COP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate COP for provided energies, `E` using matrix `M`</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.COP` with appropriate arguments.</span>
@@ -2230,7 +2230,7 @@
 
 <div class="viewcode-block" id="EigenstateElectron.COOP">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COOP">[docs]</a>
-    <span class="k">def</span> <span class="nf">COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate COOP for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.COP` with appropriate arguments.</span>
@@ -2242,7 +2242,7 @@
 
 <div class="viewcode-block" id="EigenstateElectron.COHP">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COHP">[docs]</a>
-    <span class="k">def</span> <span class="nf">COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate COHP for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.COP` with appropriate arguments.</span>
@@ -2261,7 +2261,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2024, sisl developers.</p>
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
