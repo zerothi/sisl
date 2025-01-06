@@ -65,7 +65,7 @@ jobs:
       - name: Install sisl + documentation dependencies
         env:
           # There is no need for a complete build... Just do it quickly!
-          SKBUILD_BUILD_TYPE: Debug
+          SKBUILD_CMAKE_BUILD_TYPE: Debug
         run: |
           python -m pip install --progress-bar=off --upgrade pip
           python -m pip install --progress-bar=off .[analysis,viz,docs]

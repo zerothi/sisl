@@ -3,12 +3,6 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 
 list(APPEND CMAKE_MESSAGE_CONTEXT "sisl")
 
-message(STATUS "Building with CMake version: ${CMAKE_VERSION}")
-if(SKBUILD)
-  message(STATUS "Building with scikit-build-core: ${SKBUILD_CORE_VERSION}")
-endif()
-
-
 project(sisl
   DESCRIPTION "Cythonized or fortran codes"
   HOMEPAGE_URL "https://github.com/zerothi/sisl"
@@ -19,6 +13,20 @@ project(sisl
 
 # Print out the discovered paths
 include(CMakePrintHelpers)
+
+# Build configuration details
+message(STATUS "Build configuration information")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+cmake_print_variables(CMAKE_VERSION)
+cmake_print_variables(CMAKE_BUILD_TYPE)
+cmake_print_variables(CMAKE_INTERPROCEDURAL_OPTIMIZATION)
+cmake_print_variables(CMAKE_POSITION_INDEPENDENT_CODE)
+cmake_print_variables(CMAKE_INSTALL_PREFIX)
+cmake_print_variables(CMAKE_PREFIX_PATH)
+if(SKBUILD)
+  message(STATUS "scikit-build-core: ${SKBUILD_CORE_VERSION}")
+endif()
+list(POP_BACK CMAKE_MESSAGE_INDENT)
 
 # Enable python packages
 find_package(Python COMPONENTS
@@ -115,12 +123,14 @@ cmake_print_variables(CC)
 cmake_print_variables(CFLAGS)
 cmake_print_variables(CMAKE_C_COMPILER)
 cmake_print_variables(CMAKE_C_FLAGS)
+cmake_print_variables(CMAKE_C_STANDARD)
 set(CXX $ENV{CXX})
 set(CXXFLAGS $ENV{CXXFLAGS})
 cmake_print_variables(CXX)
 cmake_print_variables(CXXFLAGS)
 cmake_print_variables(CMAKE_CXX_COMPILER)
 cmake_print_variables(CMAKE_CXX_FLAGS)
+cmake_print_variables(CMAKE_CXX_STANDARD)
 if(WITH_FORTRAN)
   set(FC $ENV{FC})
   set(FFLAGS $ENV{FFLAGS})
@@ -128,6 +138,7 @@ if(WITH_FORTRAN)
   cmake_print_variables(FFLAGS)
   cmake_print_variables(CMAKE_Fortran_COMPILER)
   cmake_print_variables(CMAKE_Fortran_FLAGS)
+  cmake_print_variables(CMAKE_Fortran_STANDARD)
 endif()
 set(ARCHFLAGS $ENV{ARCHFLAGS})
 cmake_print_variables(ARCHFLAGS)
