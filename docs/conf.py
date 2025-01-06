@@ -114,6 +114,11 @@ extensions = [
 ]
 
 
+# Define the prefix block that should not be copied in code-blocks
+copybutton_prompt_text = r"\$ |\$> |>>> |\.\.\. "
+copybutton_prompt_is_regexp = True
+copybutton_line_continuation_character = "\\"
+
 napoleon_preprocess_types = True
 
 # If numpydoc is available, then let sphinx report warnings

@@ -779,6 +779,7 @@ def tile(geometry: Geometry, reps: int, axis: CellAxis) -> Geometry:
      [1.5  1.   0. ]]
 
     In functional form:
+
     >>> tile(geom, 2, axis=0)
 
     See Also
@@ -858,6 +859,7 @@ def untile(
     True
 
     In functional form:
+
     >>> untile(geom, 2, axis=0)
 
     See Also

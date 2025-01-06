@@ -1473,15 +1473,15 @@ class Geometry(
 
         Parameters
         ----------
-        atoms : array_like of int or Atom
+        atoms :
             indices of atoms or `Atom` that will be reduced in size according to `orbitals`
-        orbitals : array_like of int or Orbital
+        orbitals :
             indices of the orbitals on `atoms` that are retained in the geometry, the list of
             orbitals will be sorted.
 
         Notes
         -----
-        Future implementations may allow one to re-arange orbitals using this method.
+        Future implementations may allow one to re-arrange orbitals using this method.
 
         When using this method the internal species list will be populated by another specie
         that is named after the orbitals removed. This is to distinguish different atoms.

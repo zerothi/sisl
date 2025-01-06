@@ -6,7 +6,7 @@ from __future__ import annotations
 import math
 from functools import reduce
 from numbers import Integral
-from typing import Union
+from typing import Optional, Union
 
 import numpy as np
 
@@ -26,12 +26,12 @@ __all__ = []
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def copy(lattice: Lattice, cell=None, **kwargs) -> Lattice:
-    """A deepcopy of the object
+def copy(lattice: Lattice, cell: Optional[np.ndarray] = None, **kwargs) -> Lattice:
+    """A deep copy of the object
 
     Parameters
     ----------
-    cell : array_like
+    cell :
        the new cell parameters
     """
     d = dict()
@@ -256,16 +256,16 @@ def rotate(
 
 
 @register_sisl_dispatch(Lattice, module="sisl")
-def add(lattice: Lattice, other) -> Lattice:
+def add(lattice: Lattice, other: LatticeLike) -> Lattice:
     """Add two supercell lattice vectors to each other
 
     Parameters
     ----------
-    other : Lattice, array_like
+    other :
        the lattice vectors of the other supercell to add
     """
     if not isinstance(other, Lattice):
-        other = Lattice(other)
+        other = Lattice.new(other)
     cell = lattice.cell + other.cell
     origin = lattice.origin + other.origin
     nsc = np.where(lattice.nsc > other.nsc, lattice.nsc, other.nsc)
