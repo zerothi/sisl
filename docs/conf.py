@@ -13,7 +13,7 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-
+""" sisl documentation """
 from __future__ import annotations
 
 import inspect
@@ -114,21 +114,10 @@ extensions = [
 ]
 
 
-napoleon_google_docstring = False
-napoleon_numpy_docstring = True
-napoleon_use_param = False
-napoleon_use_rtype = False
-napoleon_use_ivar = False
 napoleon_preprocess_types = True
-# Using attr_annotations = True ensures that
-# autodoc_type_aliases is in effect.
-# Then there is no need to use napoleon_type_aliases.
-napoleon_attr_annotations = True
 
-
-# The default is MathJax 3.
-# In case we want to revert to 2.7.7, then use the below link:
-# mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
+# If numpydoc is available, then let sphinx report warnings
+numpydoc_validation_checks = {"all", "EX01", "SA01", "ES01"}
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -233,15 +222,26 @@ autodoc_default_options = {
     "inherited-members": True,
     "show-inheritance": True,
 }
+
+# How to show the class signature
+#  mixed: signature with class name
+#  separated: signature as method
+autodoc_class_signature = "separated"
+
 # alphabetical | groupwise | bysource
 # How automodule + autoclass orders content.
 # Right now, the current way sisl documents things
 # is basically groupwise. So lets be explicit
 autodoc_member_order = "groupwise"
 
-# Show type-hints in both the signature
-# and in the variable list
-autodoc_typehints = "signature"
+# Do not evaluate things that are defaulted in arguments.
+# Show them *as-is*.
+autodoc_preserve_defaults = True
+
+# Show type-hints in only the discription, in this way the
+# signature is readable and the argument order can easily
+# be inferred.
+autodoc_typehints = "description"
 
 # typehints only shows the minimal class, instead
 # of full module paths
@@ -250,10 +250,6 @@ autodoc_typehints = "signature"
 # autodoc will likely get a rewrite. Until then..
 autodoc_typehints_format = "short"
 
-# Do not evaluate things that are defaulted in arguments.
-# Show them *as-is*.
-autodoc_preserve_defaults = True
-
 # Automatically create the autodoc_type_aliases
 # This is handy for commonly used terminologies.
 # It currently puts everything into a `<>` which
@@ -261,13 +257,13 @@ autodoc_preserve_defaults = True
 # Perhaps just a small tweak and it works.
 autodoc_type_aliases = {
     # general terms
-    "array-like": "numpy.ndarray",
-    "array_like": "numpy.ndarray",
-    "int-like": "int or numpy.ndarray",
-    "float-like": "float or numpy.ndarray",
+    "array-like": "~numpy.ndarray",
+    "array_like": "~numpy.ndarray",
+    "int-like": "int or ~numpy.ndarray",
+    "float-like": "float or ~numpy.ndarray",
     "sequence": "sequence",
-    "np.ndarray": "numpy.ndarray",
-    "ndarray": "numpy.ndarray",
+    "np.ndarray": "~numpy.ndarray",
+    "ndarray": "~numpy.ndarray",
 }
 _type_aliases_skip = set()
 
@@ -276,23 +272,29 @@ def has_under(name: str):
     return name.startswith("_")
 
 
-def has_no_under(name: str):
-    return not has_under(name)
+# Retrive all typings
+try:
+    from numpy.typing import __all__ as numpy_types
+except ImportError:
+    numpy_types = []
+try:
+    from sisl.typing import __all__ as sisl_types
+except ImportError:
+    sisl_types = []
 
-
-for name in filter(has_no_under, dir(np.typing)):
+for name in numpy_types:
     if name in _type_aliases_skip:
         continue
-    autodoc_type_aliases[f"npt.{name}"] = f"numpy.typing.{name}"
+    autodoc_type_aliases[f"npt.{name}"] = f"~numpy.typing.{name}"
 
 
-for name in filter(has_no_under, dir(sisl.typing)):
+for name in sisl_types:
     if name in _type_aliases_skip:
         continue
 
     # sisl typing should be last, in this way we ensure
     # that sisl typing is always preferred
-    autodoc_type_aliases[name] = f"sisl.typing.{name}"
+    autodoc_type_aliases[name] = f"~sisl.typing.{name}"
 
 
 # List of patterns, relative to source directory, that match files and
@@ -901,7 +903,82 @@ class RemovePrefixAutosummary(Autosummary):
         return items
 
 
+def _setup_autodoc(app):
+    """Patch and fix autodoc so we get the correct formatting of the environment"""
+    from sphinx.ext import autodoc, autosummary
+    from sphinx.locale import _
+    from sphinx.util import typing
+
+    # These subsequent class and methods originate from mpi4py
+    # which is released under BSD-3 clause.
+    # All credits must go to mpi4py developers for their contribution!
+    def istypealias(obj, name):
+        if isinstance(obj, type):
+            return name != getattr(obj, "__name__", None)
+        return obj in (typing.Any,)
+
+    def istypevar(obj):
+        return isinstance(obj, typing.TypeVar)
+
+    class TypeDocumenter(autodoc.DataDocumenter):
+        objtype = "type"
+        directivetype = "data"
+        priority = autodoc.ClassDocumenter.priority + 1
+
+        @classmethod
+        def can_document_member(cls, member, membername, _isattr, parent):
+            return (
+                isinstance(parent, autodoc.ModuleDocumenter)
+                and parent.name == "sisl.typing"
+                and (istypevar(member) or istypealias(member, membername))
+            )
+
+        def add_directive_header(self, sig):
+            if istypevar(self.object):
+                obj = self.object
+                if not self.options.annotation:
+                    self.options.annotation = f' = TypeVar("{obj.__name__}")'
+            super().add_directive_header(sig)
+
+        def update_content(self, more_content):
+            obj = self.object
+            if istypevar(obj):
+                if obj.__covariant__:
+                    kind = _("Covariant")
+                elif obj.__contravariant__:
+                    kind = _("Contravariant")
+                else:
+                    kind = _("Invariant")
+                content = f"{kind} :class:`~typing.TypeVar`."
+                more_content.append(content, "")
+                more_content.append("", "")
+            if istypealias(obj, self.name):
+                content = _("alias of %s") % typing.restify(obj)
+                more_content.append(content, "")
+                more_content.append("", "")
+            super().update_content(more_content)
+
+        def get_doc(self, *args, **kwargs):
+            obj = self.object
+            if istypevar(obj):
+                if obj.__doc__ == typing.TypeVar.__doc__:
+                    return []
+            return super().get_doc(*args, **kwargs)
+
+    # Ensure the data-type gets parsed as a role.
+    # This will make the Type definitions print like a class
+    # which gives more space than the simpler table with very
+    # limited entry-space.
+    from sphinx.domains.python import PythonDomain
+
+    PythonDomain.object_types["data"].roles += ("class",)
+
+    app.add_autodocumenter(TypeDocumenter)
+
+
 def setup(app):
     # Setup autodoc skipping
+    _setup_autodoc(app)
+
     app.connect("autodoc-skip-member", sisl_skip)
     app.add_directive("autosummary", RemovePrefixAutosummary, override=True)

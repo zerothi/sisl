@@ -49,3 +49,8 @@ repos:
   rev: ebf0b5e44d67f8beaa1cd13a0d0393ea04c6058d
   hooks:
     - id: validate-cff
+#Validate the numpydoc string, we use numpydoc for parsing
+#- repo: https://github.com/numpy/numpydoc
+#  rev: v1.8.0
+#  hooks:
+#    - id: numpydoc-validation

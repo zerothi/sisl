@@ -3,10 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import inspect
 from functools import singledispatch
 from textwrap import dedent
 from typing import Optional
 
+from sisl._lib._docscrape import FunctionDoc
 from sisl.messages import SislError, warn
 from sisl.typing import FuncType
 
@@ -21,7 +23,7 @@ _registry = {}
 
 
 def register_sisl_function(name: str, cls: type, module: Optional[str] = None):
-    """Decorate a function and hook it into the {cls} for calling it directly"""
+    """Decorate a function and hook it into the `cls` for calling it directly"""
 
     def decorator(func: FuncType):
         nonlocal name, cls, module
@@ -46,14 +48,46 @@ def register_sisl_function(name: str, cls: type, module: Optional[str] = None):
             if old_method.__qualname__.startswith(cls.__name__):
                 warn(
                     f"registration of function {repr(func)} under name "
-                    f"{repr(name)} for type {repr(cls)} is overriding a preexisting "
-                    f"attribute with the same name."
+                    f"{repr(name)} for type {repr(cls)} is overriding a "
+                    "pre-existing "
+                    "attribute with the same name."
                 )
 
+        # Patch the parameter list by removing the first
+        # entry. That is the class instance
+        fdoc = FunctionDoc(func, role="meth")
+        sig = inspect.signature(func)
+
+        # Since sometimes we don't have the object documented
+        # we will have to check whether the signature is the same as the
+        # parameters list.
+        sig_params = [p for p in sig.parameters.values()]
+
+        # Check if the documentation has an entry:
+        if len(fdoc["Parameters"]) > 0:
+            if sig_params[0].name == fdoc["Parameters"][0].name:
+                fdoc["Parameters"] = fdoc["Parameters"][1:]
+
+        # Remove the first signature
+        sig_params[0] = sig_params[0].replace(
+            name="self", annotation=inspect.Parameter.empty
+        )
+        sig = sig.replace(parameters=sig_params)
+
+        # Replace signature and documentation
+        # We can't replace the doc since it isn't compatible with the
+        # documentation style.
+        # I.e. the numpydoc converts it to include rst stuff which isn't parseable.
+        # This becomes problematic as it produces completely unreadable documentation
+        # func.__doc__ = str(fdoc).strip()
+        func.__signature__ = sig
+
+        # Assign the function
         setattr(cls, name, func)
         if not hasattr(cls, "_funcs"):
             cls._funcs = set()
         cls._funcs.add(name)
+
         return func
 
     return decorator
@@ -70,7 +104,7 @@ def _append_doc_dispatch(method: FuncType, cls: type):
     method_registry = _registry[name]
 
     # Append to doc string
-    doc = f"\n{cls.__name__}.{name}: equivalent to ``{name}({cls.__name__.lower()}, ...)``."
+    doc = f"\n{cls.__name__}.{name} : equivalent to ``{name}({cls.__name__.lower()}, ...)``."
     method_registry.__doc__ += doc
 
 
@@ -82,7 +116,7 @@ def register_sisl_dispatch(
 ):
     """Create a new dispatch method from a method
 
-    If the method has not been registrered before, it will be created.
+    If the method has not been registered before, it will be created.
     """
     global _registry
 
@@ -92,6 +126,7 @@ def register_sisl_dispatch(
         name = method.__name__
         if cls_name is None:
             cls_name = name
+
         if name not in _registry:
             # create a new method that will be stored
             # as a place-holder for the dispatch methods.
@@ -139,8 +174,8 @@ def expose_registered_methods(module: str):
 
     Parameters
     ----------
-    module: str
-        only register methods that belongs to `module`
+    module :
+        Only register methods that belongs to `module`.
     """
     global _registry
     import importlib

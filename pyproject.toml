@@ -331,3 +331,10 @@ extend-exclude = """
  | .*/\\..*
 )
 """
+
+
+[tool.numpydoc_validation]
+checks = ["all", "EX01", "SA01", "ES01"]
+exclude = [
+    '^conf\.',
+]

@@ -939,6 +939,7 @@ def repeat(geometry: Geometry, reps: int, axis: CellAxis) -> Geometry:
      [1.5  1.   0. ]]
 
     In functional form:
+
     >>> repeat(geom, 2, axis=0)
 
     See Also
@@ -1122,7 +1123,7 @@ def rotate(
          atoms will be rotated.
     rad :
          if ``True`` the angle is provided in radians (rather than degrees)
-    what : {'xyz', 'abc', 'abc+xyz', <or combinations of "xyzabc">}
+    what :
         which coordinate subject should be rotated,
         if any of ``abc`` is in this string the corresponding cell vector will be rotated
         if any of ``xyz`` is in this string the corresponding coordinates will be rotated
@@ -1381,7 +1382,7 @@ def append(
     axis :
         Cell direction to which the `other` geometry should be
         appended.
-    offset : {'none', 'min', (3,)}
+    offset :
         By default appending two structures will simply use the coordinates,
         as is.
         With 'min', the routine will shift both the structures along the cell
@@ -1450,7 +1451,7 @@ def prepend(
     """Prepend two structures along `axis`
 
     This will automatically add the ``geometry.cell[axis,:]`` to all atomic
-    coordiates in the `other` structure before appending.
+    coordinates in the `other` structure before appending.
 
     The basic algorithm is this:
 
@@ -1470,7 +1471,7 @@ def prepend(
     axis :
         Cell direction to which the `other` geometry should be
         prepended
-    offset : {'none', 'min', (3,)}
+    offset :
         By default appending two structures will simply use the coordinates,
         as is.
         With 'min', the routine will shift both the structures along the cell
@@ -1600,7 +1601,7 @@ def scale(
     scale :
        the scale factor for the new geometry (lattice vectors, coordinates
        and the atomic radii are scaled).
-    what: {"abc", "xyz"}
+    what :
 
        ``abc``
          Is applied on the corresponding lattice vector and the fractional coordinates.
