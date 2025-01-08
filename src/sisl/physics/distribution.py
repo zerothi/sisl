@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from numpy._typing import ArrayLike
-
 """Distribution functions
 =========================
 
@@ -86,7 +84,7 @@ def get_distribution(
 
 @set_module("sisl.physics")
 def gaussian(
-    x: npt.ArrayLike, sigma: float = 0.1, x0: Union[float, npt.npt.ArrayLike] = 0.0
+    x: npt.ArrayLike, sigma: float = 0.1, x0: Union[float, npt.ArrayLike] = 0.0
 ) -> np.ndarray:
     r"""Gaussian distribution function
 
@@ -113,7 +111,7 @@ def gaussian(
 
 @set_module("sisl.physics")
 def lorentzian(
-    x: npt.ArrayLike, gamma: float = 0.1, x0: Union[float, npt.npt.ArrayLike] = 0.0
+    x: npt.ArrayLike, gamma: float = 0.1, x0: Union[float, npt.ArrayLike] = 0.0
 ) -> np.ndarray:
     r"""Lorentzian distribution function
 
