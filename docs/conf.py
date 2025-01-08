@@ -119,7 +119,13 @@ copybutton_prompt_text = r"\$ |\$> |>>> |\.\.\. "
 copybutton_prompt_is_regexp = True
 copybutton_line_continuation_character = "\\"
 
+# We use numpy style docs
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+# Converts type-definitions to references
 napoleon_preprocess_types = True
+# Puts notes in boxes
+napoleon_use_admonition_for_notes = True
 
 # If numpydoc is available, then let sphinx report warnings
 numpydoc_validation_checks = {"all", "EX01", "SA01", "ES01"}
@@ -351,7 +357,15 @@ add_function_parentheses = False
 show_authors = False
 
 # A list of ignored prefixes for module index sorting.
-modindex_common_prefix = ["sisl."]
+modindex_common_prefix = [
+    "sisl.",
+    "sisl.geom",
+    "sisl.physics",
+    "sisl.viz",
+    "sisl.unit",
+    "sisl.typing",
+    "sisl.shape",
+]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False

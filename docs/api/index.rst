@@ -22,8 +22,15 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    :maxdepth: 2
 
    basic
-   geom/building
-   geom/neighbors
+
+.. toctree::
+   :maxdepth: 3
+
+   geom/index
+
+.. toctree::
+   :maxdepth: 2
+
    physics
    mixing
    viz/index
@@ -35,9 +42,4 @@ All methods and submodules are listed  :ref:`here <genindex>` and
 
    core
    io/index
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Advanced usage
-
    typing

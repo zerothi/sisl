@@ -28,7 +28,7 @@ __all__ = [
 
 @set_module("sisl.geom")
 class NeighborFinder:
-    """Fast and linear scaling finding of neighbors.
+    r"""Fast and linear scaling finding of neighbors.
 
     Once this class is instantiated, a table is built. Then,
     the neighbor finder can be queried as many times as wished
@@ -40,7 +40,7 @@ class NeighborFinder:
 
     Parameters
     ----------
-    geometry: sisl.Geometry
+    geometry: Geometry
         the geometry to find neighbors in
     R: float or array-like of shape (geometry.na), optional
         The radius to consider two atoms neighbors.
@@ -54,7 +54,7 @@ class NeighborFinder:
         overlap.
         If `False`, two atoms are considered neighbors if the second atom
         is within the sphere of the first atom. Note that this implies that
-        atom ``i`` might be atom ``j``'s neighbor while the opposite is not true.
+        atom :math:`I` might be atom :math:`J`'s neighbor while the opposite is not true.
 
         If not provided, it will be `True` if `R` is an array and `False` if
         it is a single float.
@@ -93,21 +93,21 @@ class NeighborFinder:
         # Find all neighbors
         neighbors = finder.find_neighbors()
 
-        # You can get the neighbor pairs (i,j) from the i and j attributes
+        # You can get the neighbor pairs (I,J) from the I and J attributes
         # The supercell index of atom J is in the isc attribute.
-        print("ATOM I SHAPE:", neighbors.i.shape)
-        print("ATOM J (NEIGHBOR) SHAPE:", neighbors.j.shape)
+        print("ATOM I SHAPE:", neighbors.I.shape)
+        print("ATOM J (NEIGHBOR) SHAPE:", neighbors.J.shape)
         print("NEIGHBORS ISC:", neighbors.isc.shape)
 
         # You can also loop through atoms to get their neighbors
         for at_neighs in neighbors:
             print()
             print(f"NEIGHBORS OF ATOM {at_neighs.atom} ({at_neighs.n_neighbors} neighbors): ")
-            print("J", at_neighs.j)
+            print("J", at_neighs.J)
             print("ISC", at_neighs.isc)
 
         # Or get the neighbors of a particular atom:
-        neighbors[0].j
+        neighbors[0].J
 
     See Also
     --------
@@ -155,16 +155,16 @@ class NeighborFinder:
         overlap: bool = None,
         bin_size: Union[float, tuple[float, float, float]] = 2,
     ):
-        """Prepares everything for neighbor finding.
+        r"""Prepares everything for neighbor finding.
 
         **You don't need to call this method after initializing the finder**,
         this is called internally already!
 
-        This method migh be used to reset the finder with new parameters.
+        This method might be used to reset the finder with new parameters.
 
         Parameters
         ----------
-        geometry: sisl.Geometry, optional
+        geometry:
             the geometry to find neighbors in.
 
             If not provided, the current geometry is kept.
@@ -177,12 +177,12 @@ class NeighborFinder:
             each atom is its maxR.
 
             Note that negative R values are allowed
-        overlap: bool
+        overlap:
             If `True`, two atoms are considered neighbors if their spheres
             overlap.
             If `False`, two atoms are considered neighbors if the second atom
             is within the sphere of the first atom. Note that this implies that
-            atom ``i`` might be atom ``j``'s neighbor while the opposite is not true.
+            atom :math:`I` might be atom :math:`J`'s neighbor while the opposite is not true.
         bin_size :
             the factor for the radius to determine how large the bins are,
             optionally along each lattice vector.
@@ -380,10 +380,10 @@ class NeighborFinder:
         return bin_indices
 
     def _get_search_indices(self, fxyz, cartesian=False):
-        """Gets the bin indices to explore for a given fractional coordinate.
+        r"""Gets the bin indices to explore for a given fractional coordinate.
 
         Given a fractional coordinate, we will need to look for neighbors
-        in its own bin, and one bin away in each direction. That is, $2^3=8$ bins.
+        in its own bin, and one bin away in each direction. That is, :math:`2^3=8` bins.
 
         Parameters
         -----------
@@ -398,9 +398,9 @@ class NeighborFinder:
         np.ndarray:
             The bin indices where we need to perform the search for each
             fractional coordinate. These indices are all inside the unit cell.
-            If `cartesian=True`, cartesian indices are returned and the array
+            If ``cartesian=True``, cartesian indices are returned and the array
             has shape (N, 8, 3).
-            If `cartesian=False`, scalar indices are returned and the array
+            If ``cartesian=False``, scalar indices are returned and the array
             has shape (N, 8).
         np.ndarray of shape (N, 8, 3):
             The supercell indices of each bin index in the search.
@@ -502,12 +502,12 @@ class NeighborFinder:
 
         Parameters
         ----------
-        atoms: optional
+        atoms:
             the atoms for which neighbors are desired. Anything that can
             be sanitized by `sisl.Geometry` is a valid value.
 
             If not provided, neighbors for all atoms are searched.
-        self_interaction: bool, optional
+        self_interaction:
             whether to consider an atom a neighbor of itself.
 
         Returns
@@ -577,28 +577,20 @@ class NeighborFinder:
         self,
         self_interaction: bool = False,
     ) -> UniqueNeighborList:
-        """Find unique neighbor pairs within the geometry.
+        r"""Find unique neighbor pairs within the geometry.
 
         This function only returns one direction of a given connection
-        between atoms i and j. In particular, it returns the connection
-        where i < j.
+        between atoms :math:`I` and :math:`J`. In particular, it returns the connection
+        where :math:`I < J`.
 
         Note that this routine can not be called if `overlap` is
         set to `False` and the radius is not a single float. In that case,
-        there is no way of defining "uniqueness" since pair `ij` can have
-        a different threshold radius than pair `ji`.
+        there is no way of defining *uniqueness* since pair :math:`IJ` can have
+        a different threshold radius than pair :math:`JI`.
 
         Parameters
         ----------
-        atoms: optional
-            the atoms for which neighbors are desired. Anything that can
-            be sanitized by `sisl.Geometry` is a valid value.
-
-            If not provided, neighbors for all atoms are searched.
-        as_pairs: bool, optional
-            If `True` pairs of atoms are returned. Otherwise a list containing
-            the neighbors for each atom is returned.
-        self_interaction: bool, optional
+        self_interaction :
             whether to consider an atom a neighbor of itself.
         """
         if not self._overlap and self._aux_R.ndim == 1:
@@ -668,10 +660,6 @@ class NeighborFinder:
         ----------
         xyz: array-like of shape ([npoints], 3)
             the coordinates for which neighbors are desired.
-        as_pairs: bool, optional
-            If `True` pairs are returned, where the first item is the index
-            of the point and the second one is the atom index.
-            Otherwise a list containing the neighbors for each point is returned.
         """
         # Cast R into array of appropiate shape and type.
         thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)

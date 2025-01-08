@@ -1,8 +1,8 @@
 .. _physics:
 
-****************
-Physical objects
-****************
+*********************************
+Physical objects (`sisl.physics`)
+*********************************
 
 .. module:: sisl.physics
 
@@ -22,6 +22,10 @@ sparse. There are exceptions, but it is generally advisable to have this in mind
    physics.matrix
    physics.electron
    physics.phonon
+
+.. toctree::
+   :maxdepth: 1
+
    physics.distribution
 
 
@@ -31,8 +35,8 @@ Low level objects
 The low level objects are the driving objects for some of the physical
 objects found here. They are rarely (if ever) required to be used, but they
 may be important for developers wishing to extend the functionality of `sisl`
-using generic class-structures. For instance the `~Hamiltonian` inherits the
-`~SparseOrbitalBZSpin` class and `~EigenvalueElectron` inherits from `~Coefficient`.
+using generic class-structures. For instance the `Hamiltonian` inherits the
+`SparseOrbitalBZSpin` class and `EigenvalueElectron` inherits from `Coefficient`.
 
 States
 ------
@@ -52,5 +56,5 @@ Sparse matrices
 .. autosummary::
    :toctree: generated/
 
-   SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
-   SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
+   SparseOrbitalBZ
+   SparseOrbitalBZSpin

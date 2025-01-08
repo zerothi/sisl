@@ -86,7 +86,7 @@ def get_pairs(
     init_npairs: cython.size_t,
     grow_factor: cnp.float64_t,
 ):
-    """Gets (possibly duplicated) pairs of neighbor atoms.
+    r"""Gets (possibly duplicated) pairs of neighbor atoms.
 
     Parameters
     ---------
@@ -114,8 +114,8 @@ def get_pairs(
     xyz:
         the cartesian coordinates of all atoms in the geometry.
     cell:
-        the lattice vectors of the geometry, where cell(i, :) is the
-        ith lattice vector.
+        the lattice vectors of the geometry, where ``cell[i, :]`` is the
+        :math:`i`th lattice vector.
     pbc:
         for each direction, whether periodic boundary conditions should
         be considered.
@@ -126,7 +126,7 @@ def get_pairs(
         overlap.
         If false, two atoms are considered neighbors if the second atom
         is within the sphere of the first atom. Note that this implies that
-        atom `i` might be atom `j`'s neighbor while the opposite is not true.
+        atom :math:`I` might be atom :math:`J`'s neighbor while the opposite is not true.
     init_npairs:
         The initial number of pairs that can be found.
         It is used to allocate the `neighs` array. This is computed
@@ -279,7 +279,7 @@ def get_all_unique_pairs(
     init_npairs: cython.size_t,
     grow_factor: cnp.float64_t,
 ):
-    """Gets all unique pairs of atoms that are neighbors.
+    r"""Gets all unique pairs of atoms that are neighbors.
 
     Parameters
     ---------
@@ -304,7 +304,7 @@ def get_all_unique_pairs(
     xyz:
         the cartesian coordinates of all atoms in the geometry.
     cell:
-        the lattice vectors of the geometry, where cell(i, :) is the
+        the lattice vectors of the geometry, where ``cell[i, :]`` is the
         ith lattice vector.
     pbc:
         for each direction, whether periodic boundary conditions should
@@ -316,7 +316,7 @@ def get_all_unique_pairs(
         overlap.
         If false, two atoms are considered neighbors if the second atom
         is within the sphere of the first atom. Note that this implies that
-        atom `i` might be atom `j`'s neighbor while the opposite is not true.
+        atom :math:`I` might be atom :math:`J`'s neighbor while the opposite is not true.
     init_npairs:
         The initial number of pairs that can be found.
         It is used to allocate the `neighs` array. This is computed
@@ -473,7 +473,7 @@ def get_close(
     init_npairs: cython.size_t,
     grow_factor: cnp.float64_t,
 ):
-    """Gets the atoms that are close to given positions
+    r"""Gets the atoms that are close to given positions
 
     Parameters
     ---------
@@ -499,7 +499,7 @@ def get_close(
     xyz:
         the cartesian coordinates of all atoms in the geometry.
     cell:
-        the lattice vectors of the geometry, where cell(i, :) is the
+        the lattice vectors of the geometry, where ``cell[i, :]`` is the
         ith lattice vector.
     pbc:
         for each direction, whether periodic boundary conditions should

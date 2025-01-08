@@ -1,25 +1,23 @@
-.. _geom:
+.. _geom-create:
 
-*****************
-Common geometries
-*****************
+Creating geometries
+===================
 
-.. module:: sisl.geom
-
+.. currentmodule:: sisl.geom
 
 A selection of default geometries that `sisl` can construct on the fly.
 
 While this is far from complete we encourage users to contribute additional
 geometries via a `pull request <pr>`_.
 
-All methods returns a `Geometry` object.
+All methods returns a `~sisl.Geometry` object.
 
 Some of the geometries are created in section based geometries, such as `heteroribbon`.
 This functionality is provided through the `composite_geometry`.
 
 
 Bulk
-====
+----
 
 .. autosummary::
    :toctree: generated/
@@ -33,7 +31,7 @@ Bulk
 
 
 Surfaces (slabs)
-================
+----------------
 
 .. autosummary::
    :toctree: generated/
@@ -43,7 +41,7 @@ Surfaces (slabs)
    rocksalt_slab
 
 0D materials
-============
+------------
 
 .. autosummary::
    :toctree: generated/
@@ -53,7 +51,7 @@ Surfaces (slabs)
    triangulene
 
 1D materials
-============
+------------
 
 .. autosummary::
    :toctree: generated/
@@ -69,7 +67,7 @@ Surfaces (slabs)
 
 
 2D materials
-============
+------------
 
 .. autosummary::
    :toctree: generated/
@@ -82,7 +80,7 @@ Surfaces (slabs)
 
 
 Helpers
-=======
+-------
 
 .. autosummary::
    :toctree: generated/

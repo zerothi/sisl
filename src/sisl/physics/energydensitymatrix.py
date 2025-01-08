@@ -8,7 +8,7 @@ import numpy as np
 import sisl._array as _a
 from sisl._internal import set_module
 from sisl.messages import SislError
-from sisl.typing import GaugeType
+from sisl.typing import GaugeType, KPoint
 
 from .densitymatrix import _densitymatrix
 
@@ -103,7 +103,7 @@ class EnergyDensityMatrix(_densitymatrix):
 
     def Ek(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -133,7 +133,7 @@ class EnergyDensityMatrix(_densitymatrix):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the energy density matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -167,7 +167,7 @@ class EnergyDensityMatrix(_densitymatrix):
 
     def dEk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -198,7 +198,7 @@ class EnergyDensityMatrix(_densitymatrix):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the energy density matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -230,7 +230,7 @@ class EnergyDensityMatrix(_densitymatrix):
 
     def ddEk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -261,7 +261,7 @@ class EnergyDensityMatrix(_densitymatrix):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the energy density matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex

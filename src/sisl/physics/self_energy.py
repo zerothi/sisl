@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, Sequence, Union
 
 import numpy as np
 from numpy import abs as _abs
@@ -28,6 +28,7 @@ from sisl.linalg.base import _compute_lwork
 from sisl.messages import deprecate_argument, deprecation, warn
 from sisl.physics.bloch import Bloch
 from sisl.physics.brillouinzone import MonkhorstPack
+from sisl.typing import KPoint
 from sisl.utils.mathematics import fnorm
 
 __all__ = ["SelfEnergy"]
@@ -157,7 +158,7 @@ class WideBandSE(SelfEnergy):
         eta = -kwargs.get("eta", self.eta)
         return np.diag(np.repeat(1j * eta, self._N))
 
-    def broadening_matrix(self, E=0.0, *args, **kwargs):
+    def broadening_matrix(self, E: complex = 0.0, *args, **kwargs):
         # note the sign (+)
         eta = kwargs.get("eta", self.eta)
         return np.diag(np.repeat(np.complex128(2 * eta), self._N))
@@ -306,14 +307,21 @@ class RecursiveSI(SemiInfinite):
     @deprecate_argument(
         "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.16"
     )
-    def green(self, E: complex, k=(0, 0, 0), dtype=None, atol: float = 1e-14, **kwargs):
+    def green(
+        self,
+        E: complex,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        atol: float = 1e-14,
+        **kwargs,
+    ):
         r"""Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).
 
         Parameters
         ----------
         E :
           energy at which the calculation will take place
-        k : array_like, optional
+        k :
           k-point at which the Green function should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype
@@ -419,7 +427,7 @@ class RecursiveSI(SemiInfinite):
     def self_energy(
         self,
         E: complex,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         atol: float = 1e-14,
         bulk: bool = False,
@@ -431,7 +439,7 @@ class RecursiveSI(SemiInfinite):
         ----------
         E :
           energy at which the calculation will take place
-        k : array_like, optional
+        k :
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype
@@ -538,7 +546,7 @@ class RecursiveSI(SemiInfinite):
     def self_energy_lr(
         self,
         E: complex,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         atol: float = 1e-14,
         bulk: bool = False,
@@ -553,7 +561,7 @@ class RecursiveSI(SemiInfinite):
         ----------
         E :
           energy at which the calculation will take place, if complex, the hosting ``eta`` won't be used.
-        k : array_like, optional
+        k :
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
         dtype : numpy.dtype, optional
@@ -725,7 +733,14 @@ class RealSpaceSE(SelfEnergy):
     Manually specify Brillouin zone integration and default :math:`\eta` value.
     """
 
-    def __init__(self, parent, semi_axis: int, k_axes, unfold=(1, 1, 1), **options):
+    def __init__(
+        self,
+        parent,
+        semi_axis: int,
+        k_axes: Union[int, Sequence[int]],
+        unfold=(1, 1, 1),
+        **options,
+    ):
         """Initialize real-space self-energy calculator"""
         self.parent = parent
 
@@ -976,7 +991,7 @@ class RealSpaceSE(SelfEnergy):
     def self_energy(
         self,
         E: complex,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         bulk: bool = False,
         coupling: bool = False,
         dtype=None,
@@ -994,7 +1009,7 @@ class RealSpaceSE(SelfEnergy):
         ----------
         E :
            energy to evaluate the real-space self-energy at
-        k : array_like, optional
+        k :
            only viable for 3D bulk systems with real-space self-energies along 2 directions.
            I.e. this would correspond to circular self-energies.
         bulk :
@@ -1062,7 +1077,13 @@ class RealSpaceSE(SelfEnergy):
         ).toarray() - inv(G, True)
 
     def green(
-        self, E: complex, k=(0, 0, 0), dtype=None, *, apply_kwargs=None, **kwargs
+        self,
+        E: complex,
+        k: KPoint = (0, 0, 0),
+        dtype=None,
+        *,
+        apply_kwargs=None,
+        **kwargs,
     ):
         r"""Calculate the real-space Green function
 
@@ -1075,7 +1096,7 @@ class RealSpaceSE(SelfEnergy):
         ----------
         E :
            energy to evaluate the real-space Green function at
-        k : array_like, optional
+        k :
            only viable for 3D bulk systems with real-space Green functions along 2 directions.
            I.e. this would correspond to a circular real-space Green function
         dtype : numpy.dtype, optional
@@ -1324,7 +1345,7 @@ class RealSpaceSI(SelfEnergy):
         object via the overlapping regions, the atoms that overlap `semi` and `surface`
         are determined in the `setup` routine.
         `semi` and `surface` must have parallel lattice vectors.
-    k_axes : array_like of int
+    k_axes :
         axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
         along the `semi` semi-infinite direction.
     unfold : (3,) of int
@@ -1370,7 +1391,14 @@ class RealSpaceSI(SelfEnergy):
     Manually specify Brillouin zone integration and default :math:`\eta` value.
     """
 
-    def __init__(self, semi, surface, k_axes, unfold=(1, 1, 1), **options):
+    def __init__(
+        self,
+        semi,
+        surface,
+        k_axes: Union[int, Sequence[int]],
+        unfold=(1, 1, 1),
+        **options,
+    ):
         """Initialize real-space self-energy calculator"""
         self.semi = semi
         self.surface = surface
@@ -1724,7 +1752,7 @@ class RealSpaceSI(SelfEnergy):
     def self_energy(
         self,
         E: complex,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         bulk: bool = False,
         coupling: bool = False,
         dtype=None,
@@ -1742,7 +1770,7 @@ class RealSpaceSI(SelfEnergy):
         ----------
         E :
            energy to evaluate the real-space self-energy at
-        k : array_like, optional
+        k :
            only viable for 3D bulk systems with real-space self-energies along 2 directions.
            I.e. this would correspond to circular self-energies.
         bulk :
@@ -1809,7 +1837,7 @@ class RealSpaceSI(SelfEnergy):
             - self._calc["P0"](k, dtype=dtype, **kwargs)
         ).toarray() - inv(G, True)
 
-    def green(self, E: complex, k=(0, 0, 0), dtype=None, **kwargs):
+    def green(self, E: complex, k: KPoint = (0, 0, 0), dtype=None, **kwargs):
         r"""Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -1821,7 +1849,7 @@ class RealSpaceSI(SelfEnergy):
         ----------
         E :
            energy to evaluate the real-space Green function at
-        k : array_like, optional
+        k :
            only viable for 3D bulk systems with real-space Green functions along 2 directions.
            I.e. this would correspond to a circular real-space Green function
         dtype : numpy.dtype, optional

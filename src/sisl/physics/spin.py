@@ -45,14 +45,19 @@ class Spin:
 
     #: Constant for an un-polarized spin configuration
     UNPOLARIZED = 0
+    """Constant for an un-polarized spin configuration."""
     #: Constant for a polarized spin configuration
     POLARIZED = 1
+    """Constant for a polarized spin configuration."""
     #: Constant for a non-collinear spin configuration
     NONCOLINEAR = 2
+    """Constant for a non-collinear spin configuration."""
     #: Constant for a spin-orbit spin configuration
     SPINORBIT = 3
+    """Constant for a spin-orbit spin configuration."""
     #: Constant for a Nambu spin configuration
     NAMBU = 4
+    """Constant for a Nambu spin configuration."""
 
     #: The :math:`\boldsymbol\sigma_x` Pauli matrix
     X = np.array([[0, 1], [1, 0]], np.complex128)

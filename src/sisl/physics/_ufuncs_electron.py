@@ -9,9 +9,10 @@ import numpy as np
 import numpy.typing as npt
 
 from sisl._ufuncs import register_sisl_dispatch
+from sisl.typing import DistributionType
 
 from .distribution import get_distribution
-from .electron import StateCElectron, _create_sigma, _TDist, _velocity_const
+from .electron import StateCElectron, _create_sigma, _velocity_const
 from .state import _dM_Operator
 
 # Nothing gets exposed here
@@ -60,7 +61,7 @@ def berry_curvature(
     state: StateCElectron,
     sum: bool = True,
     *,
-    distribution: Optional[_TDist] = None,
+    distribution: Optional[DistributionType] = None,
     derivative_kwargs: dict = {},
     operator: Union[_dM_Operator, tuple[_dM_Operator, _dM_Operator]] = lambda M, d: M,
     eta: float = 0.0,
@@ -247,7 +248,7 @@ def spin_berry_curvature(
     sigma: Union[CartesianAxisStrLiteral, npt.ArrayLike] = "z",
     sum: bool = True,
     *,
-    distribution: Optional[_TDist] = None,
+    distribution: Optional[DistributionType] = None,
     J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
     **berry_kwargs,
 ) -> np.ndarray:

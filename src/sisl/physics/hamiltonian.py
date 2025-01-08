@@ -7,7 +7,7 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._internal import set_module
-from sisl.typing import GaugeType
+from sisl.typing import GaugeType, KPoint
 
 from ._common import comply_gauge
 from .distribution import get_distribution
@@ -106,7 +106,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     def Hk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -136,7 +136,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the Hamiltonian at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -171,7 +171,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     def dHk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -202,7 +202,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the Hamiltonian at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -234,7 +234,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     def ddHk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -265,7 +265,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the Hamiltonian at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -335,12 +335,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
             for i in range(nspin):
                 self._csr._D[:, i].real += self._csr._D[:, self.S_idx].real * E[i]
 
-    def eigenvalue(self, k=(0, 0, 0), gauge: GaugeType = "lattice", **kwargs):
+    def eigenvalue(self, k: KPoint = (0, 0, 0), gauge: GaugeType = "lattice", **kwargs):
         """Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`
 
         Parameters
         ----------
-        k : array_like*3, optional
+        k :
             the k-point at which to evaluate the eigenvalues at
         gauge :
             the gauge used for calculating the eigenvalues
@@ -376,12 +376,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
             info["format"] = format
         return EigenvalueElectron(e, self, **info)
 
-    def eigenstate(self, k=(0, 0, 0), gauge: GaugeType = "lattice", **kwargs):
+    def eigenstate(self, k: KPoint = (0, 0, 0), gauge: GaugeType = "lattice", **kwargs):
         """Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates
 
         Parameters
         ----------
-        k : array_like*3, optional
+        k :
             the k-point at which to evaluate the eigenstates at
         gauge :
             the gauge used for calculating the eigenstates

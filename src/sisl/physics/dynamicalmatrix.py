@@ -7,7 +7,7 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from sisl._internal import set_module
-from sisl.typing import GaugeType
+from sisl.typing import GaugeType, KPoint
 
 from .phonon import EigenmodePhonon, EigenvaluePhonon
 from .sparse import SparseOrbitalBZ
@@ -57,7 +57,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
     def Dk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -87,7 +87,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the dynamical matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -117,7 +117,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
     def dDk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -148,7 +148,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the dynamical matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -176,7 +176,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
     def ddDk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -207,7 +207,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the dynamical matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -291,13 +291,13 @@ class DynamicalMatrix(SparseOrbitalBZ):
         del d_uc
 
     def eigenvalue(
-        self, k=(0, 0, 0), gauge: GaugeType = "lattice", **kwargs
+        self, k: KPoint = (0, 0, 0), gauge: GaugeType = "lattice", **kwargs
     ) -> EigenvaluePhonon:
         """Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`
 
         Parameters
         ----------
-        k : array_like*3, optional
+        k :
             the k-point at which to evaluate the eigenvalues at
         gauge :
             the gauge used for calculating the eigenvalues
@@ -324,7 +324,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
     def eigenmode(
-        self, k=(0, 0, 0), gauge: GaugeType = "lattice", **kwargs
+        self, k: KPoint = (0, 0, 0), gauge: GaugeType = "lattice", **kwargs
     ) -> EigenmodePhonon:
         r"""Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
 
@@ -334,7 +334,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like*3, optional
+        k :
             the k-point at which to evaluate the eigenmodes at
         gauge :
             the gauge used for calculating the eigenmodes

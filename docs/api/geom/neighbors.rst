@@ -1,8 +1,7 @@
 .. _geom-neighbors:
 
-*****************
 Finding neighbors
-*****************
+=================
 
 .. currentmodule:: sisl.geom
 
@@ -32,7 +31,7 @@ as you want. You can ask for all neighbors or only the neighbors of atoms that y
 
 
 Neighbor lists
-================
+--------------
 
 Once created, a neighbor finder can be queried to get the neighbors. It will return a neighbor list.
 Depending on which type of query you make to the neighbor finder, it will return a different type of
@@ -40,24 +39,24 @@ neighbor list.
 
 The following table summarizes the properties of each type of neighbor list:
 
-+----------------------+--------------------+--------------+-----------------------+
-| Class                | Neighbors for      |   ``i < j``  |  Items                |
-+======================+====================+==============+=======================+
-| `FullNeighborList`   | All atoms          |      No      |  `AtomNeighborList`   |
-+----------------------+--------------------+--------------+-----------------------+
-| `UniqueNeighborList` | All atoms          |      Yes     |         N/A           |
-+----------------------+--------------------+--------------+-----------------------+
-| `PartialNeighborList`| Selected atoms     |      No      |   `AtomNeighborList`  |
-+----------------------+--------------------+--------------+-----------------------+
-| `AtomNeighborList`   | One atom           |      No      |         N/A           |
-+----------------------+--------------------+--------------+-----------------------+
-| `PointsNeighborList` | Points in space    |      No      |   `PointNeighborList` |
-+----------------------+--------------------+--------------+-----------------------+
-| `PointNeighborList`  | One point in space |      No      |         N/A           |
-+----------------------+--------------------+--------------+-----------------------+
++----------------------+--------------------+---------------------+-----------------------+
+| Class                | Neighbors for      | :math:`I < J`       |  Items                |
++======================+====================+=====================+=======================+
+| `FullNeighborList`   | All atoms          | :fas:`circle-xmark` |  `AtomNeighborList`   |
++----------------------+--------------------+---------------------+-----------------------+
+| `UniqueNeighborList` | All atoms          | :fas:`circle-check` |         N/A           |
++----------------------+--------------------+---------------------+-----------------------+
+| `PartialNeighborList`| Selected atoms     | :fas:`circle-xmark` |   `AtomNeighborList`  |
++----------------------+--------------------+---------------------+-----------------------+
+| `AtomNeighborList`   | One atom           | :fas:`circle-xmark` |         N/A           |
++----------------------+--------------------+---------------------+-----------------------+
+| `PointsNeighborList` | Points in space    | :fas:`circle-xmark` |   `PointNeighborList` |
++----------------------+--------------------+---------------------+-----------------------+
+| `PointNeighborList`  | One point in space | :fas:`circle-xmark` |         N/A           |
++----------------------+--------------------+---------------------+-----------------------+
 
 Where:
 
-- ``i < j`` indicates whether the list only contains one direction of the interaction, i.e. by omitting
+- :math:`I < J` indicates whether the list only contains one direction of the interaction, i.e. by omitting
   the transposed interaction.
-- ``Items`` indicates the type that you get when you iterate or index (e.g. ``neighbors[0]``) the list.
+- ``Items`` indicates the type that you get when you iterate over indices (e.g. ``neighbors[0]``) the list.

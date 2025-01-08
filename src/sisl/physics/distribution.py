@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from numpy._typing import ArrayLike
+
 """Distribution functions
 =========================
 
@@ -20,12 +22,15 @@ Various distributions using different smearing techniques.
 """
 
 from functools import partial
+from typing import Union
 
 import numpy as np
+import numpy.typing as npt
 from numpy import exp, expm1
 from scipy.special import erf
 
 from sisl._internal import set_module
+from sisl.typing import DistributionFunc, DistributionStr
 
 _pi = np.pi
 _sqrt_2pi = (2 * _pi) ** 0.5
@@ -36,18 +41,22 @@ __all__ += ["step_function", "heaviside"]
 
 
 @set_module("sisl.physics")
-def get_distribution(method, smearing=0.1, x0=0.0):
+def get_distribution(
+    method: DistributionStr,
+    smearing: float = 0.1,
+    x0: Union[float, npt.ArrayLike] = 0.0,
+) -> DistributionFunc:
     r"""Create a distribution function, Gaussian, Lorentzian etc.
 
     See the details regarding the distributions in their respective documentation.
 
     Parameters
     ----------
-    method : {'gaussian', 'lorentzian', 'fermi_dirac', 'bose_einstein', 'step_function', 'heaviside'}
+    method :
        distribution function
-    smearing : float, optional
+    smearing :
        smearing parameter for methods that have a smearing
-    x0 : float, optional
+    x0 :
        maximum/middle of the distribution function
 
     Returns
@@ -71,12 +80,14 @@ def get_distribution(method, smearing=0.1, x0=0.0):
     elif m in ("heavi", "heavy", "heaviside"):
         return partial(heaviside, x0=x0)
     raise ValueError(
-        f"get_distribution does not implement the {method} distribution function, have you mispelled?"
+        f"get_distribution does not implement the {method} distribution function, have you misspelled?"
     )
 
 
 @set_module("sisl.physics")
-def gaussian(x, sigma: float = 0.1, x0=0.0):
+def gaussian(
+    x: npt.ArrayLike, sigma: float = 0.1, x0: Union[float, npt.npt.ArrayLike] = 0.0
+) -> np.ndarray:
     r"""Gaussian distribution function
 
     .. math::
@@ -101,7 +112,9 @@ def gaussian(x, sigma: float = 0.1, x0=0.0):
 
 
 @set_module("sisl.physics")
-def lorentzian(x, gamma: float = 0.1, x0=0.0):
+def lorentzian(
+    x: npt.ArrayLike, gamma: float = 0.1, x0: Union[float, npt.npt.ArrayLike] = 0.0
+) -> np.ndarray:
     r"""Lorentzian distribution function
 
     .. math::
@@ -109,11 +122,11 @@ def lorentzian(x, gamma: float = 0.1, x0=0.0):
 
     Parameters
     ----------
-    x : array_like
+    x :
         points at which the Lorentzian distribution is calculated
     gamma :
         spread of the Lorentzian
-    x0 : array_like, optional
+    x0 :
         maximum position of the Lorentzian
 
     Returns
@@ -125,7 +138,9 @@ def lorentzian(x, gamma: float = 0.1, x0=0.0):
 
 
 @set_module("sisl.physics")
-def fermi_dirac(E, kT: float = 0.1, mu=0.0):
+def fermi_dirac(
+    E: npt.ArrayLike, kT: float = 0.1, mu: Union[float, npt.ArrayLike] = 0.0
+) -> np.ndarray:
     r"""Fermi-Dirac distribution function
 
     .. math::
@@ -133,11 +148,11 @@ def fermi_dirac(E, kT: float = 0.1, mu=0.0):
 
     Parameters
     ----------
-    E : array_like
+    E :
         energy evaluation points
     kT :
         temperature broadening
-    mu : array_like, optional
+    mu :
         chemical potential
 
     Returns
@@ -149,7 +164,9 @@ def fermi_dirac(E, kT: float = 0.1, mu=0.0):
 
 
 @set_module("sisl.physics")
-def bose_einstein(E, kT: float = 0.1, mu=0.0):
+def bose_einstein(
+    E: npt.ArrayLike, kT: float = 0.1, mu: Union[float, npt.ArrayLike] = 0.0
+) -> np.ndarray:
     r"""Bose-Einstein distribution function
 
     .. math::
@@ -157,11 +174,11 @@ def bose_einstein(E, kT: float = 0.1, mu=0.0):
 
     Parameters
     ----------
-    E : array_like
+    E :
         energy evaluation points
     kT :
         temperature broadening
-    mu : array_like, optional
+    mu :
         chemical potential
 
     Returns
@@ -173,7 +190,9 @@ def bose_einstein(E, kT: float = 0.1, mu=0.0):
 
 
 @set_module("sisl.physics")
-def cold(E, kT: float = 0.1, mu=0.0):
+def cold(
+    E: npt.ArrayLike, kT: float = 0.1, mu: Union[float, npt.ArrayLike] = 0.0
+) -> np.ndarray:
     r""" Cold smearing function
 
     For more details see :cite:`Marzari1999`.
@@ -185,11 +204,11 @@ def cold(E, kT: float = 0.1, mu=0.0):
 
     Parameters
     ----------
-    E : array_like
+    E :
         energy evaluation points
     kT :
         temperature broadening
-    mu : array_like, optional
+    mu :
         chemical potential
 
     Returns
@@ -202,7 +221,7 @@ def cold(E, kT: float = 0.1, mu=0.0):
 
 
 @set_module("sisl.physics")
-def heaviside(x, x0=0.0):
+def heaviside(x: npt.ArrayLike, x0: Union[float, npt.ArrayLike] = 0.0) -> np.ndarray:
     r""" Heaviside step function
 
     .. math::
@@ -220,9 +239,9 @@ def heaviside(x, x0=0.0):
 
     Parameters
     ----------
-    x : array_like
+    x :
         points at which the Heaviside step distribution is calculated
-    x0 : array_like, optional
+    x0 :
         step position
 
     Returns
@@ -239,7 +258,9 @@ def heaviside(x, x0=0.0):
 
 
 @set_module("sisl.physics")
-def step_function(x, x0=0.0):
+def step_function(
+    x: npt.ArrayLike, x0: Union[float, npt.ArrayLike] = 0.0
+) -> np.ndarray:
     r""" Step function, also known as :math:`1 - H(x)`
 
     This function equals one minus the Heaviside step function
@@ -259,9 +280,9 @@ def step_function(x, x0=0.0):
 
     Parameters
     ----------
-    x : array_like
+    x :
         points at which the step distribution is calculated
-    x0 : array_like, optional
+    x0 :
         step position
 
     Returns

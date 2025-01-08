@@ -91,11 +91,12 @@ from sisl.messages import (
 from sisl.physics._common import comply_projection
 from sisl.typing import (
     CartesianAxisStrLiteral,
+    DistributionType,
     ProjectionType,
+    ProjectionTypeDiag,
     ProjectionTypeHadamard,
     ProjectionTypeHadamardAtoms,
 )
-from sisl.typing._physics import ProjectionTypeDiag
 from sisl.utils.misc import direction
 
 if TYPE_CHECKING:
@@ -116,7 +117,7 @@ __all__ += ["EigenvalueElectron", "EigenvectorElectron", "EigenstateElectron"]
 
 
 @set_module("sisl.physics.electron")
-def DOS(E, eig, distribution="gaussian"):
+def DOS(E, eig, distribution: DistributionType = "gaussian"):
     r"""Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{DOS}(E)` is calculated as:
@@ -126,7 +127,7 @@ def DOS(E, eig, distribution="gaussian"):
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
     used may be a user-defined function. Alternatively a distribution function may
-    be retrieved from `~sisl.physics.distribution`.
+    be retrieved from :ref:`physics.distribution`.
 
     Parameters
     ----------
@@ -134,13 +135,13 @@ def DOS(E, eig, distribution="gaussian"):
        energies to calculate the DOS at
     eig : array_like
        electronic eigenvalues
-    distribution : func or str, optional
+    distribution :
        a function that accepts :math:`\Delta E` as argument and calculates the
        distribution function.
 
     See Also
     --------
-    sisl.physics.distribution : a selected set of implemented distribution functions
+    :ref:`physics.distribution` : a selected set of implemented distribution functions
     COP : calculate COOP or COHP curves
     PDOS : projected DOS (same as this, but projected onto each orbital)
     spin_moment : spin moment
@@ -157,7 +158,7 @@ def DOS(E, eig, distribution="gaussian"):
 
 
 @set_module("sisl.physics.electron")
-def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
+def PDOS(E, eig, state, S=None, distribution: DistributionType = "gaussian", spin=None):
     r""" Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{PDOS}(E)` is calculated as:
@@ -167,7 +168,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
     used may be a user-defined function. Alternatively a distribution function may
-    be aquired from `~sisl.physics.distribution`.
+    be acquired from :ref:`physics.distribution`.
 
     In case of an orthogonal basis set :math:`\mathbf S` is equal to the identity matrix.
     Note that `DOS` is the sum of the orbital projected DOS:
@@ -210,7 +211,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. For non-colinear calculations this matrix may be halve the size of ``len(state[0, :])`` to
        trigger the non-colinear calculation of PDOS.
-    distribution : func or str, optional
+    distribution :
        a function that accepts :math:`E-\epsilon` as argument and calculates the
        distribution function.
     spin : str or Spin, optional
@@ -219,7 +220,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
 
     See Also
     --------
-    sisl.physics.distribution : a selected set of implemented distribution functions
+    :ref:`physics.distribution` : a selected set of implemented distribution functions
     DOS : total DOS (same as summing over orbitals)
     COP : calculate COOP or COHP curves
     spin_moment : spin moment
@@ -364,7 +365,9 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
     "0.15",
     "0.16",
 )
-def COP(E, eig, state, M, distribution="gaussian", atol: float = 1e-10):
+def COP(
+    E, eig, state, M, distribution: DistributionType = "gaussian", atol: float = 1e-10
+):
     r"""Calculate the Crystal Orbital Population for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{COP}(E)` is calculated as:
@@ -374,7 +377,7 @@ def COP(E, eig, state, M, distribution="gaussian", atol: float = 1e-10):
 
     where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function
     used may be a user-defined function. Alternatively a distribution function may
-    be aquired from `~sisl.physics.distribution`.
+    be acquired from :ref:`physics.distribution`.
 
     The COP curves generally refers to COOP or COHP curves.
     COOP is the Crystal Orbital Overlap Population with `M` being the overlap matrix.
@@ -390,7 +393,7 @@ def COP(E, eig, state, M, distribution="gaussian", atol: float = 1e-10):
        eigenvectors
     M : array_like
        matrix used in the COP curve.
-    distribution : func or str, optional
+    distribution :
        a function that accepts :math:`E-\epsilon` as argument and calculates the
        distribution function.
     atol :
@@ -408,7 +411,7 @@ def COP(E, eig, state, M, distribution="gaussian", atol: float = 1e-10):
 
     See Also
     --------
-    sisl.physics.distribution : a selected set of implemented distribution functions
+    :ref:`physics.distribution` : a selected set of implemented distribution functions
     DOS : total DOS
     PDOS : projected DOS over all orbitals
     spin_moment : spin moment
@@ -629,7 +632,7 @@ def spin_moment(
 
 
 @set_module("sisl.physics.electron")
-def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
+def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True) -> oplist:
     r""" Calculate the spin contamination value between two spin states
 
     This calculation only makes sense for spin-polarized calculations.
@@ -655,7 +658,7 @@ def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. The overlap matrix should correspond to the system and :math:`\mathbf k` point the eigenvectors
        have been evaluated at.
-    sum:
+    sum :
         whether the spin-contamination should be summed for all states (a single number returned).
         If sum, a spin-contamination per state per spin-channel will be returned.
 
@@ -665,9 +668,9 @@ def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
 
     Returns
     -------
-    ~sisl._core.oplist
+    ~sisl.oplist :
          spin squared expectation value per spin channel :math:`\alpha` and :math:`\beta`.
-         If `sum` is true, only a single number is returned (not an `~sisl._core.oplist`, otherwise a list for each
+         If `sum` is true, only a single number is returned (not a `~sisl.oplist`, otherwise a list for each
          state.
     """
     if state_alpha.ndim == 1:
@@ -722,9 +725,6 @@ def spin_contamination(state_alpha, state_beta, S=None, sum: bool = True):
 # velocity units in [Ang/ps]
 _velocity_const = 1 / C.hbar("eV ps")
 
-# Typing
-_TDist = Union[str, Callable[[npt.ArrayLike], np.ndarray]]
-
 # With G0 = 2e^2 / h = e^2 / (\hbar \pi)
 # AHC is
 #   \propto e^2/\hbar = G0 \pi
@@ -737,7 +737,7 @@ def ahc(
     bz: BrillouinZone,
     k_average: bool = True,
     *,
-    distribution: _TDist = "step",
+    distribution: DistributionType = "step",
     eigenstate_kwargs={},
     apply_kwargs={},
     **berry_kwargs,
@@ -752,7 +752,7 @@ def ahc(
 
     The conductivity will be averaged by volume of the periodic unit cell.
     Hence the unit of `ahc` depends on the periodic unit cell.
-    See `Lattice.volumef` for details.
+    See `~sisl.Lattice.volumef` for details.
 
     See :cite:`Wang2006` for details on the implementation.
 
@@ -899,7 +899,7 @@ def shc(
     sigma: Union[CartesianAxisStrLiteral, npt.ArrayLike] = "z",
     *,
     J_axes: Union[CartesianAxisStrLiteral, Sequence[CartesianAxisStrLiteral]] = "xyz",
-    distribution: _TDist = "step",
+    distribution: DistributionType = "step",
     eigenstate_kwargs={},
     apply_kwargs={},
     **berry_kwargs,
@@ -914,7 +914,7 @@ def shc(
     spin Berry curvature and occupation for state :math:`i`.
 
     The conductivity will be averaged by volume of the periodic unit cell.
-    See `Lattice.volumef` for details.
+    See `~sisl.Lattice.volumef` for details.
 
     See :cite:`PhysRevB.98.214402` and :cite:`Ji2022` for details on the implementation.
 
@@ -972,10 +972,10 @@ def shc(
 
     See Also
     --------
-    derivative: method for calculating the exact derivatives
+    ~sisl.physics.derivative: method for calculating the exact derivatives
     berry_curvature: the actual method used internally
     spin_berry_curvature: method used to calculate the Berry-flux for calculating the spin conductivity
-    Lattice.volumef: volume calculation of the primary unit cell.
+    ~sisl.Lattice.volumef: volume calculation of the primary unit cell.
     ahc: anomalous Hall conductivity, this is the equivalent method for the SHC.
 
     Returns
@@ -1084,7 +1084,7 @@ def shc(
 @deprecation("conductivity is deprecated, please use 'ahc' instead.")
 def conductivity(
     bz,
-    distribution="fermi-dirac",
+    distribution: DistributionType = "fermi-dirac",
     method: Literal["ahc"] = "ahc",
     *,
     eigenstate_kwargs={},
@@ -1924,12 +1924,12 @@ class EigenvalueElectron(CoefficientElectron):
         """Eigenvalues"""
         return self.c
 
-    def occupation(self, distribution="fermi_dirac"):
+    def occupation(self, distribution: DistributionType = "fermi_dirac"):
         r"""Calculate the occupations for the states according to a distribution function
 
         Parameters
         ----------
-        distribution : str or func, optional
+        distribution :
            distribution used to find occupations
 
         Returns
@@ -1941,7 +1941,7 @@ class EigenvalueElectron(CoefficientElectron):
             distribution = get_distribution(distribution)
         return distribution(self.eig)
 
-    def DOS(self, E, distribution="gaussian"):
+    def DOS(self, E, distribution: DistributionType = "gaussian"):
         r"""Calculate DOS for provided energies, `E`.
 
         This routine calls `sisl.physics.electron.DOS` with appropriate arguments
@@ -1977,12 +1977,12 @@ class EigenstateElectron(StateCElectron):
         r"""Eigenvalues for each state"""
         return self.c
 
-    def occupation(self, distribution="fermi_dirac"):
+    def occupation(self, distribution: DistributionType = "fermi_dirac"):
         r"""Calculate the occupations for the states according to a distribution function
 
         Parameters
         ----------
-        distribution : str or func, optional
+        distribution :
            distribution used to find occupations
 
         Returns
@@ -1994,7 +1994,7 @@ class EigenstateElectron(StateCElectron):
             distribution = get_distribution(distribution)
         return distribution(self.eig)
 
-    def DOS(self, E, distribution="gaussian"):
+    def DOS(self, E, distribution: DistributionType = "gaussian"):
         r"""Calculate DOS for provided energies, `E`.
 
         This routine calls `sisl.physics.electron.DOS` with appropriate arguments
@@ -2004,7 +2004,7 @@ class EigenstateElectron(StateCElectron):
         """
         return DOS(E, self.c, distribution)
 
-    def PDOS(self, E, distribution="gaussian"):
+    def PDOS(self, E, distribution: DistributionType = "gaussian"):
         r"""Calculate PDOS for provided energies, `E`.
 
         This routine calls `~sisl.physics.electron.PDOS` with appropriate arguments

@@ -3,7 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Literal, Union
+from typing import Callable, Literal, Union
+
+import numpy as np
+import numpy.typing as npt
 
 __all__ = [
     "GaugeType",
@@ -13,6 +16,9 @@ __all__ = [
     "ProjectionTypeMatrix",
     "ProjectionTypeHadamard",
     "ProjectionTypeHadamardAtoms",
+    "DistributionFunc",
+    "DistributionStr",
+    "DistributionType",
 ]
 
 GaugeType = Literal["lattice", "atomic"]
@@ -23,3 +29,16 @@ ProjectionTypeDiag = Literal["diagonal", "diag", "ii"]
 ProjectionTypeHadamard = Literal["hadamard", "basis"]
 ProjectionTypeHadamardAtoms = Literal["hadamard:atoms", "atoms"]
 ProjectionType = Union[ProjectionTypeMatrix, ProjectionTypeDiag, ProjectionTypeTrace]
+
+# The distribution method, can be a string, or a Callable
+DistributionFunc = Callable[[npt.ArrayLike], np.ndarray]
+DistributionStr = Literal[
+    "gaussian",
+    "lorentzian",
+    "fermi",
+    "bose-einstein",
+    "cold",
+    "step-function",
+    "heaviside",
+]
+DistributionType = Union[DistributionStr, DistributionFunc]

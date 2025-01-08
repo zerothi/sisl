@@ -22,7 +22,7 @@ from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import deprecate_argument, progressbar, warn
-from sisl.typing import AtomsIndex, GaugeType, SeqFloat
+from sisl.typing import AtomsIndex, GaugeType, KPoint, SeqFloat
 
 from .sparse import SparseOrbitalBZSpin, _get_spin
 from .spin import Spin
@@ -1481,7 +1481,7 @@ class DensityMatrix(_densitymatrix):
 
     def Dk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -1511,7 +1511,7 @@ class DensityMatrix(_densitymatrix):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the density matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -1545,7 +1545,7 @@ class DensityMatrix(_densitymatrix):
 
     def dDk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -1576,7 +1576,7 @@ class DensityMatrix(_densitymatrix):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the density matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -1608,7 +1608,7 @@ class DensityMatrix(_densitymatrix):
 
     def ddDk(
         self,
-        k=(0, 0, 0),
+        k: KPoint = (0, 0, 0),
         dtype=None,
         gauge: GaugeType = "lattice",
         format="csr",
@@ -1639,7 +1639,7 @@ class DensityMatrix(_densitymatrix):
 
         Parameters
         ----------
-        k : array_like
+        k :
            the k-point to setup the density matrix at
         dtype : numpy.dtype , optional
            the data type of the returned matrix. Do NOT request non-complex
