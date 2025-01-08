@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -155,6 +155,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_a</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">constant</span><span class="p">,</span> <span class="n">units</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">DistributionType</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.distribution</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_distribution</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.electron</span><span class="w"> </span><span class="kn">import</span> <span class="n">DOS</span> <span class="k">as</span> <span class="n">electron_DOS</span>
@@ -169,7 +170,7 @@
 <div class="viewcode-block" id="DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.DOS.html#sisl.physics.phonon.DOS">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the density of modes (DOS) for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{DOS}(E)` is calculated as:</span>
@@ -187,13 +188,13 @@
 <span class="sd">       energies to calculate the DOS at</span>
 <span class="sd">    hw : array_like</span>
 <span class="sd">       phonon eigenvalues</span>
-<span class="sd">    distribution : func or str, optional</span>
+<span class="sd">    distribution :</span>
 <span class="sd">       a function that accepts :math:`E` as argument and calculates the</span>
 <span class="sd">       distribution function.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    sisl.physics.distribution : a selected set of implemented distribution functions</span>
+<span class="sd">    :ref:`physics.distribution` : a selected set of implemented distribution functions</span>
 <span class="sd">    PDOS : projected DOS (same as this, but projected onto each direction)</span>
 
 <span class="sd">    Returns</span>
@@ -208,7 +209,7 @@
 <div class="viewcode-block" id="PDOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.PDOS.html#sisl.physics.phonon.PDOS">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the projected density of modes (PDOS) onto each each atom and direction for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{PDOS}(E)` is calculated as:</span>
@@ -231,13 +232,13 @@
 <span class="sd">       eigenvectors</span>
 <span class="sd">    hw : array_like</span>
 <span class="sd">       eigenvalues</span>
-<span class="sd">    distribution : func or str, optional</span>
+<span class="sd">    distribution :</span>
 <span class="sd">       a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
 <span class="sd">       distribution function.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    sisl.physics.distribution : a selected set of implemented distribution functions</span>
+<span class="sd">    :ref:`physics.distribution` : a selected set of implemented distribution functions</span>
 <span class="sd">    DOS : total DOS (same as summing over atoms and directions)</span>
 
 <span class="sd">    Returns</span>
@@ -347,12 +348,12 @@
 
 <div class="viewcode-block" id="EigenvaluePhonon.occupation">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenvaluePhonon.html#sisl.physics.phonon.EigenvaluePhonon.occupation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;bose_einstein&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;bose_einstein&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        distribution : str or func, optional</span>
+<span class="sd">        distribution :</span>
 <span class="sd">           distribution used to find occupations</span>
 
 <span class="sd">        Returns</span>
@@ -367,10 +368,10 @@
 
 <div class="viewcode-block" id="EigenvaluePhonon.DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenvaluePhonon.html#sisl.physics.phonon.EigenvaluePhonon.DOS">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate DOS for provided energies, `E`.</span>
 
-<span class="sd">        This routine calls `sisl.physics.phonon.DOS` with appropriate arguments</span>
+<span class="sd">        This routine calls `~sisl.physics.phonon.DOS` with appropriate arguments</span>
 <span class="sd">        and returns the DOS.</span>
 
 <span class="sd">        See `~sisl.physics.phonon.DOS` for argument details.</span>
@@ -408,12 +409,12 @@
 
 <div class="viewcode-block" id="EigenmodePhonon.occupation">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.occupation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;bose_einstein&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;bose_einstein&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        distribution : str or func, optional</span>
+<span class="sd">        distribution :</span>
 <span class="sd">           distribution used to find occupations</span>
 
 <span class="sd">        Returns</span>
@@ -428,10 +429,10 @@
 
 <div class="viewcode-block" id="EigenmodePhonon.DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.DOS">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate DOS for provided energies, `E`.</span>
 
-<span class="sd">        This routine calls `sisl.physics.phonon.DOS` with appropriate arguments</span>
+<span class="sd">        This routine calls `~sisl.physics.phonon.DOS` with appropriate arguments</span>
 <span class="sd">        and returns the DOS.</span>
 
 <span class="sd">        See `~sisl.physics.phonon.DOS` for argument details.</span>
@@ -441,7 +442,7 @@
 
 <div class="viewcode-block" id="EigenmodePhonon.PDOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.PDOS">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate PDOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `~sisl.physics.phonon.PDOS` with appropriate arguments</span>

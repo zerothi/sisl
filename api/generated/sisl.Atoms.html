@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -79,7 +79,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#generic-objects">Generic objects</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.PeriodicTable.html">sisl.PeriodicTable</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.Atoms</a></li>
@@ -94,16 +94,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -323,7 +322,10 @@ Hydrogen atoms, one with a tag H_ghost.</p>
 <dd><p>Append <em class="xref py py-obj">other</em> to this list of atoms and return the appended version</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>) – new atoms to be added</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>) – new atoms to be added</p></li>
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>merging of this objects atoms and the <em class="xref py py-obj">other</em> objects atoms.</p>
@@ -340,7 +342,10 @@ Hydrogen atoms, one with a tag H_ghost.</p>
 <dd><p>Append <em class="xref py py-obj">other</em> to this list of atoms and return the appended version</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>) – new atoms to be added</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>) – new atoms to be added</p></li>
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>merging of this objects atoms and the <em class="xref py py-obj">other</em> objects atoms.</p>
@@ -356,8 +361,11 @@ Hydrogen atoms, one with a tag H_ghost.</p>
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Atoms.copy" title="Link to this definition"></a></dt>
 <dd><p>Return a copy of this atom</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>atoms</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -427,9 +435,11 @@ atom.</p>
 <dt class="sig sig-object py" id="sisl.Atoms.hassame">
 <span class="sig-name descname"><span class="pre">hassame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/atom.html#Atoms.hassame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atoms.hassame" title="Link to this definition"></a></dt>
 <dd><p>True if the contained atoms are the same in the two lists</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This does not necessarily mean that the order, nor the number of atoms
 are the same.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -460,6 +470,7 @@ are the same.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
 <li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>)</p></li>
 <li><p><strong>other</strong> (<a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
 </ul>
@@ -514,7 +525,10 @@ Else, if <em class="xref py py-obj">False</em> the maximum of all atoms maximum 
 <span class="sig-name descname"><span class="pre">prepend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Atoms.prepend" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+<li><p><strong>other</strong> (<a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>
@@ -539,7 +553,10 @@ Else, if <em class="xref py py-obj">False</em> the maximum of all atoms maximum 
 <dd><p>Remove a set of atoms</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+<li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>
@@ -564,7 +581,10 @@ Else, if <em class="xref py py-obj">False</em> the maximum of all atoms maximum 
 <dd><p>Repeat this atom object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>
@@ -626,7 +646,10 @@ of atoms, nothing will happen.</p></li>
 <dd><p>Scale the atomic radii and return an equivalent atom.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the scale factor for the atomic radii</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the scale factor for the atomic radii</p></li>
+<li><p><strong>atoms</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>
@@ -652,7 +675,10 @@ of atoms, nothing will happen.</p></li>
 <dd><p>Return a subset of the list</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+<li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>
@@ -667,6 +693,7 @@ of atoms, nothing will happen.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
 <li><p><strong>atoms1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>)</p></li>
 <li><p><strong>atoms2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>)</p></li>
 </ul>
@@ -689,7 +716,10 @@ of atoms, nothing will happen.</p></li>
 <dd><p>Tile this atom object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>)</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>

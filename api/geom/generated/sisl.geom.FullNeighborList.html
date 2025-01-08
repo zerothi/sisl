@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,8 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -79,29 +81,29 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../building.html">Common geometries</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../neighbors.html">Finding neighbors</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.NeighborFinder.html">sisl.geom.NeighborFinder</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">sisl.geom.FullNeighborList</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#sisl.geom.FullNeighborList"><code class="docutils literal notranslate"><span class="pre">FullNeighborList</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../building.html">Creating geometries</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../neighbors.html">Finding neighbors</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.NeighborFinder.html">sisl.geom.NeighborFinder</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.geom.FullNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.PointNeighborList.html">sisl.geom.PointNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../neighbors.html#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.PointNeighborList.html">sisl.geom.PointNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../neighbors.html#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
@@ -134,6 +136,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../neighbors.html">Finding neighbors</a></li>
       <li class="breadcrumb-item active">sisl.geom.FullNeighborList</li>
       <li class="wy-breadcrumbs-aside">
@@ -154,7 +157,7 @@
 <p>Full neighbors list of a system.</p>
 <p>This class, contrary to <a class="reference internal" href="sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom.UniqueNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniqueNeighborList</span></code></a>, (possibly) contains the two directions
 of an interaction between two given atoms. Notice that it is possible that there is
-a connection from atom <a class="reference internal" href="#sisl.geom.FullNeighborList.i" title="sisl.geom.FullNeighborList.i"><code class="xref py py-obj docutils literal notranslate"><span class="pre">i</span></code></a> to atom <a class="reference internal" href="#sisl.geom.FullNeighborList.j" title="sisl.geom.FullNeighborList.j"><code class="xref py py-obj docutils literal notranslate"><span class="pre">j</span></code></a> but not the other way around.</p>
+a connection from atom <span class="math notranslate nohighlight">\(I\)</span> to atom <span class="math notranslate nohighlight">\(J\)</span> but not the other way around.</p>
 <p class="rubric">Examples</p>
 <p>You can get a full neighbors list from the <em class="xref py py-obj">find_neighbors</em> method of a <a class="reference internal" href="sisl.geom.NeighborFinder.html#sisl.geom.NeighborFinder" title="sisl.geom.NeighborFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NeighborFinder</span></code></a> object.
 Then, you can retreive the neighbors from it:</p>
@@ -174,11 +177,11 @@ Then, you can retreive the neighbors from it:</p>
 <span class="k">for</span> <span class="n">at_neighs</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NEIGHBORS OF ATOM </span><span class="si">{</span><span class="n">at_neighs</span><span class="o">.</span><span class="n">atom</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">at_neighs</span><span class="o">.</span><span class="n">n_neighbors</span><span class="si">}</span><span class="s2"> neighbors): &quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">at_neighs</span><span class="o">.</span><span class="n">j</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">at_neighs</span><span class="o">.</span><span class="n">J</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ISC&quot;</span><span class="p">,</span> <span class="n">at_neighs</span><span class="o">.</span><span class="n">isc</span><span class="p">)</span>
 
 <span class="c1"># Or get the neighbors of a particular atom:</span>
-<span class="n">neighbors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">j</span>
+<span class="n">neighbors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">J</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -199,14 +202,20 @@ Then, you can retreive the neighbors from it:</p>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.FullNeighborList.I" title="sisl.geom.FullNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a></p></td>
+<td><p>For each neighbor pair (I, J), the first index.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.FullNeighborList.J" title="sisl.geom.FullNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a></p></td>
+<td><p>For each neighbor pair (I, J), the second index.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.FullNeighborList.i" title="sisl.geom.FullNeighborList.i"><code class="xref py py-obj docutils literal notranslate"><span class="pre">i</span></code></a></p></td>
-<td><p>For each neighbor pair (i, j), the first index.</p></td>
+<td><p>Same as <a class="reference internal" href="#sisl.geom.FullNeighborList.I" title="sisl.geom.FullNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a>, provided for backwards compatibility, may be deprecated later</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.FullNeighborList.isc" title="sisl.geom.FullNeighborList.isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isc</span></code></a></p></td>
-<td><p>For each neighbor pair (i, j), the supercell indices of <a class="reference internal" href="#sisl.geom.FullNeighborList.j" title="sisl.geom.FullNeighborList.j"><code class="xref py py-obj docutils literal notranslate"><span class="pre">j</span></code></a>.</p></td>
+<td><p>For each neighbor pair (I, J), the supercell indices of <span class="math notranslate nohighlight">\(J\)</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.FullNeighborList.j" title="sisl.geom.FullNeighborList.j"><code class="xref py py-obj docutils literal notranslate"><span class="pre">j</span></code></a></p></td>
-<td><p>For each neighbor pair (i, j), the second index.</p></td>
+<td><p>Same as <a class="reference internal" href="#sisl.geom.FullNeighborList.J" title="sisl.geom.FullNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a>, provided for backwards compatibility, may be deprecated later</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.FullNeighborList.min_nsc" title="sisl.geom.FullNeighborList.min_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_nsc</span></code></a></p></td>
 <td><p>The minimum nsc for an auxiliary supercell to contain all neighbors in this object.</p></td>
@@ -231,21 +240,33 @@ Then, you can retreive the neighbors from it:</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="sisl.geom.FullNeighborList.I">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">I</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.FullNeighborList.I" title="Link to this definition"></a></dt>
+<dd><p>For each neighbor pair (I, J), the first index.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.geom.FullNeighborList.J">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">J</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.FullNeighborList.J" title="Link to this definition"></a></dt>
+<dd><p>For each neighbor pair (I, J), the second index.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="sisl.geom.FullNeighborList.i">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">i</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.FullNeighborList.i" title="Link to this definition"></a></dt>
-<dd><p>For each neighbor pair (i, j), the first index.</p>
+<dd><p>Same as <a class="reference internal" href="#sisl.geom.FullNeighborList.I" title="sisl.geom.FullNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a>, provided for backwards compatibility, may be deprecated later</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.geom.FullNeighborList.isc">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.FullNeighborList.isc" title="Link to this definition"></a></dt>
-<dd><p>For each neighbor pair (i, j), the supercell indices of <a class="reference internal" href="#sisl.geom.FullNeighborList.j" title="sisl.geom.FullNeighborList.j"><code class="xref py py-obj docutils literal notranslate"><span class="pre">j</span></code></a>.</p>
+<dd><p>For each neighbor pair (I, J), the supercell indices of <span class="math notranslate nohighlight">\(J\)</span>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.geom.FullNeighborList.j">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">j</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.FullNeighborList.j" title="Link to this definition"></a></dt>
-<dd><p>For each neighbor pair (i, j), the second index.</p>
+<dd><p>Same as <a class="reference internal" href="#sisl.geom.FullNeighborList.J" title="sisl.geom.FullNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a>, provided for backwards compatibility, may be deprecated later</p>
 </dd></dl>
 
 <dl class="py property">

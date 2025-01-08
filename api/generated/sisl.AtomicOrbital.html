@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#generic-objects">Generic objects</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../basic.html#orbitals">Orbitals</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.Orbital.html">sisl.Orbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
@@ -95,16 +95,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -269,8 +268,11 @@ is then expanded using spherical harmonics</p>
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.AtomicOrbital.copy" title="Link to this definition"></a></dt>
 <dd><p>Create an exact copy of this object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><em>AtomicOrbital</em></a></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orbital</strong> (<a class="reference internal" href="#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><em>AtomicOrbital</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><em>AtomicOrbital</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -303,7 +305,7 @@ is then expanded using spherical harmonics</p>
 <p>The position <em class="xref py py-obj">r</em> is a vector from the origin of this orbital.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the vector from the orbital origin</p>
+<dd class="field-odd"><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the vector from the orbital origin</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>basis function value at point <em class="xref py py-obj">r</em></p>
@@ -322,9 +324,9 @@ is then expanded using spherical harmonics</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the radius from the orbital origin</p></li>
-<li><p><strong>theta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – azimuthal angle in the <span class="math notranslate nohighlight">\(xy\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
-<li><p><strong>phi</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
+<li><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the radius from the orbital origin</p></li>
+<li><p><strong>theta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – azimuthal angle in the <span class="math notranslate nohighlight">\(xy\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
+<li><p><strong>phi</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
 <li><p><strong>cos_phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether <em class="xref py py-obj">phi</em> is actually <span class="math notranslate nohighlight">\(cos(\phi)\)</span> which will be faster because
 <em class="xref py py-obj">cos</em> is not necessary to call.</p></li>
 </ul>
@@ -345,7 +347,7 @@ is then expanded using spherical harmonics</p>
 <p>The position <em class="xref py py-obj">r</em> is a vector from the origin of this orbital.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – radius from the orbital origin</p>
+<dd class="field-odd"><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – radius from the orbital origin</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>radial orbital value at point <em class="xref py py-obj">r</em></p>
@@ -362,7 +364,10 @@ is then expanded using spherical harmonics</p>
 <dd><p>Scale the orbital by extending R by <a class="reference internal" href="sisl.scale.html#sisl.scale" title="sisl.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orbital</strong> (<a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>)</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a></p>
@@ -384,8 +389,8 @@ is then expanded using spherical harmonics</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – azimuthal angle in the <span class="math notranslate nohighlight">\(xy\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
-<li><p><strong>phi</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
+<li><p><strong>theta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – azimuthal angle in the <span class="math notranslate nohighlight">\(xy\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
+<li><p><strong>phi</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
 <li><p><strong>cos_phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether <em class="xref py py-obj">phi</em> is actually <span class="math notranslate nohighlight">\(cos(\phi)\)</span> which will be faster because
 <em class="xref py py-obj">cos</em> is not necessary to call.</p></li>
 </ul>

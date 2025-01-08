@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,9 +81,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../physics.matrix.html#spin">Spin</a></li>
@@ -104,7 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -137,7 +136,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
-          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../physics.matrix.html">Physical quantites</a></li>
       <li class="breadcrumb-item active">sisl.physics.RealSpaceSI</li>
       <li class="wy-breadcrumbs-aside">
@@ -172,7 +171,7 @@ a physical object from which to calculate the real-space self-energy.
 object via the overlapping regions, the atoms that overlap <em class="xref py py-obj">semi</em> and <em class="xref py py-obj">surface</em>
 are determined in the <a class="reference internal" href="#sisl.physics.RealSpaceSI.setup" title="sisl.physics.RealSpaceSI.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a> routine.
 <em class="xref py py-obj">semi</em> and <em class="xref py py-obj">surface</em> must have parallel lattice vectors.</p></li>
-<li><p><strong>k_axes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
+<li><p><strong>k_axes</strong> – axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
 along the <em class="xref py py-obj">semi</em> semi-infinite direction.</p></li>
 <li><p><strong>unfold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – number of times the <em class="xref py py-obj">surface</em> structure is tiled along each direction
 Since this is a surface there will maximally be 2 unfolds being non-unity.</p></li>
@@ -269,9 +268,11 @@ to true.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gamma</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">se2broadening</span><span class="p">(</span><span class="n">self_energy</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>When using <em>both</em> the self-energy <em>and</em> the broadening matrix please use <a class="reference internal" href="#sisl.physics.RealSpaceSI.se2broadening" title="sisl.physics.RealSpaceSI.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a> after having
 calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -300,7 +301,7 @@ calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>) – energy to evaluate the real-space Green function at</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – only viable for 3D bulk systems with real-space Green functions along 2 directions.
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – only viable for 3D bulk systems with real-space Green functions along 2 directions.
 I.e. this would correspond to a circular real-space Green function</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
 <li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.surface.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.surface.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
@@ -339,9 +340,11 @@ out of the real-space matrix.</p>
 <dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.real_space_parent">
 <span class="sig-name descname"><span class="pre">real_space_parent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.real_space_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.real_space_parent" title="Link to this definition"></a></dt>
 <dd><p>Fully expanded real-space surface parent</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The returned object does <em>not</em> obey the <code class="docutils literal notranslate"><span class="pre">semi_bulk</span></code> option. I.e. the matrix elements
 correspond to the <em class="xref py py-obj">self.surface</em> object, always!</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -369,7 +372,7 @@ correspond to the <em class="xref py py-obj">self.surface</em> object, always!</
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>) – energy to evaluate the real-space self-energy at</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – only viable for 3D bulk systems with real-space self-energies along 2 directions.
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – only viable for 3D bulk systems with real-space self-energies along 2 directions.
 I.e. this would correspond to circular self-energies.</p></li>
 <li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if true, <span class="math notranslate nohighlight">\(\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}\)</span>
 is returned, otherwise <span class="math notranslate nohighlight">\(\boldsymbol\Sigma^\mathcal{R}\)</span> is returned</p></li>

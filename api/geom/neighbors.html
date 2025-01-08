@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,8 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -79,26 +81,29 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="building.html">Common geometries</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Finding neighbors</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.NeighborFinder.html">sisl.geom.NeighborFinder</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.FullNeighborList.html">sisl.geom.FullNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html">sisl.geom.PointNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#neighbor-lists">Neighbor lists</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="building.html">Creating geometries</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Finding neighbors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.NeighborFinder.html">sisl.geom.NeighborFinder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.FullNeighborList.html">sisl.geom.FullNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html">sisl.geom.PointNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -131,6 +136,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
       <li class="breadcrumb-item active">Finding neighbors</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/geom/neighbors.rst.txt" rel="nofollow"> View page source</a>
@@ -186,48 +192,48 @@ neighbor list.</p>
 <thead>
 <tr class="row-odd"><th class="head"><p>Class</p></th>
 <th class="head"><p>Neighbors for</p></th>
-<th class="head"><p><code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">j</span></code></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(I &lt; J\)</span></p></th>
 <th class="head"><p>Items</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.FullNeighborList.html#sisl.geom.FullNeighborList" title="sisl.geom.FullNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FullNeighborList</span></code></a></p></td>
 <td><p>All atoms</p></td>
-<td><p>No</p></td>
+<td><p><span class="fas fa-circle-xmark"></span></p></td>
 <td><p><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList" title="sisl.geom.AtomNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom.UniqueNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniqueNeighborList</span></code></a></p></td>
 <td><p>All atoms</p></td>
-<td><p>Yes</p></td>
+<td><p><span class="fas fa-circle-check"></span></p></td>
 <td><p>N/A</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.PartialNeighborList.html#sisl.geom.PartialNeighborList" title="sisl.geom.PartialNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PartialNeighborList</span></code></a></p></td>
 <td><p>Selected atoms</p></td>
-<td><p>No</p></td>
+<td><p><span class="fas fa-circle-xmark"></span></p></td>
 <td><p><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList" title="sisl.geom.AtomNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList" title="sisl.geom.AtomNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></a></p></td>
 <td><p>One atom</p></td>
-<td><p>No</p></td>
+<td><p><span class="fas fa-circle-xmark"></span></p></td>
 <td><p>N/A</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></a></p></td>
 <td><p>Points in space</p></td>
-<td><p>No</p></td>
+<td><p><span class="fas fa-circle-xmark"></span></p></td>
 <td><p><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a></p></td>
 <td><p>One point in space</p></td>
-<td><p>No</p></td>
+<td><p><span class="fas fa-circle-xmark"></span></p></td>
 <td><p>N/A</p></td>
 </tr>
 </tbody>
 </table>
 <p>Where:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">j</span></code> indicates whether the list only contains one direction of the interaction, i.e. by omitting
+<li><p><span class="math notranslate nohighlight">\(I &lt; J\)</span> indicates whether the list only contains one direction of the interaction, i.e. by omitting
 the transposed interaction.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Items</span></code> indicates the type that you get when you iterate or index (e.g. <code class="docutils literal notranslate"><span class="pre">neighbors[0]</span></code>) the list.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Items</span></code> indicates the type that you get when you iterate over indices (e.g. <code class="docutils literal notranslate"><span class="pre">neighbors[0]</span></code>) the list.</p></li>
 </ul>
 </section>
 </section>

@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -208,11 +208,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics._common</span><span class="w"> </span><span class="kn">import</span> <span class="n">comply_projection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CartesianAxisStrLiteral</span><span class="p">,</span>
+    <span class="n">DistributionType</span><span class="p">,</span>
     <span class="n">ProjectionType</span><span class="p">,</span>
+    <span class="n">ProjectionTypeDiag</span><span class="p">,</span>
     <span class="n">ProjectionTypeHadamard</span><span class="p">,</span>
     <span class="n">ProjectionTypeHadamardAtoms</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing._physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionTypeDiag</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">direction</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -235,7 +236,7 @@
 <div class="viewcode-block" id="DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.DOS.html#sisl.physics.electron.DOS">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{DOS}(E)` is calculated as:</span>
@@ -245,7 +246,7 @@
 
 <span class="sd">    where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function</span>
 <span class="sd">    used may be a user-defined function. Alternatively a distribution function may</span>
-<span class="sd">    be retrieved from `~sisl.physics.distribution`.</span>
+<span class="sd">    be retrieved from :ref:`physics.distribution`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -253,13 +254,13 @@
 <span class="sd">       energies to calculate the DOS at</span>
 <span class="sd">    eig : array_like</span>
 <span class="sd">       electronic eigenvalues</span>
-<span class="sd">    distribution : func or str, optional</span>
+<span class="sd">    distribution :</span>
 <span class="sd">       a function that accepts :math:`\Delta E` as argument and calculates the</span>
 <span class="sd">       distribution function.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    sisl.physics.distribution : a selected set of implemented distribution functions</span>
+<span class="sd">    :ref:`physics.distribution` : a selected set of implemented distribution functions</span>
 <span class="sd">    COP : calculate COOP or COHP curves</span>
 <span class="sd">    PDOS : projected DOS (same as this, but projected onto each orbital)</span>
 <span class="sd">    spin_moment : spin moment</span>
@@ -279,7 +280,7 @@
 <div class="viewcode-block" id="PDOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{PDOS}(E)` is calculated as:</span>
@@ -289,7 +290,7 @@
 
 <span class="sd">    where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function</span>
 <span class="sd">    used may be a user-defined function. Alternatively a distribution function may</span>
-<span class="sd">    be aquired from `~sisl.physics.distribution`.</span>
+<span class="sd">    be acquired from :ref:`physics.distribution`.</span>
 
 <span class="sd">    In case of an orthogonal basis set :math:`\mathbf S` is equal to the identity matrix.</span>
 <span class="sd">    Note that `DOS` is the sum of the orbital projected DOS:</span>
@@ -332,7 +333,7 @@
 <span class="sd">       overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity</span>
 <span class="sd">       matrix is assumed. For non-colinear calculations this matrix may be halve the size of ``len(state[0, :])`` to</span>
 <span class="sd">       trigger the non-colinear calculation of PDOS.</span>
-<span class="sd">    distribution : func or str, optional</span>
+<span class="sd">    distribution :</span>
 <span class="sd">       a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
 <span class="sd">       distribution function.</span>
 <span class="sd">    spin : str or Spin, optional</span>
@@ -341,7 +342,7 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    sisl.physics.distribution : a selected set of implemented distribution functions</span>
+<span class="sd">    :ref:`physics.distribution` : a selected set of implemented distribution functions</span>
 <span class="sd">    DOS : total DOS (same as summing over orbitals)</span>
 <span class="sd">    COP : calculate COOP or COHP curves</span>
 <span class="sd">    spin_moment : spin moment</span>
@@ -489,7 +490,9 @@
     <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
     <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">COP</span><span class="p">(</span>
+    <span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Crystal Orbital Population for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{COP}(E)` is calculated as:</span>
@@ -499,7 +502,7 @@
 
 <span class="sd">    where :math:`D(\Delta E)` is the distribution function used. Note that the distribution function</span>
 <span class="sd">    used may be a user-defined function. Alternatively a distribution function may</span>
-<span class="sd">    be aquired from `~sisl.physics.distribution`.</span>
+<span class="sd">    be acquired from :ref:`physics.distribution`.</span>
 
 <span class="sd">    The COP curves generally refers to COOP or COHP curves.</span>
 <span class="sd">    COOP is the Crystal Orbital Overlap Population with `M` being the overlap matrix.</span>
@@ -515,7 +518,7 @@
 <span class="sd">       eigenvectors</span>
 <span class="sd">    M : array_like</span>
 <span class="sd">       matrix used in the COP curve.</span>
-<span class="sd">    distribution : func or str, optional</span>
+<span class="sd">    distribution :</span>
 <span class="sd">       a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
 <span class="sd">       distribution function.</span>
 <span class="sd">    atol :</span>
@@ -533,7 +536,7 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    sisl.physics.distribution : a selected set of implemented distribution functions</span>
+<span class="sd">    :ref:`physics.distribution` : a selected set of implemented distribution functions</span>
 <span class="sd">    DOS : total DOS</span>
 <span class="sd">    PDOS : projected DOS over all orbitals</span>
 <span class="sd">    spin_moment : spin moment</span>
@@ -760,7 +763,7 @@
 <div class="viewcode-block" id="spin_contamination">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.spin_contamination.html#sisl.physics.electron.spin_contamination">[docs]</a>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">spin_contamination</span><span class="p">(</span><span class="n">state_alpha</span><span class="p">,</span> <span class="n">state_beta</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">spin_contamination</span><span class="p">(</span><span class="n">state_alpha</span><span class="p">,</span> <span class="n">state_beta</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">oplist</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the spin contamination value between two spin states</span>
 
 <span class="sd">    This calculation only makes sense for spin-polarized calculations.</span>
@@ -786,7 +789,7 @@
 <span class="sd">       overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity</span>
 <span class="sd">       matrix is assumed. The overlap matrix should correspond to the system and :math:`\mathbf k` point the eigenvectors</span>
 <span class="sd">       have been evaluated at.</span>
-<span class="sd">    sum:</span>
+<span class="sd">    sum :</span>
 <span class="sd">        whether the spin-contamination should be summed for all states (a single number returned).</span>
 <span class="sd">        If sum, a spin-contamination per state per spin-channel will be returned.</span>
 
@@ -796,9 +799,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ~sisl._core.oplist</span>
+<span class="sd">    ~sisl.oplist :</span>
 <span class="sd">         spin squared expectation value per spin channel :math:`\alpha` and :math:`\beta`.</span>
-<span class="sd">         If `sum` is true, only a single number is returned (not an `~sisl._core.oplist`, otherwise a list for each</span>
+<span class="sd">         If `sum` is true, only a single number is returned (not a `~sisl.oplist`, otherwise a list for each</span>
 <span class="sd">         state.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">state_alpha</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -854,9 +857,6 @@
 <span class="c1"># velocity units in [Ang/ps]</span>
 <span class="n">_velocity_const</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">C</span><span class="o">.</span><span class="n">hbar</span><span class="p">(</span><span class="s2">&quot;eV ps&quot;</span><span class="p">)</span>
 
-<span class="c1"># Typing</span>
-<span class="n">_TDist</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span>
-
 <span class="c1"># With G0 = 2e^2 / h = e^2 / (\hbar \pi)</span>
 <span class="c1"># AHC is</span>
 <span class="c1">#   \propto e^2/\hbar = G0 \pi</span>
@@ -871,7 +871,7 @@
     <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span>
     <span class="n">k_average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">distribution</span><span class="p">:</span> <span class="n">_TDist</span> <span class="o">=</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span>
+    <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span>
     <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="p">{},</span>
     <span class="n">apply_kwargs</span><span class="o">=</span><span class="p">{},</span>
     <span class="o">**</span><span class="n">berry_kwargs</span><span class="p">,</span>
@@ -886,15 +886,15 @@
 
 <span class="sd">    The conductivity will be averaged by volume of the periodic unit cell.</span>
 <span class="sd">    Hence the unit of `ahc` depends on the periodic unit cell.</span>
-<span class="sd">    See `Lattice.volumef` for details.</span>
+<span class="sd">    See `~sisl.Lattice.volumef` for details.</span>
 
 <span class="sd">    See :cite:`Wang2006` for details on the implementation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    bz : BrillouinZone</span>
+<span class="sd">    bz :</span>
 <span class="sd">        containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.</span>
-<span class="sd">    k_average:</span>
+<span class="sd">    k_average :</span>
 <span class="sd">        if `True`, the returned quantity is averaged over `bz`, else all k-point</span>
 <span class="sd">        contributions will be collected (in the 1st dimension).</span>
 <span class="sd">        Note, for large `bz` integrations this may explode the memory usage.</span>
@@ -938,14 +938,14 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    derivative: method for calculating the exact derivatives</span>
-<span class="sd">    berry_curvature: method used to calculate the Berry curvature for calculating the conductivity</span>
-<span class="sd">    Lattice.volumef: volume calculation of the lattice</span>
+<span class="sd">    ~sisl.physics.derivative: method for calculating the exact derivatives</span>
+<span class="sd">    ~sisl.physics.berry_curvature: method used to calculate the Berry curvature for calculating the conductivity</span>
+<span class="sd">    ~sisl.Lattice.volumef: volume calculation of the lattice</span>
 <span class="sd">    shc: spin Hall conductivity</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ahc: numpy.ndarray</span>
+<span class="sd">    ahc:</span>
 <span class="sd">        Anomalous Hall conductivity returned in certain dimensions ``ahc[:, :]``.</span>
 <span class="sd">        If `sum` is False, it will be at least a 3D array with the 3rd dimension</span>
 <span class="sd">        having the contribution from state `i`.</span>
@@ -1036,7 +1036,7 @@
     <span class="n">sigma</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CartesianAxisStrLiteral</span><span class="p">,</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">J_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CartesianAxisStrLiteral</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">CartesianAxisStrLiteral</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span>
-    <span class="n">distribution</span><span class="p">:</span> <span class="n">_TDist</span> <span class="o">=</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span>
+    <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span>
     <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="p">{},</span>
     <span class="n">apply_kwargs</span><span class="o">=</span><span class="p">{},</span>
     <span class="o">**</span><span class="n">berry_kwargs</span><span class="p">,</span>
@@ -1051,7 +1051,7 @@
 <span class="sd">    spin Berry curvature and occupation for state :math:`i`.</span>
 
 <span class="sd">    The conductivity will be averaged by volume of the periodic unit cell.</span>
-<span class="sd">    See `Lattice.volumef` for details.</span>
+<span class="sd">    See `~sisl.Lattice.volumef` for details.</span>
 
 <span class="sd">    See :cite:`PhysRevB.98.214402` and :cite:`Ji2022` for details on the implementation.</span>
 
@@ -1109,10 +1109,10 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    derivative: method for calculating the exact derivatives</span>
+<span class="sd">    ~sisl.physics.derivative: method for calculating the exact derivatives</span>
 <span class="sd">    berry_curvature: the actual method used internally</span>
 <span class="sd">    spin_berry_curvature: method used to calculate the Berry-flux for calculating the spin conductivity</span>
-<span class="sd">    Lattice.volumef: volume calculation of the primary unit cell.</span>
+<span class="sd">    ~sisl.Lattice.volumef: volume calculation of the primary unit cell.</span>
 <span class="sd">    ahc: anomalous Hall conductivity, this is the equivalent method for the SHC.</span>
 
 <span class="sd">    Returns</span>
@@ -1224,7 +1224,7 @@
 <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;conductivity is deprecated, please use &#39;ahc&#39; instead.&quot;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">conductivity</span><span class="p">(</span>
     <span class="n">bz</span><span class="p">,</span>
-    <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi-dirac&quot;</span><span class="p">,</span>
+    <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;fermi-dirac&quot;</span><span class="p">,</span>
     <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ahc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ahc&quot;</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="p">{},</span>
@@ -2102,12 +2102,12 @@
 
 <div class="viewcode-block" id="EigenvalueElectron.occupation">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron.occupation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        distribution : str or func, optional</span>
+<span class="sd">        distribution :</span>
 <span class="sd">           distribution used to find occupations</span>
 
 <span class="sd">        Returns</span>
@@ -2122,7 +2122,7 @@
 
 <div class="viewcode-block" id="EigenvalueElectron.DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron.DOS">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate DOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `sisl.physics.electron.DOS` with appropriate arguments</span>
@@ -2167,12 +2167,12 @@
 
 <div class="viewcode-block" id="EigenstateElectron.occupation">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.occupation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        distribution : str or func, optional</span>
+<span class="sd">        distribution :</span>
 <span class="sd">           distribution used to find occupations</span>
 
 <span class="sd">        Returns</span>
@@ -2187,7 +2187,7 @@
 
 <div class="viewcode-block" id="EigenstateElectron.DOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.DOS">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate DOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `sisl.physics.electron.DOS` with appropriate arguments</span>
@@ -2200,7 +2200,7 @@
 
 <div class="viewcode-block" id="EigenstateElectron.PDOS">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.PDOS">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">DistributionType</span> <span class="o">=</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate PDOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.PDOS` with appropriate arguments</span>

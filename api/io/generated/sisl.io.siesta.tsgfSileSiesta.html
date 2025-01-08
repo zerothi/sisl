@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,9 +81,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
@@ -113,7 +112,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../wannier90.html">Wannier90</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
@@ -267,7 +266,7 @@ closests to the energy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – k-point to read the corresponding Hamiltonian and overlap matrices
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – k-point to read the corresponding Hamiltonian and overlap matrices
 for. If a specific k-point is passed <a class="reference internal" href="#sisl.io.siesta.tsgfSileSiesta.kindex" title="sisl.io.siesta.tsgfSileSiesta.kindex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kindex</span></code></a> will be used to find
 the corresponding index.</p></li>
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – spin-index for the Hamiltonian and overlap matrices</p></li>
@@ -308,7 +307,7 @@ the corresponding index.</p></li>
 <dd><p>Return the index of the k-point that is closests to the queried k-point (in reduced coordinates)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the queried k-point in reduced coordinates <span class="math notranslate nohighlight">\(]-0.5;0.5]\)</span>. If <code class="docutils literal notranslate"><span class="pre">int</span></code>
+<dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the queried k-point in reduced coordinates <span class="math notranslate nohighlight">\(]-0.5;0.5]\)</span>. If <code class="docutils literal notranslate"><span class="pre">int</span></code>
 return it-self.</p>
 </dd>
 </dl>
@@ -387,7 +386,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – energy to retrieve self-energy at</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – k-point to retrieve k-point at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – k-point to retrieve k-point at</p></li>
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – spin-index to retrieve self-energy at</p></li>
 </ul>
 </dd>
@@ -432,7 +431,7 @@ it may be advantageous to specify this argument for orthogonal cells.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BrillouinZone</span></code>) – contains the k-points, the weights and possibly the parent Hamiltonian (if <em class="xref py py-obj">obj</em> is None)s</p></li>
-<li><p><strong>E</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">cmplx</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the energy points. If <em class="xref py py-obj">obj</em> is an instance of <em class="xref py py-obj">SelfEnergy</em> where an
+<li><p><strong>E</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">cmplx</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the energy points. If <em class="xref py py-obj">obj</em> is an instance of <em class="xref py py-obj">SelfEnergy</em> where an
 associated <code class="docutils literal notranslate"><span class="pre">eta</span></code> is defined then <em class="xref py py-obj">E</em> may be float, otherwise
 it <em>has</em> to be a complex array.</p></li>
 <li><p><strong>mu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – chemical potential in the file</p></li>

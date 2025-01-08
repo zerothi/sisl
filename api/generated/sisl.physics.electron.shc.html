@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,9 +81,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../physics.electron.html">Electron related functions</a><ul class="current">
@@ -111,7 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -144,7 +143,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
-          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../physics.electron.html">Electron related functions</a></li>
       <li class="breadcrumb-item active">shc</li>
       <li class="wy-breadcrumbs-aside">
@@ -168,7 +167,7 @@
 <p>where <span class="math notranslate nohighlight">\(\boldsymbol\Omega^\gamma_{i,\alpha\beta}\)</span> and <span class="math notranslate nohighlight">\(f_i\)</span> are the
 spin Berry curvature and occupation for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <p>The conductivity will be averaged by volume of the periodic unit cell.
-See <code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volumef</span></code> for details.</p>
+See <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.volumef" title="sisl.Lattice.volumef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volumef</span></code></a> for details.</p>
 <p>See <span id="id1">[<a class="reference internal" href="../../references.html#id3" title="Junfeng Qiao, Jiaqi Zhou, Zhe Yuan, and Weisheng Zhao. Calculation of intrinsic spin hall conductivity by wannier interpolation. Phys. Rev. B, 98:214402, Dec 2018. URL: https://link.aps.org/doi/10.1103/PhysRevB.98.214402, doi:10.1103/PhysRevB.98.214402.">9</a>]</span> and <span id="id2">[<a class="reference internal" href="../../references.html#id4" title="Yimin Ji, Wenxu Zhang, Hongbin Zhang, and Wanli Zhang. Spin hall conductivity and anomalous hall conductivity in full heusler compounds. New Journal of Physics, 24(5):053027, May 2022. URL: http://dx.doi.org/10.1088/1367-2630/ac696c, doi:10.1088/1367-2630/ac696c.">4</a>]</span> for details on the implementation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -180,7 +179,7 @@ Note, for large <em class="xref py py-obj">bz</em> integrations this may explode
 <li><p><strong>sigma</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>, </em><em>npt.ArrayLike</em><em>]</em>) – which Pauli matrix is used, alternatively one can pass a custom spin matrix,
 or the full sigma.</p></li>
 <li><p><strong>J_axes</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>, </em><em>Sequence</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>]</em><em>]</em>) – the direction(s) where the <span class="math notranslate nohighlight">\(J\)</span> operator will be applied (defaults to all).</p></li>
-<li><p><strong>distribution</strong> (<em>_TDist</em>) – An optional distribution enabling one to automatically sum states
+<li><p><strong>distribution</strong> (<a class="reference internal" href="sisl.typing.DistributionType.html#sisl.typing.DistributionType" title="sisl.typing.DistributionType"><em>DistributionType</em></a>) – An optional distribution enabling one to automatically sum states
 across occupied/unoccupied states.
 Defaults to the step function.</p></li>
 <li><p><strong>eigenstate_kwargs</strong> – keyword arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">bz.eigenstate</span></code> method.
@@ -214,8 +213,10 @@ be the AHC.</p>
 </div>
 <p>For further examples, please see <a class="reference internal" href="sisl.physics.electron.ahc.html#sisl.physics.electron.ahc" title="sisl.physics.electron.ahc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ahc</span></code></a> which is equivalent to this
 method.</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Original implementation by Armando Pezo.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -225,7 +226,7 @@ method.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_berry_curvature</span></code></dt><dd><p>method used to calculate the Berry-flux for calculating the spin conductivity</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volumef</span></code></dt><dd><p>volume calculation of the primary unit cell.</p>
+<dt><a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.volumef" title="sisl.Lattice.volumef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volumef</span></code></a></dt><dd><p>volume calculation of the primary unit cell.</p>
 </dd>
 <dt><a class="reference internal" href="sisl.physics.electron.ahc.html#sisl.physics.electron.ahc" title="sisl.physics.electron.ahc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ahc</span></code></a></dt><dd><p>anomalous Hall conductivity, this is the equivalent method for the SHC.</p>
 </dd>
@@ -259,7 +260,7 @@ When <span class="math notranslate nohighlight">\(D\)</span> is the dimensionali
 <li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 <li><p><strong>sigma</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>, </em><em>npt.ArrayLike</em><em>]</em>)</p></li>
 <li><p><strong>J_axes</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>, </em><em>Sequence</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>]</em><em>]</em>)</p></li>
-<li><p><strong>distribution</strong> (<em>_TDist</em>)</p></li>
+<li><p><strong>distribution</strong> (<a class="reference internal" href="sisl.typing.DistributionType.html#sisl.typing.DistributionType" title="sisl.typing.DistributionType"><em>DistributionType</em></a>)</p></li>
 </ul>
 </dd>
 </dl>

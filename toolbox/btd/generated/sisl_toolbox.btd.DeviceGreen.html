@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -191,11 +191,13 @@ like the below (it actually does more than that, so prefer the <a class="referen
 <span class="n">G</span> <span class="o">=</span> <span class="n">DeviceGreen</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="n">tbt</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Currently one cannot use these classes to calculate the
 scattering-states/eigenchannels for the spin-down component of a polarized
 calculation. One has to explicitly remove the spin-up component of the Hamiltonians
 before doing the calculations.</p>
+</div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -306,7 +308,7 @@ or calculate them on the fly.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point to calculate the Green function at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – k-point to calculate the Green function at</p></li>
 <li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;array&quot;,</span> <span class="pre">&quot;btd&quot;,</span> <span class="pre">&quot;bm&quot;,</span> <span class="pre">&quot;bd&quot;,</span> <span class="pre">&quot;sparse&quot;}</span></code>) – <p>return the matrix in a specific format</p>
 <ul>
 <li><p>array: a regular numpy array (full matrix)</p></li>
@@ -354,7 +356,7 @@ function</p>
 <li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode where the scattering matrix originates from</p></li>
 <li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span> <span class="pre">of</span></code>) – where the scattering matrix ends in.</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point to calculate the scattering matrix at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – k-point to calculate the scattering matrix at</p></li>
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – cutoff the eigen states of the broadening matrix that are below this value.
 I.e. only <span class="math notranslate nohighlight">\(\lambda\)</span> values above this value will be used.
 A too high value will remove too many eigen states and results will be wrong.
@@ -385,7 +387,7 @@ state.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the spectral function from</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point to calculate the spectral function at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – k-point to calculate the spectral function at</p></li>
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – cutoff the returned scattering states at some DOS value. Any scattering states
 with normalized eigenvalues lower than <em class="xref py py-obj">cutoff</em> are discarded.
 The normalization is done by dividing the eigenvalue with the number of orbitals
@@ -432,7 +434,7 @@ One may recreate the spectral function with <code class="docutils literal notran
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the spectral function from</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – k-point to calculate the spectral function at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – k-point to calculate the spectral function at</p></li>
 <li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;array&quot;,</span> <span class="pre">&quot;btd&quot;,</span> <span class="pre">&quot;bm&quot;,</span> <span class="pre">&quot;bd&quot;}</span></code>) – <p>return the matrix in a specific format</p>
 <ul>
 <li><p>array: a regular numpy array (full matrix)</p></li>

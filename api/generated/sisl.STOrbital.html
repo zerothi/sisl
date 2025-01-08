@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#generic-objects">Generic objects</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../basic.html#orbitals">Orbitals</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.Orbital.html">sisl.Orbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
@@ -95,16 +95,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -165,19 +164,21 @@ harmonic part that only depends on angles.</p>
 \phi_{lmn}(\mathbf r) &amp;= R_n(|\mathbf r|) Y^m_l(\theta, \varphi)
 \\
 R_n(|\mathbf r|) &amp;= r^{n-1} \sum c_i e^{-\alpha_i r}\end{split}\]</div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This class is opted for significant changes based on user feedback. If you use it,
 please give feedback.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – principal quantum number</p></li>
 <li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – azimuthal quantum number</p></li>
 <li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">optional</span> <span class="pre">for</span> <span class="pre">l</span> <span class="pre">==</span> <span class="pre">0</span></code>) – magnetic quantum number</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – coefficients for the exponential (in 1/Ang)
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – coefficients for the exponential (in 1/Ang)
 Generally the coefficients are given in atomic units, so
 a conversion from online tables is necessary.</p></li>
-<li><p><strong>coeff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – contraction factors</p></li>
+<li><p><strong>coeff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – contraction factors</p></li>
 <li><p><strong>R</strong> – See <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital</span></code></a> for details.</p></li>
 <li><p><strong>q0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – initial charge</p></li>
 <li><p><strong>tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – user defined tag</p></li>
@@ -253,8 +254,11 @@ a conversion from online tables is necessary.</p></li>
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.STOrbital.copy" title="Link to this definition"></a></dt>
 <dd><p>Create an exact copy of this object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>_ExponentialOrbital</em></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orbital</strong> (<em>_ExponentialOrbital</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>_ExponentialOrbital</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -288,7 +292,7 @@ a conversion from online tables is necessary.</p></li>
 <p>The position <em class="xref py py-obj">r</em> is a vector from the origin of this orbital.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>r</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the vector from the orbital origin</p>
+<dd class="field-odd"><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the vector from the orbital origin</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>basis function value at point <em class="xref py py-obj">r</em></p>
@@ -307,9 +311,9 @@ a conversion from online tables is necessary.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the radius from the orbital origin</p></li>
-<li><p><strong>theta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – azimuthal angle in the <span class="math notranslate nohighlight">\(xy\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
-<li><p><strong>phi</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
+<li><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the radius from the orbital origin</p></li>
+<li><p><strong>theta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – azimuthal angle in the <span class="math notranslate nohighlight">\(xy\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
+<li><p><strong>phi</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
 <li><p><strong>cos_phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether <em class="xref py py-obj">phi</em> is actually <span class="math notranslate nohighlight">\(cos(\phi)\)</span> which will be faster because
 <em class="xref py py-obj">cos</em> is not necessary to call.</p></li>
 </ul>
@@ -331,7 +335,7 @@ a conversion from online tables is necessary.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – radius from the orbital origin</p></li>
+<li><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – radius from the orbital origin</p></li>
 <li><p><strong>*args</strong> – arguments passed to the radial function</p></li>
 <li><p><strong>**args</strong> – keyword arguments passed to the radial function</p></li>
 </ul>
@@ -351,7 +355,10 @@ a conversion from online tables is necessary.</p></li>
 <dd><p>Scale the orbital by extending R by <a class="reference internal" href="sisl.scale.html#sisl.scale" title="sisl.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orbital</strong> (<a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>)</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a></p>
@@ -366,8 +373,8 @@ a conversion from online tables is necessary.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – azimuthal angle in the <span class="math notranslate nohighlight">\(xy\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
-<li><p><strong>phi</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
+<li><p><strong>theta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – azimuthal angle in the <span class="math notranslate nohighlight">\(xy\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
+<li><p><strong>phi</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
 <li><p><strong>cos_phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether <em class="xref py py-obj">phi</em> is actually <span class="math notranslate nohighlight">\(cos(\phi)\)</span> which will be faster because
 <em class="xref py py-obj">cos</em> is not necessary to call.</p></li>
 </ul>

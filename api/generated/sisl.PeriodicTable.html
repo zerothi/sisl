@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -79,7 +79,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#generic-objects">Generic objects</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.PeriodicTable</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
@@ -94,16 +94,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -224,7 +223,7 @@ and a negative number is returned.</p>
 <p>Return the atomic number corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic number in the <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic number in the <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>
 object.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -253,7 +252,7 @@ will the returned value be.</p>
 <p>Return the atomic number corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic number in the <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic number in the <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>
 object.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -282,7 +281,7 @@ will the returned value be.</p>
 <p>Return the atomic short name corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic short name in the
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic short name in the
 <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -302,7 +301,7 @@ is array_like, so will the returned value be.</p>
 <p>Return the atomic short name corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic short name in the
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic short name in the
 <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -322,7 +321,7 @@ is array_like, so will the returned value be.</p>
 <p>Return the atomic mass corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic mass in the
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic mass in the
 <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -343,7 +342,7 @@ if <em class="xref py py-obj">key</em> is array_like, so will the returned value
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic mass in the
+<li><p><strong>key</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Uses value to lookup the atomic mass in the
 <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p></li>
 <li><p><strong>method</strong> (<code class="docutils literal notranslate"><span class="pre">{'calc',</span> <span class="pre">'empirical',</span> <span class="pre">'vdw'}</span></code>) – <p>There are 3 different radii stored:</p>
 <blockquote>

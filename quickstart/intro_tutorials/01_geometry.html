@@ -23,7 +23,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -469,7 +469,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |  __str__(self) from sisl._core.atom.Atom
  |      Return str(self).
  |
- |  copy(self, Z: &#39;Optional[Union[int, str]]&#39; = None, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None) -&gt; &#39;Atom&#39; from sisl
+ |  copy(atom: &#39;Atom&#39;, Z: &#39;Optional[Union[int, str]]&#39; = None, orbitals=None, mass: &#39;Optional[float]&#39; = None, tag: &#39;Optional[str]&#39; = None) -&gt; &#39;Atom&#39; from sisl
  |      Return copy of this object
  |
  |  equal(self, other, R: &#39;bool&#39; = True, psi: &#39;bool&#39; = False) from sisl._core.atom.Atom
@@ -510,7 +510,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |
  |      See `PeriodicTable.radius` for details on the argument.
  |
- |  remove(self, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
+ |  remove(atom: &#39;Atom&#39;, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Return the same atom without a specific set of orbitals
  |
  |      Parameters
@@ -527,7 +527,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |      --------
  |      Atom.sub : retain a selected set of orbitals
  |
- |  scale(self, scale: &#39;float&#39;) -&gt; &#39;Atom&#39; from sisl
+ |  scale(atom: &#39;Atom&#39;, scale: &#39;float&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Scale the atomic radii and return an equivalent atom.
  |
  |      Parameters
@@ -535,7 +535,7 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |      scale :
  |         the scale factor for the atomic radii
  |
- |  sub(self, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
+ |  sub(atom: &#39;Atom&#39;, orbitals: &#39;SimpleIndex&#39;) -&gt; &#39;Atom&#39; from sisl
  |      Return the same atom with only a subset of the orbitals present
  |
  |      Parameters

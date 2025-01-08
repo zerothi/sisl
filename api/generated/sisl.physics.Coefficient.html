@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -79,9 +79,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.electron.html">Electron related functions</a></li>
@@ -100,7 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -133,7 +132,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
-          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
       <li class="breadcrumb-item active">sisl.physics.Coefficient</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/generated/sisl.physics.Coefficient.rst.txt" rel="nofollow"> View page source</a>
@@ -154,7 +153,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>c</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – coefficients</p></li>
+<li><p><strong>c</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – coefficients</p></li>
 <li><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">obj</span></code>, <em>optional</em>) – a parent object that defines the origin of the coefficient</p></li>
 <li><p><strong>**info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – an info dictionary that turns into an attribute on the object.
 This <a class="reference internal" href="#sisl.physics.Coefficient.info" title="sisl.physics.Coefficient.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a> may contain anything that may be relevant for the coefficient.</p></li>
@@ -209,8 +208,11 @@ This <a class="reference internal" href="#sisl.physics.Coefficient.info" title="
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.Coefficient.copy" title="Link to this definition"></a></dt>
 <dd><p>Return a copy (only the coefficients are copied). <code class="docutils literal notranslate"><span class="pre">parent</span></code> and <code class="docutils literal notranslate"><span class="pre">info</span></code> are passed by reference</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#sisl.physics.Coefficient" title="sisl.physics.Coefficient"><em>Coefficient</em></a></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>coefficient</strong> (<a class="reference internal" href="#sisl.physics.Coefficient" title="sisl.physics.Coefficient"><em>Coefficient</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#sisl.physics.Coefficient" title="sisl.physics.Coefficient"><em>Coefficient</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -259,6 +261,7 @@ Otherwise an equivalent object is yielded.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – indices that are removed in the returned object</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the values will be removed inplace</p></li>
+<li><p><strong>coefficient</strong> (<a class="reference internal" href="#sisl.physics.Coefficient" title="sisl.physics.Coefficient"><em>Coefficient</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -279,6 +282,7 @@ Otherwise an equivalent object is yielded.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – indices that are retained in the returned object</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the values will be retained inplace</p></li>
+<li><p><strong>coefficient</strong> (<a class="reference internal" href="#sisl.physics.Coefficient" title="sisl.physics.Coefficient"><em>Coefficient</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,9 +81,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../physics.matrix.html#spin">Spin</a></li>
@@ -104,7 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -137,7 +136,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
-          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../physics.matrix.html">Physical quantites</a></li>
       <li class="breadcrumb-item active">sisl.physics.EnergyDensityMatrix</li>
       <li class="wy-breadcrumbs-aside">
@@ -439,7 +438,8 @@ This is a keyword-only argument.</p></li>
 <span class="sig-name descname"><span class="pre">Ek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lattice'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/energydensitymatrix.html#EnergyDensityMatrix.Ek"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.Ek" title="Link to this definition"></a></dt>
 <dd><p>Setup the energy density matrix for a given k-point</p>
 <p>Creation and return of the energy density matrix for a given k-point (default to Gamma).</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Currently the implemented gauge for the k-point is the lattice vector gauge:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf E(\mathbf k) = \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
@@ -448,10 +448,11 @@ This is a keyword-only argument.</p></li>
 <div class="math notranslate nohighlight">
 \[\mathbf E(\mathbf k) = \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the k-point to setup the energy density matrix at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – the k-point to setup the energy density matrix at</p></li>
 <li><p><strong>dtype</strong> (numpy.dtype , <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
@@ -485,7 +486,10 @@ this keyword is ignored.</p></li>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.*_matrix</span></code></p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -505,11 +509,13 @@ The default is the same type as the parent class.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The returned sparse matrix with vectors are taken from the current sparse pattern.
 I.e. a subsequent addition of sparse elements will make them inequivalent.
 It is thus important to <em>only</em> create the sparse vector matrix when the sparse
 structure is completed.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -517,7 +523,8 @@ structure is completed.</p>
 <span class="sig-name descname"><span class="pre">Sk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lattice'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.Sk" title="Link to this definition"></a></dt>
 <dd><p>Setup the overlap matrix for a given k-point</p>
 <p>Creation and return of the overlap matrix for a given k-point (default to Gamma).</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Currently the implemented gauge for the k-point is the lattice vector gauge:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
@@ -526,10 +533,11 @@ structure is completed.</p>
 <div class="math notranslate nohighlight">
 \[\mathbf S(\mathbf k) = \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
@@ -633,12 +641,14 @@ same orbital ordering.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="p">(</span><span class="n">sporb</span> <span class="o">+</span> <span class="n">sporb</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The current implementation does not preserve the hermiticity of the matrix.
 If you want to preserve hermiticity of the matrix you have to do the
 following:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sm</span> <span class="o">=</span> <span class="p">(</span><span class="n">sm</span> <span class="o">+</span> <span class="n">sm</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
+</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -649,7 +659,7 @@ following:</p>
 It is important that this value is smaller than half the distance between
 the two closests atoms such that there is no ambiguity in selecting
 equivalent atoms. An internal stricter tolerance is used as a baseline, see above.</p></li>
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – the scale used for the overlapping region. For scalar values it corresponds
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the scale used for the overlapping region. For scalar values it corresponds
 to passing: <code class="docutils literal notranslate"><span class="pre">(scale,</span> <span class="pre">scale)</span></code>.
 For array-like input <code class="docutils literal notranslate"><span class="pre">scale[0]</span></code> refers to the scale of the matrix elements
 coupling from <em class="xref py py-obj">self</em>, while <code class="docutils literal notranslate"><span class="pre">scale[1]</span></code> is the scale of the matrix elements
@@ -702,7 +712,8 @@ in <em class="xref py py-obj">other</em>.</p></li>
 <p>The data-conversion depends on the spin configuration of the system.
 In practice this means that real valued arrays in non-colinear calculations
 can be packed to complex valued arrays, which might be more intuitive.</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Historically, <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> was built with large inspiration from SIESTA.
 In SIESTA the matrices are always stored in real valued arrays, meaning
 that spin-orbit systems has 2x2x2 = 8 values to represent the spin-box.
@@ -710,6 +721,7 @@ However, this might as well be stored in 2x2 = 4 complex valued arrays.</p>
 <p>Later versions of <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> might force non-colinear matrices to be stored
 in complex arrays for consistency, but for now, both the real and the
 complex valued arrays are allowed.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -791,7 +803,7 @@ one orbital.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – <p>this function <em>must</em> take 4 arguments.
+<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – <p>this function <em>must</em> take 4 arguments.
 1. Is this object (<code class="docutils literal notranslate"><span class="pre">self</span></code>)
 2. Is the currently examined atom (<code class="docutils literal notranslate"><span class="pre">ia</span></code>)
 3. Is the currently bounded indices (<code class="docutils literal notranslate"><span class="pre">idxs</span></code>)
@@ -830,8 +842,11 @@ up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
 <dd><p>A copy of this object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – it is possible to convert the data to a different data-type
-If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – it is possible to convert the data to a different data-type
+If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p></li>
+<li><p><strong>S</strong> (<em>_SparseGeometry</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>_SparseGeometry</em></p>
@@ -855,13 +870,15 @@ functions needed for setting up sparse elements.</p>
 <p>In the non-colinear case the matrix element <span class="math notranslate nohighlight">\(\mathbf M_{ij}\)</span> will be set
 to input values <em class="xref py py-obj">param</em> if <span class="math notranslate nohighlight">\(i \le j\)</span> and the Hermitian conjugated
 values for <span class="math notranslate nohighlight">\(j &lt; i\)</span>.</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This function only works for geometry sparse matrices (i.e. one
 element per atom). If you have more than one element per atom
 you have to implement the function your-self.</p>
 <p>This method issues warnings if the on-site terms are not Hermitian
 for spin-orbit systems. Do note that it <em>still</em> creates the matrices
 based on the input.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -888,7 +905,8 @@ for the all atoms within <code class="docutils literal notranslate"><span class=
 <span class="sig-name descname"><span class="pre">dEk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lattice'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/energydensitymatrix.html#EnergyDensityMatrix.dEk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.dEk" title="Link to this definition"></a></dt>
 <dd><p>Setup the energy density matrix derivative for a given k-point</p>
 <p>Creation and return of the energy density matrix derivative for a given k-point (default to Gamma).</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Currently the implemented gauge for the k-point is the lattice vector gauge:</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k} \mathbf E_\alpha(\mathbf k) = i\mathbf R_\alpha \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
@@ -898,10 +916,11 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k} \mathbf E_\alpha(\mathbf k) = i\mathbf r_\alpha \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the k-point to setup the energy density matrix at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – the k-point to setup the energy density matrix at</p></li>
 <li><p><strong>dtype</strong> (numpy.dtype , <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
@@ -933,7 +952,10 @@ this keyword is ignored.</p></li>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -943,7 +965,8 @@ this keyword is ignored.</p></li>
 <span class="sig-name descname"><span class="pre">dSk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lattice'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.dSk" title="Link to this definition"></a></dt>
 <dd><p>Setup the <span class="math notranslate nohighlight">\(\mathbf k\)</span>-derivatie of the overlap matrix for a given k-point</p>
 <p>Creation and return of the derivative of the overlap matrix for a given k-point (default to Gamma).</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Currently the implemented gauge for the k-point is the lattice vector gauge:</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf R_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
@@ -953,10 +976,11 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k} \mathbf S_\alpha(\mathbf k) = i \mathbf r_\alpha \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
@@ -998,7 +1022,8 @@ return in <a class="reference external" href="https://numpy.org/doc/stable/refer
 <span class="sig-name descname"><span class="pre">ddEk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lattice'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/energydensitymatrix.html#EnergyDensityMatrix.ddEk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.ddEk" title="Link to this definition"></a></dt>
 <dd><p>Setup the energy density matrix double derivative for a given k-point</p>
 <p>Creation and return of the energy density matrix double derivative for a given k-point (default to Gamma).</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Currently the implemented gauge for the k-point is the lattice vector gauge:</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k^2} \mathbf E_{\alpha\beta}(\mathbf k) = -\mathbf R_\alpha\mathbf R_\beta \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
@@ -1008,10 +1033,11 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k^2} \mathbf E_{\alpha\beta}(\mathbf k) = -\mathbf r_\alpha\mathbf r_\beta \mathbf E_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the k-point to setup the energy density matrix at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – the k-point to setup the energy density matrix at</p></li>
 <li><p><strong>dtype</strong> (numpy.dtype , <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
@@ -1043,7 +1069,10 @@ this keyword is ignored.</p></li>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">matrices</span></code></p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1053,7 +1082,8 @@ this keyword is ignored.</p></li>
 <span class="sig-name descname"><span class="pre">ddSk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lattice'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.ddSk" title="Link to this definition"></a></dt>
 <dd><p>Setup the double <span class="math notranslate nohighlight">\(\mathbf k\)</span>-derivatie of the overlap matrix for a given k-point</p>
 <p>Creation and return of the double derivative of the overlap matrix for a given k-point (default to Gamma).</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Currently the implemented gauge for the k-point is the cell vector gauge:</p>
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k^2} \mathbf S_{\alpha\beta}(\mathbf k) = - \mathbf R_\alpha \mathbf R_\beta \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf R}\]</div>
@@ -1063,10 +1093,11 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 <div class="math notranslate nohighlight">
 \[\nabla_{\mathbf k^2} \mathbf S_{\alpha\beta}(\mathbf k) = - \mathbf r_\alpha \mathbf r_\beta \mathbf S_{ij} e^{i\mathbf k\cdot\mathbf r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf r\)</span> is the distance between the orbitals.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
@@ -1139,8 +1170,10 @@ Pre computing orbitals results in a faster computation, but it requires more mem
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The <em class="xref py py-obj">method</em> argument may change at will since this is an experimental feature.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1229,10 +1262,12 @@ this parameter is only valid for <a class="reference internal" href="sisl.physic
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The performance and accuracy of this method depends heavily on <em class="xref py py-obj">kwargs</em>.
 Playing around with a small test example before doing large scale calculations
 is adviced!</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1265,9 +1300,11 @@ is adviced!</p>
 <span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.finalize" title="Link to this definition"></a></dt>
 <dd><p>Finalizes the model</p>
 <p>Finalizes the model so that all non-used elements are removed. I.e. this simply reduces the memory requirement for the sparse matrix.</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
 internal data-representation.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1311,7 +1348,7 @@ of the class.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – only loop on the non-zero elements coinciding with the orbitals
 on these atoms (not compatible with the <em class="xref py py-obj">orbitals</em> keyword)</p></li>
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – only loop on the non-zero elements coinciding with the orbital
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – only loop on the non-zero elements coinciding with the orbital
 (not compatible with the <em class="xref py py-obj">atoms</em> keyword)</p></li>
 </ul>
 </dd>
@@ -1333,7 +1370,7 @@ the atom <em class="xref py py-obj">ia</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – only loop on the given atoms, default to all atoms</p></li>
+<li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – only loop on the given atoms, default to all atoms</p></li>
 <li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the orbital index is the global index, or the local index relative to
 the atom it resides on.</p></li>
 </ul>
@@ -1506,7 +1543,10 @@ if it is a string it will create a new sile using <em class="xref py py-obj">get
 <p>Negative indices are wrapped and thus works.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of removed atoms</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of removed atoms</p></li>
+<li><p><strong>S</strong> (<em>_SparseGeometry</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>_SparseGeometry</p>
@@ -1535,7 +1575,7 @@ if it is a string it will create a new sile using <em class="xref py py-obj">get
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of atoms or <em class="xref py py-obj">Atom</em> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
-<li><p><strong>orbitals</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are removed from the sparse matrix.</p></li>
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are removed from the sparse matrix.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1559,6 +1599,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
+<li><p><strong>SO</strong> (<a class="reference internal" href="sisl.SparseOrbital.html#sisl.SparseOrbital" title="sisl.SparseOrbital"><em>SparseOrbital</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1619,7 +1660,8 @@ and is effectively copying couplings from <code class="docutils literal notransl
 <span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="p">(</span><span class="n">big2</span> <span class="o">+</span> <span class="n">big2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The current implementation does not preserve the hermiticity of the matrix.
 If you want to preserve hermiticity of the matrix you have to do the
 following:</p>
@@ -1633,6 +1675,7 @@ symmetry elements. A good idea would be to check the difference between the coup
 The below variable <code class="docutils literal notranslate"><span class="pre">diff</span></code> will contain the difference <code class="docutils literal notranslate"><span class="pre">(self</span> <span class="pre">-&gt;</span> <span class="pre">other)</span> <span class="pre">-</span> <span class="pre">(other</span> <span class="pre">-&gt;</span> <span class="pre">self)</span></code></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">diff</span> <span class="o">=</span> <span class="n">sm</span> <span class="o">-</span> <span class="n">sm</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 </pre></div>
+</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1733,11 +1776,13 @@ The default is the same type as the parent class.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The returned sparse matrix with distances are taken from the current sparse pattern.
 I.e. a subsequent addition of sparse elements will make them inequivalent.
 It is thus important to <em>only</em> create the sparse distance when the sparse
 structure is completed.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1829,10 +1874,12 @@ To only align atomic on-site values, one would have to do a loop.</p></li>
 <dd><p>Rotates spin-boxes by fixed angles around the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> axis, respectively.</p>
 <p>The angles are with respect to each spin-boxes initial angle.
 One should use <a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.spin_align" title="sisl.physics.EnergyDensityMatrix.spin_align"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_align</span></code></a> to fix all angles along a specific direction.</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>For a polarized matrix:
 The returned matrix will be in non-collinear spin-configuration in case
 the angles does not reflect a pure flip of spin in the <span class="math notranslate nohighlight">\(z\)</span>-axis.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1879,7 +1926,10 @@ the angles does not reflect a pure flip of spin in the <span class="math notrans
 <p>Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of retained atoms or <em class="xref py py-obj">Atom</em> for retaining only <em>that</em> atom</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of retained atoms or <em class="xref py py-obj">Atom</em> for retaining only <em>that</em> atom</p></li>
+<li><p><strong>SO</strong> (<a class="reference internal" href="sisl.SparseOrbital.html#sisl.SparseOrbital" title="sisl.SparseOrbital"><em>SparseOrbital</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.SparseOrbital.html#sisl.SparseOrbital" title="sisl.SparseOrbital"><em>SparseOrbital</em></a></p>
@@ -1914,15 +1964,17 @@ the angles does not reflect a pure flip of spin in the <span class="math notrans
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of atoms or <em class="xref py py-obj">Atom</em> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
-<li><p><strong>orbitals</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are retained in the sparse matrix, the list of
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are retained in the sparse matrix, the list of
 orbitals will be sorted. One cannot re-arrange matrix elements currently.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Future implementations may allow one to re-arange orbitals using this method.</p>
 <p>When using this method the internal species list will be populated by another species
 that is named after the orbitals removed. This is to distinguish different atoms.</p>
+</div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># a Carbon atom with 2 orbitals</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
@@ -1975,6 +2027,7 @@ will note species that are different from the original by a <code class="docutil
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms_a</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – the first list of atomic coordinates</p></li>
 <li><p><strong>atoms_b</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – the second list of atomic coordinates</p></li>
+<li><p><strong>S</strong> (<em>_SparseGeometry</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1994,6 +2047,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
+<li><p><strong>SO</strong> (<a class="reference internal" href="sisl.SparseOrbital.html#sisl.SparseOrbital" title="sisl.SparseOrbital"><em>SparseOrbital</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2073,7 +2127,8 @@ is changed according to the following conversions:</p>
 <p>3. Orthogonality:
 If the <a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.orthogonal" title="sisl.physics.EnergyDensityMatrix.orthogonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orthogonal</span></code></a> flag is provided, the overlap matrix is either dropped
 or explicitly introduced as the identity matrix.</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The transformation matrix does <em>not</em> act on the rows and columns, only on the
 final dimension of the matrix.</p>
 <p>The matrix transformation is done like this:</p>
@@ -2081,10 +2136,11 @@ final dimension of the matrix.</p>
 </pre></div>
 </div>
 <p>Meaning that <code class="docutils literal notranslate"><span class="pre">matrix[0,</span> <span class="pre">:]</span></code> will be the factors of the input matrix elements.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>matrix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – transformation matrix of shape <span class="math notranslate nohighlight">\(m \times n\)</span>. Default is no transformation.</p></li>
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – transformation matrix of shape <span class="math notranslate nohighlight">\(m \times n\)</span>. Default is no transformation.</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – data type contained in the matrix. Defaults to the input type.</p></li>
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.Spin</span></code>, <em>optional</em>) – spin class of created matrix. Defaults to the input type.</p></li>
 <li><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – flag to control if the new matrix includes overlaps. Defaults to the input type.</p></li>
@@ -2185,7 +2241,8 @@ or if one wishes to check the warnings.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> are assumed to have periodic boundary
 conditions.</p>
 <p>When untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> it is important to
@@ -2199,6 +2256,7 @@ it will halve the coupling and use the same coupling to the left, which is clear
 <p>In the following the latter is the correct way to do it.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SPM</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">SPM</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
@@ -2232,7 +2290,10 @@ it will halve the coupling and use the same coupling to the left, which is clear
 <dd><p>Writes an energy density matrix to the <em class="xref py py-obj">Sile</em> as implemented in the <code class="code docutils literal notranslate"><span class="pre">Sile.write_energy_density_matrix</span></code> method</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sile</strong> (<a class="reference internal" href="sisl.typing.SileLike.html#sisl.typing.SileLike" title="sisl.typing.SileLike"><em>SileLike</em></a>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edm</strong> (<a class="reference internal" href="#sisl.physics.EnergyDensityMatrix" title="sisl.physics.EnergyDensityMatrix"><em>EnergyDensityMatrix</em></a>)</p></li>
+<li><p><strong>sile</strong> (<a class="reference internal" href="sisl.typing.SileLike.html#sisl.typing.SileLike" title="sisl.typing.SileLike"><em>SileLike</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>

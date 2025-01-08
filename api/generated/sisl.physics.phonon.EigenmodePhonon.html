@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,9 +81,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.electron.html">Electron related functions</a></li>
@@ -103,7 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -136,7 +135,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
-          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../physics.phonon.html">Phonon related functions</a></li>
       <li class="breadcrumb-item active">sisl.physics.phonon.EigenmodePhonon</li>
       <li class="wy-breadcrumbs-aside">
@@ -278,9 +277,14 @@
 <dt class="sig sig-object py" id="sisl.physics.phonon.EigenmodePhonon.DOS">
 <span class="sig-name descname"><span class="pre">DOS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/phonon.html#EigenmodePhonon.DOS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.phonon.EigenmodePhonon.DOS" title="Link to this definition"></a></dt>
 <dd><p>Calculate DOS for provided energies, <em class="xref py py-obj">E</em>.</p>
-<p>This routine calls <a class="reference internal" href="sisl.physics.phonon.DOS.html#sisl.physics.phonon.DOS" title="sisl.physics.phonon.DOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics.phonon.DOS</span></code></a> with appropriate arguments
+<p>This routine calls <a class="reference internal" href="sisl.physics.phonon.DOS.html#sisl.physics.phonon.DOS" title="sisl.physics.phonon.DOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOS</span></code></a> with appropriate arguments
 and returns the DOS.</p>
 <p>See <a class="reference internal" href="sisl.physics.phonon.DOS.html#sisl.physics.phonon.DOS" title="sisl.physics.phonon.DOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOS</span></code></a> for argument details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>distribution</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'gaussian'</em><em>, </em><em>'lorentzian'</em><em>, </em><em>'fermi'</em><em>, </em><em>'bose-einstein'</em><em>, </em><em>'cold'</em><em>, </em><em>'step-function'</em><em>, </em><em>'heaviside'</em><em>] </em><em>| </em><em>~typing.Callable</em><em>[</em><em>[</em><em>~collections.abc.Buffer</em><em> | </em><em>~numpy._typing._array_like._SupportsArray</em><em>[</em><em>~numpy.dtype</em><em>[</em><em>~typing.Any</em><em>]</em><em>] </em><em>| </em><em>~numpy._typing._nested_sequence._NestedSequence</em><em>[</em><em>~numpy._typing._array_like._SupportsArray</em><em>[</em><em>~numpy.dtype</em><em>[</em><em>~typing.Any</em><em>]</em><em>]</em><em>] </em><em>| </em><em>bool</em><em> | </em><em>int</em><em> | </em><em>float</em><em> | </em><em>complex</em><em> | </em><em>str</em><em> | </em><em>bytes</em><em> | </em><em>~numpy._typing._nested_sequence._NestedSequence</em><em>[</em><em>bool</em><em> | </em><em>int</em><em> | </em><em>float</em><em> | </em><em>complex</em><em> | </em><em>str</em><em> | </em><em>bytes</em><em>]</em><em>]</em><em>, </em><em>~numpy.ndarray</em><em>]</em>)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -290,6 +294,11 @@ and returns the DOS.</p>
 <p>This routine calls <a class="reference internal" href="sisl.physics.phonon.PDOS.html#sisl.physics.phonon.PDOS" title="sisl.physics.phonon.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a> with appropriate arguments
 and returns the PDOS.</p>
 <p>See <a class="reference internal" href="sisl.physics.phonon.PDOS.html#sisl.physics.phonon.PDOS" title="sisl.physics.phonon.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a> for argument details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>distribution</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'gaussian'</em><em>, </em><em>'lorentzian'</em><em>, </em><em>'fermi'</em><em>, </em><em>'bose-einstein'</em><em>, </em><em>'cold'</em><em>, </em><em>'step-function'</em><em>, </em><em>'heaviside'</em><em>] </em><em>| </em><em>~typing.Callable</em><em>[</em><em>[</em><em>~collections.abc.Buffer</em><em> | </em><em>~numpy._typing._array_like._SupportsArray</em><em>[</em><em>~numpy.dtype</em><em>[</em><em>~typing.Any</em><em>]</em><em>] </em><em>| </em><em>~numpy._typing._nested_sequence._NestedSequence</em><em>[</em><em>~numpy._typing._array_like._SupportsArray</em><em>[</em><em>~numpy.dtype</em><em>[</em><em>~typing.Any</em><em>]</em><em>]</em><em>] </em><em>| </em><em>bool</em><em> | </em><em>int</em><em> | </em><em>float</em><em> | </em><em>complex</em><em> | </em><em>str</em><em> | </em><em>bytes</em><em> | </em><em>~numpy._typing._nested_sequence._NestedSequence</em><em>[</em><em>bool</em><em> | </em><em>int</em><em> | </em><em>float</em><em> | </em><em>complex</em><em> | </em><em>str</em><em> | </em><em>bytes</em><em>]</em><em>]</em><em>, </em><em>~numpy.ndarray</em><em>]</em>)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -319,8 +328,10 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 </p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The input state and output state have the same number of states, but their ordering is not necessarily the same.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -376,7 +387,7 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>) – specify the new gauge for the mode coefficients</p></li>
-<li><p><strong>offset</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – whether the coordinates should be offset by another phase-factor</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether the coordinates should be offset by another phase-factor</p></li>
 </ul>
 </dd>
 </dl>
@@ -387,8 +398,11 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.EigenmodePhonon.copy" title="Link to this definition"></a></dt>
 <dd><p>Return a copy (only the coefficients and states are copied), <code class="docutils literal notranslate"><span class="pre">parent</span></code> and <code class="docutils literal notranslate"><span class="pre">info</span></code> are passed by reference</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="sisl.physics.StateC.html#sisl.physics.StateC" title="sisl.physics.StateC"><em>StateC</em></a></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>statec</strong> (<a class="reference internal" href="sisl.physics.StateC.html#sisl.physics.StateC" title="sisl.physics.StateC"><em>StateC</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="sisl.physics.StateC.html#sisl.physics.StateC" title="sisl.physics.StateC"><em>StateC</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -427,13 +441,15 @@ here only shown for the 1st order derivative:</p>
     \frac{\partial^2}{\partial\mathbf k_\alpha\partial\mathbf k_\beta} \mathbf H(\mathbf k) | \psi_j\rangle
     - \frac12\frac{\mathbf{d}_{\alpha ij}\mathbf{d}_{\beta ij}}
           {\epsilon_i - \epsilon_j}\]</div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>When requesting 2nd derivatives it will not be advisable to use a <a class="reference internal" href="#sisl.physics.phonon.EigenmodePhonon.sub" title="sisl.physics.phonon.EigenmodePhonon.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a> before
 calculating the derivatives since the 1st order perturbation uses the energy
 differences (Berry contribution) and the 1st derivative matrix for correcting the curvature.</p>
 <p>For states at the <span class="math notranslate nohighlight">\(\Gamma\)</span> point you may get warnings about casting complex numbers
 to reals. In these cases you should force the state at the <span class="math notranslate nohighlight">\(\Gamma\)</span> point to be calculated
 in complex numbers to enable the correct decoupling.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -535,7 +551,7 @@ be 0.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ket</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code>, <em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
-<li><p><strong>matrix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
 1D arrays will be treated as a diagonal matrix.</p></li>
 <li><p><strong>projection</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.ProjectionType.html#sisl.typing.ProjectionType" title="sisl.typing.ProjectionType"><em>ProjectionType</em></a><em>, </em><a class="reference internal" href="sisl.typing.ProjectionTypeHadamard.html#sisl.typing.ProjectionTypeHadamard" title="sisl.typing.ProjectionTypeHadamard"><em>ProjectionTypeHadamard</em></a><em>, </em><a class="reference internal" href="sisl.typing.ProjectionTypeHadamardAtoms.html#sisl.typing.ProjectionTypeHadamardAtoms" title="sisl.typing.ProjectionTypeHadamardAtoms"><em>ProjectionTypeHadamardAtoms</em></a><em>]</em>) – <p>how to perform the final projection.
 This can be used to sum specific sub-elements, return the diagonal, or the
@@ -551,10 +567,12 @@ full matrix.</p>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This does <em>not</em> take into account a possible overlap matrix when
 non-orthogonal basis sets are used.
 One have to add the overlap matrix in the <em class="xref py py-obj">matrix</em> argument, if needed.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -694,7 +712,7 @@ basis dimension.</p>
 <dd><p>Calculate the occupations for the states according to a distribution function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>distribution</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">func</span></code>, <em>optional</em>) – distribution used to find occupations</p>
+<dd class="field-odd"><p><strong>distribution</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'gaussian'</em><em>, </em><em>'lorentzian'</em><em>, </em><em>'fermi'</em><em>, </em><em>'bose-einstein'</em><em>, </em><em>'cold'</em><em>, </em><em>'step-function'</em><em>, </em><em>'heaviside'</em><em>] </em><em>| </em><em>~typing.Callable</em><em>[</em><em>[</em><em>~collections.abc.Buffer</em><em> | </em><em>~numpy._typing._array_like._SupportsArray</em><em>[</em><em>~numpy.dtype</em><em>[</em><em>~typing.Any</em><em>]</em><em>] </em><em>| </em><em>~numpy._typing._nested_sequence._NestedSequence</em><em>[</em><em>~numpy._typing._array_like._SupportsArray</em><em>[</em><em>~numpy.dtype</em><em>[</em><em>~typing.Any</em><em>]</em><em>]</em><em>] </em><em>| </em><em>bool</em><em> | </em><em>int</em><em> | </em><em>float</em><em> | </em><em>complex</em><em> | </em><em>str</em><em> | </em><em>bytes</em><em> | </em><em>~numpy._typing._nested_sequence._NestedSequence</em><em>[</em><em>bool</em><em> | </em><em>int</em><em> | </em><em>float</em><em> | </em><em>complex</em><em> | </em><em>str</em><em> | </em><em>bytes</em><em>]</em><em>]</em><em>, </em><em>~numpy.ndarray</em><em>]</em>) – distribution used to find occupations</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">len(self)</span></code> with occupation values</p>
@@ -714,13 +732,15 @@ basis dimension.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ket</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code>, <em>optional</em>) – the ket object to calculate the outer product of, if not passed it will do the outer
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(|\psi_\alpha\rangle\)</span></p></li>
-<li><p><strong>matrix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
 1D arrays will be treated as a diagonal matrix.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a matrix with the sum of outer state products</p>
@@ -755,6 +775,7 @@ for all, all phases are calculated</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – indices that are removed in the returned object</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the values will be removed inplace</p></li>
+<li><p><strong>statec</strong> (<a class="reference internal" href="sisl.physics.StateC.html#sisl.physics.StateC" title="sisl.physics.StateC"><em>StateC</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -782,6 +803,7 @@ and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to a
 <li><p><strong>individual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the rotation is per state, or a single maximum component is chosen.</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to do the rotation on the object it-self (True), or return a copy
 with the rotated states (False).</p></li>
+<li><p><strong>state</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -810,6 +832,7 @@ with the rotated states (False).</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – indices that are retained in the returned object</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the values will be retained inplace</p></li>
+<li><p><strong>statec</strong> (<a class="reference internal" href="sisl.physics.StateC.html#sisl.physics.StateC" title="sisl.physics.StateC"><em>StateC</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -840,6 +863,7 @@ by said amount, i.e. <span class="math notranslate nohighlight">\(i\to i+\mathrm
 <li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the states are normalized upon return, may be useful for
 eigenstates, equivalent to <code class="docutils literal notranslate"><span class="pre">state.tile().normalize()</span></code></p></li>
 <li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the offset for the phase factors</p></li>
+<li><p><strong>state</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -882,10 +906,12 @@ and returns the velocity for the modes.</p>
 to the energies of the modes.</p>
 <p>See <a class="reference internal" href="#sisl.physics.phonon.EigenmodePhonon.derivative" title="sisl.physics.phonon.EigenmodePhonon.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> for details and possible arguments. One cannot pass the <code class="docutils literal notranslate"><span class="pre">order</span></code> argument
 as that is fixed to <code class="docutils literal notranslate"><span class="pre">1</span></code> in this call.</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The states and energies for the modes <em>may</em> have changed after calling this routine.
 This is because of the velocity un-folding for degenerate modes. I.e. calling
 <a class="reference internal" href="#sisl.physics.phonon.EigenmodePhonon.displacement" title="sisl.physics.phonon.EigenmodePhonon.displacement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">displacement</span></code></a> and/or <a class="reference internal" href="sisl.physics.phonon.PDOS.html#sisl.physics.phonon.PDOS" title="sisl.physics.phonon.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a> after this method <em>may</em> change the result.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">

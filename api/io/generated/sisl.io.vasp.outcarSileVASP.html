@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -79,9 +79,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
@@ -113,7 +112,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../wannier90.html">Wannier90</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
@@ -303,7 +302,8 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dd class="field-even"><p><a class="reference internal" href="../../generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict" title="sisl.utils.misc.PropertyDict"><em>PropertyDict</em></a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <dl>
 <dt>The name convention in the dictionary is as follows:</dt><dd><p>OUTCAR string           Key</p>
 <p>alpha Z        PSCENC = Z
@@ -321,6 +321,7 @@ energy without entropy= total
 energy(sigma-&gt;0)      = sigma0</p>
 </dd>
 </dl>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>out</strong> – all energies from a single “Free energy of the ion-electron system” segment</p>
@@ -332,7 +333,8 @@ energy(sigma-&gt;0)      = sigma0</p>
 <dd class="field-odd"><p><strong>units</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.13)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>)</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This method defaults to return the first item(s).</p>
 <p>This method enables slicing for handling multiple values (see <code class="docutils literal notranslate"><span class="pre">[...|default]</span></code>).</p>
 <p>This is an optional handler enabling returning multiple elements if <code class="docutils literal notranslate"><span class="pre">read_energy[...|0]</span></code>
@@ -350,6 +352,7 @@ allows this.</p>
 </div>
 <p>While one can store the sliced function <code class="docutils literal notranslate"><span class="pre">tmp</span> <span class="pre">=</span> <span class="pre">obj.read_energy[:]</span></code> one
 will loose the slice after each call.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -367,7 +370,8 @@ to read the atom positions and forces.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">PropertyDict</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This method defaults to return the first item(s).</p>
 <p>This method enables slicing for handling multiple values (see <code class="docutils literal notranslate"><span class="pre">[...|default]</span></code>).</p>
 <p>This is an optional handler enabling returning multiple elements if <code class="docutils literal notranslate"><span class="pre">read_trajectory[...|0]</span></code>
@@ -385,6 +389,7 @@ allows this.</p>
 </div>
 <p>While one can store the sliced function <code class="docutils literal notranslate"><span class="pre">tmp</span> <span class="pre">=</span> <span class="pre">obj.read_trajectory[:]</span></code> one
 will loose the slice after each call.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">

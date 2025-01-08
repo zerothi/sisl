@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -79,7 +79,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#generic-objects">Generic objects</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#orbitals">Orbitals</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../basic.html#advanced-classes">Advanced classes</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.Quaternion.html">sisl.Quaternion</a></li>
@@ -91,16 +91,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -307,11 +306,13 @@ The default is the same type as the parent class.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The returned sparse matrix with vectors are taken from the current sparse pattern.
 I.e. a subsequent addition of sparse elements will make them inequivalent.
 It is thus important to <em>only</em> create the sparse vector matrix when the sparse
 structure is completed.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -378,12 +379,14 @@ same orbital ordering.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="p">(</span><span class="n">sporb</span> <span class="o">+</span> <span class="n">sporb</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The current implementation does not preserve the hermiticity of the matrix.
 If you want to preserve hermiticity of the matrix you have to do the
 following:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sm</span> <span class="o">=</span> <span class="p">(</span><span class="n">sm</span> <span class="o">+</span> <span class="n">sm</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
+</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -394,7 +397,7 @@ following:</p>
 It is important that this value is smaller than half the distance between
 the two closests atoms such that there is no ambiguity in selecting
 equivalent atoms. An internal stricter tolerance is used as a baseline, see above.</p></li>
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – the scale used for the overlapping region. For scalar values it corresponds
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the scale used for the overlapping region. For scalar values it corresponds
 to passing: <code class="docutils literal notranslate"><span class="pre">(scale,</span> <span class="pre">scale)</span></code>.
 For array-like input <code class="docutils literal notranslate"><span class="pre">scale[0]</span></code> refers to the scale of the matrix elements
 coupling from <em class="xref py py-obj">self</em>, while <code class="docutils literal notranslate"><span class="pre">scale[1]</span></code> is the scale of the matrix elements
@@ -459,7 +462,7 @@ one orbital.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – <p>this function <em>must</em> take 4 arguments.
+<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – <p>this function <em>must</em> take 4 arguments.
 1. Is this object (<code class="docutils literal notranslate"><span class="pre">self</span></code>)
 2. Is the currently examined atom (<code class="docutils literal notranslate"><span class="pre">ia</span></code>)
 3. Is the currently bounded indices (<code class="docutils literal notranslate"><span class="pre">idxs</span></code>)
@@ -498,8 +501,11 @@ up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
 <dd><p>A copy of this object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – it is possible to convert the data to a different data-type
-If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – it is possible to convert the data to a different data-type
+If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p></li>
+<li><p><strong>S</strong> (<em>_SparseGeometry</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>_SparseGeometry</em></p>
@@ -520,17 +526,19 @@ functions needed for setting up the sparse elements.</p>
 <span class="gp">... </span>        <span class="bp">self</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This function only works for geometry sparse matrices (i.e. one
 element per atom). If you have more than one element per atom
 you have to implement the function your-self.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>R</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – radii parameters for different shells.
+<li><p><strong>R</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – radii parameters for different shells.
 Must have same length as <em class="xref py py-obj">params</em> or one less.
 If one less it will be extended with <code class="docutils literal notranslate"><span class="pre">R[0]/100</span></code></p></li>
-<li><p><strong>params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – coupling constants corresponding to the <em class="xref py py-obj">R</em>
+<li><p><strong>params</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – coupling constants corresponding to the <em class="xref py py-obj">R</em>
 ranges. <code class="docutils literal notranslate"><span class="pre">params[0,</span> <span class="pre">:]</span></code> are the elements
 for the all atoms within <code class="docutils literal notranslate"><span class="pre">R[0]</span></code> of each atom.</p></li>
 </ul>
@@ -600,9 +608,11 @@ requested atom). The returned edges are also atoms.</p></li>
 <span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.finalize" title="Link to this definition"></a></dt>
 <dd><p>Finalizes the model</p>
 <p>Finalizes the model so that all non-used elements are removed. I.e. this simply reduces the memory requirement for the sparse matrix.</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
 internal data-representation.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -644,7 +654,7 @@ of the class.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – only loop on the non-zero elements coinciding with the orbitals
 on these atoms (not compatible with the <em class="xref py py-obj">orbitals</em> keyword)</p></li>
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – only loop on the non-zero elements coinciding with the orbital
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – only loop on the non-zero elements coinciding with the orbital
 (not compatible with the <em class="xref py py-obj">atoms</em> keyword)</p></li>
 </ul>
 </dd>
@@ -745,7 +755,10 @@ the atom and l and m are the quantum numbers of the orbital.</p></li>
 <p>Negative indices are wrapped and thus works.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of removed atoms</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of removed atoms</p></li>
+<li><p><strong>S</strong> (<em>_SparseGeometry</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>_SparseGeometry</p>
@@ -774,7 +787,7 @@ the atom and l and m are the quantum numbers of the orbital.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
-<li><p><strong>orbitals</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are removed from the sparse matrix.</p></li>
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are removed from the sparse matrix.</p></li>
 </ul>
 </dd>
 </dl>
@@ -798,6 +811,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
+<li><p><strong>SO</strong> (<a class="reference internal" href="#sisl.SparseOrbital" title="sisl.SparseOrbital"><em>SparseOrbital</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -858,7 +872,8 @@ and is effectively copying couplings from <code class="docutils literal notransl
 <span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="p">(</span><span class="n">big2</span> <span class="o">+</span> <span class="n">big2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The current implementation does not preserve the hermiticity of the matrix.
 If you want to preserve hermiticity of the matrix you have to do the
 following:</p>
@@ -872,6 +887,7 @@ symmetry elements. A good idea would be to check the difference between the coup
 The below variable <code class="docutils literal notranslate"><span class="pre">diff</span></code> will contain the difference <code class="docutils literal notranslate"><span class="pre">(self</span> <span class="pre">-&gt;</span> <span class="pre">other)</span> <span class="pre">-</span> <span class="pre">(other</span> <span class="pre">-&gt;</span> <span class="pre">self)</span></code></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">diff</span> <span class="o">=</span> <span class="n">sm</span> <span class="o">-</span> <span class="n">sm</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 </pre></div>
+</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -972,11 +988,13 @@ The default is the same type as the parent class.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The returned sparse matrix with distances are taken from the current sparse pattern.
 I.e. a subsequent addition of sparse elements will make them inequivalent.
 It is thus important to <em>only</em> create the sparse distance when the sparse
 structure is completed.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1015,7 +1033,10 @@ that references the supercell will be deleted.</p>
 <p>Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of retained atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> for retaining only <em>that</em> atom</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of retained atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> for retaining only <em>that</em> atom</p></li>
+<li><p><strong>SO</strong> (<a class="reference internal" href="#sisl.SparseOrbital" title="sisl.SparseOrbital"><em>SparseOrbital</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.SparseOrbital" title="sisl.SparseOrbital"><em>SparseOrbital</em></a></p>
@@ -1050,15 +1071,17 @@ that references the supercell will be deleted.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
-<li><p><strong>orbitals</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are retained in the sparse matrix, the list of
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are retained in the sparse matrix, the list of
 orbitals will be sorted. One cannot re-arrange matrix elements currently.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Future implementations may allow one to re-arange orbitals using this method.</p>
 <p>When using this method the internal species list will be populated by another species
 that is named after the orbitals removed. This is to distinguish different atoms.</p>
+</div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># a Carbon atom with 2 orbitals</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
@@ -1111,6 +1134,7 @@ will note species that are different from the original by a <code class="docutil
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms_a</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – the first list of atomic coordinates</p></li>
 <li><p><strong>atoms_b</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – the second list of atomic coordinates</p></li>
+<li><p><strong>S</strong> (<em>_SparseGeometry</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1130,6 +1154,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
+<li><p><strong>SO</strong> (<a class="reference internal" href="#sisl.SparseOrbital" title="sisl.SparseOrbital"><em>SparseOrbital</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1221,8 +1246,10 @@ into row <em class="xref py py-obj">c</em>, column <em class="xref py py-obj">r<
 if this is true, default</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The components for each sparse element are not changed in this method.</p>
+</div>
 <p class="rubric">Examples</p>
 <p>Force a sparse geometry to be Hermitian:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">SparseOrbital</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -1282,7 +1309,8 @@ or if one wishes to check the warnings.</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> are assumed to have periodic boundary
 conditions.</p>
 <p>When untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> it is important to
@@ -1296,6 +1324,7 @@ it will halve the coupling and use the same coupling to the left, which is clear
 <p>In the following the latter is the correct way to do it.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SPM</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">SPM</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>

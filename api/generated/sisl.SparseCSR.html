@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#generic-objects">Generic objects</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#orbitals">Orbitals</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../basic.html#advanced-classes">Advanced classes</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.Quaternion.html">sisl.Quaternion</a></li>
@@ -93,16 +93,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -357,7 +356,7 @@ object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dims</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code>, <em>optional</em>) – which dimensions to store in the copy, defaults to all.</p></li>
+<li><p><strong>dims</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – which dimensions to store in the copy, defaults to all.</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>) – this defaults to the dtype of the object,
 but one may change it if supplied.</p></li>
 </ul>
@@ -372,7 +371,7 @@ but one may change it if supplied.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – columns to delete from the sparse pattern</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – columns to delete from the sparse pattern</p></li>
 <li><p><strong>keep_shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the <code class="docutils literal notranslate"><span class="pre">shape</span></code> of the object should be retained, if <code class="docutils literal notranslate"><span class="pre">True</span></code> all higher
 columns will be shifted according to the number of columns deleted below,
 if <code class="docutils literal notranslate"><span class="pre">False</span></code>, only the elements will be deleted.</p></li>
@@ -394,8 +393,8 @@ if <code class="docutils literal notranslate"><span class="pre">False</span></co
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>diagonals</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">scalar</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the diagonal values, if scalar the <a class="reference internal" href="../utilities.shape.html#module-sisl.shape" title="sisl.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a> <em>must</em> be present.</p></li>
-<li><p><strong>offsets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">scalar</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the offsets from the diagonal for each of the components (defaults
+<li><p><strong>diagonals</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">scalar</span></code> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the diagonal values, if scalar the <a class="reference internal" href="../utilities.shape.html#module-sisl.shape" title="sisl.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a> <em>must</em> be present.</p></li>
+<li><p><strong>offsets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">scalar</span></code> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the offsets from the diagonal for each of the components (defaults
 to the diagonal)</p></li>
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the extra dimension of the new diagonal matrix (default to the current
 extra dimension)</p></li>
@@ -492,7 +491,7 @@ passed sparse matrices</p></li>
 <p>returns the non-zero element of the sparse matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – only loop on the given row(s) default to all rows</p>
+<dd class="field-odd"><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – only loop on the given row(s) default to all rows</p>
 </dd>
 </dl>
 </dd></dl>
@@ -504,7 +503,7 @@ passed sparse matrices</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – only return the tuples for the requested rows, default is all rows</p></li>
+<li><p><strong>rows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – only return the tuples for the requested rows, default is all rows</p></li>
 <li><p><strong>only_cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – only return the non-zero columns</p></li>
 </ul>
 </dd>
@@ -563,7 +562,7 @@ the atom and l and m are the quantum numbers of the orbital.</p></li>
 <dd><p>Return a new sparse CSR matrix with all the indices removed</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>indices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the indices of the rows <em>and</em> columns that are removed in the sparse pattern</p>
+<dd class="field-odd"><p><strong>indices</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the indices of the rows <em>and</em> columns that are removed in the sparse pattern</p>
 </dd>
 </dl>
 </dd></dl>
@@ -579,10 +578,10 @@ the atom and l and m are the quantum numbers of the orbital.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – column indices to scale</p></li>
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – scale value for each value (if array-like it has to have the same
+<li><p><strong>cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – column indices to scale</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – scale value for each value (if array-like it has to have the same
 dimension as the sparsity dimension)</p></li>
-<li><p><strong>rows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>, <em>optional</em>) – only scale the column values that exists in these rows, default to all</p></li>
+<li><p><strong>rows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – only scale the column values that exists in these rows, default to all</p></li>
 </ul>
 </dd>
 </dl>
@@ -630,7 +629,7 @@ By default the first given spmat decides the dimension.</p></li>
 <p>All rows and columns in <em class="xref py py-obj">indices</em> are retained, everything else is removed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>indices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – the indices of the rows <em>and</em> columns that are retained in the sparse pattern</p>
+<dd class="field-odd"><p><strong>indices</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the indices of the rows <em>and</em> columns that are retained in the sparse pattern</p>
 </dd>
 </dl>
 </dd></dl>
@@ -665,13 +664,15 @@ By default the first given spmat decides the dimension.</p></li>
 <dt class="sig sig-object py" id="sisl.SparseCSR.transform">
 <span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/sparse.html#SparseCSR.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseCSR.transform" title="Link to this definition"></a></dt>
 <dd><p>Apply a linear transformation <span class="math notranslate nohighlight">\(R^n \rightarrow R^m\)</span> to the <span class="math notranslate nohighlight">\(n\)</span>-dimensional elements of the sparse matrix</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The transformation matrix does <em>not</em> act on the rows and columns, only on the
 final dimension of the matrix.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>matrix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – transformation matrix of shape <span class="math notranslate nohighlight">\(m \times n\)</span>, <span class="math notranslate nohighlight">\(n\)</span> should correspond to
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transformation matrix of shape <span class="math notranslate nohighlight">\(m \times n\)</span>, <span class="math notranslate nohighlight">\(n\)</span> should correspond to
 the number of elements in <code class="docutils literal notranslate"><span class="pre">self.shape[2]</span></code></p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – defaults to the common dtype of the object and the transformation matrix</p></li>
 </ul>
@@ -686,9 +687,9 @@ the number of elements in <code class="docutils literal notranslate"><span class
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>old</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – old column indices</p></li>
-<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – new column indices</p></li>
-<li><p><strong>rows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – only translate columns for the given rows</p></li>
+<li><p><strong>old</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – old column indices</p></li>
+<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – new column indices</p></li>
+<li><p><strong>rows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – only translate columns for the given rows</p></li>
 <li><p><strong>clean</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the new translated columns, outside the shape, should be deleted or not (default delete)</p></li>
 </ul>
 </dd>
@@ -705,8 +706,10 @@ the number of elements in <code class="docutils literal notranslate"><span class
 if this is true, default</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>The components for each sparse element are not changed in this method.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>an equivalent sparse matrix with transposed matrix elements</p>

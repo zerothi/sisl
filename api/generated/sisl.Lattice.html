@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#generic-objects">Generic objects</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.PeriodicTable.html">sisl.PeriodicTable</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
@@ -96,16 +96,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -369,7 +368,10 @@ See <a class="reference internal" href="sisl.BoundaryCondition.html#sisl.Boundar
 <dd><p>Add two supercell lattice vectors to each other</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="sisl.typing.LatticeLike.html#sisl.typing.LatticeLike" title="sisl.typing.LatticeLike"><em>LatticeLike</em></a>) – the lattice vectors of the other supercell to add</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference internal" href="sisl.typing.LatticeLike.html#sisl.typing.LatticeLike" title="sisl.typing.LatticeLike"><em>LatticeLike</em></a>) – the lattice vectors of the other supercell to add</p></li>
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a></p>
@@ -420,7 +422,10 @@ when projected onto the normal vector of the other two axis.</p></li>
 <dd><p>Appends other <a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a> to this grid along axis</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a></p>
@@ -452,7 +457,7 @@ when projected onto the normal vector of the other two axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array_like</span></code>) – length for cell vectors, if an array it corresponds to the individual
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – length for cell vectors, if an array it corresponds to the individual
 vectors and it must have length equal to <em class="xref py py-obj">axes</em></p></li>
 <li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>] </em><em>| </em><em>~typing.Literal</em><em>[</em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>] </em><em>| </em><em>~collections.abc.Sequence</em><em>[</em><em>~typing.Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em><em>]</em>) – which axes the <a class="reference internal" href="#sisl.Lattice.length" title="sisl.Lattice.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">length</span></code></a> variable refers too.</p></li>
 </ul>
@@ -472,7 +477,10 @@ vectors and it must have length equal to <em class="xref py py-obj">axes</em></p
 <dd><p>Returns center of the <a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a>, possibly with respect to axes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>] </em><em>| </em><em>~typing.Literal</em><em>[</em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>] </em><em>| </em><em>~collections.abc.Sequence</em><em>[</em><em>~typing.Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em><em>]</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
+<li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>] </em><em>| </em><em>~typing.Literal</em><em>[</em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>] </em><em>| </em><em>~collections.abc.Sequence</em><em>[</em><em>~typing.Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em><em>]</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
@@ -486,7 +494,10 @@ vectors and it must have length equal to <em class="xref py py-obj">axes</em></p
 <dd><p>A deep copy of the object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cell</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – the new cell parameters</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – the new cell parameters</p></li>
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a></p>
@@ -640,10 +651,12 @@ vectors will be considered non-zero.</p>
 <dt class="sig sig-object py" id="sisl.Lattice.parameters">
 <span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/lattice.html#Lattice.parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Lattice.parameters" title="Link to this definition"></a></dt>
 <dd><p>Cell parameters of this cell in 3 lengths and 3 angles</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Since we return the length and angles between vectors it may not be possible to
 recreate the same cell. Only in the case where the first lattice vector <em>only</em>
 has a Cartesian <span class="math notranslate nohighlight">\(x\)</span> component will this be the case.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the angles are returned in radians (otherwise in degree)</p>
@@ -724,7 +737,10 @@ Hence this may be used to further reduce certain computations.</p>
 <p>For a <a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a> object this is equivalent to <a class="reference internal" href="sisl.append.html#sisl.append" title="sisl.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a></p>
@@ -751,13 +767,16 @@ if it is a string it will create a new sile using <a class="reference internal" 
 <dt class="sig sig-object py" id="sisl.Lattice.repeat">
 <span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice.repeat" title="Link to this definition"></a></dt>
 <dd><p>Extend the unit-cell <em class="xref py py-obj">reps</em> times along the <em class="xref py py-obj">axis</em> lattice vector</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This is <em>exactly</em> equivalent to the <a class="reference internal" href="sisl.tile.html#sisl.tile" title="sisl.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a> routine.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of times the unit-cell is repeated along the specified lattice vector</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – the lattice vector along which the repetition is performed</p></li>
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -780,6 +799,7 @@ individually with <code class="docutils literal notranslate"><span class="pre">o
 <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> will rotate in the <code class="docutils literal notranslate"><span class="pre">yz</span></code> plane</p></li>
 <li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether the angle is in radians (True) or in degrees (False)</p></li>
 <li><p><strong>what</strong> (<em>Literal</em><em>[</em><em>'abc'</em><em>, </em><em>'a'</em><em>, </em><em>...</em><em>]</em>) – only rotate the designated cell vectors.</p></li>
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -816,6 +836,7 @@ along that axis is returned.</p>
 <li><p><strong>what</strong> (<em>Literal</em><em>[</em><em>'abc'</em><em>, </em><em>'xyz'</em><em>]</em>) – If three different scale factors are provided, whether each scaling factor
 is to be applied on the corresponding lattice vector (“abc”) or on the
 corresponding cartesian coordinate (“xyz”).</p></li>
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -883,6 +904,7 @@ If <em class="xref py py-obj">str</em>, then <em class="xref py py-obj">what</em
 Cartesian coordinates (<code class="docutils literal notranslate"><span class="pre">xyz</span></code>), or both.
 This argument is only used if the axes arguments are
 ints.</p></li>
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -913,13 +935,16 @@ ints.</p></li>
 <dt class="sig sig-object py" id="sisl.Lattice.tile">
 <span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice.tile" title="Link to this definition"></a></dt>
 <dd><p>Extend the unit-cell <em class="xref py py-obj">reps</em> times along the <em class="xref py py-obj">axis</em> lattice vector</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>This is <em>exactly</em> equivalent to the <a class="reference internal" href="sisl.repeat.html#sisl.repeat" title="sisl.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a> routine.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of times the unit-cell is repeated along the specified lattice vector</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – the lattice vector along which the repetition is performed</p></li>
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1051,9 +1076,11 @@ before checking the number of arguments.</p>
 <dt class="sig sig-object py" id="sisl.Lattice.unrepeat">
 <span class="sig-name descname"><span class="pre">unrepeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice.unrepeat" title="Link to this definition"></a></dt>
 <dd><p>Reverses a <a class="reference internal" href="#sisl.Lattice.tile" title="sisl.Lattice.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.tile</span></code></a> and returns the segmented version</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Untiling will not correctly re-calculate nsc since it has no
 knowledge of connections.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -1064,6 +1091,7 @@ knowledge of connections.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>)</p></li>
 </ul>
@@ -1078,9 +1106,11 @@ knowledge of connections.</p>
 <dt class="sig sig-object py" id="sisl.Lattice.untile">
 <span class="sig-name descname"><span class="pre">untile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice.untile" title="Link to this definition"></a></dt>
 <dd><p>Reverses a <a class="reference internal" href="#sisl.Lattice.tile" title="sisl.Lattice.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.tile</span></code></a> and returns the segmented version</p>
-<p class="rubric">Notes</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
 <p>Untiling will not correctly re-calculate nsc since it has no
 knowledge of connections.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -1091,6 +1121,7 @@ knowledge of connections.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>)</p></li>
 </ul>
@@ -1153,6 +1184,7 @@ if it is a string it will create a new sile using <code class="xref py py-obj do
 underlying routine</p></li>
 <li><p><strong>**kwargs</strong> – Any other args will be passed directly to the
 underlying routine</p></li>
+<li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>

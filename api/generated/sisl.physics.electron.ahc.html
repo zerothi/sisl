@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,9 +81,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../physics.electron.html">Electron related functions</a><ul class="current">
@@ -111,7 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -144,7 +143,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
-          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../physics.electron.html">Electron related functions</a></li>
       <li class="breadcrumb-item active">ahc</li>
       <li class="wy-breadcrumbs-aside">
@@ -168,16 +167,16 @@
 for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <p>The conductivity will be averaged by volume of the periodic unit cell.
 Hence the unit of <a class="reference internal" href="#sisl.physics.electron.ahc" title="sisl.physics.electron.ahc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ahc</span></code></a> depends on the periodic unit cell.
-See <code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volumef</span></code> for details.</p>
+See <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.volumef" title="sisl.Lattice.volumef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volumef</span></code></a> for details.</p>
 <p>See <span id="id1">[<a class="reference internal" href="../../references.html#id11" title="Xinjie Wang, Jonathan R. Yates, Ivo Souza, and David Vanderbilt. Ab initio calculation of the anomalous hall conductivity by wannier interpolation. Phys. Rev. B, November 2006. URL: https://doi.org/10.1103/physrevb.74.195118, doi:10.1103/physrevb.74.195118.">14</a>]</span> for details on the implementation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BrillouinZone</span></code>) – containing the integration grid and has the <code class="docutils literal notranslate"><span class="pre">bz.parent</span></code> as an instance of Hamiltonian.</p></li>
+<li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – containing the integration grid and has the <code class="docutils literal notranslate"><span class="pre">bz.parent</span></code> as an instance of Hamiltonian.</p></li>
 <li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if <em class="xref py py-obj">True</em>, the returned quantity is averaged over <em class="xref py py-obj">bz</em>, else all k-point
 contributions will be collected (in the 1st dimension).
 Note, for large <em class="xref py py-obj">bz</em> integrations this may explode the memory usage.</p></li>
-<li><p><strong>distribution</strong> (<em>_TDist</em>) – An optional distribution enabling one to automatically sum states
+<li><p><strong>distribution</strong> (<a class="reference internal" href="sisl.typing.DistributionType.html#sisl.typing.DistributionType" title="sisl.typing.DistributionType"><em>DistributionType</em></a>) – An optional distribution enabling one to automatically sum states
 across occupied/unoccupied states.</p></li>
 <li><p><strong>eigenstate_kwargs</strong> – keyword arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">contour.eigenstate</span></code> method.
 One should <em>not</em> pass a <code class="docutils literal notranslate"><span class="pre">k</span></code> or a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword argument as they are
@@ -219,9 +218,9 @@ Here it is calculated at <span class="math notranslate nohighlight">\(E=0\)</spa
 <dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></dt><dd><p>method for calculating the exact derivatives</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></dt><dd><p>method used to calculate the Berry curvature for calculating the conductivity</p>
+<dt><a class="reference internal" href="sisl.physics.berry_curvature.html#sisl.physics.berry_curvature" title="sisl.physics.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a></dt><dd><p>method used to calculate the Berry curvature for calculating the conductivity</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volumef</span></code></dt><dd><p>volume calculation of the lattice</p>
+<dt><a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.volumef" title="sisl.Lattice.volumef"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volumef</span></code></a></dt><dd><p>volume calculation of the lattice</p>
 </dd>
 <dt><a class="reference internal" href="sisl.physics.electron.shc.html#sisl.physics.electron.shc" title="sisl.physics.electron.shc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shc</span></code></a></dt><dd><p>spin Hall conductivity</p>
 </dd>
@@ -229,7 +228,7 @@ Here it is calculated at <span class="math notranslate nohighlight">\(E=0\)</spa
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ahc</strong> – Anomalous Hall conductivity returned in certain dimensions <code class="docutils literal notranslate"><span class="pre">ahc[:,</span> <span class="pre">:]</span></code>.
+<dd class="field-odd"><p>Anomalous Hall conductivity returned in certain dimensions <code class="docutils literal notranslate"><span class="pre">ahc[:,</span> <span class="pre">:]</span></code>.
 If <em class="xref py py-obj">sum</em> is False, it will be at least a 3D array with the 3rd dimension
 having the contribution from state <em class="xref py py-obj">i</em>.
 If <em class="xref py py-obj">k_average</em> is False, it will have a dimension prepended with
@@ -242,13 +241,13 @@ When <span class="math notranslate nohighlight">\(D\)</span> is the dimensionali
 <span class="math notranslate nohighlight">\(\mathrm S/\mathrm{Ang}^{D-2}\)</span>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#sisl.physics.electron.ahc" title="sisl.physics.electron.ahc"><code class="xref py py-class docutils literal notranslate"><span class="pre">ahc</span></code></a></p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>)</p></li>
 <li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
-<li><p><strong>distribution</strong> (<em>_TDist</em>)</p></li>
+<li><p><strong>distribution</strong> (<a class="reference internal" href="sisl.typing.DistributionType.html#sisl.typing.DistributionType" title="sisl.typing.DistributionType"><em>DistributionType</em></a>)</p></li>
 </ul>
 </dd>
 </dl>

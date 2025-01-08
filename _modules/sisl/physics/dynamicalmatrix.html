@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -124,7 +124,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">lil_matrix</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaugeType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaugeType</span><span class="p">,</span> <span class="n">KPoint</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.phonon</span><span class="w"> </span><span class="kn">import</span> <span class="n">EigenmodePhonon</span><span class="p">,</span> <span class="n">EigenvaluePhonon</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseOrbitalBZ</span>
@@ -176,7 +176,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.Dk">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">Dk</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
@@ -206,7 +206,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        k : array_like</span>
+<span class="sd">        k :</span>
 <span class="sd">           the k-point to setup the dynamical matrix at</span>
 <span class="sd">        dtype : numpy.dtype , optional</span>
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
@@ -239,7 +239,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.dDk">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">dDk</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
@@ -270,7 +270,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        k : array_like</span>
+<span class="sd">        k :</span>
 <span class="sd">           the k-point to setup the dynamical matrix at</span>
 <span class="sd">        dtype : numpy.dtype , optional</span>
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
@@ -301,7 +301,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.ddDk">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">ddDk</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span>
@@ -332,7 +332,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        k : array_like</span>
+<span class="sd">        k :</span>
 <span class="sd">           the k-point to setup the dynamical matrix at</span>
 <span class="sd">        dtype : numpy.dtype , optional</span>
 <span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
@@ -422,13 +422,13 @@
 <div class="viewcode-block" id="DynamicalMatrix.eigenvalue">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenvalue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">eigenvalue</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenvaluePhonon</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        k : array_like*3, optional</span>
+<span class="sd">        k :</span>
 <span class="sd">            the k-point at which to evaluate the eigenvalues at</span>
 <span class="sd">        gauge :</span>
 <span class="sd">            the gauge used for calculating the eigenvalues</span>
@@ -458,7 +458,7 @@
 <div class="viewcode-block" id="DynamicalMatrix.eigenmode">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenmode">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">eigenmode</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="p">:</span> <span class="n">GaugeType</span> <span class="o">=</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenmodePhonon</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes</span>
 
@@ -468,7 +468,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        k : array_like*3, optional</span>
+<span class="sd">        k :</span>
 <span class="sd">            the k-point at which to evaluate the eigenmodes at</span>
 <span class="sd">        gauge :</span>
 <span class="sd">            the gauge used for calculating the eigenmodes</span>

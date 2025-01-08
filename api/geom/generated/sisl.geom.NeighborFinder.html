@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,8 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -79,29 +81,29 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../building.html">Common geometries</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../neighbors.html">Finding neighbors</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">sisl.geom.NeighborFinder</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#sisl.geom.NeighborFinder"><code class="docutils literal notranslate"><span class="pre">NeighborFinder</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../building.html">Creating geometries</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../neighbors.html">Finding neighbors</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.geom.NeighborFinder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.FullNeighborList.html">sisl.geom.FullNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.PointNeighborList.html">sisl.geom.PointNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../neighbors.html#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.FullNeighborList.html">sisl.geom.FullNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="sisl.geom.PointNeighborList.html">sisl.geom.PointNeighborList</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../neighbors.html#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core.html">Functional programming</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
@@ -134,6 +136,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../neighbors.html">Finding neighbors</a></li>
       <li class="breadcrumb-item active">sisl.geom.NeighborFinder</li>
       <li class="wy-breadcrumbs-aside">
@@ -161,8 +164,8 @@ R, one needs to create another finder or call <a class="reference internal" href
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.Geometry</span></code></a>) – the geometry to find neighbors in</p></li>
-<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(geometry.na)</span></code>, <em>optional</em>) – <p>The radius to consider two atoms neighbors.
+<li><p><strong>geometry</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code>) – the geometry to find neighbors in</p></li>
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(geometry.na)</span></code>, <em>optional</em>) – <p>The radius to consider two atoms neighbors.
 If it is a single float, the same radius is used for all atoms.
 If it is an array, it should contain the radius for each atom.</p>
 <p>If not provided, an array is constructed, where the radius for
@@ -172,7 +175,7 @@ each atom is its maxR.</p>
 overlap.
 If <em class="xref py py-obj">False</em>, two atoms are considered neighbors if the second atom
 is within the sphere of the first atom. Note that this implies that
-atom <code class="docutils literal notranslate"><span class="pre">i</span></code> might be atom <code class="docutils literal notranslate"><span class="pre">j</span></code>’s neighbor while the opposite is not true.</p>
+atom <span class="math notranslate nohighlight">\(I\)</span> might be atom <span class="math notranslate nohighlight">\(J\)</span>’s neighbor while the opposite is not true.</p>
 <p>If not provided, it will be <em class="xref py py-obj">True</em> if <em class="xref py py-obj">R</em> is an array and <em class="xref py py-obj">False</em> if
 it is a single float.</p>
 </p></li>
@@ -206,21 +209,21 @@ a vacancy:</p>
 <span class="c1"># Find all neighbors</span>
 <span class="n">neighbors</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">find_neighbors</span><span class="p">()</span>
 
-<span class="c1"># You can get the neighbor pairs (i,j) from the i and j attributes</span>
+<span class="c1"># You can get the neighbor pairs (I,J) from the I and J attributes</span>
 <span class="c1"># The supercell index of atom J is in the isc attribute.</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ATOM I SHAPE:&quot;</span><span class="p">,</span> <span class="n">neighbors</span><span class="o">.</span><span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ATOM J (NEIGHBOR) SHAPE:&quot;</span><span class="p">,</span> <span class="n">neighbors</span><span class="o">.</span><span class="n">j</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ATOM I SHAPE:&quot;</span><span class="p">,</span> <span class="n">neighbors</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ATOM J (NEIGHBOR) SHAPE:&quot;</span><span class="p">,</span> <span class="n">neighbors</span><span class="o">.</span><span class="n">J</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NEIGHBORS ISC:&quot;</span><span class="p">,</span> <span class="n">neighbors</span><span class="o">.</span><span class="n">isc</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
 <span class="c1"># You can also loop through atoms to get their neighbors</span>
 <span class="k">for</span> <span class="n">at_neighs</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NEIGHBORS OF ATOM </span><span class="si">{</span><span class="n">at_neighs</span><span class="o">.</span><span class="n">atom</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">at_neighs</span><span class="o">.</span><span class="n">n_neighbors</span><span class="si">}</span><span class="s2"> neighbors): &quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">at_neighs</span><span class="o">.</span><span class="n">j</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">at_neighs</span><span class="o">.</span><span class="n">J</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ISC&quot;</span><span class="p">,</span> <span class="n">at_neighs</span><span class="o">.</span><span class="n">isc</span><span class="p">)</span>
 
 <span class="c1"># Or get the neighbors of a particular atom:</span>
-<span class="n">neighbors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">j</span>
+<span class="n">neighbors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">J</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -271,12 +274,7 @@ the parameters of the search (<em class="xref py py-obj">geometry</em>, <em clas
 are defined when the finder is initialized or by calling <a class="reference internal" href="#sisl.geom.NeighborFinder.setup" title="sisl.geom.NeighborFinder.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xyz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">([npoints]</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code>) – the coordinates for which neighbors are desired.</p></li>
-<li><p><strong>as_pairs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – If <em class="xref py py-obj">True</em> pairs are returned, where the first item is the index
-of the point and the second one is the atom index.
-Otherwise a list containing the neighbors for each point is returned.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">([npoints]</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code>) – the coordinates for which neighbors are desired.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><em>PointsNeighborList</em></a></p>
@@ -294,11 +292,11 @@ are defined when the finder is initialized or by calling <a class="reference int
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>optional</em>) – <p>the atoms for which neighbors are desired. Anything that can
+<li><p><strong>atoms</strong> (<a class="reference internal" href="../../generated/sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – <p>the atoms for which neighbors are desired. Anything that can
 be sanitized by <a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.Geometry</span></code></a> is a valid value.</p>
 <p>If not provided, neighbors for all atoms are searched.</p>
 </p></li>
-<li><p><strong>self_interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether to consider an atom a neighbor of itself.</p></li>
+<li><p><strong>self_interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to consider an atom a neighbor of itself.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -315,23 +313,15 @@ be sanitized by <a class="reference internal" href="../../generated/sisl.Geometr
 <span class="sig-name descname"><span class="pre">find_unique_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self_interaction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/geom/_neighbors/_finder.html#NeighborFinder.find_unique_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.NeighborFinder.find_unique_pairs" title="Link to this definition"></a></dt>
 <dd><p>Find unique neighbor pairs within the geometry.</p>
 <p>This function only returns one direction of a given connection
-between atoms i and j. In particular, it returns the connection
-where i &lt; j.</p>
+between atoms <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(J\)</span>. In particular, it returns the connection
+where <span class="math notranslate nohighlight">\(I &lt; J\)</span>.</p>
 <p>Note that this routine can not be called if <em class="xref py py-obj">overlap</em> is
 set to <em class="xref py py-obj">False</em> and the radius is not a single float. In that case,
-there is no way of defining “uniqueness” since pair <em class="xref py py-obj">ij</em> can have
-a different threshold radius than pair <em class="xref py py-obj">ji</em>.</p>
+there is no way of defining <em>uniqueness</em> since pair <span class="math notranslate nohighlight">\(IJ\)</span> can have
+a different threshold radius than pair <span class="math notranslate nohighlight">\(JI\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>optional</em>) – <p>the atoms for which neighbors are desired. Anything that can
-be sanitized by <a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.Geometry</span></code></a> is a valid value.</p>
-<p>If not provided, neighbors for all atoms are searched.</p>
-</p></li>
-<li><p><strong>as_pairs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – If <em class="xref py py-obj">True</em> pairs of atoms are returned. Otherwise a list containing
-the neighbors for each atom is returned.</p></li>
-<li><p><strong>self_interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether to consider an atom a neighbor of itself.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>self_interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to consider an atom a neighbor of itself.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.geom.UniqueNeighborList.html#sisl.geom.UniqueNeighborList" title="sisl.geom.UniqueNeighborList"><em>UniqueNeighborList</em></a></p>
@@ -345,25 +335,25 @@ the neighbors for each atom is returned.</p></li>
 <dd><p>Prepares everything for neighbor finding.</p>
 <p><strong>You don’t need to call this method after initializing the finder</strong>,
 this is called internally already!</p>
-<p>This method migh be used to reset the finder with new parameters.</p>
+<p>This method might be used to reset the finder with new parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.Geometry</span></code></a>, <em>optional</em>) – <p>the geometry to find neighbors in.</p>
+<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – <p>the geometry to find neighbors in.</p>
 <p>If not provided, the current geometry is kept.</p>
 </p></li>
-<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">array-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(geometry.na)</span></code>, <em>optional</em>) – <p>The radius to consider two atoms neighbors.
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(geometry.na)</span></code>, <em>optional</em>) – <p>The radius to consider two atoms neighbors.
 If it is a single float, the same radius is used for all atoms.
 If it is an array, it should contain the radius for each atom.</p>
 <p>If not provided, an array is constructed, where the radius for
 each atom is its maxR.</p>
 <p>Note that negative R values are allowed</p>
 </p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If <em class="xref py py-obj">True</em>, two atoms are considered neighbors if their spheres
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If <em class="xref py py-obj">True</em>, two atoms are considered neighbors if their spheres
 overlap.
 If <em class="xref py py-obj">False</em>, two atoms are considered neighbors if the second atom
 is within the sphere of the first atom. Note that this implies that
-atom <code class="docutils literal notranslate"><span class="pre">i</span></code> might be atom <code class="docutils literal notranslate"><span class="pre">j</span></code>’s neighbor while the opposite is not true.</p></li>
+atom <span class="math notranslate nohighlight">\(I\)</span> might be atom <span class="math notranslate nohighlight">\(J\)</span>’s neighbor while the opposite is not true.</p></li>
 <li><p><strong>bin_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – the factor for the radius to determine how large the bins are,
 optionally along each lattice vector.
 It can minimally be 2, meaning that the maximum radius to consider

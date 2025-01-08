@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -79,9 +79,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/building.html">Common geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../geom/neighbors.html">Finding neighbors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
@@ -116,7 +115,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
@@ -166,16 +165,16 @@
 <dt class="sig sig-object py" id="sisl.center">
 <span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.center" title="Link to this definition"></a></dt>
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em><span class="sig-paren">)</span></dt>
+<span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em><span class="sig-paren">)</span></dt>
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span></dt>
-<dd><p>Dispatcher for ‘center’</p>
+<span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lattice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Dispatcher for <a class="reference internal" href="#sisl.center" title="sisl.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.center" title="sisl.Geometry.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.center</span></code></a></dt><dd><p>equivalent to <code class="docutils literal notranslate"><span class="pre">center(geometry,</span> <span class="pre">...)</span></code>.</p>
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.center" title="sisl.Geometry.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.Geometry.center</span></code></a></dt><dd><p>equivalent to <code class="docutils literal notranslate"><span class="pre">center(geometry,</span> <span class="pre">...)</span></code>.</p>
 </dd>
-<dt><a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.center" title="sisl.Lattice.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.center</span></code></a></dt><dd><p>equivalent to <code class="docutils literal notranslate"><span class="pre">center(lattice,</span> <span class="pre">...)</span></code>.</p>
+<dt><a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.center" title="sisl.Lattice.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.Lattice.center</span></code></a></dt><dd><p>equivalent to <code class="docutils literal notranslate"><span class="pre">center(lattice,</span> <span class="pre">...)</span></code>.</p>
 </dd>
 </dl>
 </div>

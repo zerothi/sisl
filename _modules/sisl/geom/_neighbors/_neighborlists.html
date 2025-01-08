@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../../../../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -153,18 +153,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="o">=</span> <span class="n">split_indices</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each neighbor pair (i, j), the first index.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each neighbor pair (I, J), the first index.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">j</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each neighbor pair (i, j), the second index.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Same as `I`, provided for backwards compatibility, may be deprecated later&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">I</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">J</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each neighbor pair (I, J), the second index.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">j</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Same as `J`, provided for backwards compatibility, may be deprecated later&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">isc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each neighbor pair (i, j), the supercell indices of `j`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;For each neighbor pair (I, J), the supercell indices of :math:`J`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span>
 
     <span class="nd">@cached_property</span>
@@ -201,7 +211,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">n_neighbors</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
             <span class="k">return</span> <span class="n">n_neighbors</span>
@@ -213,7 +223,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">UniqueNeighborList</span><span class="p">(</span><span class="n">AtomsNeighborList</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Full neighbors list of a system, but **containing only the upper triangle of the adjacency matrix**.</span>
 
-<span class="sd">    What this means, is that the the object only contains one direction of each interaction.</span>
+<span class="sd">    What this means, is that the object only contains one direction of each interaction.</span>
 
 <span class="sd">    This is only possible if the interaction is symmetric (there is no directionality and</span>
 <span class="sd">    thresholds for interaction do not depend on direction).</span>
@@ -222,7 +232,7 @@
 <span class="sd">    --------</span>
 
 <span class="sd">    You can get a unique neighbors list from the `find_unique_pairs` method of a `NeighborFinder` object.</span>
-<span class="sd">    Then, you can retreive the neighbors from it:</span>
+<span class="sd">    Then, you can retrieve the neighbors from it:</span>
 
 <span class="sd">    .. code-block:: python</span>
 
@@ -238,10 +248,10 @@
 <span class="sd">        # Get the list of unique neighbor pairs</span>
 <span class="sd">        neighbors = finder.find_unique_pairs()</span>
 
-<span class="sd">        # You can get the neighbor pairs (i,j) from the i and j attributes</span>
+<span class="sd">        # You can get the neighbor pairs (I,J) from the I and J attributes</span>
 <span class="sd">        # The supercell index of atom J is in the isc attribute.</span>
-<span class="sd">        print(&quot;ATOM I&quot;, neighbors.i)</span>
-<span class="sd">        print(&quot;ATOM J (NEIGHBOR)&quot;, neighbors.j)</span>
+<span class="sd">        print(&quot;ATOM I&quot;, neighbors.I)</span>
+<span class="sd">        print(&quot;ATOM J (NEIGHBOR)&quot;, neighbors.J)</span>
 <span class="sd">        print(&quot;NEIGHBORS ISC:&quot;, neighbors.isc)</span>
 
 <span class="sd">        # Notice that I is always smaller than J. Each connection is only</span>
@@ -258,7 +268,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">],</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">],</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">n_neighbors</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
             <span class="k">return</span> <span class="n">n_neighbors</span>
@@ -271,16 +281,16 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the unique neighbors list to a full neighbors list.&quot;&quot;&quot;</span>
         <span class="n">upper_tri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span>
         <span class="n">lower_tri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]]</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]]</span>
         <span class="p">)</span>
 
-        <span class="n">self_interactions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">self_interactions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">lower_tri</span> <span class="o">=</span> <span class="n">lower_tri</span><span class="p">[</span><span class="o">~</span><span class="n">self_interactions</span><span class="p">]</span>
 
         <span class="c1"># Concatenate the lower triangular with the upper triangular part</span>
         <span class="n">all_finder_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">upper_tri</span><span class="p">,</span> <span class="n">lower_tri</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="c1"># Sort by i and then by j</span>
+        <span class="c1"># Sort by I and then by J</span>
         <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lexsort</span><span class="p">(</span><span class="n">all_finder_results</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="n">all_finder_results</span> <span class="o">=</span> <span class="n">all_finder_results</span><span class="p">[</span><span class="n">sorted_indices</span><span class="p">]</span>
 
@@ -293,11 +303,11 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">FullNeighborList</span><span class="p">(</span><span class="n">AtomsNeighborList</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Full neighbors list of a system.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Full neighbors list of a system.</span>
 
 <span class="sd">    This class, contrary to `UniqueNeighborList`, (possibly) contains the two directions</span>
 <span class="sd">    of an interaction between two given atoms. Notice that it is possible that there is</span>
-<span class="sd">    a connection from atom `i` to atom `j` but not the other way around.</span>
+<span class="sd">    a connection from atom :math:`I` to atom :math:`J` but not the other way around.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -323,11 +333,11 @@
 <span class="sd">        for at_neighs in neighbors:</span>
 <span class="sd">            print()</span>
 <span class="sd">            print(f&quot;NEIGHBORS OF ATOM {at_neighs.atom} ({at_neighs.n_neighbors} neighbors): &quot;)</span>
-<span class="sd">            print(&quot;J&quot;, at_neighs.j)</span>
+<span class="sd">            print(&quot;J&quot;, at_neighs.J)</span>
 <span class="sd">            print(&quot;ISC&quot;, at_neighs.isc)</span>
 
 <span class="sd">        # Or get the neighbors of a particular atom:</span>
-<span class="sd">        neighbors[0].j</span>
+<span class="sd">        neighbors[0].J</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -357,7 +367,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the full neighbors list to a unique neighbors list.&quot;&quot;&quot;</span>
 
         <span class="n">full_finder_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span>
-        <span class="n">unique_finder_results</span> <span class="o">=</span> <span class="n">full_finder_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">unique_finder_results</span> <span class="o">=</span> <span class="n">full_finder_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">]</span>
 
         <span class="c1"># Concatenate the uc connections with the rest of the connections.</span>
         <span class="k">return</span> <span class="n">UniqueNeighborList</span><span class="p">(</span>
@@ -396,12 +406,12 @@
 <span class="sd">        for at_neighs in neighbors:</span>
 <span class="sd">            print()</span>
 <span class="sd">            print(f&quot;NEIGHBORS OF ATOM {at_neighs.atom} ({at_neighs.n_neighbors} neighbors): &quot;)</span>
-<span class="sd">            print(&quot;J&quot;, at_neighs.j)</span>
+<span class="sd">            print(&quot;J&quot;, at_neighs.J)</span>
 <span class="sd">            print(&quot;ISC&quot;, at_neighs.isc)</span>
 
 <span class="sd">        # Or get the neighbors of a particular atom</span>
 <span class="sd">        neighbors[0].atom # This will be 2</span>
-<span class="sd">        neighbors[0].j</span>
+<span class="sd">        neighbors[0].J</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -423,7 +433,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of neighbors that each atom has.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">==</span> <span class="n">at</span><span class="p">)</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">==</span> <span class="n">at</span><span class="p">)</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
@@ -499,11 +509,11 @@
 <span class="sd">        for point_neighs in neighbors:</span>
 <span class="sd">            print()</span>
 <span class="sd">            print(f&quot;NEIGHBORS OF POINT {point_neighs.point} ({point_neighs.n_neighbors} neighbors): &quot;)</span>
-<span class="sd">            print(&quot;J&quot;, point_neighs.j)</span>
+<span class="sd">            print(&quot;J&quot;, point_neighs.J)</span>
 <span class="sd">            print(&quot;ISC&quot;, point_neighs.isc)</span>
 
 <span class="sd">        # Or get the neighbors of a particular point:</span>
-<span class="sd">        neighbors[0].j</span>
+<span class="sd">        neighbors[0].J</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -524,7 +534,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">n_neighbors</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
             <span class="k">return</span> <span class="n">n_neighbors</span>
         <span class="k">else</span><span class="p">:</span>

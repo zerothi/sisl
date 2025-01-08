@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contributors &mdash; sisl</title>
+  <title>0.15.2 &mdash; sisl</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=f8dfdfa1"></script>
+      <script src="../_static/documentation_options.js?v=3b86522e"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -90,11 +90,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Release notes</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#changelogs">Changelogs</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Contributors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pull-requests-merged">Pull requests merged</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#added">Added</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#fixed">Fixed</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#changed">Changed</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">0.15.2</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#contributors">Contributors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pull-requests-merged">Pull requests merged</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="v0.15.1.html">0.15.1</a></li>
@@ -146,7 +144,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Release notes</a></li>
-      <li class="breadcrumb-item active">Contributors</li>
+      <li class="breadcrumb-item active">0.15.2</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/changelog/v0.15.2.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -156,9 +154,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>Released 6 of November 2024.</p>
+  <section id="id1">
+<h1>0.15.2<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>Released 6 of November 2024.</p>
 <section id="contributors">
-<h1>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h1>
+<h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
 <p>A total of 3 people contributed to this release. People with a “+” by their
 names contributed a patch for the first time.</p>
 <ul class="simple">
@@ -168,7 +168,7 @@ names contributed a patch for the first time.</p>
 </ul>
 </section>
 <section id="pull-requests-merged">
-<h1>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Link to this heading"></a></h1>
+<h2>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Link to this heading"></a></h2>
 <p>A total of 17 pull requests were merged for this release.</p>
 <ul class="simple">
 <li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/691">#691</a>: Parsing of Mulliken charges from SIESTA stdout</p></li>
@@ -190,14 +190,14 @@ names contributed a patch for the first time.</p>
 <li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/859">#859</a>: Use cutoff from basis files (xml, nc)</p></li>
 </ul>
 <section id="added">
-<h2>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h2>
+<h3>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>added <em class="xref py py-obj">timesSileSiesta</em> which can read siesta TIMES output</p></li>
 <li><p>Parsing of total Mulliken charges in <em class="xref py py-obj">stdoutSileSiesta</em>, <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/691">#691</a></p></li>
 </ul>
 </section>
 <section id="fixed">
-<h2>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h2>
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>reading charges from Siesta 5.2 output files, <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/856">#856</a></p></li>
 <li><p>a read problem for very big simulations (related to <em class="xref py py-obj">orbindxSileSiesta</em>)</p></li>
@@ -215,10 +215,11 @@ in the output file.</p></li>
 </ul>
 </section>
 <section id="changed">
-<h2>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h2>
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><em class="xref py py-obj">tbtSileTBtrans.Eindex</em> changed, see <a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/829">#829</a> for details.</p></li>
 </ul>
+</section>
 </section>
 </section>
 
