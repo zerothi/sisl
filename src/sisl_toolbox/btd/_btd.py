@@ -615,7 +615,14 @@ class DeviceGreen:
         is_tbtrans = prefix.upper() == "TBT"
 
         # Read the device H, only valid for TBT stuff
-        Hdev = si.get_sile(fdf.get("TBT.HS", f"{slabel}.TSHS")).read_hamiltonian()
+        for hs_ext in ("TS.HSX", "TSHS", "HSX"):
+            if Path(f"{slabel}.{hs_ext}").exists():
+                # choose a sane default (if it exists!)
+                hs_default = f"{slabel}.{hs_ext}"
+                break
+        else:
+            hs_default = f"{slabel}.TSHS"
+        Hdev = si.get_sile(fdf.get("TBT.HS", hs_default)).read_hamiltonian()
 
         def get_line(line):
             """Parse lines in the %block constructs of fdf's"""

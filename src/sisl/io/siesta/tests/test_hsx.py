@@ -156,6 +156,45 @@ def test_si_pdos_kgrid_hsx_1_same_tshs(sisl_files, sisl_tmp):
     assert np.allclose(gx.nsc, gt.nsc)
 
 
+def test_hsx_si_pdos_kgrid_tofromnc(sisl_files, sisl_tmp):
+    pytest.importorskip("netCDF4")
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
+    HS1 = si.read_hamiltonian()
+    f = sisl_tmp("tmp.HSX")
+    fnc = sisl_tmp("tmp.nc")
+
+    HS1.write(f)
+    HS1.write(fnc)
+
+    HS2 = sisl.get_sile(f).read_hamiltonian()
+    HS2nc = sisl.get_sile(fnc).read_hamiltonian()
+    assert HS1._csr.spsame(HS2._csr)
+    assert HS1._csr.spsame(HS2nc._csr)
+    HS1.finalize()
+    HS2.finalize()
+    assert np.allclose(HS1._csr._D, HS2._csr._D)
+    HS2nc.finalize()
+    assert np.allclose(HS1._csr._D, HS2nc._csr._D)
+
+
+@pytest.mark.parametrize("version", [1, 2])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_hsx_si_pdos_kgrid_dtype(sisl_files, sisl_tmp, version, dtype):
+    pytest.importorskip("netCDF4")
+    si = sisl.get_sile(sisl_files("siesta", "Si_pdos_k", "Si_pdos.TSHS"))
+    HS = si.read_hamiltonian()
+    f = sisl_tmp("tmp.1.HSX")
+
+    HS.write(f, version=version, dtype=dtype)
+
+    HS1 = sisl.get_sile(f).read_hamiltonian()
+    assert HS1.dtype == dtype
+    assert HS._csr.spsame(HS1._csr)
+    HS.finalize()
+    HS1.finalize()
+    assert np.allclose(HS._csr._D, HS1._csr._D)
+
+
 @pytest.mark.parametrize("order", ["HSX", "TSHS"])
 def test_srti03_H_eig(sisl_files, sisl_tmp, order):
     fdf = sisl.get_sile(sisl_files("siesta", "SrTiO3", "non-collinear", "SrTiO3.fdf"))

@@ -363,8 +363,13 @@ def get_sile_class(filename, *args, **kwargs):
                     f"Cannot determine the exact Sile requested, multiple hits: {tuple(e.cls.__name__ for e in eligibles)}"
                 )
 
+        # Print-out error on which extensions it tried (and full filename)
+        if len(end_list) == 1:
+            ext_list = end_list
+        else:
+            ext_list = end_list[1:]
         raise NotImplementedError(
-            f"Sile for file '{filename}' could not be found, "
+            f"Sile for file '{filename}' ({ext_list}) could not be found, "
             "possibly the file has not been implemented."
         )
 

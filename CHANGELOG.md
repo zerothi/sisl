@@ -9,6 +9,11 @@ we hit release version 1.0.0.
 ## [0.15.3] - YYYY-MM-DD
 
 ### Added
+- `hsxSileSiesta.write_hamiltonian`, allowed writing HSX files
+  A long required functionality. This allows one to use the HSX file
+  format in intrinsic behavior. TSHS file format will be deprecated in
+  later Siesta releases, see https://gitlab.com/siesta-project/siesta/-/issues/183
+  This allows one to write HSX files in version 1, or 2, 2 is default.
 - `astype` for sparse matrices, enables one to change data-types, #865
   This should be preferred over transform which can't do real->complex
   of spin matrices.
