@@ -119,7 +119,7 @@ def _parse_version(attr, instance, match):
     version, *spec = opt.split("-", maxsplit=1)
     try:
         version = tuple(int(v) for v in version.split("."))
-    except BaseException:
+    except Exception:
         version = (0, 0, 0)
 
     # Convert version to a tuple
@@ -1431,7 +1431,7 @@ class stdoutSileSiesta(SileSiesta):
                             "Mulliken Atomic Populations",
                             "Mulliken Net Atomic Populations",
                         ]
-                except BaseException:
+                except Exception:
                     pass
 
         else:

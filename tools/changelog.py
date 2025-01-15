@@ -123,7 +123,7 @@ def get_pull_requests(repo, revision_range):
 
         try:
             prs.append(repo.get_pull(n))
-        except BaseException:
+        except Exception:
             pass
 
     return prs

@@ -1646,7 +1646,7 @@ class hsxSileSiesta(SileBinSiesta):
                     n[io, i_s] = orb.n
                     l[io, i_s] = orb.l
                     zeta[io, i_s] = orb.zeta
-        except:
+        except Exception:
             pass  # should we warn?
 
         args.extend([n, l, zeta])
