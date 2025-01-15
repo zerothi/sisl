@@ -34,7 +34,7 @@ subroutine read_hsx_version(fname, version)
     rewind(iu)
     read(iu, iostat=ierr) version
 
-    if ( version /= 1 ) then
+    if ( all(version /= [1, 2]) ) then
       ! Signal we do not know about this file
       call iostat_update(-3)
     end if
@@ -68,9 +68,9 @@ subroutine read_hsx_sizes(fname, nspin, na_u, no_u, no_s, maxnh)
 
     call read_hsx_sizes0(fname, nspin, na_u, no_u, no_s, maxnh)
 
-  else if ( version == 1 ) then
+  else if ( any(version == [1, 2]) ) then
 
-    call read_hsx_sizes1(fname, nspin, na_u, no_u, no_s, maxnh)
+    call read_hsx_sizes1_2(fname, nspin, na_u, no_u, no_s, maxnh)
 
   end if
 
@@ -132,7 +132,7 @@ subroutine read_hsx_sizes0(fname, nspin, na_u, no_u, no_s, maxnh)
 
   do is = 1, nspecies
     do io = 1 , no(is)
-      read(iu, iostat=ierr) !n(is,io), l(is,io), zeta(is,io)
+      read(iu, iostat=ierr) !n(io,is), l(io,is), zeta(io,is)
       call iostat_update(ierr)
     end do
   end do
@@ -145,7 +145,7 @@ subroutine read_hsx_sizes0(fname, nspin, na_u, no_u, no_s, maxnh)
 
 end subroutine read_hsx_sizes0
 
-subroutine read_hsx_sizes1(fname, nspin, na_u, no_u, no_s, maxnh)
+subroutine read_hsx_sizes1_2(fname, nspin, na_u, no_u, no_s, maxnh)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -160,7 +160,6 @@ subroutine read_hsx_sizes1(fname, nspin, na_u, no_u, no_s, maxnh)
 !f2py intent(out) :: nspin, na_u, no_u, no_s, maxnh
 
   ! Internal variables and arrays
-  logical :: Gamma
   integer :: version, nspecies, nsc(3)
   integer, allocatable :: numh(:)
   integer :: is
@@ -170,7 +169,7 @@ subroutine read_hsx_sizes1(fname, nspin, na_u, no_u, no_s, maxnh)
 
   read(iu, iostat=ierr) version
   call iostat_update(ierr)
-  if ( version /= 1 ) then
+  if ( all(version /= [1, 2]) ) then
     call iostat_update(-3)
     return
   end if
@@ -179,19 +178,22 @@ subroutine read_hsx_sizes1(fname, nspin, na_u, no_u, no_s, maxnh)
   read(iu, iostat=ierr) na_u, no_u, nspin, nspecies, nsc
   call iostat_update(ierr)
   no_s = product(nsc) * no_u
-  Gamma = no_s == no_u
 
   read(iu, iostat=ierr) !ucell, Ef, qtot, temp
   call iostat_update(ierr)
   read(iu, iostat=ierr) !isc_off, xa, isa, lasto(1:na_u)
   call iostat_update(ierr)
+
   read(iu, iostat=ierr) !(label(is), zval(is), no(is), is=1,nspecies)
   call iostat_update(ierr)
-
   do is = 1, nspecies
     read(iu, iostat=ierr) !(nquant(is,io), lquant(is,io), zeta(is,io), io=1,no(is))
     call iostat_update(ierr)
   end do
+  if ( version == 2 ) then
+     read(iu, iostat=ierr) ! kcell, kdispl
+     call iostat_update(ierr)
+  end if
 
   allocate(numh(no_u))
   read(iu, iostat=ierr) numh
@@ -201,7 +203,7 @@ subroutine read_hsx_sizes1(fname, nspin, na_u, no_u, no_s, maxnh)
 
   call close_file(iu)
 
-end subroutine read_hsx_sizes1
+end subroutine read_hsx_sizes1_2
 
 subroutine read_hsx_ef(fname, Ef)
 
@@ -222,9 +224,9 @@ subroutine read_hsx_ef(fname, Ef)
 
   call read_hsx_version(fname, version)
 
-  if ( version == 1 ) then
+  if ( any(version == [1, 2]) ) then
 
-    call read_hsx_ef1(fname, Ef)
+    call read_hsx_ef1_2(fname, Ef)
 
   end if
 
@@ -251,7 +253,7 @@ subroutine read_hsx_ef0(fname, Ef)
 
 end subroutine read_hsx_ef0
 
-subroutine read_hsx_ef1(fname, Ef)
+subroutine read_hsx_ef1_2(fname, Ef)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -276,7 +278,7 @@ subroutine read_hsx_ef1(fname, Ef)
 
   read(iu, iostat=ierr) version
   call iostat_update(ierr)
-  if ( version /= 1 ) then
+  if ( all(version /= [1, 2]) ) then
     call iostat_update(-3)
     return
   end if
@@ -290,14 +292,76 @@ subroutine read_hsx_ef1(fname, Ef)
 
   call close_file(iu)
 
-end subroutine read_hsx_ef1
+end subroutine read_hsx_ef1_2
+
+subroutine read_hsx_is_dp(fname, is_dp)
+
+  implicit none
+
+  ! Input parameters
+  character(len=*), intent(in) :: fname
+  logical, intent(out) :: is_dp
+
+! Define f2py intents
+!f2py intent(in)  :: fname
+!f2py intent(out) :: is_dp
+
+  ! Internal variables and arrays
+  integer :: version
+
+  call read_hsx_version(fname, version)
+
+  if ( version == 0 ) then
+     is_dp = .false.
+
+  else if ( any(version == [1, 2]) ) then
+
+    call read_hsx_is_dp1_2(fname, is_dp)
+
+  end if
+
+end subroutine read_hsx_is_dp
+
+
+subroutine read_hsx_is_dp1_2(fname, is_dp)
+  use io_m, only: open_file, close_file
+  use io_m, only: iostat_update
+
+  implicit none
+
+  ! Input parameters
+  character(len=*), intent(in) :: fname
+  logical, intent(out) :: is_dp
+
+! Define f2py intents
+!f2py intent(in)  :: fname
+!f2py intent(out) :: is_dp
+
+  ! Internal variables and arrays
+  integer :: version
+  integer :: iu, ierr
+
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  read(iu, iostat=ierr) version
+  call iostat_update(ierr)
+  if ( all(version /= [1, 2]) ) then
+    call iostat_update(-3)
+    return
+  end if
+  read(iu, iostat=ierr) is_dp
+  call iostat_update(ierr)
+
+  call close_file(iu)
+
+end subroutine read_hsx_is_dp1_2
 
 
 !< Internal method for skipping species information in version 1 and later
 !< The unit *must* be located just after
 !<     read(iu) isc_off, xa, isa, lasto(1:na_u)
 
-subroutine internal_read_hsx_skip_species1(iu, nspecies)
+subroutine internal_read_hsx_skip_species1_2(iu, nspecies)
   use io_m, only: iostat_update
 
   implicit none
@@ -316,7 +380,7 @@ subroutine internal_read_hsx_skip_species1(iu, nspecies)
     call iostat_update(ierr)
   end do
 
-end subroutine internal_read_hsx_skip_species1
+end subroutine internal_read_hsx_skip_species1_2
 
 
 subroutine read_hsx_hsx0(fname, nspin, no_u, no_s, maxnh, &
@@ -427,7 +491,7 @@ subroutine read_hsx_hsx0(fname, nspin, no_u, no_s, maxnh, &
 
 end subroutine read_hsx_hsx0
 
-subroutine read_hsx_hsx1(fname, nspin, no_u, no_s, maxnh, &
+subroutine read_hsx_hsx1_2(fname, nspin, no_u, no_s, maxnh, &
     numh, listh, H, S, isc)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
@@ -467,7 +531,7 @@ subroutine read_hsx_hsx1(fname, nspin, no_u, no_s, maxnh, &
   ! Read overall data
   read(iu, iostat=ierr) version
   call iostat_update(ierr)
-  if ( version /= 1 ) then
+  if ( all(version /= [1, 2]) ) then
     call iostat_update(-3)
     return
   end if
@@ -487,7 +551,12 @@ subroutine read_hsx_hsx1(fname, nspin, no_u, no_s, maxnh, &
   read(iu, iostat=ierr) isc!, xa, isa, lasto
   call iostat_update(ierr)
 
-  call internal_read_hsx_skip_species1(iu, nspecies)
+  call internal_read_hsx_skip_species1_2(iu, nspecies)
+
+  if ( version == 2 ) then
+    read(iu, iostat=ierr) ! kcell, kdispl
+    call iostat_update(ierr)
+  end if
 
   read(iu, iostat=ierr) numh
   call iostat_update(ierr)
@@ -554,7 +623,7 @@ subroutine read_hsx_hsx1(fname, nspin, no_u, no_s, maxnh, &
 
   call close_file(iu)
 
-end subroutine read_hsx_hsx1
+end subroutine read_hsx_hsx1_2
 
 
 subroutine read_hsx_sx0(fname, nspin, no_u, no_s, maxnh, &
@@ -669,7 +738,7 @@ subroutine read_hsx_sx0(fname, nspin, no_u, no_s, maxnh, &
 
 end subroutine read_hsx_sx0
 
-subroutine read_hsx_sx1(fname, nspin, no_u, no_s, maxnh, &
+subroutine read_hsx_sx1_2(fname, nspin, no_u, no_s, maxnh, &
     numh, listh, S, isc)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
@@ -709,7 +778,7 @@ subroutine read_hsx_sx1(fname, nspin, no_u, no_s, maxnh, &
   ! Read overall data
   read(iu, iostat=ierr) version
   call iostat_update(ierr)
-  if ( version /= 1 ) then
+  if ( all(version /= [1, 2]) ) then
     call iostat_update(-3)
     return
   end if
@@ -729,7 +798,12 @@ subroutine read_hsx_sx1(fname, nspin, no_u, no_s, maxnh, &
   read(iu, iostat=ierr) isc!, xa, isa, lasto
   call iostat_update(ierr)
 
-  call internal_read_hsx_skip_species1(iu, nspecies)
+  call internal_read_hsx_skip_species1_2(iu, nspecies)
+
+  if ( version == 2 ) then
+    read(iu, iostat=ierr) ! kcell, kdispl
+    call iostat_update(ierr)
+  end if
 
   read(iu, iostat=ierr) numh
   call iostat_update(ierr)
@@ -783,9 +857,9 @@ subroutine read_hsx_sx1(fname, nspin, no_u, no_s, maxnh, &
 
   call close_file(iu)
 
-end subroutine read_hsx_sx1
+end subroutine read_hsx_sx1_2
 
-subroutine read_hsx_geom1(fname, na_u, cell, nsc, xa, lasto)
+subroutine read_hsx_geom1_2(fname, na_u, cell, nsc, xa, lasto)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -812,7 +886,7 @@ subroutine read_hsx_geom1(fname, na_u, cell, nsc, xa, lasto)
   ! Read overall data
   read(iu, iostat=ierr) version
   call iostat_update(ierr)
-  if ( version /= 1 ) then
+  if ( all(version /= [1, 2]) ) then
     call iostat_update(-3)
     return
   end if
@@ -834,7 +908,7 @@ subroutine read_hsx_geom1(fname, na_u, cell, nsc, xa, lasto)
 
   call close_file(iu)
 
-end subroutine read_hsx_geom1
+end subroutine read_hsx_geom1_2
 
 subroutine read_hsx_species_sizes(fname, no_u, na_u, nspecies)
 
@@ -857,8 +931,8 @@ subroutine read_hsx_species_sizes(fname, no_u, na_u, nspecies)
 
   if ( version == 0 ) then
     call read_hsx_species_sizes0(fname, no_u, na_u, nspecies)
-  else if ( version == 1 ) then
-    call read_hsx_species_sizes1(fname, no_u, na_u, nspecies)
+  else if ( any(version == [1, 2]) ) then
+    call read_hsx_species_sizes1_2(fname, no_u, na_u, nspecies)
   end if
 
 end subroutine read_hsx_species_sizes
@@ -915,7 +989,7 @@ subroutine read_hsx_species_sizes0(fname, no_u, na_u, nspecies)
     call iostat_update(ierr)
   end do
 
-  ! Read Hamiltonian
+  ! Read Hamiltonian + overlap
   do is = 1, no_u * (lnspin + 1)
     read(iu, iostat=ierr) ! H and S
     call iostat_update(ierr)
@@ -950,7 +1024,7 @@ subroutine read_hsx_species_sizes0(fname, no_u, na_u, nspecies)
 
 end subroutine read_hsx_species_sizes0
 
-subroutine read_hsx_species_sizes1(fname, no_u, na_u, nspecies)
+subroutine read_hsx_species_sizes1_2(fname, no_u, na_u, nspecies)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -977,7 +1051,7 @@ subroutine read_hsx_species_sizes1(fname, no_u, na_u, nspecies)
   ! Read overall data
   read(iu, iostat=ierr) version
   call iostat_update(ierr)
-  if ( version /= 1 ) then
+  if ( all(version /= [1, 2]) ) then
     call iostat_update(-3)
     return
   end if
@@ -991,7 +1065,7 @@ subroutine read_hsx_species_sizes1(fname, no_u, na_u, nspecies)
 
   call close_file(iu)
 
-end subroutine read_hsx_species_sizes1
+end subroutine read_hsx_species_sizes1_2
 
 subroutine read_hsx_species_info(fname, nspecies, no_u, na_u, label, zval, no, isa)
 
@@ -1020,9 +1094,9 @@ subroutine read_hsx_species_info(fname, nspecies, no_u, na_u, label, zval, no, i
 
     call read_hsx_species_info0(fname, nspecies, no_u, na_u, label, zval, no, isa)
 
-  else if ( version == 1 ) then
+  else if ( any(version == [1, 2]) ) then
 
-    call read_hsx_species_info1(fname, nspecies, no_u, na_u, label, zval, no, isa)
+    call read_hsx_species_info1_2(fname, nspecies, no_u, na_u, label, zval, no, isa)
 
   end if
 
@@ -1040,7 +1114,7 @@ subroutine read_hsx_species_info0(fname, nspecies, no_u, na_u, label, zval, no, 
   ! Input parameters
   character(len=*), intent(in) :: fname
   integer, intent(in) :: nspecies, no_u, na_u
-  character(len=1), intent(out) :: label(20,nspecies)
+  character(len=20), intent(out) :: label(nspecies)
   real(dp), intent(out) :: zval(nspecies)
   integer, intent(out) :: no(nspecies)
   integer, intent(out) :: isa(na_u)
@@ -1112,7 +1186,7 @@ subroutine read_hsx_species_info0(fname, nspecies, no_u, na_u, label, zval, no, 
   if ( lnspecies /= nspecies ) stop 'Error in reading data, not allocated, nspecies'
   call iostat_update(ierr)
 
-  read(iu, iostat=ierr) (label(1:20,is), zval(is),no(is),is=1,nspecies)
+  read(iu, iostat=ierr) (label(is), zval(is),no(is),is=1,nspecies)
   call iostat_update(ierr)
   do is = 1, nspecies
     do io = 1 , no(is)
@@ -1131,7 +1205,7 @@ subroutine read_hsx_species_info0(fname, nspecies, no_u, na_u, label, zval, no, 
 
 end subroutine read_hsx_species_info0
 
-subroutine read_hsx_species_info1(fname, nspecies, no_u, na_u, label, zval, no, isa)
+subroutine read_hsx_species_info1_2(fname, nspecies, no_u, na_u, label, zval, no, isa)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -1142,7 +1216,7 @@ subroutine read_hsx_species_info1(fname, nspecies, no_u, na_u, label, zval, no, 
   ! Input parameters
   character(len=*), intent(in) :: fname
   integer, intent(in) :: nspecies, no_u, na_u
-  character(len=1), intent(out) :: label(20,nspecies)
+  character(len=20), intent(out) :: label(nspecies)
   real(dp), intent(out) :: zval(nspecies)
   integer, intent(out) :: no(nspecies)
   integer, intent(out) :: isa(na_u)
@@ -1167,7 +1241,7 @@ subroutine read_hsx_species_info1(fname, nspecies, no_u, na_u, label, zval, no, 
   ! Read overall data
   read(iu, iostat=ierr) version
   call iostat_update(ierr)
-  if ( version /= 1 ) then
+  if ( all(version /= [1, 2]) ) then
     call iostat_update(-3)
     return
   end if
@@ -1177,6 +1251,7 @@ subroutine read_hsx_species_info1(fname, nspecies, no_u, na_u, label, zval, no, 
 
   read(iu, iostat=ierr) lna_u, lno_u, lnspin, lnspecies, nsc
   call iostat_update(ierr)
+  if ( lna_u /= na_u ) call iostat_update(-6)
   if ( lnspecies /= nspecies ) call iostat_update(-6)
   if ( lno_u /= no_u ) call iostat_update(-6)
 
@@ -1189,12 +1264,12 @@ subroutine read_hsx_species_info1(fname, nspecies, no_u, na_u, label, zval, no, 
   call iostat_update(ierr)
   deallocate(isc, xa)
 
-  read(iu, iostat=ierr) (label(1:20,is), zval(is),no(is),is=1,nspecies)
+  read(iu, iostat=ierr) (label(is), zval(is), no(is),is=1,nspecies)
   call iostat_update(ierr)
 
   call close_file(iu)
 
-end subroutine read_hsx_species_info1
+end subroutine read_hsx_species_info1_2
 
 subroutine read_hsx_species(fname, ispecies, no_species, n_species, l_species, zeta_species)
 
@@ -1219,9 +1294,9 @@ subroutine read_hsx_species(fname, ispecies, no_species, n_species, l_species, z
 
     call read_hsx_species0(fname, ispecies, no_species, n_species, l_species, zeta_species)
 
-  else if ( version == 1 ) then
+  else if ( any(version == [1, 2]) ) then
 
-    call read_hsx_species1(fname, ispecies, no_species, n_species, l_species, zeta_species)
+    call read_hsx_species1_2(fname, ispecies, no_species, n_species, l_species, zeta_species)
 
   end if
 
@@ -1313,7 +1388,7 @@ subroutine read_hsx_species0(fname, ispecies, no_species, n_species, l_species, 
   allocate(zval(lnspecies))
   allocate(no(lnspecies))
 
-  read(iu, iostat=ierr) (label(is), zval(is),no(is),is=1,lnspecies)
+  read(iu, iostat=ierr) (label(is), zval(is), no(is),is=1,lnspecies)
   call iostat_update(ierr)
   do is = 1, lnspecies
     if ( is == ispecies ) then
@@ -1323,7 +1398,7 @@ subroutine read_hsx_species0(fname, ispecies, no_species, n_species, l_species, 
       end do
     else
       do io = 1 , no(is)
-        read(iu, iostat=ierr) !n(is,io), l(is,io), zeta(is,io)
+        read(iu, iostat=ierr) !n(io,is), l(io,is), zeta(io,is)
         call iostat_update(ierr)
       end do
     end if
@@ -1335,7 +1410,7 @@ subroutine read_hsx_species0(fname, ispecies, no_species, n_species, l_species, 
 
 end subroutine read_hsx_species0
 
-subroutine read_hsx_species1(fname, ispecies, no_species, n_species, l_species, zeta_species)
+subroutine read_hsx_species1_2(fname, ispecies, no_species, n_species, l_species, zeta_species)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -1365,7 +1440,7 @@ subroutine read_hsx_species1(fname, ispecies, no_species, n_species, l_species, 
   ! Read overall data
   read(iu, iostat=ierr) version
   call iostat_update(ierr)
-  if ( version /= 1 ) then
+  if ( all(version /= [1, 2]) ) then
     call iostat_update(-3)
     return
   end if
@@ -1394,11 +1469,11 @@ subroutine read_hsx_species1(fname, ispecies, no_species, n_species, l_species, 
       read(iu, iostat=ierr) (n_species(io), l_species(io), zeta_species(io), io=1,no_species)
       call iostat_update(ierr)
     else
-      read(iu, iostat=ierr) !n(is,io), l(is,io), zeta(is,io)
+      read(iu, iostat=ierr) !n(io,is), l(io,is), zeta(io,is)
       call iostat_update(ierr)
     end if
   end do
 
   call close_file(iu)
 
-end subroutine read_hsx_species1
+end subroutine read_hsx_species1_2

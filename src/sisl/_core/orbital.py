@@ -1041,6 +1041,9 @@ class AtomicOrbital(Orbital):
         if n <= 0:
             raise ValueError(f"{self.__class__.__name__} n must be >= 1")
 
+        if zeta <= 0:
+            raise ValueError(f"{self.__class__.__name__} zeta must be >= 1")
+
         if self.l >= len(_rspher_harm_fact):
             raise ValueError(
                 f"{self.__class__.__name__} does not implement shells l>={len(_rspher_harm_fact)}!"

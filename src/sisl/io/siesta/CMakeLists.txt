@@ -14,7 +14,6 @@ set(sig_sources
     grid_read grid_write
     gf_read gf_write
     tsde_read tsde_write
-    hs_read
     wfsx_read
   )
 # The REGEX allows Option 2 to pass through correctly
@@ -30,9 +29,6 @@ set_source_files_properties("${name}"
   )
 
 get_filename_component(name _src/hsx_write.f90 NAME)
-set_source_files_properties("${name}"
-  PROPERTIES SISL_SIGNATURE_SKIP "write_hsx1"
-  )
 
 # Additional sources which we do not need interfaces
 # to in the Python front
