@@ -342,6 +342,13 @@ class onlysSileSiesta(SileBinSiesta):
         self._fortran_check("read_fermi_level", "could not read fermi-level.")
         return Ef
 
+    def read_brillouinzone(self, trs: bool = True) -> MonkhorstPack:
+        """Read the Brillouin zone object"""
+        kcell, kdispl = _siesta.read_tshs_k(self.file)
+        self._fortran_check("read_brillouinzone", "could not read the file.")
+        geom = self.read_geometry()
+        return MonkhorstPack(geom, kcell, displacement=kdispl, trs=trs)
+
 
 @set_module("sisl.io.siesta")
 class tshsSileSiesta(onlysSileSiesta):
@@ -1357,6 +1364,13 @@ class hsxSileSiesta(SileBinSiesta):
             Ef = 0.0
 
         return Ef * _Ry2eV
+
+    def read_brillouinzone(self, trs: bool = True) -> MonkhorstPack:
+        """Read the Brillouin zone object"""
+        kcell, kdispl = _siesta.read_hsx_k(self.file)
+        self._fortran_check("read_brillouinzone", "could not read the file.")
+        geom = self.read_geometry()
+        return MonkhorstPack(geom, kcell, displacement=kdispl, trs=trs)
 
     def _r_hamiltonian_v0(self, **kwargs):
         geom = self.read_geometry(**kwargs)

@@ -16,6 +16,7 @@ from sisl import Atom, Geometry, Lattice
 from sisl._indices import indices
 from sisl._internal import set_module
 from sisl.messages import deprecate, info, warn
+from sisl.physics.brillouinzone import BrillouinZone
 from sisl.physics.distribution import fermi_dirac
 from sisl.unit.siesta import unit_convert
 
@@ -305,6 +306,15 @@ class _ncSileTBtrans(SileCDFTBtrans):
                 )
             )
         return ik
+
+    def read_brillouinzone(self) -> BrillouinZone:
+        """Returns a `BrillouinZone` object with the k-points associated"""
+        geom = self.read_geometry()
+        k = self.k
+        wk = self.wk
+
+        # so far, we don't know if it has Monkhorst-Pack or TRS etc.
+        return BrillouinZone(geom, k, wk)
 
 
 @set_module("sisl.io.tbtrans")

@@ -1199,7 +1199,7 @@ class Sile(Info, BaseSile):
             yield l
             l = self.readline(comment=True)
 
-    def readline(self, comment=False):
+    def readline(self, comment: bool = False) -> str:
         r"""Reads the next line of the file"""
         l = self.fh.readline()
         self._line += 1

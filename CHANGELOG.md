@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 ## [0.15.3] - YYYY-MM-DD
 
 ### Added
+- `read_brillouinzone` to multiple files
 - `hsxSileSiesta.write_hamiltonian`, allowed writing HSX files
   A long required functionality. This allows one to use the HSX file
   format in intrinsic behavior. TSHS file format will be deprecated in

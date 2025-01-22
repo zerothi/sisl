@@ -17,6 +17,7 @@ from sisl._help import voigt_matrix
 from sisl._internal import set_module
 from sisl.messages import deprecation, warn
 from sisl.physics import Spin
+from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.unit.siesta import unit_convert
 from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
@@ -768,6 +769,45 @@ class stdoutSileSiesta(SileSiesta):
             assign(out, key.strip(), val)
 
         return out
+
+    @SileBinder()
+    @sile_fh_open()
+    def read_brillouinzone(self, trs: bool = True) -> MonkhorstPack:
+        r"""Parses the k-grid section if present, otherwise returns the
+        :math:`\Gamma`-point"""
+
+        # store position, read geometry, then reposition file.
+        tell = self.fh.tell()
+        geom = self.read_geometry()
+        self.fh.seek(tell)
+
+        found, line = self.step_to(
+            "siesta: k-grid: Number of k-points", allow_reread=False
+        )
+
+        if not found:
+            return MonkhorstPack(geom, 1, trs=trs)
+
+        nk = int(line.split("=")[-1])
+
+        # default kcell and kdispl
+        kcell = np.diag([1, 1, 1])
+        kdispl = np.zeros(3)
+
+        # if next line also contains 'siesta: k-grid:' then we can step_to
+        line = self.readline()
+        if line.startswith("siesta: k-grid:"):
+            if self.step_to(
+                "siesta: k-grid: Supercell and displacements", allow_reread=False
+            )[0]:
+                for i in range(3):
+                    line = self.readline().split()
+                    kdispl[i] = float(line[-1])
+                    kcell[i, 2] = int(line[-2])
+                    kcell[i, 1] = int(line[-3])
+                    kcell[i, 0] = int(line[-4])
+
+        return MonkhorstPack(geom, kcell, displacement=kdispl, trs=trs)
 
     def read_data(self, *args, **kwargs) -> Any:
         """Read specific content in the Siesta out file

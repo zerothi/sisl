@@ -3,14 +3,14 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 
-from sisl import Lattice, LatticeChild
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.physics.brillouinzone import BrillouinZone
+from sisl.typing import LatticeLike
 from sisl.unit.siesta import unit_convert
 
 from ..sile import add_sile, sile_fh_open, sile_raise_write
@@ -20,8 +20,6 @@ __all__ = ["kpSileSiesta", "rkpSileSiesta"]
 
 Bohr2Ang = unit_convert("Bohr", "Ang")
 
-TLattice = Optional[Union[Lattice, LatticeChild]]
-
 
 @set_module("sisl.io.siesta")
 class kpSileSiesta(SileSiesta):
@@ -29,7 +27,7 @@ class kpSileSiesta(SileSiesta):
 
     @sile_fh_open()
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
-    def read_data(self, lattice: TLattice = None):
+    def read_data(self, lattice: Optional[LatticeLike] = None):
         """Returns K-points from the file (note that these are in reciprocal units)
 
         Parameters
@@ -68,7 +66,7 @@ class kpSileSiesta(SileSiesta):
            k-points in units 1/Bohr
         weight : array_like
            same length as k, weights of k-points
-        fmt : str, optional
+        fmt :
            format for the k-values
         """
         sile_raise_write(self)
@@ -82,12 +80,12 @@ class kpSileSiesta(SileSiesta):
 
     @sile_fh_open()
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
-    def read_brillouinzone(self, lattice: TLattice) -> BrillouinZone:
+    def read_brillouinzone(self, lattice: LatticeLike) -> BrillouinZone:
         """Returns K-points from the file (note that these are in reciprocal units)
 
         Parameters
         ----------
-        lattice : LatticeChild
+        lattice :
            required supercell for the BrillouinZone object
 
         Returns
@@ -97,20 +95,18 @@ class kpSileSiesta(SileSiesta):
         k, w = self.read_data(lattice)
         from sisl.physics.brillouinzone import BrillouinZone
 
-        bz = BrillouinZone(lattice)
-        bz._k = k
-        bz._w = w
+        bz = BrillouinZone(lattice, k=k, weight=w)
         return bz
 
     @sile_fh_open()
-    def write_brillouinzone(self, bz: BrillouinZone, fmt: str = ".9e"):
+    def write_brillouinzone(self, bz: BrillouinZone, fmt: str = ".9e") -> None:
         """Writes BrillouinZone-points to file
 
         Parameters
         ----------
-        bz : BrillouinZone
+        bz :
            object contain all weights and k-points
-        fmt : str, optional
+        fmt :
            format for the k-values
         """
         # And convert to 1/Bohr
@@ -148,12 +144,12 @@ class rkpSileSiesta(kpSileSiesta):
 
     @sile_fh_open()
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
-    def read_brillouinzone(self, lattice: TLattice) -> BrillouinZone:
+    def read_brillouinzone(self, lattice: LatticeLike) -> BrillouinZone:
         """Returns K-points from the file
 
         Parameters
         ----------
-        lattice : LatticeChild
+        lattice :
            required supercell for the BrillouinZone object
 
         Returns
@@ -169,7 +165,7 @@ class rkpSileSiesta(kpSileSiesta):
         return bz
 
     @sile_fh_open()
-    def write_brillouinzone(self, bz: BrillouinZone, fmt: str = ".9e"):
+    def write_brillouinzone(self, bz: BrillouinZone, fmt: str = ".9e") -> None:
         """Writes BrillouinZone-points to file
 
         Parameters

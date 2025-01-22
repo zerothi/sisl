@@ -294,6 +294,90 @@ subroutine read_hsx_ef1_2(fname, Ef)
 
 end subroutine read_hsx_ef1_2
 
+subroutine read_hsx_k(fname, kcell, kdispl)
+
+  implicit none
+
+  integer, parameter :: dp = selected_real_kind(p=15)
+
+  character(len=*), intent(in) :: fname
+  integer, intent(out) :: kcell(3,3)
+  real(dp), intent(out) :: kdispl(3)
+
+! Define f2py intents
+!f2py intent(in)  :: fname
+!f2py intent(out) :: kcell, kdispl
+
+  ! Internal variables and arrays
+  integer :: version
+
+  call read_hsx_version(fname, version)
+
+  if ( version < 2 ) then
+
+    kcell = 0
+    kcell(1,1) = 1
+    kcell(2,2) = 1
+    kcell(3,3) = 1
+
+  else
+
+    call read_hsx_k2(fname, kcell, kdispl)
+
+  end if
+
+end subroutine read_hsx_k
+
+subroutine read_hsx_k2(fname, kcell, kdispl)
+
+  implicit none
+
+  integer, parameter :: dp = selected_real_kind(p=15)
+
+  character(len=*), intent(in) :: fname
+  integer, intent(out) :: kcell(3,3)
+  real(dp), intent(out) :: kdispl(3)
+
+! Define f2py intents
+!f2py intent(in)  :: fname
+!f2py intent(out) :: kcell, kdispl
+
+  integer :: iu, version
+  integer :: na_u, no_u, nspin, nspecies
+
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  read(iu, iostat=ierr) version
+  call iostat_update(ierr)
+  if ( version /= 2 ) then
+    call iostat_update(-3)
+    return
+  end if
+  read(iu, iostat=ierr) !is_dp
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) na_u, no_u, nspin, nspecies!, nsc
+  call iostat_update(ierr)
+
+  read(iu, iostat=ierr) !ucell, Ef, qtot, temp
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) !isc_off, xa, isa, lasto(1:na_u)
+  call iostat_update(ierr)
+
+  read(iu, iostat=ierr) !(label(is), zval(is), no(is), is=1,nspecies)
+  call iostat_update(ierr)
+  do is = 1, nspecies
+    read(iu, iostat=ierr) !(nquant(is,io), lquant(is,io), zeta(is,io), io=1,no(is))
+    call iostat_update(ierr)
+  end do
+  if ( version == 2 ) then
+     read(iu, iostat=ierr) kcell, kdispl
+     call iostat_update(ierr)
+  end if
+
+  call close_file(iu)
+
+end subroutine read_hsx_k2
+
 subroutine read_hsx_is_dp(fname, is_dp)
 
   implicit none

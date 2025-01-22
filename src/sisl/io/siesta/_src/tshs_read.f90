@@ -139,6 +139,41 @@ subroutine read_tshs_ef(fname, Ef)
 
 end subroutine read_tshs_ef
 
+subroutine read_tshs_k(fname, kcell, kdispl)
+
+  implicit none
+
+  integer, parameter :: dp = selected_real_kind(p=15)
+
+  character(len=*), intent(in) :: fname
+  integer, intent(out) :: kcell(3,3)
+  real(dp), intent(out) :: kdispl(3)
+
+! Define f2py intents
+!f2py intent(in)  :: fname
+!f2py intent(out) :: kcell, kdispl
+
+  integer :: iu, version
+
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  read(iu, iostat=ierr) ! version
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! na_u, no_u, no_s, nspin, n_nzsg
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! nsc
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! cell, xa
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) ! Gamma, TSGamma, onlyS
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) kcell, kdispl
+  call iostat_update(ierr)
+
+  call close_file(iu)
+
+end subroutine read_tshs_k
+
 subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
@@ -482,4 +517,3 @@ subroutine read_tshs_s(fname, no_u, nnz, ncol, list_col, S)
   call close_file(iu)
 
 end subroutine read_tshs_s
-

@@ -19,6 +19,7 @@ from sisl.physics import (
     EnergyDensityMatrix,
     Hamiltonian,
 )
+from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.physics.overlap import Overlap
 from sisl.unit.siesta import unit_convert
 
@@ -409,6 +410,14 @@ class ncSileSiesta(SileCDFSiesta):
         grid.grid = np.copy(np.swapaxes(grid.grid, 0, 2), order="C")
 
         return grid
+
+    def read_brillouinzone(self, trs: bool = True) -> MonkhorstPack:
+        """Read the Brillouin zone object"""
+        settings = self.groups["BASIS"]
+        kcell = settings.variables["BZ"][:, :]
+        kdispl = settings.variables["BZ_displ"][:]
+        geom = self.read_geometry()
+        return MonkhorstPack(geom, kcell, displacement=kdispl, trs=trs)
 
     def write_basis(self, atoms: Atoms):
         """Write the current atoms orbitals as the basis
