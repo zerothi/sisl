@@ -153,7 +153,7 @@ subroutine read_tshs_k(fname, kcell, kdispl)
 !f2py intent(in)  :: fname
 !f2py intent(out) :: kcell, kdispl
 
-  integer :: iu, version
+  integer :: iu, ierr, version
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
 

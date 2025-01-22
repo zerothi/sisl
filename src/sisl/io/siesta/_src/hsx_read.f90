@@ -342,8 +342,9 @@ subroutine read_hsx_k2(fname, kcell, kdispl)
 !f2py intent(in)  :: fname
 !f2py intent(out) :: kcell, kdispl
 
-  integer :: iu, version
+  integer :: iu, ierr, version
   integer :: na_u, no_u, nspin, nspecies
+  integer :: is
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
 
