@@ -318,7 +318,7 @@ class hamiltonianSile(Sile):
                     o = o - geom.a2o(a)
                     if not H.orthogonal:
                         s = Ssub[jo, io]
-                    elif jo == io:
+                    elif jo == io and i == 0:
                         s = 1.0
                     else:
                         s = 0.0
@@ -330,7 +330,7 @@ class hamiltonianSile(Sile):
                 for jo, io, hh in ispmatrixd(Hsub):
                     if not H.orthogonal:
                         s = Ssub[jo, io]
-                    elif jo == io:
+                    elif jo == io and i == 0:
                         s = 1.0
                     else:
                         s = 0.0
