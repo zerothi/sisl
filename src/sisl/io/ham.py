@@ -263,22 +263,22 @@ class hamiltonianSile(Sile):
                 del diff
 
         if hermitian:
-            # Remove all double stuff
-            for i, isc in enumerate(geom.lattice.sc_off):
-                if np.any(isc < 0):
-                    # We have ^\dagger element, remove it
-                    o = i * geom.no
-                    # Ensure that we remove all nullified quantities
-                    # (setting elements to zero will add them internally
-                    #  :(, hence this actually constructs the full matrix
-                    # Therefore we do it on a row basis, to limit memory
-                    # requirements
-                    for j in range(geom.no):
-                        h[j, o : o + geom.no] = 0.0
-                        h.eliminate_zeros()
-                        if not H.orthogonal:
-                            S[j, o : o + geom.no] = 0.0
-                            S.eliminate_zeros()
+            # Remove half of the supercell connections (d matrices)
+            d = len(geom.lattice.sc_off[1:]) // 2
+            for i, isc in enumerate(geom.lattice.sc_off[1 : d + 1]):
+                # We have ^\dagger element, remove it
+                o = (i + 1) * geom.no
+                # Ensure that we remove all nullified quantities
+                # (setting elements to zero will add them internally
+                #  :(, hence this actually constructs the full matrix
+                # Therefore we do it on a row basis, to limit memory
+                # requirements
+                for j in range(geom.no):
+                    h[j, o : o + geom.no] = 0.0
+                    h.eliminate_zeros()
+                    if not H.orthogonal:
+                        S[j, o : o + geom.no] = 0.0
+                        S.eliminate_zeros()
             o = geom.sc_index(np.zeros([3], np.int32))
             # Get upper-triangular matrix of the unit-cell H and S
             ut = triu(h[:, o : o + geom.no], k=0).tocsr()
