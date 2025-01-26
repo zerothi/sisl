@@ -151,6 +151,8 @@ jobs:
       run: |
         sgeom --help
         stoolbox atom-plot --help
+        # This should detect if the fortran sources are *correct*
+        python3 -c 'import sisl.io.siesta._siesta'
 
     - name: sisl tests
       env:

@@ -329,6 +329,8 @@ subroutine read_hsx_k(fname, kcell, kdispl)
 end subroutine read_hsx_k
 
 subroutine read_hsx_k2(fname, kcell, kdispl)
+  use io_m, only: open_file, close_file
+  use io_m, only: iostat_update
 
   implicit none
 

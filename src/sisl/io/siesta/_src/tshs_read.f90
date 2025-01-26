@@ -140,6 +140,8 @@ subroutine read_tshs_ef(fname, Ef)
 end subroutine read_tshs_ef
 
 subroutine read_tshs_k(fname, kcell, kdispl)
+  use io_m, only: open_file, close_file
+  use io_m, only: iostat_update
 
   implicit none
 
