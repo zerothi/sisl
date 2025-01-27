@@ -48,3 +48,27 @@ def test_ham_3nn(sisl_tmp, hermitian):
     if not hermitian:
         H1 = hamiltonianSile(f).read_hamiltonian(hermitian=hermitian)
         assert np.allclose((H1 - H)._csr._D, 0)
+
+
+@pytest.mark.parametrize("hermitian", [True, False])
+def test_ham_3nn_no(sisl_tmp, hermitian):
+    f = sisl_tmp("gr.ham")
+
+    g = si.geom.graphene()
+    g.cell[2, 2] = 1.00
+    H = si.Hamiltonian(g, orthogonal=False)
+    H.set_nsc([5, 5, 5])
+
+    # build a 3rd nearest neighbor, nonorthogonal model
+    H.construct(
+        [[0.1, 1.6, 2.6, 3.1], [(1, 1), (-2.7, 0.073), (-0.09, 0.045), (-0.33, 0.026)]]
+    )
+
+    H.write(f, hermitian=hermitian)
+
+    H1 = hamiltonianSile(f).read_hamiltonian()
+    assert np.allclose((H1 - H)._csr._D, 0)
+
+    if not hermitian:
+        H1 = hamiltonianSile(f).read_hamiltonian(hermitian=hermitian)
+        assert np.allclose((H1 - H)._csr._D, 0)
