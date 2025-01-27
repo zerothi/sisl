@@ -55,7 +55,9 @@ def test_ham_3nn_no(sisl_tmp, hermitian):
     f = sisl_tmp("gr.ham")
 
     g = si.geom.graphene()
+    g.cell[2, 2] = 1.00
     H = si.Hamiltonian(g, orthogonal=False)
+    H.set_nsc([5, 5, 5])
 
     # build a 3rd nearest neighbor, nonorthogonal model
     H.construct(
