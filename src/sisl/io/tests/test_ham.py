@@ -6,12 +6,13 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+import sisl as si
 from sisl.io.ham import *
 
 pytestmark = [pytest.mark.io, pytest.mark.generic]
 
 
-def test_ham1(sisl_tmp, sisl_system):
+def test_ham_geometry(sisl_tmp, sisl_system):
     f = sisl_tmp("gr.ham")
     sisl_system.g.write(hamiltonianSile(f, "w"))
     g = hamiltonianSile(f).read_geometry()
@@ -22,8 +23,28 @@ def test_ham1(sisl_tmp, sisl_system):
     assert g.atoms.equal(sisl_system.g.atoms, R=False)
 
 
-def test_ham2(sisl_tmp, sisl_system):
+def test_ham_nn(sisl_tmp, sisl_system):
     f = sisl_tmp("gr.ham")
     sisl_system.ham.write(hamiltonianSile(f, "w"))
     ham = hamiltonianSile(f).read_hamiltonian()
     assert ham.spsame(sisl_system.ham)
+
+
+@pytest.mark.parametrize("hermitian", [True, False])
+def test_ham_3nn(sisl_tmp, hermitian):
+    f = sisl_tmp("gr.ham")
+
+    g = si.geom.graphene()
+    H = si.Hamiltonian(g)
+
+    # build a 3rd nearest neighbor model
+    H.construct([[0.1, 1.6, 2.6, 3.1], [0, -2.7, -0.20, -0.18]])
+
+    H.write(f, hermitian=hermitian)
+
+    H1 = hamiltonianSile(f).read_hamiltonian()
+    assert np.allclose((H1 - H)._csr._D, 0)
+
+    if not hermitian:
+        H1 = hamiltonianSile(f).read_hamiltonian(hermitian=hermitian)
+        assert np.allclose((H1 - H)._csr._D, 0)

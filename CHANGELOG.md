@@ -35,6 +35,10 @@ we hit release version 1.0.0.
   The old values are still respected.
 
 ### Fixed
+- `hamiltonianSile` can now handle skewed lattices with 6 input parameters
+  for the cell block
+- `hamiltonianSile` wrote wrong overlap and supercell connections for
+  more than 1 supercell direction, #887
 - `projection` arguments of several functions has been streamlined
 - `orbitals` arguments with slices without ends returned up to `geometry.na`,
   now it correctly returns up to the maximum number of orbitals.
