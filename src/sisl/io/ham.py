@@ -344,9 +344,9 @@ class hamiltonianSile(Sile):
 
             if hermitian and is_primary:
                 # only write upper right of primary unit-cell connections
-                Hsub = triu(Hsub)
+                Hsub = triu(Hsub, format="csr")
                 if not is_orthogonal:
-                    Ssub = triu(Ssub)
+                    Ssub = triu(Ssub, format="csr")
 
             # Ensure that when h[i,i] == 0, we still write something
             # Since S != 0.
