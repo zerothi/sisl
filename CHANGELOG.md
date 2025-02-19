@@ -5,50 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
 we hit release version 1.0.0.
 
+## Any later versions
 
-## [0.15.3] - YYYY-MM-DD
+This changelog format is deprecated.
 
-### Added
-- `read_brillouinzone` to multiple files
-- `hsxSileSiesta.write_hamiltonian`, allowed writing HSX files
-  A long required functionality. This allows one to use the HSX file
-  format in intrinsic behavior. TSHS file format will be deprecated in
-  later Siesta releases, see https://gitlab.com/siesta-project/siesta/-/issues/183
-  This allows one to write HSX files in version 1, or 2, 2 is default.
-- `astype` for sparse matrices, enables one to change data-types, #865
-  This should be preferred over transform which can't do real->complex
-  of spin matrices.
-- added ADOS extraction of PDOS data in `sisl.viz`
-- enabled submodule access without imports:
+The changelog is now processed in `towncrier` format.
 
-      import sisl
-      sisl.geom.graphene
-
-- added Nambu spin configuration, this is still experimental
-- enabled `...` when extracting slices of MD steps in siesta output
-  files.
-  Here it is the same as `:`. But it also allows
-  inline arguments: `read_scf(imd=...)` where `imd=:` is not
-  allowed, partly fixes #835
-- enabled `...` for `atoms=` arguments. Selects all atoms.
-- clarified gauge, lattice vs. atomic is clearer than cell vs. atom.
-  The old values are still respected.
-
-### Fixed
-- `hamiltonianSile` can now handle skewed lattices with 6 input parameters
-  for the cell block
-- `hamiltonianSile` wrote wrong overlap and supercell connections for
-  more than 1 supercell direction, #887
-- `projection` arguments of several functions has been streamlined
-- `orbitals` arguments with slices without ends returned up to `geometry.na`,
-  now it correctly returns up to the maximum number of orbitals.
-
-### Changed
-- internal Cython code for performance improvements.
-  This yield significant perf. improvements for DFT sparse matrices
-  with *many* edges in the sparse matrix, but a perf. hit for very
-  small TB matrices.
-- dtype removed from `Spin` class
+Please see `changes/README.rst` for details.
 
 
 ## [0.15.2] - 2024-11-06

@@ -104,7 +104,7 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
    :caption: Extras
 
    math
-   changelog/index
+   release
    other
    references
 

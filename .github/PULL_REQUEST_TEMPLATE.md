@@ -3,7 +3,7 @@
  - [ ] Closes #
  - [ ] Added tests for new/changed functions?
  - [ ] Documentation for functionality in `docs/`
- - [ ] Changes documented in `CHANGELOG.md`
+ - [ ] Changes documented in `changes/<pr-num>.<type>.rst`
 
 <!--
 Creating a PR will check whether the pre-commit hooks

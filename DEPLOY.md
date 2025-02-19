@@ -20,36 +20,54 @@ The release cycle should be performed like this:
 
 2. Insert correct dates in `CITATION.cff` (for Zenodo)
 
-3. Go to `tools` and run changelog.py v0.14.0..v0.14.1
-   and generate both the RST and MD documentation.
-   The rst should go directly into the `docs/changelog/`
-   folder and do
+3. Create release notes and changelogs:
 
-   git add docs/changelog/VVV.rst
-   <add it to the docs/changelog/index.rst>
+   1. Create the release-notes:
+
+      Also append the changelog.
+
+      ```shell
+      towncrier build --version 0.14.1 --yes
+      ```
+
+      This will create a file here: `docs/release/0.14.1-notes.rst`.
+
+   2. Create simpler release notes (for Github):
+
+      ```shell
+      # append to towncrier release notes:
+      python tools/changelog.py --format rst $GH_TOKEN v0.14.0..v0.14.1 >> docs/release/0.14.1-notes.rst
+      python tools/changelog.py --format md $GH_TOKEN v0.14.0..v0.14.1 > changelog.md
+      ```
+
+3. Amend release notes:
+
+   Amend to `docs/release.rst` something like this:
+
+      0.14.1 <release/0.14.1-notes.rst>
 
 4. Commit changes.
 
 5. Tag the commit with:
 
-		git tag -a "vVERSION" -m "Releasing vVERSION"
+       git tag -a "vVERSION" -m "Releasing vVERSION"
 
 6. Create tarballs and wheels and upload them
 
    These steps should be done via the github actions step, so generally
    not required.
 
-		python3 -m pip install --upgrade build
-		python3 -m build
-		python3 -m pip install --upgrade twine
-		# requires .pypirc with testpypi section
-		python3 -m twine upload --repository testpypi dist/*
+       python3 -m pip install --upgrade build
+       python3 -m build
+       python3 -m pip install --upgrade twine
+       # requires .pypirc with testpypi section
+       python3 -m twine upload --repository testpypi dist/*
 
-		# test installation, preferably in a venv
-		python3 -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl
+       # test installation, preferably in a venv
+       python3 -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl
 
-        # once checked, upload to pypi
-		python3 -m twine upload dist/sisl-0.12.0.tar.gz
+       # once checked, upload to pypi
+       python3 -m twine upload dist/sisl-0.12.0.tar.gz
 
 7. Create conda uploads.
 

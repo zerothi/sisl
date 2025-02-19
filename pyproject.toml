@@ -131,7 +131,7 @@ Documentation = "https://zerothi.github.io/sisl"
 Source = "https://github.com/zerothi/sisl"
 Tracker = "https://github.com/zerothi/sisl/issues"
 Discussions = "https://github.com/zerothi/sisl/discussions"
-Changelog = "https://zerothi.github.io/sisl/changelog/index.html"
+Changelog = "https://zerothi.github.io/sisl/release.html"
 Chat = "https://discord.gg/5XnFXFdkv2"
 
 
@@ -338,3 +338,51 @@ checks = ["all", "EX01", "SA01", "ES01"]
 exclude = [
     '^conf\.',
 ]
+
+
+[tool.towncrier]
+# currently casing is inconsistent when using package
+# see https://github.com/twisted/towncrier/issues/686
+#package = "sisl"
+name = "sisl"
+single_file = false
+package_dir = "src"
+directory = "changes/"
+template = "docs/release/template.rst"
+filename = "docs/release/{version}-notes.rst"
+issue_format = ":pull:`{issue}`"
+title_format = "{name} {version} Release Notes"
+underlines = "*=-"
+all_bullets = false
+
+
+    [[tool.towncrier.section]]
+    name = ""
+    # In top-level changes directory
+    path = ""
+
+    [[tool.towncrier.section]]
+    name = "Toolboxes"
+    # Nested in changes/toolbox
+    path = "toolbox"
+
+
+    [[tool.towncrier.type]]
+    directory = "highlight"
+    name = "Highlights"
+    showcontent = true
+
+    [[tool.towncrier.type]]
+    directory = "feat"
+    name = "New features"
+    showcontent = true
+
+    [[tool.towncrier.type]]
+    directory = "change"
+    name = "Changes and improvements"
+    showcontent = true
+
+    [[tool.towncrier.type]]
+    directory = "fix"
+    name = "Bugfixes"
+    showcontent = true
