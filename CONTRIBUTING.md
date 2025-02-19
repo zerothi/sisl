@@ -9,7 +9,7 @@ We love your input! We want to make contributing to this project as easy and tra
 ## We Develop with GitHub
 We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
 
-We run some tools such as `isort` and `black` to keep our code style consistent throughout the package.
+We run some tools such as `isort=6.0.0` and `black==25.1.0` to keep our code style consistent throughout the package.
 These are ran by `pre-commit`, which you can set up with:
 
 ```python

@@ -13,6 +13,6 @@ Please see here: https://zerothi.github.io/sisl/contribute.html
 on how to enable the pre-commit hooks enabled in `sisl`
 
 The short message is:
-- run `isort .` at the top level
-- run `black .` (version=24.2.0) at top-level
+- run `isort .` (version=6.0.0) at the top level
+- run `black .` (version=25.1.0) at top-level
 -->

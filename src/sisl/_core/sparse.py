@@ -10,7 +10,9 @@ import numpy as np
 
 # To speed up the _extend algorithm we limit lookups
 from numpy import all as np_all
-from numpy import allclose
+from numpy import (
+    allclose,
+)
 from numpy import any as np_any
 from numpy import (
     arange,

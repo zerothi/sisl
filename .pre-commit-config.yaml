@@ -9,19 +9,19 @@
 # changes done by pre-commit and commit again.
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v5.0.0
   hooks:
     - id: check-yaml
     - id: end-of-file-fixer
     - id: trailing-whitespace
 # Black to format code with a consistent style
 - repo: https://github.com/psf/black-pre-commit-mirror
-  rev: 24.2.0
+  rev: 25.1.0
   hooks:
     - id: black-jupyter
 # isort to automatically sort imports
 - repo: https://github.com/pycqa/isort
-  rev: 5.12.0
+  rev: 6.0.0
   hooks:
     - id: isort
       name: isort (python)
