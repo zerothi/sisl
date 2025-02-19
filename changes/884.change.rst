@@ -1,0 +1,7 @@
+Enabled `hsxSileSiesta.write_hamiltonian`
+-----------------------------------------
+
+Finally we can write Hamiltonians from `sisl` in the `HSX`
+file format.
+
+For further details see: https://gitlab.com/siesta-project/siesta/-/issues/183
