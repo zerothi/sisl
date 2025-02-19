@@ -39,7 +39,7 @@ def sanitize_axis(ax) -> Union[str, int, np.ndarray]:
 
 
 def sanitize_axes(
-    val: Union[str, Sequence[Union[str, int, np.ndarray]]]
+    val: Union[str, Sequence[Union[str, int, np.ndarray]]],
 ) -> list[Union[str, int, np.ndarray]]:
     if isinstance(val, str):
         val = re.findall("[+-]?[xyzabc012]", val)

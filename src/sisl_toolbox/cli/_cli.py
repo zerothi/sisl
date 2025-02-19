@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-""" A command-line-interface for toolboxes that provide CLI
+"""A command-line-interface for toolboxes that provide CLI
 
 This is a wrapper with sub-commands the toolboxes that are
 accessible.
