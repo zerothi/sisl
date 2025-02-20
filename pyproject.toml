@@ -35,7 +35,9 @@ keywords = [
     "DFT",
     "LCAO",
     "NEGF",
-    "physics"
+    "physics",
+    "bandstructure",
+    "solid-state",
 ]
 
 # Our dependencies should pretty much follow EOL python releases
