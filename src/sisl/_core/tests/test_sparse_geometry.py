@@ -257,8 +257,8 @@ class TestSparseAtom:
         assert so.geometry.na - 1 == so2.geometry.na
 
     def test_sp_orb_remove_atom(self):
-        so = SparseOrbital(Geometry([[0] * 3, [1] * 3], [Atom[1], Atom[2]], 2))
-        so2 = so.remove(Atom[1])
+        so = SparseOrbital(Geometry([[0] * 3, [1] * 3], [Atom(1, 1), Atom(2, 1)], 2))
+        so2 = so.remove(Atom(1, 1))
         assert so.geometry.na - 1 == so2.geometry.na
         assert so.geometry.no - 1 == so2.geometry.no
 
