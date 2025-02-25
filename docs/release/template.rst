@@ -13,7 +13,9 @@
 {% for text, values in sections[section][category].items() %}
 {{ text }}
 
-{{ get_indent(text) }}({{values|join(', ') }})
+{{ get_indent(text) }}{% if values %}({{values|join(', ') }})
+
+{% endif %}
 
 {% endfor %}
 {% else %}
