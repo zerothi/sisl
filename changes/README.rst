@@ -22,11 +22,13 @@ It is possible to add more files with different categories (and text), but
 same pull request if all are relevant. For example a new feature might change
 the API of other related functions.
 
-Most categories should be formatted as paragraphs with a heading.
+All categories should be formatted as simple git commits:
+1) a one-line header, and possibly 2) a more detailed explanation (not required).
+
 So for example: ``123.feat.rst`` would have the content::
 
     ``my_new_feature`` option for `my_favorite_function`
-    ----------------------------------------------------
+
     The ``my_new_feature`` option is now available for `my_favorite_function`.
     To use it, write ``sisl.my_favorite_function(..., my_new_feature=True)``.
 
