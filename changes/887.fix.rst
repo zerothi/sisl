@@ -1,5 +1,4 @@
 `hamiltonianSile` wrote wrong overlap and supercell connections
----------------------------------------------------------------
 
 Fixes and speeds up the writing of the overlap and supercell
 connections of the `hamiltonianSile`. This file type is largely

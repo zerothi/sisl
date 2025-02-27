@@ -1,5 +1,4 @@
 Removed `dtype` argument from `Spin` class
-------------------------------------------
 
 The data-type is now contained in the parent structure.
 This removes a duplicate definition that was hard to maintain

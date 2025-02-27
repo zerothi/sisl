@@ -1,5 +1,4 @@
 Use `towncrier`
----------------
 
 We change the release notes to be constructed by `towncrier`.
 

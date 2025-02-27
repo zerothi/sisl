@@ -1,5 +1,4 @@
 Enable `...` in MD-slices of siesta output siles
-------------------------------------------------
 
 Allowed `read_scf(imd=...)` to ease the understanding
 of *everything*. Partly resolves #835.

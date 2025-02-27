@@ -1,5 +1,4 @@
 `projection` arguments for all functions has been streamlined
--------------------------------------------------------------
 
 The `projection` argument has gotten a major overhaul.
 Now the projections are generalized and streamlined across

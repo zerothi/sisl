@@ -1,5 +1,4 @@
 Performance improvements for k-point creation of matrices
----------------------------------------------------------
 
 The internal Cython code was restructured for much better
 performance.

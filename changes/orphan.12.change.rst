@@ -1,5 +1,4 @@
 Enabled easier submodule access
--------------------------------
 
 Allows::
 

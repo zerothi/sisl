@@ -1,5 +1,4 @@
 Clarified gauge arguments
--------------------------
 
 Now the gauge names are `lattice` vs. `atomic` which should
 clarify a bit more with respect to the older values: `cell`

@@ -355,7 +355,8 @@ filename = "docs/release/{version}-notes.rst"
 issue_format = ":pull:`{issue}`"
 title_format = "{name} {version} Release Notes"
 underlines = "*=-"
-all_bullets = false
+all_bullets = true
+orphan_prefix = "orphan."
 
 
     [[tool.towncrier.section]]
