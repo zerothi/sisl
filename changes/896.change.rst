@@ -1,5 +1,4 @@
 Changed ``hermitian => conjugate``
-----------------------------------
 
 Now one should use ``H.transpose(conjugate=True, ...)``
 instead. The Hermitian argument did not make sense, since
