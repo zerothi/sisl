@@ -31,7 +31,7 @@ def run_Pk_hermitian_tests(M):
     for k in ([0, 0, 0], [0.1, 0.2, 0.3]):
         Mk = M.Pk(k=k, format="array")
         assert np.allclose(Mk, Mk.T.conj())
-        Mk = M.Pk(k=k).A
+        Mk = M.Pk(k=k).toarray()
         assert np.allclose(Mk, Mk.T.conj())
 
 
@@ -157,7 +157,7 @@ def test_sparse_orbital_bz_hermitian(sisl_allclose, n0, n1, n2):
                     allclose = sisl_allclose[dtype]
 
                     Pk = s.Pk(k=k, format="csr", dtype=dtype)
-                    assert allclose(Pk.A, Pk.getH().A)
+                    assert allclose(Pk.toarray(), Pk.getH().toarray())
 
                     Pk = s.Pk(k=k, format="array", dtype=dtype)
                     assert allclose(Pk, Pk.T.conj())
@@ -429,7 +429,7 @@ def test_sparse_orbital_spin_make_hermitian(spin, finalize, dtype, sisl_allclose
     MH = (M + M.transpose(conjugate=True, spin=True)) / 2
     assert allclose((MH - MH.transpose(conjugate=True, spin=True))._csr._D, 0)
 
-    for format, proc in (("array", lambda x: x), ("csr", lambda x: x.A)):
+    for format, proc in (("array", lambda x: x), ("csr", lambda x: x.toarray())):
         for k in ([0, 0, 0], [0.1, 0.2, 0.3]):
             Mk = proc(MH.Pk(k=k, format=format))
             assert allclose(Mk, Mk.T.conj())
