@@ -101,12 +101,12 @@ def _csr_from(col_from, csr):
 def _mat_siesta2sisl(M) -> None:
     """Conversion of Siesta spin matrices to sisl spin matrices
 
-    The matrices from Siesta are given in a format adheering to the following
+    The matrices from Siesta are given in a format adhering to the following
     concept.
 
     There are two cases:
 
-    1. A non-colinear calculation:
+    1. A non-collinear calculation:
 
        Siesta uses this convention:
 
@@ -123,7 +123,7 @@ def _mat_siesta2sisl(M) -> None:
             H12 == H[:, 2] + 1j H[:, 3] # spin-box Hermitian
             H21 == H[:, 2] - 1j H[:, 3]
 
-    2. A spin-orbit calculation:
+    2. A spin-orbit calculation + Nambu:
 
        Siesta uses this convention:
 

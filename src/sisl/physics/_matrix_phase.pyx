@@ -29,6 +29,10 @@ from ._matrix_utils cimport (
     _f_matrix_box_nambu,
     _f_matrix_box_nc,
     _f_matrix_box_so,
+    _matrix_add_array_nambu,
+    _matrix_add_array_nc,
+    _matrix_add_csr_nambu,
+    _matrix_add_csr_nc,
     _matrix_box_nambu_cmplx,
     _matrix_box_nambu_real,
     _matrix_box_nc_cmplx,
@@ -323,6 +327,7 @@ def _phase_csr_nc(ints_st[::1] ptr,
 
     with nogil:
         if p_opt == -1:
+            ph = 1. + 0j
             for r in range(nr):
                 rr = r * 2
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
@@ -331,11 +336,9 @@ def _phase_csr_nc(ints_st[::1] ptr,
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
-                    v[v_ptr[rr] + s_idx] += D[ind, 0]
-                    ph = (D[ind, 2] + 1j * D[ind, 3])
-                    v[v_ptr[rr] + s_idx+1] += ph
-                    v[v_ptr[rr+1] + s_idx] += ph.conjugate()
-                    v[v_ptr[rr+1] + s_idx+1] += D[ind, 1]
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    _matrix_add_csr_nc(v_ptr, rr, s_idx, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -349,10 +352,7 @@ def _phase_csr_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[v_ptr[rr] + s_idx] += M[0]
-                    v[v_ptr[rr] + s_idx+1] += M[1]
-                    v[v_ptr[rr+1] + s_idx] += M[2]
-                    v[v_ptr[rr+1] + s_idx+1] += M[3]
+                    _matrix_add_csr_nc(v_ptr, rr, s_idx, v, M)
 
         else:
             for r in range(nr):
@@ -367,10 +367,7 @@ def _phase_csr_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[v_ptr[rr] + s_idx] += M[0]
-                    v[v_ptr[rr] + s_idx+1] += M[1]
-                    v[v_ptr[rr+1] + s_idx] += M[2]
-                    v[v_ptr[rr+1] + s_idx+1] += M[3]
+                    _matrix_add_csr_nc(v_ptr, rr, s_idx, v, M)
 
     nr = nr * 2
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -405,16 +402,15 @@ def _phase_array_nc(ints_st[::1] ptr,
 
     with nogil:
         if p_opt == -1:
+            ph = 1. + 0j
             for r in range(nr):
                 rr = r * 2
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = (col[ind] % nr) * 2
 
-                    v[rr, c] += <complexs_st> D[ind, 0]
-                    ph = <complexs_st> (D[ind, 2] + 1j * D[ind, 3])
-                    v[rr, c + 1] += ph
-                    v[rr + 1, c] += ph.conjugate()
-                    v[rr + 1, c + 1] += <complexs_st> D[ind, 1]
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    _matrix_add_array_nc(rr, c, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -425,10 +421,7 @@ def _phase_array_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[rr, c] += M[0]
-                    v[rr, c + 1] += M[1]
-                    v[rr + 1, c] += M[2]
-                    v[rr + 1, c + 1] += M[3]
+                    _matrix_add_array_nc(rr, c, v, M)
 
         else:
             for r in range(nr):
@@ -440,10 +433,7 @@ def _phase_array_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[rr, c] += M[0]
-                    v[rr, c + 1] += M[1]
-                    v[rr + 1, c] += M[2]
-                    v[rr + 1, c + 1] += M[3]
+                    _matrix_add_array_nc(rr, c, v, M)
 
     return V
 
@@ -482,6 +472,7 @@ def _phase_csr_so(ints_st[::1] ptr,
 
     with nogil:
         if p_opt == -1:
+            ph = 1. + 0j
             for r in range(nr):
                 rr = r * 2
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
@@ -490,10 +481,9 @@ def _phase_csr_so(ints_st[::1] ptr,
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
-                    v[v_ptr[rr] + s_idx] += (D[ind, 0] + 1j * D[ind, 4])
-                    v[v_ptr[rr] + s_idx+1] += (D[ind, 2] + 1j * D[ind, 3])
-                    v[v_ptr[rr+1] + s_idx] += (D[ind, 6] + 1j * D[ind, 7])
-                    v[v_ptr[rr+1] + s_idx+1] += (D[ind, 1] + 1j * D[ind, 5])
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    _matrix_add_csr_nc(v_ptr, rr, s_idx, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -507,10 +497,7 @@ def _phase_csr_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[v_ptr[rr] + s_idx] += M[0]
-                    v[v_ptr[rr] + s_idx+1] += M[1]
-                    v[v_ptr[rr+1] + s_idx] += M[2]
-                    v[v_ptr[rr+1] + s_idx+1] += M[3]
+                    _matrix_add_csr_nc(v_ptr, rr, s_idx, v, M)
 
         else:
             for r in range(nr):
@@ -525,10 +512,7 @@ def _phase_csr_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[v_ptr[rr] + s_idx] += M[0]
-                    v[v_ptr[rr] + s_idx+1] += M[1]
-                    v[v_ptr[rr+1] + s_idx] += M[2]
-                    v[v_ptr[rr+1] + s_idx+1] += M[3]
+                    _matrix_add_csr_nc(v_ptr, rr, s_idx, v, M)
 
     nr = nr * 2
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -562,15 +546,15 @@ def _phase_array_so(ints_st[::1] ptr,
 
     with nogil:
         if p_opt == -1:
+            ph = 1. + 0j
             for r in range(nr):
                 rr = r * 2
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = (col[ind] % nr) * 2
 
-                    v[rr, c] += (D[ind, 0] + 1j * D[ind, 4])
-                    v[rr, c + 1] += (D[ind, 2] + 1j * D[ind, 3])
-                    v[rr + 1, c] += (D[ind, 6] + 1j * D[ind, 7])
-                    v[rr + 1, c + 1] += (D[ind, 1] + 1j * D[ind, 5])
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    _matrix_add_array_nc(rr, c, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -581,10 +565,7 @@ def _phase_array_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[rr, c] += M[0]
-                    v[rr, c + 1] += M[1]
-                    v[rr + 1, c] += M[2]
-                    v[rr + 1, c + 1] += M[3]
+                    _matrix_add_array_nc(rr, c, v, M)
 
         else:
             for r in range(nr):
@@ -596,10 +577,7 @@ def _phase_array_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[rr, c] += M[0]
-                    v[rr, c + 1] += M[1]
-                    v[rr + 1, c] += M[2]
-                    v[rr + 1, c + 1] += M[3]
+                    _matrix_add_array_nc(rr, c, v, M)
 
     return V
 
@@ -629,7 +607,7 @@ def _phase_csr_nambu(ints_st[::1] ptr,
     cdef complexs_st ph
     cdef _f_matrix_box_nambu func
     cdef numerics_st *d
-    cdef complexs_st *M = [0, 0, 0, 0, 0, 0, 0, 0]
+    cdef complexs_st *M = [0] * 16
 
     if numerics_st in complexs_st:
         func = _matrix_box_nambu_cmplx
@@ -638,7 +616,18 @@ def _phase_csr_nambu(ints_st[::1] ptr,
 
     with nogil:
         if p_opt == -1:
-            pass
+            ph = 1. + 0j
+            for r in range(nr):
+                rr = r * 4
+                for ind in range(ptr[r], ptr[r] + ncol[r]):
+                    c = (col[ind] % nr) * 4
+
+                    tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
+                    s_idx = _index_sorted(tmp, c)
+
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+                    _matrix_add_csr_nambu(v_ptr, rr, s_idx, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -652,25 +641,7 @@ def _phase_csr_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[v_ptr[rr] + s_idx] += M[0]
-                    v[v_ptr[rr] + s_idx+1] += M[1]
-                    v[v_ptr[rr+1] + s_idx] += M[2]
-                    v[v_ptr[rr+1] + s_idx+1] += M[3]
-                    # Delta
-                    v[v_ptr[rr] + s_idx+2] += M[4]
-                    v[v_ptr[rr] + s_idx+3] += M[5]
-                    v[v_ptr[rr+1] + s_idx+2] += M[6]
-                    v[v_ptr[rr+1] + s_idx+3] += M[7]
-                    # Delta^dagger
-                    v[v_ptr[rr+2] + s_idx] += M[4].conjugate()
-                    v[v_ptr[rr+2] + s_idx+1] += M[6].conjugate()
-                    v[v_ptr[rr+3] + s_idx] += M[5].conjugate()
-                    v[v_ptr[rr+3] + s_idx+1] += M[7].conjugate()
-                    # -H^*
-                    v[v_ptr[rr+2] + s_idx+2] += -M[0].conjugate()
-                    v[v_ptr[rr+2] + s_idx+3] += -M[1].conjugate()
-                    v[v_ptr[rr+3] + s_idx+2] += -M[2].conjugate()
-                    v[v_ptr[rr+3] + s_idx+3] += -M[3].conjugate()
+                    _matrix_add_csr_nambu(v_ptr, rr, s_idx, v, M)
 
         else:
             for r in range(nr):
@@ -685,25 +656,7 @@ def _phase_csr_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[v_ptr[rr] + s_idx] += M[0]
-                    v[v_ptr[rr] + s_idx+1] += M[1]
-                    v[v_ptr[rr+1] + s_idx] += M[2]
-                    v[v_ptr[rr+1] + s_idx+1] += M[3]
-                    # Delta
-                    v[v_ptr[rr] + s_idx+2] += M[4]
-                    v[v_ptr[rr] + s_idx+3] += M[5]
-                    v[v_ptr[rr+1] + s_idx+2] += M[6]
-                    v[v_ptr[rr+1] + s_idx+3] += M[7]
-                    # Delta^dagger
-                    v[v_ptr[rr+2] + s_idx] += M[4].conjugate()
-                    v[v_ptr[rr+2] + s_idx+1] += M[6].conjugate()
-                    v[v_ptr[rr+3] + s_idx] += M[5].conjugate()
-                    v[v_ptr[rr+3] + s_idx+1] += M[7].conjugate()
-                    # -H^*
-                    v[v_ptr[rr+2] + s_idx+2] += -M[0].conjugate()
-                    v[v_ptr[rr+2] + s_idx+3] += -M[1].conjugate()
-                    v[v_ptr[rr+3] + s_idx+2] += -M[2].conjugate()
-                    v[v_ptr[rr+3] + s_idx+3] += -M[3].conjugate()
+                    _matrix_add_csr_nambu(v_ptr, rr, s_idx, v, M)
 
     nr = nr * 4
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -728,7 +681,7 @@ def _phase_array_nambu(ints_st[::1] ptr,
     cdef complexs_st ph
     cdef _f_matrix_box_nambu func
     cdef numerics_st *d
-    cdef complexs_st *M = [0, 0, 0, 0, 0, 0, 0, 0]
+    cdef complexs_st *M = [0] * 16
 
     if numerics_st in complexs_st:
         func = _matrix_box_nambu_cmplx
@@ -737,7 +690,16 @@ def _phase_array_nambu(ints_st[::1] ptr,
 
     with nogil:
         if p_opt == -1:
-            pass
+            ph = 1. + 0j
+            for r in range(nr):
+                rr = r * 4
+                for ind in range(ptr[r], ptr[r] + ncol[r]):
+                    c = (col[ind] % nr) * 4
+
+                    d = &D[ind, 0]
+                    func(d, ph, M)
+
+                    _matrix_add_array_nambu(rr, c, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -748,25 +710,8 @@ def _phase_array_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[rr, c] += M[0]
-                    v[rr, c+1] += M[1]
-                    v[rr+1, c] += M[2]
-                    v[rr+1, c+1] += M[3]
-                    # Delta
-                    v[rr, c+2] += M[4]
-                    v[rr, c+3] += M[5]
-                    v[rr+1, c+2] += M[6]
-                    v[rr+1, c+3] += M[7]
-                    # Delta^dagger
-                    v[rr+2, c] += M[4].conjugate()
-                    v[rr+2, c+1] += M[6].conjugate()
-                    v[rr+3, c] += M[5].conjugate()
-                    v[rr+3, c+1] += M[7].conjugate()
-                    # -H^*
-                    v[rr+2, c+2] += -M[0].conjugate()
-                    v[rr+2, c+3] += -M[1].conjugate()
-                    v[rr+3, c+2] += -M[2].conjugate()
-                    v[rr+3, c+3] += -M[3].conjugate()
+
+                    _matrix_add_array_nambu(rr, c, v, M)
 
         else:
             for r in range(nr):
@@ -778,24 +723,7 @@ def _phase_array_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    v[rr, c] += M[0]
-                    v[rr, c+1] += M[1]
-                    v[rr+1, c] += M[2]
-                    v[rr+1, c+1] += M[3]
-                    # Delta
-                    v[rr, c+2] += M[4]
-                    v[rr, c+3] += M[5]
-                    v[rr+1, c+2] += M[6]
-                    v[rr+1, c+3] += M[7]
-                    # Delta^dagger
-                    v[rr+2, c] += M[4].conjugate()
-                    v[rr+2, c+1] += M[6].conjugate()
-                    v[rr+3, c] += M[5].conjugate()
-                    v[rr+3, c+1] += M[7].conjugate()
-                    # -H^*
-                    v[rr+2, c+2] += -M[0].conjugate()
-                    v[rr+2, c+3] += -M[1].conjugate()
-                    v[rr+3, c+2] += -M[2].conjugate()
-                    v[rr+3, c+3] += -M[3].conjugate()
+
+                    _matrix_add_array_nambu(rr, c, v, M)
 
     return V

@@ -6,6 +6,7 @@ from __future__ import annotations
 """ Global sisl fixtures """
 import logging
 import os
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -166,7 +167,35 @@ def sisl_files():
 def sisl_tolerance():
     r32 = (1e-6, 1e-11)
     r64 = (1e-9, 1e-15)
-    return {np.float32: r32, np.float64: r64, np.complex64: r32, np.complex128: r64}
+    return {
+        np.float32: r32,
+        np.float32(0).dtype: r32,
+        np.float64: r64,
+        np.float64(0).dtype: r64,
+        np.complex64: r32,
+        np.complex64(0).dtype: r32,
+        np.complex128: r64,
+        np.complex128(0).dtype: r64,
+        None: r64,
+    }
+
+
+@pytest.fixture(scope="session")
+def sisl_allclose(sisl_tolerance):
+    def factory(dtype):
+        atol, rtol = sisl_tolerance[dtype]
+        return partial(np.allclose, atol=atol, rtol=rtol)
+
+    return {key: factory(key) for key in sisl_tolerance.keys()}
+
+
+@pytest.fixture(scope="session")
+def sisl_isclose(sisl_tolerance):
+    def factory(dtype):
+        atol, rtol = sisl_tolerance[dtype]
+        return partial(np.isclose, atol=atol, rtol=rtol)
+
+    return {key: factory(key) for key in sisl_tolerance.keys()}
 
 
 @pytest.fixture(scope="session", params=[np.float32, np.float64])

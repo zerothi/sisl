@@ -245,10 +245,18 @@ class TestHamiltonian:
         for gauge in ("atom", "atoms", "atom", "orbitals", "r", "atomic"):
             assert H.eigenstate(gauge=gauge).info["gauge"] == "atomic"
 
-    @pytest.mark.parametrize("k", [[0, 0, 0], [0.15, 0.15, 0.15]])
-    def test_Hk_format(self, setup, k):
-        H = setup.HS.copy()
-        H.construct([(0.1, 1.5), ((1.0, 2.0), (0.1, 0.2))])
+    @pytest.mark.parametrize(
+        "spin", ["unpolarized", "polarized", "non-collinear", "spin-orbit", "nambu"]
+    )
+    @pytest.mark.parametrize(
+        "dtype", [np.float32, np.float64, np.complex64, np.complex128]
+    )
+    @pytest.mark.parametrize("k", [[0, 0, 0], [0.15, 0.25, 0.35]])
+    def test_Hk_format(self, setup, k, spin, dtype):
+        H = Hamiltonian(setup.g, spin=spin, dtype=dtype)
+        t0 = np.random.rand(H.shape[-1])
+        t1 = np.random.rand(H.shape[-1])
+        H.construct([(0.1, 1.5), (t0, t1)])
         csr = H.Hk(k, format="csr").toarray()
         mat = H.Hk(k, format="matrix")
         arr = H.Hk(k, format="array")
@@ -260,7 +268,7 @@ class TestHamiltonian:
     @pytest.mark.parametrize("orthogonal", [True, False])
     @pytest.mark.parametrize("gauge", ["cell", "atom"])
     @pytest.mark.parametrize(
-        "spin", ["unpolarized", "polarized", "non-collinear", "spin-orbit"]
+        "spin", ["unpolarized", "polarized", "non-collinear", "spin-orbit", "nambu"]
     )
     def test_format_sc(self, orthogonal, gauge, spin, sisl_complex):
         g = Geometry(
@@ -273,7 +281,7 @@ class TestHamiltonian:
 
         H = Hamiltonian(g, dtype=np.float64, orthogonal=orthogonal, spin=Spin(spin))
         nd = H._csr._D.shape[-1]
-        # this will correctly account for the double size for NC/SOC
+        # this will correctly account for the double size for NC/SOC/Nambu
         no = len(H)
         no_s = H.geometry.no_s
         for ia in g:
@@ -281,7 +289,7 @@ class TestHamiltonian:
             H[ia, ia] = 1.0
             H[ia, idx] = np.random.rand(nd)
 
-        H = (H + H.transpose(hermitian=True)) / 2
+        H = (H + H.transpose(conjugate=True, spin=True)) / 2
         n_s = H.geometry.lattice.n_s
 
         for k in [[0, 0, 0], [0.15, 0.1, 0.05]]:
@@ -1420,17 +1428,10 @@ class TestHamiltonian:
             H[0, i] = i + 0.1
         Hcsr = [H.tocsr(i) for i in range(H.shape[2])]
 
-        Ht = H.transform(spin=Spin.POLARIZED)
-        assert np.abs(Hcsr[0] - Ht.tocsr(0)).sum() == 0
-        assert np.abs(Hcsr[0] - Ht.tocsr(1)).sum() == 0
-
-        Ht = H.transform(spin=Spin.NONCOLINEAR)
-        assert np.abs(Hcsr[0] - Ht.tocsr(0)).sum() == 0
-        assert np.abs(Hcsr[0] - Ht.tocsr(1)).sum() == 0
-
-        Ht = H.transform(spin=Spin.SPINORBIT)
-        assert np.abs(Hcsr[0] - Ht.tocsr(0)).sum() == 0
-        assert np.abs(Hcsr[0] - Ht.tocsr(1)).sum() == 0
+        for spin in (Spin.POLARIZED, Spin.NONCOLINEAR, Spin.SPINORBIT, Spin.NAMBU):
+            Ht = H.transform(spin=spin)
+            assert np.abs(Hcsr[0] - Ht.tocsr(0)).sum() == 0
+            assert np.abs(Hcsr[0] - Ht.tocsr(1)).sum() == 0
 
     def test_transform_up_nonortho(self):
         g = Geometry(
@@ -1469,9 +1470,9 @@ class TestHamiltonian:
             Atom(6, R=1.01),
             lattice=Lattice(100, nsc=[3, 3, 1]),
         )
-        H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
+        H = Hamiltonian(g, dtype=np.float64, spin=Spin.NAMBU)
         for i in range(10):
-            for j in range(8):
+            for j in range(16):
                 H[0, i, j] = i + 0.1 + j
         Hcsr = [H.tocsr(i) for i in range(H.shape[2])]
 
@@ -1483,10 +1484,12 @@ class TestHamiltonian:
         assert np.abs(Hcsr[1] - Ht.tocsr(1)).sum() == 0
 
         Ht = H.transform(spin=Spin.NONCOLINEAR)
-        assert np.abs(Hcsr[0] - Ht.tocsr(0)).sum() == 0
-        assert np.abs(Hcsr[1] - Ht.tocsr(1)).sum() == 0
-        assert np.abs(Hcsr[2] - Ht.tocsr(2)).sum() == 0
-        assert np.abs(Hcsr[3] - Ht.tocsr(3)).sum() == 0
+        for i in range(4):
+            assert np.abs(Hcsr[i] - Ht.tocsr(i)).sum() == 0
+
+        Ht = H.transform(spin=Spin.SPINORBIT)
+        for i in range(8):
+            assert np.abs(Hcsr[i] - Ht.tocsr(i)).sum() == 0
 
     def test_transform_down_nonortho(self):
         g = Geometry(
@@ -1494,9 +1497,9 @@ class TestHamiltonian:
             Atom(6, R=1.01),
             lattice=Lattice(100, nsc=[3, 3, 1]),
         )
-        H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT, orthogonal=False)
+        H = Hamiltonian(g, dtype=np.float64, spin=Spin.NAMBU, orthogonal=False)
         for i in range(10):
-            for j in range(8):
+            for j in range(16):
                 H[0, i, j] = i + 0.1 + j
             H[0, i, -1] = 1.0
         Hcsr = [H.tocsr(i) for i in range(H.shape[2])]
@@ -1511,10 +1514,13 @@ class TestHamiltonian:
         assert np.abs(Hcsr[-1] - Ht.tocsr(-1)).sum() == 0
 
         Ht = H.transform(spin=Spin.NONCOLINEAR)
-        assert np.abs(Hcsr[0] - Ht.tocsr(0)).sum() == 0
-        assert np.abs(Hcsr[1] - Ht.tocsr(1)).sum() == 0
-        assert np.abs(Hcsr[2] - Ht.tocsr(2)).sum() == 0
-        assert np.abs(Hcsr[3] - Ht.tocsr(3)).sum() == 0
+        for i in range(4):
+            assert np.abs(Hcsr[i] - Ht.tocsr(i)).sum() == 0
+        assert np.abs(Hcsr[-1] - Ht.tocsr(-1)).sum() == 0
+
+        Ht = H.transform(spin=Spin.SPINORBIT)
+        for i in range(8):
+            assert np.abs(Hcsr[i] - Ht.tocsr(i)).sum() == 0
         assert np.abs(Hcsr[-1] - Ht.tocsr(-1)).sum() == 0
 
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.1, 0, 0]])

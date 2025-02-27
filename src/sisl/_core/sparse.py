@@ -1783,7 +1783,7 @@ column indices of the sparse elements
 
         return csr
 
-    def transpose(self, sort=True):
+    def transpose(self, sort: bool = True):
         """Create the transposed sparse matrix
 
         Parameters

@@ -13,8 +13,13 @@ from ._matrix_phase_sc import *
 from ._phase import *
 from ._phase cimport is_gamma
 
-__all__ = ["matrix_k", "matrix_k_nc", "matrix_k_so", "matrix_k_diag",
-"matrix_k_nambu"]
+__all__ = [
+    "matrix_k",
+    "matrix_k_nc",
+    "matrix_k_so",
+    "matrix_k_diag",
+    "matrix_k_nambu",
+]
 
 
 def _phase_k(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
@@ -154,9 +159,6 @@ def matrix_k_so(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
 def matrix_k_nambu(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
     p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
-
-    # TODO right now nambu does not have p_opt < 0
-    assert p_opt >= 0, "Not implemented"
 
     csr = M._csr
 

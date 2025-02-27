@@ -14,8 +14,13 @@ from ._matrix_phase import *
 from ._matrix_phase3 import *
 from ._phase import *
 
-__all__ = ["matrix_dk", "matrik_dk_nc", "matrik_dk_diag", "matrik_dk_so",
-    "matrix_dk_nambu"]
+__all__ = [
+    "matrix_dk",
+    "matrik_dk_nc",
+    "matrik_dk_diag",
+    "matrik_dk_so",
+    "matrix_dk_nambu"
+]
 
 
 def _phase_dk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):

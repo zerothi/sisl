@@ -11,7 +11,10 @@ from sisl._core._dtypes cimport floats_st
 from ._matrix_phase3 import *
 from ._phase import *
 
-__all__ = ["matrix_ddk", "matrix_ddk_nc", "matrix_ddk_diag",
+__all__ = [
+    "matrix_ddk",
+    "matrix_ddk_nc",
+    "matrix_ddk_diag",
     "matrix_ddk_so",
     "matrix_ddk_nambu"
 ]
