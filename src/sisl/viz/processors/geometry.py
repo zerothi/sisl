@@ -221,6 +221,8 @@ def parse_atoms_style(
             "size": AtomPeriodicTable(what="radius"),
             "opacity": AtomIsGhost(fill_true=0.4, fill_false=1.0),
             "vertices": 15,
+            "border_width": 1,
+            "border_color": "black",
         },
         *atoms_style,
     ]
@@ -243,6 +245,8 @@ def parse_atoms_style(
         "size": np.empty((geometry.na,), dtype=float),
         "vertices": np.empty((geometry.na,), dtype=int),
         "opacity": np.empty((geometry.na), dtype=float),
+        "border_width": np.empty((geometry.na,), dtype=int),
+        "border_color": np.empty((geometry.na,), dtype=object),
     }
 
     # Go specification by specification and apply the styles
