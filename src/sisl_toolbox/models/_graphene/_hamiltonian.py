@@ -86,7 +86,9 @@ class Hancock2010Dispatch(ReferenceDispatch):
         # Define the graphene lattice
         C = si.Atom(6, si.AtomicOrbital(n=2, l=1, m=0, R=R[-1]))
         graphene = si.geom.graphene(a, C, orthogonal=orthogonal)
-        graphene.optimize_nsc([0, 1])
+
+        nsc = graphene.find_nsc(axes=[0, 1])
+        graphene.set_nsc(nsc)
 
         # Define the Hamiltonian
         H = si.Hamiltonian(graphene, orthogonal=H_orthogonal)
