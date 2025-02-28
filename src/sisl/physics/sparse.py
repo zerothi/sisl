@@ -1153,17 +1153,23 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                             ],
                             dtype_cplx,
                         )
-                    if not np.allclose(Me, Me.T.conjugate()):
+                    d = Me - Me.T.conjugate()
+                    if not np.allclose(d, 0):
                         warn(
-                            f"{self.__class__.__name__}.create_construct is NOT "
-                            "Hermitian for M^e on-site terms. This is your responsibility! "
-                            "The code will continue silently, be AWARE!"
+                            f"{self.__class__.__name__}.create_construct got a "
+                            f"non-Hermitian on-site term for the M^e elements ({d.ravel()}). "
+                            "The code will continue like nothing happened..."
                         )
-                    if not np.allclose(Md, Md.T.conjugate()):
+                    # The sub-diagonal Delta is equivalent to -D^*.
+                    # This means that to compare one should do:
+                    #   (-D.conjugate()).T.conjugate()
+                    # which can be reduced to the following:
+                    d = Md + Md.T
+                    if not np.allclose(d, 0):
                         warn(
-                            f"{self.__class__.__name__}.create_construct is NOT "
-                            "Hermitian for Delta on-site terms. This is your responsibility! "
-                            "The code will continue silently, be AWARE!"
+                            f"{self.__class__.__name__}.create_construct got a "
+                            f"non-Hermitian on-site term for the M^d elements ({d.ravel()}). "
+                            "The code will continue like nothing happened..."
                         )
             elif self.spin.is_spinorbit:
                 if is_complex:
@@ -1207,11 +1213,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                             ],
                             dtype_cplx,
                         )
-                    if not np.allclose(onsite, onsite.T.conjugate()):
+                    d = onsite - onsite.T.conjugate()
+                    if not np.allclose(d, 0):
                         warn(
-                            f"{self.__class__.__name__}.create_construct is NOT "
-                            "Hermitian for on-site terms. This is your responsibility! "
-                            "The code will continue silently, be AWARE!"
+                            f"{self.__class__.__name__}.create_construct got a "
+                            f"non-Hermitian on-site term elements ({d.ravel()}). "
+                            "The code will continue like nothing happened..."
                         )
 
             elif self.spin.is_noncolinear:

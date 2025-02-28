@@ -298,6 +298,7 @@ def _nambu_cmplx2real(p):
     ]
 
 
+@pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
 def test_sparse_orbital_bz_nambu_astype():
     Mr = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("nambu"), dtype=np.float64)
     Mc = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("nambu"), dtype=np.complex128)
@@ -347,7 +348,7 @@ def test_sparse_orbital_bz_nambu_astype():
     assert np.allclose(Mc.astype(np.float64).astype(np.complex128)._csr._D, Mc._csr._D)
 
 
-@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
 @pytest.mark.parametrize("dtype", [np.float64, np.complex128])
 def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem(dtype):
     M = SparseOrbitalBZSpin(geom.graphene(), spin="SO", dtype=dtype)
@@ -400,7 +401,7 @@ def test_sparse_orbital_bz_spin_orbit_hermitian_not(dtype):
     assert np.abs((M - new)._csr._D).sum() == 0
 
 
-@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
 @pytest.mark.parametrize(
     "spin", ["unpolarized", "polarized", "non-colinear", "spin-orbit", "nambu"]
 )
@@ -435,7 +436,7 @@ def test_sparse_orbital_spin_make_hermitian(spin, finalize, dtype, sisl_allclose
             assert allclose(Mk, Mk.T.conj())
 
 
-@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
 @pytest.mark.parametrize(
     "spin", ["unpolarized", "polarized", "non-colinear", "spin-orbit", "nambu"]
 )
@@ -605,7 +606,7 @@ def test_sparse_orbital_transform_ortho_nc():
         assert np.abs(Mcsr[3] - Mt.tocsr(3)).sum() == 0
 
 
-@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
 def test_sparse_orbital_transform_ortho_so():
     M = SparseOrbitalBZSpin(geom.graphene(), spin="so")
     a = np.arange(M.spin.size(M.dtype)) + 0.3
@@ -634,7 +635,7 @@ def test_sparse_orbital_transform_ortho_so():
         assert np.abs(Mcsr[3] - Mt.tocsr(3)).sum() == 0
 
 
-@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
 def test_sparse_orbital_transform_nonortho_so():
     M = SparseOrbitalBZSpin(geom.graphene(), spin="so", orthogonal=False)
     a = np.arange(M.spin.size(M.dtype) + 1) + 0.3
