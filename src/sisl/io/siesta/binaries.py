@@ -1344,7 +1344,8 @@ class hsxSileSiesta(SileBinSiesta):
         if self.version == 0:
             warn(
                 MissingFermiLevelWarning(
-                    f"{self.file} does not contain Ef, too old version file."
+                    f"{self.base_file!s} (base={self.base_directory()!s}) "
+                    "does not contain Ef, too old version file."
                 )
             )
             return None
@@ -1358,7 +1359,9 @@ class hsxSileSiesta(SileBinSiesta):
             # This should then also work for HSX files in single-precision.
             warn(
                 MissingFermiLevelWarning(
-                    f"{self.file} does not contain a usable Ef, likely the Fermi-level hasn't been calculated by Siesta? (option = H.Setup.Only)"
+                    f"{self.base_file!s} (base={self.base_directory()!s}) "
+                    "does not contain a usable Ef, likely the Fermi-level "
+                    "has not been calculated by Siesta? (option = H.Setup.Only)"
                 )
             )
             Ef = 0.0
