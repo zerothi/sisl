@@ -184,23 +184,6 @@ def test_sparse_orbital_bz_non_colinear(sisl_allclose):
     run_Pk_hermitian_tests(MH)
 
 
-def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin("NC"))
-
-    M.construct(([0.1, 1.44], [[0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]]))
-    M.finalize()
-
-    M = (M + M.transpose(conjugate=True, spin=True)) * 0.5
-    MTRS = (M + M.trs()) * 0.5
-
-    # This will in principle also work for M since the above parameters preserve
-    # TRS
-    k = np.array([0.1, 0.1, 0])
-    eig1 = MTRS.eigh(k=k)
-    eig2 = MTRS.eigh(k=-k)
-    assert np.allclose(eig1, eig2)
-
-
 def _so_real2cmplx(p):
     return [p[0] + 1j * p[4], p[1] + 1j * p[5], p[2] + 1j * p[3], p[6] + 1j * p[7]]
 
@@ -348,37 +331,6 @@ def test_sparse_orbital_bz_nambu_astype():
     assert np.allclose(Mc.astype(np.float64).astype(np.complex128)._csr._D, Mc._csr._D)
 
 
-@pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
-@pytest.mark.parametrize("dtype", [np.float64, np.complex128])
-def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem(dtype):
-    M = SparseOrbitalBZSpin(geom.graphene(), spin="SO", dtype=dtype)
-
-    p0 = np.arange(1, 9) / 10
-    p1 = np.arange(2, 10) / 10
-
-    if dtype == np.complex128:
-        p0 = _so_real2cmplx(p0)
-        p1 = _so_real2cmplx(p1)
-
-    M.construct(
-        (
-            [0.1, 1.44],
-            [p0, p1],
-        )
-    )
-    M.finalize()
-
-    M = (M + M.transpose(conjugate=True, spin=True)) / 2
-    MTRS = (M + M.trs()) * 0.5
-
-    # This will in principle also work for M since the above parameters preserve
-    # TRS
-    k = np.array([0.1, 0.1, 0])
-    eig1 = MTRS.eigh(k=k)
-    eig2 = MTRS.eigh(k=-k)
-    assert np.allclose(eig1, eig2)
-
-
 @pytest.mark.parametrize("dtype", [np.float64, np.complex128])
 def test_sparse_orbital_bz_spin_orbit_hermitian_not(dtype):
     M = SparseOrbitalBZSpin(geom.graphene(), spin="SO", dtype=dtype)
@@ -434,6 +386,38 @@ def test_sparse_orbital_spin_make_hermitian(spin, finalize, dtype, sisl_allclose
         for k in ([0, 0, 0], [0.1, 0.2, 0.3]):
             Mk = proc(MH.Pk(k=k, format=format))
             assert allclose(Mk, Mk.T.conj())
+
+
+@pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
+@pytest.mark.parametrize(
+    "spin", ["unpolarized", "polarized", "non-colinear", "spin-orbit", "nambu"]
+)
+@pytest.mark.parametrize("dtype", [np.float64, np.complex128])
+def test_sparse_orbital_spin_make_trs(spin, dtype, sisl_allclose):
+    M = SparseOrbitalBZSpin(geom.graphene(), spin=spin, dtype=np.float64)
+    ns = M.shape[-1]
+
+    p0 = np.random.rand(ns)
+    p1 = np.random.rand(ns)
+
+    M.construct(
+        (
+            [0.1, 1.44],
+            [p0, p1],
+        )
+    )
+    M.finalize()
+    M = M.astype(dtype)
+
+    allclose = sisl_allclose[M.dtype]
+
+    MTRS = (M + M.trs()) / 2
+    assert allclose((MTRS - MTRS.trs())._csr._D, 0)
+
+    k = np.array([0.1, 0.2, 0.3])
+    eig1 = MTRS.eigh(k=k)
+    eig2 = MTRS.eigh(k=-k)
+    assert allclose(eig1, eig2)
 
 
 @pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")

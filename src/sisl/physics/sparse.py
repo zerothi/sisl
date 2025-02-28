@@ -1934,18 +1934,28 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 else:
                     D[:, 2] = np.conj(D[:, 2])
 
+        if self.dkind not in ("f", "i") and conjugate and not self.orthogonal:
+            D[:, -1] = np.conj(D[:, -1])
+
         return new
 
     def trs(self):
-        r"""Create a new matrix with applied time-reversal-symmetry
+        r"""Return a matrix with applied time-reversal operator
 
-        Time reversal symmetry is applied using the following equality:
+        For a Hamiltonian to obey time reversal symmetry, it must hold this
+        equality:
 
         .. math::
 
-            2\mathbf M^{\mathrm{TRS}} = \mathbf M + \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y
+            \mathbf M = \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y
 
-        where :math:`*` is the conjugation operator.
+        This method returns the RHS of the above equation.
+
+        If you want to ensure that your matrix fulfills TRS, simply do:
+
+        .. code::
+
+            M = (M + M.trs()) / 2
         """
         new = self.copy()
         sp = self.spin
@@ -1953,39 +1963,41 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         # Apply Pauli-Y on the left and right of each spin-box
         if sp.is_nambu:
-            raise NotImplementedError
             if self.dkind in ("f", "i"):
-                D[:, [0, 1, 3, 7]] = D[:, [1, 0, 7, 3]]
-                D[:, [4, 5, 2, 6]] = -D[:, [5, 4, 6, 2]]
-                # missing the Delta values
+                D[:, [0, 1, 3, 7]] = D[:, [1, 0, 7, 3]]  # diag real, off imag
+                D[:, [2, 4, 5, 6]] = -D[:, [6, 5, 4, 2]]  # diag imag, off real
+
+                # Re: S,Tu,Td
+                D[:, [8, 10, 12]] = D[:, [8, 12, 10]]
+                # Im: S,Tu,Td
+                D[:, [9, 11, 13]] = -D[:, [9, 13, 11]]
+                # Re: T0
+                D[:, 14] = -D[:, 14]
+                # nothing for Im T0
             else:
                 D[:, [0, 1]] = np.conj(D[:, [1, 0]])
                 D[:, [2, 3]] = -np.conj(D[:, [3, 2]])
-                # missing the Delta values
+
+                # S,Tu,Td
+                D[:, [4, 5, 6]] = np.conj(D[:, [4, 6, 5]])
+                # T0
+                D[:, 7] = -np.conj(D[:, 7])
 
         elif sp.is_spinorbit:
             if self.dkind in ("f", "i"):
-                # [R11, R22, R12, I12, I11, I22, R21, I21]
-                # [R11, R22] = [R22, R11]
-                # [I12, I21] = [I21, I12] (conj + Y @ Y[sign-changes conj])
-                D[:, [0, 1, 3, 7]] = D[:, [1, 0, 7, 3]]
-                # [I11, I22] = -[I22, I11] (conj + Y @ Y[no sign change])
-                # [R12, R21] = -[R21, R12] (Y @ Y)
-                D[:, [4, 5, 2, 6]] = -D[:, [5, 4, 6, 2]]
+                D[:, [0, 1, 3, 7]] = D[:, [1, 0, 7, 3]]  # diag real, off imag
+                D[:, [4, 5, 2, 6]] = -D[:, [5, 4, 6, 2]]  # diag imag, off real
             else:
-                # [R11, R22, R12, I12, I11, I22, R21, I21]
-                # [11, 22] = [22, 11]^*
                 D[:, [0, 1]] = np.conj(D[:, [1, 0]])
-                # [12, 21] = -[21, 12]^* (Y @ Y)
                 D[:, [2, 3]] = -np.conj(D[:, [3, 2]])
 
         elif sp.is_noncolinear:
             if self.dkind in ("f", "i"):
-                # [R11, R22, R12, I12]
-                D[:, 2] = -D[:, 2]
+                D[:, [0, 1]] = D[:, [1, 0]]
+                D[:, 2:4] = -D[:, 2:4]
             else:
-                # [R11, R22, 12]
-                D[:, 2] = -np.conj(D[:, 2])
+                D[:, [0, 1]] = np.conj(D[:, [1, 0]])
+                D[:, 2] = -D[:, 2]
 
         return new
 
