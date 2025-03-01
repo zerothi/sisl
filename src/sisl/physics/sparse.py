@@ -16,7 +16,7 @@ from sisl._core.sparse import issparse
 from sisl._core.sparse_geometry import SparseOrbital
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from sisl._internal import set_module
-from sisl.messages import warn
+from sisl.messages import deprecate_argument, warn
 from sisl.typing import AtomsIndex, GaugeType, KPoint
 
 from ._matrix_ddk import (
@@ -995,7 +995,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 self.MT22 = 6
                 self.MT0 = 7
 
-            # The overlap is the same as non-collinear
             self.Pk = self._Pk_nambu
             self.Sk = self._Sk_nambu
             self.dPk = self._dPk_nambu
@@ -1081,10 +1080,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                             p[3].conjugate(),
                             p[2].conjugate(),
                             # delta, note the singlet
-                            -p[4].conjugate(),
-                            p[5].conjugate(),
-                            p[6].conjugate(),
-                            p[7].conjugate(),
+                            p[4],
+                            -p[5],
+                            -p[6],
+                            -p[7],
                             # because it is already off-diagonal
                             *p[8:],
                         ]
@@ -1106,13 +1105,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                             -p[5],
                             p[2],
                             -p[3],
-                            -p[8],
+                            p[8],
                             p[9],
-                            p[10],
+                            -p[10],
                             -p[11],
-                            p[12],
+                            -p[12],
                             -p[13],
-                            p[14],
+                            -p[14],
                             -p[15],
                             *p[16:],
                         ]
@@ -1125,14 +1124,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 assert all(len(p) == nv for p in params)
 
                 if R[0] <= 0.1001:  # no atom closer than 0.1001 Ang!
-                    # We check that the the parameters here is Hermitian
+                    # We check that the parameters here is Hermitian
                     p = params[0]
                     if is_complex:
                         Me = np.array([[p[0], p[2]], [p[3], p[1]]], dtype_cplx)
                         # do Delta
-                        p = p[4:]
                         Md = np.array(
-                            [[p[1], p[0] + p[3]], [-p[0] + p[3], p[2]]], dtype_cplx
+                            [[p[5], p[4] + p[7]], [-p[4] + p[7], p[6]]], dtype_cplx
                         )
                     else:
                         Me = np.array(
@@ -1142,26 +1140,36 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                             ],
                             dtype_cplx,
                         )
-                        # do Delta
-                        p = p[8:]
                         Md = np.array(
                             [
-                                [p[2] + 1j * p[3], p[0] + p[6] + 1j * (p[1] + p[7])],
-                                [-p[0] + p[6] + 1j * (-p[1] + p[7]), p[4] + 1j * p[5]],
+                                [
+                                    p[10] + 1j * p[11],
+                                    p[8] + p[14] + 1j * (p[9] + p[15]),
+                                ],
+                                [
+                                    -p[8] + p[14] + 1j * (-p[9] + p[15]),
+                                    p[12] + 1j * p[13],
+                                ],
                             ],
                             dtype_cplx,
                         )
-                    if not np.allclose(Me, Me.T.conjugate()):
+                    d = Me - Me.T.conjugate()
+                    if not np.allclose(d, 0):
                         warn(
-                            f"{self.__class__.__name__}.create_construct is NOT "
-                            "Hermitian for M^e on-site terms. This is your responsibility! "
-                            "The code will continue silently, be AWARE!"
+                            f"{self.__class__.__name__}.create_construct got a "
+                            f"non-Hermitian on-site term for the M^e elements ({d.ravel()}). "
+                            "The code will continue like nothing happened..."
                         )
-                    if not np.allclose(Md, Md.T.conjugate()):
+                    # The sub-diagonal Delta is equivalent to -D^*.
+                    # This means that to compare one should do:
+                    #   (-D.conjugate()).T.conjugate()
+                    # which can be reduced to the following:
+                    d = Md + Md.T
+                    if not np.allclose(d, 0):
                         warn(
-                            f"{self.__class__.__name__}.create_construct is NOT "
-                            "Hermitian for Delta on-site terms. This is your responsibility! "
-                            "The code will continue silently, be AWARE!"
+                            f"{self.__class__.__name__}.create_construct got a "
+                            f"non-Hermitian on-site term for the M^d elements ({d.ravel()}). "
+                            "The code will continue like nothing happened..."
                         )
             elif self.spin.is_spinorbit:
                 if is_complex:
@@ -1205,11 +1213,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                             ],
                             dtype_cplx,
                         )
-                    if not np.allclose(onsite, onsite.T.conjugate()):
+                    d = onsite - onsite.T.conjugate()
+                    if not np.allclose(d, 0):
                         warn(
-                            f"{self.__class__.__name__}.create_construct is NOT "
-                            "Hermitian for on-site terms. This is your responsibility! "
-                            "The code will continue silently, be AWARE!"
+                            f"{self.__class__.__name__}.create_construct got a "
+                            f"non-Hermitian on-site term elements ({d.ravel()}). "
+                            "The code will continue like nothing happened..."
                         )
 
             elif self.spin.is_noncolinear:
@@ -1258,10 +1267,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return super().create_construct(R, params)
 
     def __len__(self):
-        r"""Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals)"""
+        r"""Returns number of rows in the basis (accounts for the non-collinear cases)"""
         if self.spin.is_diagonal:
             return self.no
-        return self.no * 2
+        # This will correctly multiply with the spinor size
+        # The spinors depends on NC/SOC/Nambu/Polarized
+        return self.no * self.spin.spinor
 
     def __str__(self):
         r"""Representation of the model"""
@@ -1785,14 +1796,27 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         S = self.Sk(k=k, dtype=dtype, gauge=gauge)
         return lin.eigsh(P, M=S, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
-    def transpose(self, hermitian: bool = False, spin: bool = True, sort: bool = True):
-        r"""A transpose copy of this object, possibly apply the Hermitian conjugate as well
+    @deprecate_argument(
+        "hermitian",
+        "conjugate",
+        "hermitian argument has changed to conjugate, please update " "your code",
+        "0.15.3",
+        "0.16",
+    )
+    def transpose(
+        self, *, conjugate: bool = False, spin: bool = True, sort: bool = True
+    ):
+        r"""A transpose copy of this object with options for spin-box and conjugations
+
+        Notes
+        -----
+        The overlap elements won't be conjugated, in case asked for.
 
         Parameters
         ----------
-        hermitian :
-           if true, also apply a spin-box Hermitian operator to ensure TRS, otherwise
-           only return the transpose values.
+        conjugate :
+           if true, also apply a conjugation of the values.
+           Together with ``spin=True``, this will result in the adjoint operator.
         spin :
            whether the spin-box is also transposed if this is false, and `hermitian` is true,
            then only imaginary values will change sign.
@@ -1805,40 +1829,57 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         D = new._csr._D
 
         if sp.is_nambu:
-            if hermitian and spin:
+            if conjugate and spin:
                 # conjugate the imaginary value and transpose spin-box
+                # For Nambu things are a bit different.
+                # This is because we have an extra Delta sub-matrix
+                # which is already *off-diagonal*.
+                # And so when you do a ^H, you'll here do a i-j ^H
+                # but also an internal -Delta^* that needs accounting.
+                # I.e. the Hermitian property says:
+                #  Delta_eihj = Delta_hjei^H
+                #             = (-Delta_ejhi^*)^H
+                # Which means:
+                #  Delta_ueiuhj = -Delta_uejuhi
+                #  Delta_ueidhj = -Delta_dejuhi
+                #  Delta_deiuhj = -Delta_uejdhi
+                #  Delta_deidhj = -Delta_dejdhi
+                # I.e. anti-Hermitian *only* in the electron-hole indices.
                 if self.dkind in ("f", "i"):
                     # imaginary components (including transposing)
                     #    12,11,22,21
                     D[:, [3, 4, 5, 7]] = -D[:, [7, 4, 5, 3]]
                     # R12 <-> R21
                     D[:, [2, 6]] = D[:, [6, 2]]
-                    # real S, otherwise imaginary components of Delta
-                    D[:, [8, 11, 13, 15]] = -D[:, [8, 11, 13, 15]]
+                    # Delta values
+                    D[:, 10:16] = -D[:, 10:16]
                 else:
                     D[:, [0, 1, 2, 3]] = np.conj(D[:, [0, 1, 3, 2]])
-                    # delta values
-                    D[:, 4:8] = np.conj(D[:, 4:8])
-                    D[:, 4] = -D[:, 4]
-            elif hermitian:
+                    # Delta values
+                    D[:, 5:8] = -D[:, 5:8]
+
+            elif conjugate:
                 # conjugate the imaginary value
                 if self.dkind in ("f", "i"):
                     # imaginary components
                     #    12,11,22,21
-                    D[:, [3, 4, 5, 7, 9, 11, 13, 15]] *= -1.0
+                    D[:, [3, 4, 5, 7, 9, 11, 13, 15]] = -D[
+                        :, [3, 4, 5, 7, 9, 11, 13, 15]
+                    ]
                 else:
-                    D[:, :] = np.conj(D[:, :])
+                    D[:, :8] = np.conj(D[:, :8])
             elif spin:
                 # transpose spin-box, 12 <-> 21
                 if self.dkind in ("f", "i"):
                     D[:, [2, 3, 6, 7]] = D[:, [6, 7, 2, 3]]
-                    D[:, [8, 9]] = -D[:, [8, 9]]
+                    D[:, [9, 10, 12, 14]] = -D[:, [9, 10, 12, 14]]
                 else:
                     D[:, [2, 3]] = D[:, [3, 2]]
-                    D[:, 4] = -D[:, 4]
+                    D[:, 4] = np.conj(D[:, 4])
+                    D[:, 5:8] = -np.conj(D[:, 5:8])
 
         elif sp.is_spinorbit:
-            if hermitian and spin:
+            if conjugate and spin:
                 # conjugate the imaginary value and transpose spin-box
                 if self.dkind in ("f", "i"):
                     # imaginary components (including transposing)
@@ -1848,14 +1889,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     D[:, [2, 6]] = D[:, [6, 2]]
                 else:
                     D[:, [0, 1, 2, 3]] = np.conj(D[:, [0, 1, 3, 2]])
-            elif hermitian:
+            elif conjugate:
                 # conjugate the imaginary value
                 if self.dkind in ("f", "i"):
                     # imaginary components
                     #    12,11,22,21
-                    D[:, [3, 4, 5, 7]] *= -1.0
+                    D[:, [3, 4, 5, 7]] = -D[:, [3, 4, 5, 7]]
                 else:
-                    D[:, :] = np.conj(D[:, :])
+                    D[:, :4] = np.conj(D[:, :4])
             elif spin:
                 # transpose spin-box, 12 <-> 21
                 if self.dkind in ("f", "i"):
@@ -1864,9 +1905,22 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     D[:, [2, 3]] = D[:, [3, 2]]
 
         elif sp.is_noncolinear:
-            if hermitian and spin:
-                pass  # do nothing, it is already ensured Hermitian
-            elif hermitian or spin:
+            if conjugate and spin:
+                if self.dkind in ("f", "i"):
+                    pass
+                else:
+                    # While strictly not necessary, this is vital
+                    # if the user has wrong specification
+                    # of the on-site terms
+                    D[:, [0, 1]] = np.conj(D[:, [0, 1]])
+            elif conjugate:
+                # conjugate the imaginary value
+                # since for transposing D[:, 3] is the same
+                if self.dkind in ("f", "i"):
+                    D[:, 3] = -D[:, 3]
+                else:
+                    D[:, :3] = np.conj(D[:, :3])
+            elif spin:
                 # conjugate the imaginary value
                 # since for transposing D[:, 3] is the same
                 # value used for [--, ud]
@@ -1880,18 +1934,28 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 else:
                     D[:, 2] = np.conj(D[:, 2])
 
+        if self.dkind not in ("f", "i") and conjugate and not self.orthogonal:
+            D[:, -1] = np.conj(D[:, -1])
+
         return new
 
     def trs(self):
-        r"""Create a new matrix with applied time-reversal-symmetry
+        r"""Return a matrix with applied time-reversal operator
 
-        Time reversal symmetry is applied using the following equality:
+        For a Hamiltonian to obey time reversal symmetry, it must hold this
+        equality:
 
         .. math::
 
-            2\mathbf M^{\mathrm{TRS}} = \mathbf M + \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y
+            \mathbf M = \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y
 
-        where :math:`*` is the conjugation operator.
+        This method returns the RHS of the above equation.
+
+        If you want to ensure that your matrix fulfills TRS, simply do:
+
+        .. code::
+
+            M = (M + M.trs()) / 2
         """
         new = self.copy()
         sp = self.spin
@@ -1899,31 +1963,41 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         # Apply Pauli-Y on the left and right of each spin-box
         if sp.is_nambu:
-            raise NotImplementedError
+            if self.dkind in ("f", "i"):
+                D[:, [0, 1, 3, 7]] = D[:, [1, 0, 7, 3]]  # diag real, off imag
+                D[:, [2, 4, 5, 6]] = -D[:, [6, 5, 4, 2]]  # diag imag, off real
+
+                # Re: S,Tu,Td
+                D[:, [8, 10, 12]] = D[:, [8, 12, 10]]
+                # Im: S,Tu,Td
+                D[:, [9, 11, 13]] = -D[:, [9, 13, 11]]
+                # Re: T0
+                D[:, 14] = -D[:, 14]
+                # nothing for Im T0
+            else:
+                D[:, [0, 1]] = np.conj(D[:, [1, 0]])
+                D[:, [2, 3]] = -np.conj(D[:, [3, 2]])
+
+                # S,Tu,Td
+                D[:, [4, 5, 6]] = np.conj(D[:, [4, 6, 5]])
+                # T0
+                D[:, 7] = -np.conj(D[:, 7])
 
         elif sp.is_spinorbit:
             if self.dkind in ("f", "i"):
-                # [R11, R22, R12, I12, I11, I22, R21, I21]
-                # [R11, R22] = [R22, R11]
-                # [I12, I21] = [I21, I12] (conj + Y @ Y[sign-changes conj])
-                D[:, [0, 1, 3, 7]] = D[:, [1, 0, 7, 3]]
-                # [I11, I22] = -[I22, I11] (conj + Y @ Y[no sign change])
-                # [R12, R21] = -[R21, R12] (Y @ Y)
-                D[:, [4, 5, 2, 6]] = -D[:, [5, 4, 6, 2]]
+                D[:, [0, 1, 3, 7]] = D[:, [1, 0, 7, 3]]  # diag real, off imag
+                D[:, [4, 5, 2, 6]] = -D[:, [5, 4, 6, 2]]  # diag imag, off real
             else:
-                # [R11, R22, R12, I12, I11, I22, R21, I21]
-                # [11, 22] = [22, 11]^*
                 D[:, [0, 1]] = np.conj(D[:, [1, 0]])
-                # [12, 21] = -[21, 12]^* (Y @ Y)
                 D[:, [2, 3]] = -np.conj(D[:, [3, 2]])
 
         elif sp.is_noncolinear:
             if self.dkind in ("f", "i"):
-                # [R11, R22, R12, I12]
-                D[:, 2] = -D[:, 2]
+                D[:, [0, 1]] = D[:, [1, 0]]
+                D[:, 2:4] = -D[:, 2:4]
             else:
-                # [R11, R22, 12]
-                D[:, 2] = -np.conj(D[:, 2])
+                D[:, [0, 1]] = np.conj(D[:, [1, 0]])
+                D[:, 2] = -D[:, 2]
 
         return new
 
@@ -1945,15 +2019,17 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         is changed according to the following conversions:
 
         Upscaling
-        * unpolarized -> (polarized, non-colinear, spinorbit): Copy unpolarized value to both up and down components
-        * polarized -> (non-colinear, spinorbit): Copy up and down components
-        * non-colinear -> spinorbit: Copy first four spin components
+        * unpolarized -> (polarized, non-colinear, spinorbit, nambu): Copy unpolarized value to both up and down components
+        * polarized -> (non-colinear, spinorbit, nambu): Copy up and down components
+        * non-colinear -> (spinorbit, nambu): Copy first four spin components
+        * spinorbit -> nambu: Copy first four spin components
         * all other new spin components are set to zero
 
         Downscaling
-        * (polarized, non-colinear, spinorbit) -> unpolarized: Set unpolarized value to a mix 0.5*up + 0.5*down
-        * (non-colinear, spinorbit) -> polarized: Keep up and down spin components
-        * spinorbit -> non-colinear: Keep first four spin components
+        * (polarized, non-colinear, spinorbit, nambu) -> unpolarized: Set unpolarized value to a mix 0.5*up + 0.5*down
+        * (non-colinear, spinorbit, nambu) -> polarized: Keep up and down spin components
+        * (spinorbit, nambu) -> non-colinear: Keep first four spin components
+        * nambu -> spinorbit: Keep first four spin components
         * all other spin components are dropped
 
         3. Orthogonality:

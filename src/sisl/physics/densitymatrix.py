@@ -1281,9 +1281,9 @@ class DensityMatrix(_densitymatrix):
             orbital angular momentum with the last dimension equalling the :math:`L_x`, :math:`L_y` and :math:`L_z` components
         """
         # Check that the spin configuration is correct
-        if not self.spin.is_spinorbit:
+        if not (self.spin.is_spinorbit or self.spin.is_nambu):
             raise ValueError(
-                f"{self.__class__.__name__}.orbital_momentum requires a spin-orbit matrix"
+                f"{self.__class__.__name__}.orbital_momentum requires minimum a spin-orbit matrix"
             )
 
         # First we calculate

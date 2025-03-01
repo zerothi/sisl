@@ -195,7 +195,7 @@ class TestDensityMatrix:
         grid = Grid(0.2, geometry=setup.D.geometry)
         D.density(grid, method=density_method)
 
-    @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+    @pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
     def test_rho2(self, density_method):
         bond = 1.42
         sq3h = 3.0**0.5 * 0.5
@@ -255,7 +255,7 @@ class TestDensityMatrix:
         D.density(grid, Spin.Y, method=density_method)
         D.density(grid, Spin.Z, method=density_method)
 
-    @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+    @pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
     def test_orbital_momentum(self):
         bond = 1.42
         sq3h = 3.0**0.5 * 0.5
@@ -347,7 +347,7 @@ class TestDensityMatrix:
         assert not np.allclose(D_mull, d_mull)
         assert np.allclose(D_mull[0], d_mull[0])
 
-    @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+    @pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
     def test_spin_align_so(self):
         bond = 1.42
         sq3h = 3.0**0.5 * 0.5
@@ -485,7 +485,7 @@ class TestDensityMatrix:
         assert not np.allclose(D_mull, d_mull)
         assert np.allclose(D_mull[0], d_mull[0])
 
-    @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+    @pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
     def test_spin_rotate_so(self):
         bond = 1.42
         sq3h = 3.0**0.5 * 0.5

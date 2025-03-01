@@ -274,7 +274,7 @@ class hamiltonianSile(Sile):
         if hermitian:
             herm_acc = kwargs.get("herm_acc", 1e-6)
 
-            h_ht = H - H.transpose(hermitian=True)
+            h_ht = H - H.transpose(conjugate=True, spin=True)
             amax = np.abs(h_ht._csr._D).max()
             if amax > herm_acc:
                 warn(
