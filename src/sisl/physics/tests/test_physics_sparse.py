@@ -422,8 +422,10 @@ def test_sparse_orbital_spin_make_trs(spin, dtype, sisl_allclose):
     allclose = sisl_allclose[M.dtype]
 
     MTRS = M.trs()
-    if spin != "unpolarized":
-        # we swap the diagonal components *always*
+    if spin == "unpolarized":
+        if np.dtype(dtype).kind == "c":
+            assert not allclose((M - MTRS)._csr._D, 0)
+    else:
         assert not allclose((M - MTRS)._csr._D, 0)
     MTRS = (M + MTRS) / 2
     assert allclose((MTRS - MTRS.trs())._csr._D, 0)

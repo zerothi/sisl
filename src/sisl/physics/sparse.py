@@ -2014,6 +2014,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             else:
                 D[:, [0, 1]] = np.conj(D[:, [1, 0]])
 
+        elif sp.is_unpolarized:
+            if self.dkind not in ("f", "i"):
+                D[:, 0] = np.conj(D[:, 0])
+        else:
+            raise NotImplementedError(f"Unknown spin-configuration: {sp!s}")
+
         if self.dkind not in ("f", "i") and not self.orthogonal:
             # The overlap component is diagonal (like a polarized)
             # so we will take its conjugate
