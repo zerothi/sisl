@@ -14,11 +14,11 @@ on:
     branches: [main]
     paths:
       - '**.py'
-      - '**.ipynb'
+      - '**.pyx'
   pull_request:
     paths:
       - '**.py'
-      - '**.ipynb'
+      - '**.pyx'
   schedule:
     # only once every 4 days
     # We can always force run this.
