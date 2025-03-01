@@ -360,11 +360,13 @@ def test_sparse_orbital_bz_spin_orbit_hermitian_not(dtype):
 @pytest.mark.parametrize("finalize", [True, False])
 @pytest.mark.parametrize("dtype", [np.float64, np.complex128])
 def test_sparse_orbital_spin_make_hermitian(spin, finalize, dtype, sisl_allclose):
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=spin, dtype=np.float64)
+    M = SparseOrbitalBZSpin(
+        geom.graphene(), spin=spin, dtype=np.complex128, orthogonal=False
+    )
     ns = M.shape[-1]
 
-    p0 = np.random.rand(ns)
-    p1 = np.random.rand(ns)
+    p0 = np.random.rand(ns) + 1j * np.random.rand(ns)
+    p1 = np.random.rand(ns) + 1j * np.random.rand(ns)
 
     M.construct(
         (
@@ -386,6 +388,8 @@ def test_sparse_orbital_spin_make_hermitian(spin, finalize, dtype, sisl_allclose
         for k in ([0, 0, 0], [0.1, 0.2, 0.3]):
             Mk = proc(MH.Pk(k=k, format=format))
             assert allclose(Mk, Mk.T.conj())
+            Mk = proc(MH.Sk(k=k, format=format))
+            assert allclose(Mk, Mk.T.conj())
 
 
 @pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
@@ -394,11 +398,17 @@ def test_sparse_orbital_spin_make_hermitian(spin, finalize, dtype, sisl_allclose
 )
 @pytest.mark.parametrize("dtype", [np.float64, np.complex128])
 def test_sparse_orbital_spin_make_trs(spin, dtype, sisl_allclose):
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=spin, dtype=np.float64)
+    M = SparseOrbitalBZSpin(
+        geom.graphene(), spin=spin, dtype=np.complex128, orthogonal=False
+    )
     ns = M.shape[-1]
 
-    p0 = np.random.rand(ns)
-    p1 = np.random.rand(ns)
+    p0 = np.random.rand(ns) + 1j * np.random.rand(ns)
+    p1 = np.random.rand(ns) + 1j * np.random.rand(ns)
+    # overlap matrices needs to have certain structure, otherwise
+    # diagonalization will fail!
+    p0[-1] = 1 + 1j * p0[-1].imag
+    p1[-1] = 0.2 + 1j * p1[-1].imag
 
     M.construct(
         (
@@ -411,7 +421,11 @@ def test_sparse_orbital_spin_make_trs(spin, dtype, sisl_allclose):
 
     allclose = sisl_allclose[M.dtype]
 
-    MTRS = (M + M.trs()) / 2
+    MTRS = M.trs()
+    if spin != "unpolarized":
+        # we swap the diagonal components *always*
+        assert not allclose((M - MTRS)._csr._D, 0)
+    MTRS = (M + MTRS) / 2
     assert allclose((MTRS - MTRS.trs())._csr._D, 0)
 
     k = np.array([0.1, 0.2, 0.3])
@@ -428,12 +442,12 @@ def test_sparse_orbital_spin_make_trs(spin, dtype, sisl_allclose):
 @pytest.mark.parametrize("orthogonal", [True, False])
 def test_sparse_orbital_spin_transpose(spin, dtype, orthogonal, sisl_allclose):
     M = SparseOrbitalBZSpin(
-        geom.graphene(), spin=spin, orthogonal=orthogonal, dtype=np.float64
+        geom.graphene(), spin=spin, orthogonal=orthogonal, dtype=np.complex128
     )
     ns = M.shape[-1]
 
-    p0 = np.random.rand(ns)
-    p1 = np.random.rand(ns)
+    p0 = np.random.rand(ns) + 1j * np.random.rand(ns)
+    p1 = np.random.rand(ns) + 1j * np.random.rand(ns)
 
     M.construct(
         (

@@ -1934,6 +1934,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 else:
                     D[:, 2] = np.conj(D[:, 2])
 
+        elif conjugate:
+            ns = sp.size(D.dtype)
+            D[:, :ns] = np.conj(D[:, :ns])
+
         if self.dkind not in ("f", "i") and conjugate and not self.orthogonal:
             D[:, -1] = np.conj(D[:, -1])
 
@@ -1956,6 +1960,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         .. code::
 
             M = (M + M.trs()) / 2
+
+        Notes
+        -----
+        This method will be obsoleted at some point when :issue:`816` is
+        completed.
         """
         new = self.copy()
         sp = self.spin
@@ -1998,6 +2007,20 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             else:
                 D[:, [0, 1]] = np.conj(D[:, [1, 0]])
                 D[:, 2] = -D[:, 2]
+
+        elif sp.is_polarized:
+            if self.dkind in ("f", "i"):
+                D[:, [0, 1]] = D[:, [1, 0]]
+            else:
+                D[:, [0, 1]] = np.conj(D[:, [1, 0]])
+
+        if self.dkind not in ("f", "i") and not self.orthogonal:
+            # The overlap component is diagonal (like a polarized)
+            # so we will take its conjugate
+            # This means that the overlap matrix *after*
+            #   (M + M.trs()) / 2
+            # will have 0 imaginary component.
+            D[:, -1] = np.conj(D[:, -1])
 
         return new
 
