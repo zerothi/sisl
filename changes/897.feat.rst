@@ -1,5 +1,4 @@
-Added atom borders in ``sisl.viz`` plots
------------------------------------------
+Added atom borders in `sisl.viz` plots
 
 The possibility to add and modify borders of plotted
 atoms has been added. In geometry plots, ``atoms_style``
