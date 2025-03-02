@@ -71,6 +71,9 @@ def _phase3_csr(ints_st[::1] ptr,
     cdef cnp.ndarray[floatcomplexs_st, mode='c'] Vx = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef cnp.ndarray[floatcomplexs_st, mode='c'] Vy = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef cnp.ndarray[floatcomplexs_st, mode='c'] Vz = np.zeros([v_col.shape[0]], dtype=dtype)
+    cdef floatcomplexs_st[::1] vx = Vx
+    cdef floatcomplexs_st[::1] vy = Vy
+    cdef floatcomplexs_st[::1] vz = Vz
 
     # Local columns
     cdef ints_st nr = ncol.shape[0]
@@ -85,9 +88,9 @@ def _phase3_csr(ints_st[::1] ptr,
                     c = col[ind] % nr
                     s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                     d = D[ind, idx]
-                    Vx[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[ind, 0])
-                    Vy[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[ind, 1])
-                    Vz[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[ind, 2])
+                    vx[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[ind, 0])
+                    vy[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[ind, 1])
+                    vz[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[ind, 2])
 
         else:
             for r in range(nr):
@@ -96,9 +99,9 @@ def _phase3_csr(ints_st[::1] ptr,
                     s = col[ind] / nr
                     s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                     d = D[ind, idx]
-                    Vx[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[s, 0])
-                    Vy[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[s, 1])
-                    Vz[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[s, 2])
+                    vx[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[s, 0])
+                    vy[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[s, 1])
+                    vz[v_ptr[r] + s_idx] += <floatcomplexs_st> (d * phases[s, 2])
 
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
@@ -119,6 +122,9 @@ def _phase3_array(ints_st[::1] ptr,
     cdef cnp.ndarray[floatcomplexs_st, ndim=2, mode='c'] Vx = np.zeros([nr, nr], dtype=dtype)
     cdef cnp.ndarray[floatcomplexs_st, ndim=2, mode='c'] Vy = np.zeros([nr, nr], dtype=dtype)
     cdef cnp.ndarray[floatcomplexs_st, ndim=2, mode='c'] Vz = np.zeros([nr, nr], dtype=dtype)
+    cdef floatcomplexs_st[:, ::1] vx = Vx
+    cdef floatcomplexs_st[:, ::1] vy = Vy
+    cdef floatcomplexs_st[:, ::1] vz = Vz
 
     # Local columns
     cdef ints_st r, ind, s, c
@@ -130,9 +136,9 @@ def _phase3_array(ints_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] % nr
                     d = D[ind, idx]
-                    Vx[r, c] += <floatcomplexs_st> (d * phases[ind, 0])
-                    Vy[r, c] += <floatcomplexs_st> (d * phases[ind, 1])
-                    Vz[r, c] += <floatcomplexs_st> (d * phases[ind, 2])
+                    vx[r, c] += <floatcomplexs_st> (d * phases[ind, 0])
+                    vy[r, c] += <floatcomplexs_st> (d * phases[ind, 1])
+                    vz[r, c] += <floatcomplexs_st> (d * phases[ind, 2])
 
         else:
             for r in range(nr):
@@ -140,9 +146,9 @@ def _phase3_array(ints_st[::1] ptr,
                     c = col[ind] % nr
                     s = col[ind] / nr
                     d = D[ind, idx]
-                    Vx[r, c] += <floatcomplexs_st> (d * phases[s, 0])
-                    Vy[r, c] += <floatcomplexs_st> (d * phases[s, 1])
-                    Vz[r, c] += <floatcomplexs_st> (d * phases[s, 2])
+                    vx[r, c] += <floatcomplexs_st> (d * phases[s, 0])
+                    vy[r, c] += <floatcomplexs_st> (d * phases[s, 1])
+                    vz[r, c] += <floatcomplexs_st> (d * phases[s, 2])
 
     return Vx, Vy, Vz
 

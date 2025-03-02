@@ -251,7 +251,6 @@ def _phase_sc_csr_nc(ints_st[::1] ptr,
                     d = &D[ind, 0]
                     func(d, ph, M)
                     _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
-
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c
@@ -444,7 +443,6 @@ def _phase_sc_array_diag(ints_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] * per_row
                     d = <complexs_st> (D[ind, idx] * phases[ind])
-
                     for ic in range(per_row):
                         v[rr+ic, c+ic] = d
 
@@ -454,7 +452,6 @@ def _phase_sc_array_diag(ints_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] * per_row
                     d = <complexs_st> (D[ind, idx] * phases[col[ind] / nr])
-
                     for ic in range(per_row):
                         v[rr+ic, c+ic] = d
 
@@ -534,7 +531,6 @@ def _phase_sc_csr_so(ints_st[::1] ptr,
                     d = &D[ind, 0]
                     func(d, ph, M)
                     _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
-
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c
@@ -556,7 +552,6 @@ def _phase_sc_csr_so(ints_st[::1] ptr,
                     d = &D[ind, 0]
                     func(d, ph, M)
                     _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
-
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c

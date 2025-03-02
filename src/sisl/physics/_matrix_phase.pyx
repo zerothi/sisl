@@ -218,7 +218,7 @@ def _phase_csr_diag(ints_st[::1] ptr,
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
-                    d = (phases[ind] * D[ind, idx])
+                    d = phases[ind] * D[ind, idx]
                     for ic in range(per_row):
                         v[v_ptr[rr+ic] + s_idx] += d
 
@@ -232,7 +232,7 @@ def _phase_csr_diag(ints_st[::1] ptr,
                     tmp = v_col[v_ptr[rr]:v_ptr[rr] + v_ncol[rr]]
                     s_idx = _index_sorted(tmp, c)
 
-                    d = (phases[s] * D[ind, idx])
+                    d = phases[s] * D[ind, idx]
                     for ic in range(per_row):
                         v[v_ptr[rr+ic] + s_idx] += d
 
@@ -276,7 +276,7 @@ def _phase_array_diag(ints_st[::1] ptr,
                 rr = r * per_row
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = (col[ind] % nr) * per_row
-                    d = (phases[ind] * D[ind, idx])
+                    d = phases[ind] * D[ind, idx]
                     for ic in range(per_row):
                         v[rr + ic, c + ic] += d
 
@@ -286,7 +286,7 @@ def _phase_array_diag(ints_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = (col[ind] % nr) * per_row
                     s = col[ind] / nr
-                    d = (phases[s] * D[ind, idx])
+                    d = phases[s] * D[ind, idx]
                     for ic in range(per_row):
                         v[rr + ic, c + ic] += d
 
@@ -698,7 +698,6 @@ def _phase_array_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-
                     _matrix_add_array_nambu(rr, c, v, M)
 
         elif p_opt == 0:
@@ -710,7 +709,6 @@ def _phase_array_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-
                     _matrix_add_array_nambu(rr, c, v, M)
 
         else:
@@ -723,7 +721,6 @@ def _phase_array_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-
                     _matrix_add_array_nambu(rr, c, v, M)
 
     return V
