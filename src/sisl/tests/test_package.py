@@ -67,4 +67,4 @@ def test_dispatch_methods():
 
 def test_dispatch_methods_not_allowed():
     with pytest.raises(sisl.SislError):
-        sisl.tile(2)
+        sisl.tile({}, 0, 2)

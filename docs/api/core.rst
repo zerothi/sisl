@@ -29,6 +29,17 @@ sisl objects.
 
    Hence, the returned object will be a `sisl.Geometry` object.
 
+   This can in some cases lead to odd behaviour, e.g.:
+
+   .. code::
+
+      import sisl as si
+
+      si.tile(2, 2, axis=0)
+
+   This will run, because ``2`` can be converted to a `Lattice` object
+   of a square box of side-lengths ``2``.
+
 
 .. list of methods that currently are dispatched can be created via
 
