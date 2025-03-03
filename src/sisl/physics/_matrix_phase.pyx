@@ -104,7 +104,7 @@ def _phase_csr(ints_st[::1] ptr,
 
                     tmp = v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]]
                     s_idx = _index_sorted(tmp, c)
-                    v[v_ptr[r] + s_idx] += <floatcomplexs_st> (D[ind, idx])
+                    v[v_ptr[r] + s_idx] += <floatcomplexs_st> D[ind, idx]
 
         elif p_opt == 0:
             for r in range(nr):

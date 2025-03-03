@@ -31,7 +31,7 @@ def _phase_k(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
     if is_gamma(k):
         # no - phases required
         p_opt = -1
-        phases = np.empty([0], dtype=dtype)
+        phases = np.ones(1, dtype=dtype)
 
     elif gauge == "atomic":
         M.finalize()
@@ -51,11 +51,13 @@ def matrix_k(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, f
     dtype = phase_dtype(k, M.dtype, dtype)
     p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
 
+    cdef ints_st udx = idx
     # Check that the dimension *works*
+    cdef ints_st shapem1 = M.shape[-1]
     if idx < 0:
-        idx += M.shape[-1]
-    if idx < 0 or M.shape[-1] <= idx:
-        d = M.shape[-1]
+        udx += shapem1
+    if udx < 0 or shapem1 <= udx:
+        d = shapem1
         raise ValueError(f"matrix_k: unknown index specification {idx} must be in 0:{d}")
 
     csr = M._csr
@@ -68,13 +70,13 @@ def matrix_k(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, f
         nc = M.geometry.no_s
 
         if format in ("array", "matrix", "dense"):
-            return _phase_sc_array(csr.ptr, csr.ncol, csr.col, nc, csr._D, idx, phases, p_opt)
+            return _phase_sc_array(csr.ptr, csr.ncol, csr.col, nc, csr._D, udx, phases, p_opt)
 
-        return _phase_sc_csr(csr.ptr, csr.ncol, csr.col, nc, csr._D, idx, phases, p_opt).asformat(format)
+        return _phase_sc_csr(csr.ptr, csr.ncol, csr.col, nc, csr._D, udx, phases, p_opt).asformat(format)
 
 
     if format in ("array", "matrix", "dense"):
-        return _phase_array(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
+        return _phase_array(csr.ptr, csr.ncol, csr.col, csr._D, udx, phases, p_opt)
 
     return _phase_csr(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
