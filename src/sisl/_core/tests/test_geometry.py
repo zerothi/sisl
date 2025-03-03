@@ -8,6 +8,7 @@ import itertools
 import numpy as np
 import pytest
 
+import sisl as si
 import sisl.geom as sisl_geom
 from sisl import (
     Atom,
@@ -1561,12 +1562,32 @@ class TestGeometry:
 
     # Test ASE (but only fail if present)
 
+    def test_geometry_dispatch(self):
+        pytest.importorskip("ase", reason="ase not available")
+        gr = sisl_geom.graphene()
+        to_ase = gr.to.ase()
+
+        ase_rotate = si.rotate(to_ase, 30, [0, 0, 1])
+        assert isinstance(ase_rotate, type(to_ase))
+        ase_sisl_rotate = si.rotate(to_ase, 30, [0, 0, 1], ret_sisl=True)
+        assert isinstance(ase_sisl_rotate, Geometry)
+        geom_rotate = si.rotate(gr, 30, [0, 0, 1])
+
+        assert geom_rotate.equal(ase_sisl_rotate, R=False)
+
     def test_geometry_ase_new_to(self):
         pytest.importorskip("ase", reason="ase not available")
         gr = sisl_geom.graphene()
         to_ase = gr.to.ase()
         from_ase = gr.new(to_ase)
         assert gr.equal(from_ase, R=False)
+
+    def test_geometry_ase_run_center(self):
+        pytest.importorskip("ase", reason="ase not available")
+        gr = sisl_geom.graphene()
+        ase_atoms = gr.to.ase()
+        from_ase = si.center(ase_atoms)
+        assert np.allclose(gr.center(), from_ase)
 
     @pytest.mark.xfail(
         reason="pymatgen backconversion sets nsc=[3, 3, 3], we need to figure this out"

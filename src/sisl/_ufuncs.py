@@ -4,9 +4,10 @@
 from __future__ import annotations
 
 import inspect
+import types
 from functools import singledispatch
 from textwrap import dedent
-from typing import Optional
+from typing import Any, Optional
 
 from sisl._lib._docscrape import FunctionDoc
 from sisl.messages import SislError, warn
@@ -142,9 +143,66 @@ def register_sisl_dispatch(
             # create a new method that will be stored
             # as a place-holder for the dispatch methods.
 
-            def method_registry(obj, *args, **kwargs):
+            # The default method needs access to it-self.
+            # In this way we can figure out if there are
+            # some mechanism by which we can recover
+            # a meaningful action.
+            # I.e. this small hack will allow one to do this:
+            #  @register_sisl_dispatch(Geometry)
+            #  def func(geometry: Geometry, ...)
+            #
+            #  from ase import Atoms
+            #  func(Atoms(...), ...)
+            #
+            # The reason is that func won't find any registered
+            # classes under Atoms, and so it will run through
+            # the registered classes, trying out `cls.new` for each
+            # of them. And then re-call the function it self.
+
+            def method_registry(obj: Any, *args, **kwargs):
+                nonlocal name, method_registry
+
+                # Obviously, the method has been called without finding the
+                # correct dispatch method.
+                def skip_built_ins(items):
+                    for cls, cls_func in items:
+                        if not isinstance(cls, types.BuiltinFunctionType):
+                            yield cls, cls_func
+
+                # Whether to return a sisl object
+                ret_sisl = kwargs.pop("ret_sisl", False)
+
+                for cls, cls_func in skip_built_ins(method_registry.registry.items()):
+
+                    # Try and get the conversion method
+                    # Currently we'll only use `new` for consistency
+                    # I don't know if this will work for other
+                    # keys as well...
+                    new = getattr(cls, "new", None)
+
+                    if new is not None:
+                        try:
+                            # Try and convert to a sisl-compatible object
+                            sisl_obj = cls.new(obj)
+                            sisl_obj = cls_func(sisl_obj, *args, **kwargs)
+                            if ret_sisl or not isinstance(sisl_obj, cls):
+                                # return the simple sisl object.
+                                # This will automatically return if the method it
+                                # self does not return the input argument. Because
+                                # then the path back to the original one is not
+                                # obvious.
+                                # E.g. sisl.center
+                                return sisl_obj
+
+                            # Back-convert the object into the object again
+                            return sisl_obj.to[type(obj)]()
+
+                        except KeyError:
+                            pass
+
                 raise SislError(
-                    f"Calling '{name}' with a non-registered type, {type(obj)} has not been registered."
+                    f"Calling '{name}' with a non-registered type, {type(obj)} has not "
+                    "been registered, and cannot be converted to a sisl type."
                 )
 
             doc = dedent(
