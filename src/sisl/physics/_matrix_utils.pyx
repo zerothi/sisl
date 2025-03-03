@@ -43,66 +43,66 @@ M[7] == Delta[1, 1]
 """
 
 
-cdef inline void _matrix_add_csr_nc(const ints_st[::1] v_ptr,
-                                    const ints_st r,
-                                    const ints_st r_idx,
-                                    complexs_st[::1] v,
-                                    const complexs_st *M) noexcept nogil:
+cdef inline void matrix_add_csr_nc(const ints_st[::1] v_ptr,
+                                   const ints_st r,
+                                   const ints_st r_idx,
+                                   complexs_st[::1] v,
+                                   const complexs_st *M) noexcept nogil:
     v[v_ptr[r] + r_idx] += M[0]
     v[v_ptr[r] + r_idx+1] += M[1]
     v[v_ptr[r+1] + r_idx] += M[2]
     v[v_ptr[r+1] + r_idx+1] += M[3]
 
-cdef inline void _matrix_add_array_nc(const ints_st r,
-                                      const ints_st c,
-                                      complexs_st[:, ::1] v,
-                                      const complexs_st *M) noexcept nogil:
+cdef inline void matrix_add_array_nc(const ints_st r,
+                                     const ints_st c,
+                                     complexs_st[:, ::1] v,
+                                     const complexs_st *M) noexcept nogil:
     v[r, c] += M[0]
     v[r, c+1] += M[1]
     v[r+1, c] += M[2]
     v[r+1,c+1] += M[3]
 
-cdef inline void _matrix_box_nc_real(const reals_st *data,
-                                     const complexs_st phase,
-                                     complexs_st *M) noexcept nogil:
+cdef inline void matrix_box_nc_real(const reals_st *data,
+                                    const complexs_st phase,
+                                    complexs_st *M) noexcept nogil:
     M[0] = <complexs_st> (data[0] * phase)
     M[1] = <complexs_st> ((data[2] + 1j * data[3]) * phase)
     M[2] = <complexs_st> ((data[2] - 1j * data[3]) * phase)
     M[3] = <complexs_st> (data[1] * phase)
 
 
-cdef inline void _matrix_box_nc_cmplx(const _internal_complexs_st *data,
-                                      const complexs_st phase,
-                                      complexs_st *M) noexcept nogil:
+cdef inline void matrix_box_nc_cmplx(const _internal_complexs_st *data,
+                                     const complexs_st phase,
+                                     complexs_st *M) noexcept nogil:
     M[0] = <complexs_st> (data[0] * phase)
     M[1] = <complexs_st> (data[2] * phase)
     M[2] = <complexs_st> (data[2].conjugate() * phase)
     M[3] = <complexs_st> (data[1] * phase)
 
 
-cdef inline void _matrix_box_so_real(const reals_st *data,
-                                     const complexs_st phase,
-                                     complexs_st *M) noexcept nogil:
+cdef inline void matrix_box_so_real(const reals_st *data,
+                                    const complexs_st phase,
+                                    complexs_st *M) noexcept nogil:
     M[0] = <complexs_st> ((data[0] + 1j * data[4]) * phase)
     M[1] = <complexs_st> ((data[2] + 1j * data[3]) * phase)
     M[2] = <complexs_st> ((data[6] + 1j * data[7]) * phase)
     M[3] = <complexs_st> ((data[1] + 1j * data[5]) * phase)
 
 
-cdef inline void _matrix_box_so_cmplx(const _internal_complexs_st *data,
-                                      const complexs_st phase,
-                                      complexs_st *M) noexcept nogil:
+cdef inline void matrix_box_so_cmplx(const _internal_complexs_st *data,
+                                     const complexs_st phase,
+                                     complexs_st *M) noexcept nogil:
     M[0] = <complexs_st> (data[0] * phase)
     M[1] = <complexs_st> (data[2] * phase)
     M[2] = <complexs_st> (data[3] * phase)
     M[3] = <complexs_st> (data[1] * phase)
 
 
-cdef inline void _matrix_add_csr_nambu(const ints_st[::1] v_ptr,
-                                       const ints_st r,
-                                       const ints_st r_idx,
-                                       complexs_st[::1] v,
-                                       const complexs_st *M) noexcept nogil:
+cdef inline void matrix_add_csr_nambu(const ints_st[::1] v_ptr,
+                                      const ints_st r,
+                                      const ints_st r_idx,
+                                      complexs_st[::1] v,
+                                      const complexs_st *M) noexcept nogil:
     # H e-e
     v[v_ptr[r] + r_idx] += M[0]
     v[v_ptr[r] + r_idx+1] += M[1]
@@ -128,10 +128,10 @@ cdef inline void _matrix_add_csr_nambu(const ints_st[::1] v_ptr,
     v[v_ptr[r+3] + r_idx+2] += M[10]
     v[v_ptr[r+3] + r_idx+3] += M[11]
 
-cdef inline void _matrix_add_array_nambu(const ints_st r,
-                                         const ints_st c,
-                                         complexs_st[:, ::1] v,
-                                         const complexs_st *M) noexcept nogil:
+cdef inline void matrix_add_array_nambu(const ints_st r,
+                                        const ints_st c,
+                                        complexs_st[:, ::1] v,
+                                        const complexs_st *M) noexcept nogil:
     # H e-e
     v[r, c] += M[0]
     v[r, c+1] += M[1]
@@ -158,9 +158,9 @@ cdef inline void _matrix_add_array_nambu(const ints_st r,
     v[r+3, c+3] += M[11]
 
 
-cdef inline void _matrix_box_nambu_real(const reals_st *data,
-                                        const complexs_st phase,
-                                        complexs_st *M) noexcept nogil:
+cdef inline void matrix_box_nambu_real(const reals_st *data,
+                                       const complexs_st phase,
+                                       complexs_st *M) noexcept nogil:
     # H e-e
     M[0] = <complexs_st> ((data[0] + 1j * data[4]) * phase)
     M[1] = <complexs_st> ((data[2] + 1j * data[3]) * phase)
@@ -185,9 +185,9 @@ cdef inline void _matrix_box_nambu_real(const reals_st *data,
     M[15] = <complexs_st> ((-data[12] + 1j * data[13]) * phase)
 
 
-cdef inline void _matrix_box_nambu_cmplx(const _internal_complexs_st *data,
-                                         const complexs_st phase,
-                                         complexs_st *M) noexcept nogil:
+cdef inline void matrix_box_nambu_cmplx(const _internal_complexs_st *data,
+                                        const complexs_st phase,
+                                        complexs_st *M) noexcept nogil:
     M[0] = <complexs_st> (data[0] * phase)
     M[1] = <complexs_st> (data[2] * phase)
     M[2] = <complexs_st> (data[3] * phase)
