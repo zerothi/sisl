@@ -8,6 +8,7 @@ import itertools
 import numpy as np
 import pytest
 
+import sisl as si
 import sisl.geom as sisl_geom
 from sisl import (
     Atom,
@@ -1560,6 +1561,16 @@ class TestGeometry:
         assert np.all(supercell == [2, 3, 1])
 
     # Test ASE (but only fail if present)
+
+    def test_geometry_dispatch(self):
+        pytest.importorskip("ase", reason="ase not available")
+        gr = sisl_geom.graphene()
+        to_ase = gr.to.ase()
+
+        ase_rotate = si.rotate(to_ase, 30, [0, 0, 1])
+        geom_rotate = si.rotate(gr, 30, [0, 0, 1])
+
+        assert geom_rotate.equal(ase_rotate, R=False)
 
     def test_geometry_ase_new_to(self):
         pytest.importorskip("ase", reason="ase not available")

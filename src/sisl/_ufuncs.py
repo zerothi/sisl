@@ -6,7 +6,7 @@ from __future__ import annotations
 import inspect
 from functools import singledispatch
 from textwrap import dedent
-from typing import Optional
+from typing import Any, Optional
 
 from sisl._lib._docscrape import FunctionDoc
 from sisl.messages import SislError, warn
@@ -142,9 +142,46 @@ def register_sisl_dispatch(
             # create a new method that will be stored
             # as a place-holder for the dispatch methods.
 
-            def method_registry(obj, *args, **kwargs):
+            # The default method needs access to it-self.
+            # In this way we can figure out if there are
+            # some mechanism by which we can recover
+            # a meaningful action.
+            # I.e. this small hack will allow one to do this:
+            #  @register_sisl_dispatch(Geometry)
+            #  def func(geometry: Geometry, ...)
+            #
+            #  from ase import Atoms
+            #  func(Atoms(...), ...)
+            #
+            # The reason is that func won't find any registered
+            # classes under Atoms, and so it will run through
+            # the registered classes, trying out `cls.new` for each
+            # of them. And then re-call the function it self.
+
+            def method_registry(obj: Any, *args, **kwargs):
+                nonlocal name, method_registry
+
+                # Obviously, the method has been called without finding the
+                # correct dispatch method.
+                for cls, cls_func in method_registry.registry.items():
+
+                    # Try and get the conversion method
+                    # Currently we'll only use `new` for consistency
+                    # I don't know if this will work for other
+                    # keys as well...
+                    new = getattr(cls, "new", None)
+
+                    if new is not None:
+                        try:
+                            # Try and convert to a sisl-compatible object
+                            obj = cls.new(obj)
+                            return cls_func(obj, *args, **kwargs)
+                        except KeyError:
+                            pass
+
                 raise SislError(
-                    f"Calling '{name}' with a non-registered type, {type(obj)} has not been registered."
+                    f"Calling '{name}' with a non-registered type, {type(obj)} has not "
+                    "been registered, and cannot be converted to a sisl type."
                 )
 
             doc = dedent(
