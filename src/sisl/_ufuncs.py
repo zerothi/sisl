@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import inspect
+import types
 from functools import singledispatch
 from textwrap import dedent
 from typing import Any, Optional
@@ -163,7 +164,15 @@ def register_sisl_dispatch(
 
                 # Obviously, the method has been called without finding the
                 # correct dispatch method.
-                for cls, cls_func in method_registry.registry.items():
+                def skip_built_ins(items):
+                    for cls, cls_func in items:
+                        if not isinstance(cls, types.BuiltinFunctionType):
+                            yield cls, cls_func
+
+                # Whether to return a sisl object
+                ret_sisl = kwargs.pop("ret_sisl", False)
+
+                for cls, cls_func in skip_built_ins(method_registry.registry.items()):
 
                     # Try and get the conversion method
                     # Currently we'll only use `new` for consistency
@@ -174,8 +183,20 @@ def register_sisl_dispatch(
                     if new is not None:
                         try:
                             # Try and convert to a sisl-compatible object
-                            obj = cls.new(obj)
-                            return cls_func(obj, *args, **kwargs)
+                            sisl_obj = cls.new(obj)
+                            sisl_obj = cls_func(sisl_obj, *args, **kwargs)
+                            if ret_sisl or not isinstance(sisl_obj, cls):
+                                # return the simple sisl object.
+                                # This will automatically return if the method it
+                                # self does not return the input argument. Because
+                                # then the path back to the original one is not
+                                # obvious.
+                                # E.g. sisl.center
+                                return sisl_obj
+
+                            # Back-convert the object into the object again
+                            return sisl_obj.to[type(obj)]()
+
                         except KeyError:
                             pass
 

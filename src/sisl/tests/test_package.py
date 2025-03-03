@@ -57,14 +57,7 @@ def test_import_in_io_from():
         from sisl import xyzSile  # noqa: F401
 
 
-def test_dispatch_methods():
-    # sisl exposes some dispatch methods via
-    #  sisl._ufuncs and sisl._core._*_ufuncs.py
-    # For instance tile is the first, true dispatch
-    # method used.
-    sisl.tile
-
-
-def test_dispatch_methods_not_allowed():
+@pytest.mark.parametrize("obj", [dict(), 2])
+def test_dispatch_methods_not_allowed(obj):
     with pytest.raises(sisl.SislError):
-        sisl.tile({}, 0, 2)
+        sisl.tile(obj, 0, 2)

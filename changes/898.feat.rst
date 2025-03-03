@@ -12,10 +12,15 @@ E.g.
    import sisl
 
    gr = sisl.geom.graphene()
-   sisl.rotate(gr, ...)
+   sisl_rotated = sisl.rotate(gr, ...)
 
    gr = ase.Atoms(...)
-   sisl.rotate(gr, ...)
+   atoms_rotated = sisl.rotate(gr, ...)
 
-will both work. The latter will return a sisl
-geometry.
+   gr = ase.Atoms(...)
+   sisl_rotated = sisl.rotate(gr, ..., ret_sisl=True)
+
+will all work, the first and last will return a `Geometry`, while
+the middle one will return an `ase.Atoms` object.
+
+To forcefully return the `sisl` object, use the latter form with ``ret_sisl``.

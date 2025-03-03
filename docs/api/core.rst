@@ -27,18 +27,18 @@ sisl objects.
    Note that `sisl` will automatically convert the `ase.Atoms` object
    to a `sisl.Geometry`, and then do the rotation call.
 
-   Hence, the returned object will be a `sisl.Geometry` object.
+   There are a couple of scenarios:
 
-   This can in some cases lead to odd behaviour, e.g.:
+   1. The `sisl` function returns the same object as the input.
+      In the above case, a `Geometry`.
+      When this is the case the method will try and convert it back
+      to the input class. And if this succeeds, it will be returned.
+      To forcefully return the `sisl` type, do ``si.rotate(..., ret_sisl=True)``.
+   2. The `sisl` function returns something different from the input.
+      In this case, the value is returned *as-is*, regardless of ``ret_sisl``.
 
-   .. code::
-
-      import sisl as si
-
-      si.tile(2, 2, axis=0)
-
-   This will run, because ``2`` can be converted to a `Lattice` object
-   of a square box of side-lengths ``2``.
+   The functional methods will not allow Python built-in's to convert.
+   Since that can lead to ambiguous behaviour.
 
 
 .. list of methods that currently are dispatched can be created via
