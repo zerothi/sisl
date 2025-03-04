@@ -27,12 +27,16 @@ from typing import Literal
 
 _log = logging.getLogger("sisl_doc")
 
+_doc_root = pathlib.Path(__file__).absolute().parent
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # make sure the source version is preferred (#3567)
-_root = pathlib.Path(__file__).absolute().parent.parent
+_root = _doc_root.parent
 _src = _root / "src"
+
+# add the exts folder
+sys.path.insert(1, str(_doc_root))
 
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
@@ -144,44 +148,7 @@ numpydoc_attributes_as_param_list = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
-
-
-class GHFormat:
-
-    def __init__(self, type: Literal["issues", "discussions", "pull"]):
-        self._type = type
-
-    def is_valid(self, number: str) -> bool:
-        try:
-            int(number)
-            return True
-        except ValueError:
-            return False
-
-    def format(self, number: str) -> str:
-        if not self.is_valid(number):
-            return ""  # no formatting, explicitly requesting no output
-
-        prefix = {
-            "issues": "GH",
-            "pull": "PR",
-            "discussions": "D",
-        }[self._type]
-
-        return f"{prefix}{number}"
-
-    def __mod__(self, arg):
-        return self.format(arg)
-
-
-class GHLink(GHFormat):
-    url = "https://github.com/zerothi/sisl"
-
-    def format(self, number: str) -> str:
-        if not self.is_valid(number):
-            return f"{self.url}/{self._type}"  # no formatting, explicitly requesting no output
-
-        return f"{self.url}/{self._type}/{number}"
+from sisl_modules.github_links import GHFormat, GHLink
 
 
 def _link_constructor(type):
