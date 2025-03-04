@@ -22,7 +22,7 @@ __all__ = [
 ]
 
 
-def _phase_k(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
+def phase_dk(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
     cdef floats_st[::1] k = K
 
     # dtype *must* be passed through phase_dtype
@@ -31,7 +31,7 @@ def _phase_k(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
     if is_gamma(k):
         # no - phases required
         p_opt = -1
-        phases = np.empty([0], dtype=dtype)
+        phases = np.ones(1, dtype=dtype)
 
     elif gauge == "atomic":
         M.finalize()
@@ -49,13 +49,15 @@ def _phase_k(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
 
 def matrix_k(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype)
-    p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
+    p_opt, phases = phase_dk(gauge, M, sc, k, dtype)
 
+    cdef ints_st udx = idx
     # Check that the dimension *works*
+    cdef ints_st shapem1 = M.shape[-1]
     if idx < 0:
-        idx += M.shape[-1]
-    if idx < 0 or M.shape[-1] <= idx:
-        d = M.shape[-1]
+        udx += shapem1
+    if udx < 0 or shapem1 <= udx:
+        d = shapem1
         raise ValueError(f"matrix_k: unknown index specification {idx} must be in 0:{d}")
 
     csr = M._csr
@@ -68,20 +70,20 @@ def matrix_k(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, f
         nc = M.geometry.no_s
 
         if format in ("array", "matrix", "dense"):
-            return _phase_sc_array(csr.ptr, csr.ncol, csr.col, nc, csr._D, idx, phases, p_opt)
+            return phase_sc_array(csr.ptr, csr.ncol, csr.col, nc, csr._D, udx, phases, p_opt)
 
-        return _phase_sc_csr(csr.ptr, csr.ncol, csr.col, nc, csr._D, idx, phases, p_opt).asformat(format)
+        return phase_sc_csr(csr.ptr, csr.ncol, csr.col, nc, csr._D, udx, phases, p_opt).asformat(format)
 
 
     if format in ("array", "matrix", "dense"):
-        return _phase_array(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt)
+        return phase_array(csr.ptr, csr.ncol, csr.col, csr._D, udx, phases, p_opt)
 
-    return _phase_csr(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
+    return phase_csr(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt).asformat(format)
 
 
 def matrix_k_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
+    p_opt, phases = phase_dk(gauge, M, sc, k, dtype)
 
     csr = M._csr
 
@@ -93,20 +95,20 @@ def matrix_k_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
         nc = M.geometry.no_s
 
         if format in ("array", "matrix", "dense"):
-            return _phase_sc_array_nc(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt)
+            return phase_sc_array_nc(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt)
 
-        return _phase_sc_csr_nc(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt).asformat(format)
+        return phase_sc_csr_nc(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt).asformat(format)
 
     if format in ("array", "matrix", "dense"):
-        return _phase_array_nc(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
+        return phase_array_nc(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
 
-    return _phase_csr_nc(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
+    return phase_csr_nc(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
 
 def matrix_k_diag(gauge, M, const ints_st idx, const ints_st per_row,
                   sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
+    p_opt, phases = phase_dk(gauge, M, sc, k, dtype)
 
     csr = M._csr
 
@@ -118,23 +120,23 @@ def matrix_k_diag(gauge, M, const ints_st idx, const ints_st per_row,
         nc = M.geometry.no_s
 
         if format in ("array", "matrix", "dense"):
-            return _phase_sc_array_diag(csr.ptr, csr.ncol, csr.col, nc, csr._D, idx,
+            return phase_sc_array_diag(csr.ptr, csr.ncol, csr.col, nc, csr._D, idx,
             phases, p_opt, per_row)
 
-        return _phase_sc_csr_diag(csr.ptr, csr.ncol, csr.col, nc, csr._D, idx, phases,
+        return phase_sc_csr_diag(csr.ptr, csr.ncol, csr.col, nc, csr._D, idx, phases,
         p_opt, per_row).asformat(format)
 
     if format in ("array", "matrix", "dense"):
-        return _phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt,
+        return phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt,
         per_row)
 
-    return _phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt,
+    return phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, phases, p_opt,
     per_row).asformat(format)
 
 
 def matrix_k_so(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
+    p_opt, phases = phase_dk(gauge, M, sc, k, dtype)
 
     csr = M._csr
 
@@ -146,19 +148,19 @@ def matrix_k_so(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
         nc = M.geometry.no_s
 
         if format in ("array", "matrix", "dense"):
-            return _phase_sc_array_so(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt)
+            return phase_sc_array_so(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt)
 
-        return _phase_sc_csr_so(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt).asformat(format)
+        return phase_sc_csr_so(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt).asformat(format)
 
     if format in ("array", "matrix", "dense"):
-        return _phase_array_so(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
+        return phase_array_so(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
 
-    return _phase_csr_so(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
+    return phase_csr_so(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
 
 def matrix_k_nambu(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    p_opt, phases = _phase_k(gauge, M, sc, k, dtype)
+    p_opt, phases = phase_dk(gauge, M, sc, k, dtype)
 
     csr = M._csr
 
@@ -170,11 +172,11 @@ def matrix_k_nambu(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
         nc = M.geometry.no_s
 
         if format in ("array", "matrix", "dense"):
-            return _phase_sc_array_nambu(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt)
+            return phase_sc_array_nambu(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt)
 
-        return _phase_sc_csr_nambu(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt).asformat(format)
+        return phase_sc_csr_nambu(csr.ptr, csr.ncol, csr.col, nc, csr._D, phases, p_opt).asformat(format)
 
     if format in ("array", "matrix", "dense"):
-        return _phase_array_nambu(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
+        return phase_array_nambu(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt)
 
-    return _phase_csr_nambu(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
+    return phase_csr_nambu(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)

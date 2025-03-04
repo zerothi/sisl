@@ -20,7 +20,7 @@ __all__ = [
 ]
 
 
-def _phase_ddk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
+def phase_ddk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
     # dtype *must* be passed through phase_dtype
     gauge = comply_gauge(gauge)
 
@@ -59,21 +59,21 @@ def _phase_ddk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
 
 def matrix_ddk(gauge, M, const int idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype)
-    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
+    p_opt, Rd, Ro = phase_ddk(gauge, M, sc, k, dtype)
 
     # Return list
-    dd = [None, None, None, None, None, None]
+    dd = [None] * 6
 
     csr = M._csr
 
     if format in ("array", "matrix", "dense"):
-        dd[:3] = _phase3_array(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
-        dd[3:] = _phase3_array(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
+        dd[:3] = phase3_array(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
+        dd[3:] = phase3_array(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
 
     else:
         # Default must be something else.
-        dd[:3] = _phase3_csr(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
-        dd[3:] = _phase3_csr(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
+        dd[:3] = phase3_csr(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rd, p_opt)
+        dd[3:] = phase3_csr(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ro, p_opt)
         dd[0] = dd[0].asformat(format)
         dd[1] = dd[1].asformat(format)
         dd[2] = dd[2].asformat(format)
@@ -86,21 +86,21 @@ def matrix_ddk(gauge, M, const int idx, sc, cnp.ndarray[floats_st] k, dtype, for
 
 def matrix_ddk_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
+    p_opt, Rd, Ro = phase_ddk(gauge, M, sc, k, dtype)
 
     # Return list
-    dd = [None, None, None, None, None, None]
+    dd = [None] * 6
 
     csr = M._csr
 
     if format in ("array", "matrix", "dense"):
-        dd[:3] = _phase3_array_nc(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
-        dd[3:] = _phase3_array_nc(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
+        dd[:3] = phase3_array_nc(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
+        dd[3:] = phase3_array_nc(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
 
     else:
         # Default must be something else.
-        dd[:3] = _phase3_csr_nc(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
-        dd[3:] = _phase3_csr_nc(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
+        dd[:3] = phase3_csr_nc(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
+        dd[3:] = phase3_csr_nc(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
         dd[0] = dd[0].asformat(format)
         dd[1] = dd[1].asformat(format)
         dd[2] = dd[2].asformat(format)
@@ -114,7 +114,7 @@ def matrix_ddk_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
 def matrix_ddk_diag(gauge, M, const int idx, const int per_row,
                     sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
+    p_opt, Rd, Ro = phase_ddk(gauge, M, sc, k, dtype)
 
     # We need the phases to be consecutive in memory
     Rxx = Rd[:, 0].copy()
@@ -129,31 +129,31 @@ def matrix_ddk_diag(gauge, M, const int idx, const int per_row,
     csr = M._csr
 
     if format in ("array", "matrix", "dense"):
-        dxx = _phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rxx, p_opt,
+        dxx = phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rxx, p_opt,
         per_row)
-        dyy = _phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ryy, p_opt,
+        dyy = phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ryy, p_opt,
         per_row)
-        dzz = _phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rzz, p_opt,
+        dzz = phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rzz, p_opt,
         per_row)
-        dzy = _phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rzy, p_opt,
+        dzy = phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rzy, p_opt,
         per_row)
-        dxz = _phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rxz, p_opt,
+        dxz = phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rxz, p_opt,
         per_row)
-        dyx = _phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ryx, p_opt,
+        dyx = phase_array_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ryx, p_opt,
         per_row)
 
     else:
-        dxx = _phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rxx, p_opt,
+        dxx = phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rxx, p_opt,
         per_row).asformat(format)
-        dyy = _phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ryy, p_opt,
+        dyy = phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ryy, p_opt,
         per_row).asformat(format)
-        dzz = _phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rzz, p_opt,
+        dzz = phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rzz, p_opt,
         per_row).asformat(format)
-        dzy = _phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rzy, p_opt,
+        dzy = phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rzy, p_opt,
         per_row).asformat(format)
-        dxz = _phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rxz, p_opt,
+        dxz = phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Rxz, p_opt,
         per_row).asformat(format)
-        dyx = _phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ryx, p_opt,
+        dyx = phase_csr_diag(csr.ptr, csr.ncol, csr.col, csr._D, idx, Ryx, p_opt,
         per_row).asformat(format)
 
     return dxx, dyy, dzz, dzy, dxz, dyx
@@ -161,21 +161,21 @@ def matrix_ddk_diag(gauge, M, const int idx, const int per_row,
 
 def matrix_ddk_so(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
+    p_opt, Rd, Ro = phase_ddk(gauge, M, sc, k, dtype)
 
     # Return list
-    dd = [None, None, None, None, None, None]
+    dd = [None] * 6
 
     csr = M._csr
 
     if format in ("array", "matrix", "dense"):
-        dd[:3] = _phase3_array_so(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
-        dd[3:] = _phase3_array_so(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
+        dd[:3] = phase3_array_so(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
+        dd[3:] = phase3_array_so(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
 
     else:
         # Default must be something else.
-        dd[:3] = _phase3_csr_so(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
-        dd[3:] = _phase3_csr_so(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
+        dd[:3] = phase3_csr_so(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
+        dd[3:] = phase3_csr_so(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
         dd[0] = dd[0].asformat(format)
         dd[1] = dd[1].asformat(format)
         dd[2] = dd[2].asformat(format)
@@ -188,21 +188,21 @@ def matrix_ddk_so(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
 
 def matrix_ddk_nambu(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
+    p_opt, Rd, Ro = phase_ddk(gauge, M, sc, k, dtype)
 
     # Return list
-    dd = [None, None, None, None, None, None]
+    dd = [None] * 6
 
     csr = M._csr
 
     if format in ("array", "matrix", "dense"):
-        dd[:3] = _phase3_array_nambu(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
-        dd[3:] = _phase3_array_nambu(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
+        dd[:3] = phase3_array_nambu(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
+        dd[3:] = phase3_array_nambu(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
 
     else:
         # Default must be something else.
-        dd[:3] = _phase3_csr_nambu(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
-        dd[3:] = _phase3_csr_nambu(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
+        dd[:3] = phase3_csr_nambu(csr.ptr, csr.ncol, csr.col, csr._D, Rd, p_opt)
+        dd[3:] = phase3_csr_nambu(csr.ptr, csr.ncol, csr.col, csr._D, Ro, p_opt)
         dd[0] = dd[0].asformat(format)
         dd[1] = dd[1].asformat(format)
         dd[2] = dd[2].asformat(format)

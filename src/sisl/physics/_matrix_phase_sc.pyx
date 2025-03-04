@@ -24,36 +24,36 @@ from sisl._core._sparse cimport ncol2ptr
 from sisl._indices cimport _index_sorted
 
 from ._matrix_utils cimport (
-    _f_matrix_box_nambu,
-    _f_matrix_box_nc,
-    _f_matrix_box_so,
-    _matrix_add_array_nambu,
-    _matrix_add_array_nc,
-    _matrix_add_csr_nambu,
-    _matrix_add_csr_nc,
-    _matrix_box_nambu_cmplx,
-    _matrix_box_nambu_real,
-    _matrix_box_nc_cmplx,
-    _matrix_box_nc_real,
-    _matrix_box_so_cmplx,
-    _matrix_box_so_real,
+    f_matrix_box_nambu,
+    f_matrix_box_nc,
+    f_matrix_box_so,
+    matrix_add_array_nambu,
+    matrix_add_array_nc,
+    matrix_add_csr_nambu,
+    matrix_add_csr_nc,
+    matrix_box_nambu_cmplx,
+    matrix_box_nambu_real,
+    matrix_box_nc_cmplx,
+    matrix_box_nc_real,
+    matrix_box_so_cmplx,
+    matrix_box_so_real,
 )
 
 __all__ = [
-    "_phase_sc_csr",
-    "_phase_sc_array",
-    "_phase_sc_csr_nc",
-    "_phase_sc_array_nc",
-    "_phase_sc_csr_diag",
-    "_phase_sc_array_diag",
-    "_phase_sc_csr_so",
-    "_phase_sc_array_so",
-    "_phase_sc_csr_nambu",
-    "_phase_sc_array_nambu",
+    "phase_sc_csr",
+    "phase_sc_array",
+    "phase_sc_csr_nc",
+    "phase_sc_array_nc",
+    "phase_sc_csr_diag",
+    "phase_sc_array_diag",
+    "phase_sc_csr_so",
+    "phase_sc_array_so",
+    "phase_sc_csr_nambu",
+    "phase_sc_array_nambu",
 ]
 
 
-def _phase_sc_csr(ints_st[::1] ptr,
+def phase_sc_csr(ints_st[::1] ptr,
                   ints_st[::1] ncol,
                   ints_st[::1] col,
                   const ints_st nc,
@@ -118,7 +118,7 @@ def _phase_sc_csr(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nc))
 
 
-def _phase_sc_array(ints_st[::1] ptr,
+def phase_sc_array(ints_st[::1] ptr,
                     ints_st[::1] ncol,
                     ints_st[::1] col,
                     const ints_st nc,
@@ -157,7 +157,7 @@ def _phase_sc_array(ints_st[::1] ptr,
     return V
 
 
-def _phase_sc_csr_nc(ints_st[::1] ptr,
+def phase_sc_csr_nc(ints_st[::1] ptr,
                      ints_st[::1] ncol,
                      ints_st[::1] col,
                      const ints_st nc,
@@ -182,14 +182,14 @@ def _phase_sc_csr_nc(ints_st[::1] ptr,
 
     cdef ints_st r, rr, cind, c, ind
     cdef complexs_st ph
-    cdef _f_matrix_box_nc func
+    cdef f_matrix_box_nc func
     cdef numerics_st *d
     cdef complexs_st *M = [0, 0, 0, 0]
 
     if numerics_st in complexs_st:
-        func = _matrix_box_nc_cmplx
+        func = matrix_box_nc_cmplx
     else:
-        func = _matrix_box_nc_real
+        func = matrix_box_nc_real
 
     # We have to do it manually due to the double elements per matrix element
     ncol2ptr(nr, ncol, v_ptr, 2, 2)
@@ -208,7 +208,7 @@ def _phase_sc_csr_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
+                    matrix_add_csr_nc(v_ptr, rr, cind, v, M)
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c
@@ -229,7 +229,7 @@ def _phase_sc_csr_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
+                    matrix_add_csr_nc(v_ptr, rr, cind, v, M)
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c
@@ -250,8 +250,7 @@ def _phase_sc_csr_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
-
+                    matrix_add_csr_nc(v_ptr, rr, cind, v, M)
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c
@@ -262,7 +261,7 @@ def _phase_sc_csr_nc(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nc * 2))
 
 
-def _phase_sc_array_nc(ints_st[::1] ptr,
+def phase_sc_array_nc(ints_st[::1] ptr,
                        ints_st[::1] ncol,
                        ints_st[::1] col,
                        const ints_st nc,
@@ -279,13 +278,13 @@ def _phase_sc_array_nc(ints_st[::1] ptr,
     cdef complexs_st ph
     cdef ints_st r, rr, c, ind
     cdef numerics_st *d
-    cdef _f_matrix_box_nc func
+    cdef f_matrix_box_nc func
     cdef complexs_st *M = [0, 0, 0, 0]
 
     if numerics_st in complexs_st:
-        func = _matrix_box_nc_cmplx
+        func = matrix_box_nc_cmplx
     else:
-        func = _matrix_box_nc_real
+        func = matrix_box_nc_real
 
     with nogil:
         if p_opt == -1:
@@ -297,7 +296,7 @@ def _phase_sc_array_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nc(rr, c, v, M)
+                    matrix_add_array_nc(rr, c, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -308,7 +307,7 @@ def _phase_sc_array_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nc(rr, c, v, M)
+                    matrix_add_array_nc(rr, c, v, M)
 
         else:
             for r in range(nr):
@@ -319,11 +318,11 @@ def _phase_sc_array_nc(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nc(rr, c, v, M)
+                    matrix_add_array_nc(rr, c, v, M)
 
     return V
 
-def _phase_sc_csr_diag(ints_st[::1] ptr,
+def phase_sc_csr_diag(ints_st[::1] ptr,
                       ints_st[::1] ncol,
                       ints_st[::1] col,
                       const ints_st nc,
@@ -409,7 +408,7 @@ def _phase_sc_csr_diag(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * per_row, nc * per_row))
 
 
-def _phase_sc_array_diag(ints_st[::1] ptr,
+def phase_sc_array_diag(ints_st[::1] ptr,
                          ints_st[::1] ncol,
                          ints_st[::1] col,
                          const ints_st nc,
@@ -444,7 +443,6 @@ def _phase_sc_array_diag(ints_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] * per_row
                     d = <complexs_st> (D[ind, idx] * phases[ind])
-
                     for ic in range(per_row):
                         v[rr+ic, c+ic] = d
 
@@ -454,14 +452,13 @@ def _phase_sc_array_diag(ints_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] * per_row
                     d = <complexs_st> (D[ind, idx] * phases[col[ind] / nr])
-
                     for ic in range(per_row):
                         v[rr+ic, c+ic] = d
 
     return V
 
 
-def _phase_sc_csr_so(ints_st[::1] ptr,
+def phase_sc_csr_so(ints_st[::1] ptr,
                      ints_st[::1] ncol,
                      ints_st[::1] col,
                      const ints_st nc,
@@ -486,14 +483,14 @@ def _phase_sc_csr_so(ints_st[::1] ptr,
 
     cdef ints_st r, rr, cind, c, ind
     cdef complexs_st ph
-    cdef _f_matrix_box_so func
+    cdef f_matrix_box_so func
     cdef numerics_st *d
     cdef complexs_st *M = [0, 0, 0, 0]
 
     if numerics_st in complexs_st:
-        func = _matrix_box_so_cmplx
+        func = matrix_box_so_cmplx
     else:
-        func = _matrix_box_so_real
+        func = matrix_box_so_real
 
     # We have to do it manually due to the double elements per matrix element
     ncol2ptr(nr, ncol, v_ptr, 2, 2)
@@ -512,7 +509,7 @@ def _phase_sc_csr_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
+                    matrix_add_csr_nc(v_ptr, rr, cind, v, M)
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c
@@ -533,8 +530,7 @@ def _phase_sc_csr_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
-
+                    matrix_add_csr_nc(v_ptr, rr, cind, v, M)
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c
@@ -555,8 +551,7 @@ def _phase_sc_csr_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nc(v_ptr, rr, cind, v, M)
-
+                    matrix_add_csr_nc(v_ptr, rr, cind, v, M)
                     v_col[v_ptr[rr] + cind] = c
                     v_col[v_ptr[rr] + cind+1] = c + 1
                     v_col[v_ptr[rr+1] + cind] = c
@@ -567,7 +562,7 @@ def _phase_sc_csr_so(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nc * 2))
 
 
-def _phase_sc_array_so(ints_st[::1] ptr,
+def phase_sc_array_so(ints_st[::1] ptr,
                        ints_st[::1] ncol,
                        ints_st[::1] col,
                        const ints_st nc,
@@ -583,14 +578,14 @@ def _phase_sc_array_so(ints_st[::1] ptr,
 
     cdef complexs_st ph
     cdef ints_st r, rr, c, ind
-    cdef _f_matrix_box_so func
+    cdef f_matrix_box_so func
     cdef numerics_st *d
     cdef complexs_st *M = [0, 0, 0, 0]
 
     if numerics_st in complexs_st:
-        func = _matrix_box_so_cmplx
+        func = matrix_box_so_cmplx
     else:
-        func = _matrix_box_so_real
+        func = matrix_box_so_real
 
     with nogil:
         if p_opt == -1:
@@ -602,7 +597,7 @@ def _phase_sc_array_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nc(rr, c, v, M)
+                    matrix_add_array_nc(rr, c, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -613,7 +608,7 @@ def _phase_sc_array_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nc(rr, c, v, M)
+                    matrix_add_array_nc(rr, c, v, M)
 
         else:
             for r in range(nr):
@@ -624,12 +619,12 @@ def _phase_sc_array_so(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nc(rr, c, v, M)
+                    matrix_add_array_nc(rr, c, v, M)
 
     return V
 
 
-def _phase_sc_csr_nambu(ints_st[::1] ptr,
+def phase_sc_csr_nambu(ints_st[::1] ptr,
                         ints_st[::1] ncol,
                         ints_st[::1] col,
                         const ints_st nc,
@@ -654,14 +649,14 @@ def _phase_sc_csr_nambu(ints_st[::1] ptr,
 
     cdef ints_st r, rr, cind, c, ind, ic
     cdef complexs_st ph
-    cdef _f_matrix_box_nambu func
+    cdef f_matrix_box_nambu func
     cdef numerics_st *d
     cdef complexs_st *M = [0] * 16
 
     if numerics_st in complexs_st:
-        func = _matrix_box_nambu_cmplx
+        func = matrix_box_nambu_cmplx
     else:
-        func = _matrix_box_nambu_real
+        func = matrix_box_nambu_real
 
     # We have to do it manually due to the quadrouble elements per matrix element
     ncol2ptr(nr, ncol, v_ptr, 4, 4)
@@ -682,7 +677,7 @@ def _phase_sc_csr_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nambu(v_ptr, rr, cind, v, M)
+                    matrix_add_csr_nambu(v_ptr, rr, cind, v, M)
 
                     for ic in range(4):
                         v_col[v_ptr[rr+ic] + cind] = c + 0
@@ -707,7 +702,7 @@ def _phase_sc_csr_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nambu(v_ptr, rr, cind, v, M)
+                    matrix_add_csr_nambu(v_ptr, rr, cind, v, M)
 
                     for ic in range(4):
                         v_col[v_ptr[rr+ic] + cind] = c + 0
@@ -732,7 +727,7 @@ def _phase_sc_csr_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_csr_nambu(v_ptr, rr, cind, v, M)
+                    matrix_add_csr_nambu(v_ptr, rr, cind, v, M)
 
                     for ic in range(4):
                         v_col[v_ptr[rr+ic] + cind] = c + 0
@@ -745,7 +740,7 @@ def _phase_sc_csr_nambu(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 4, nc * 4))
 
 
-def _phase_sc_array_nambu(ints_st[::1] ptr,
+def phase_sc_array_nambu(ints_st[::1] ptr,
                           ints_st[::1] ncol,
                           ints_st[::1] col,
                           const ints_st nc,
@@ -761,14 +756,14 @@ def _phase_sc_array_nambu(ints_st[::1] ptr,
 
     cdef complexs_st ph
     cdef ints_st r, rr, c, ind
-    cdef _f_matrix_box_nambu func
+    cdef f_matrix_box_nambu func
     cdef numerics_st *d
     cdef complexs_st *M = [0] * 16
 
     if numerics_st in complexs_st:
-        func = _matrix_box_nambu_cmplx
+        func = matrix_box_nambu_cmplx
     else:
-        func = _matrix_box_nambu_real
+        func = matrix_box_nambu_real
 
     with nogil:
         if p_opt == -1:
@@ -780,7 +775,7 @@ def _phase_sc_array_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nambu(rr, c, v, M)
+                    matrix_add_array_nambu(rr, c, v, M)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -791,7 +786,7 @@ def _phase_sc_array_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nambu(rr, c, v, M)
+                    matrix_add_array_nambu(rr, c, v, M)
 
         else:
             for r in range(nr):
@@ -802,6 +797,6 @@ def _phase_sc_array_nambu(ints_st[::1] ptr,
 
                     d = &D[ind, 0]
                     func(d, ph, M)
-                    _matrix_add_array_nambu(rr, c, v, M)
+                    matrix_add_array_nambu(rr, c, v, M)
 
     return V

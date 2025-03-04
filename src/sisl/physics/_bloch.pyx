@@ -139,7 +139,7 @@ cdef void _unfold64_matrix(const double w,
                             ph0 = ph1
                             for _ in range(B0):
                                 for i in range(N2):
-                                    MJ[I] = MJ[I] + mj[i] * <float complex> ph0
+                                    MJ[I] += mj[i] * <float complex> ph0
                                     I += 1
                                 ph0 = ph0 * aph0
                             ph1 = ph1 * aph1
@@ -212,10 +212,10 @@ cdef void _unfold64_1(const Py_ssize_t NA, const double[:] kA2pi,
             for j in range(N1):
                 for i in range(N2):
                     # 2: construct M[0, :, 1:, :]
-                    M[0, j, iA, i] = M[0, j, iA, i] + mT[j, i] * <float complex> ph
+                    M[0, j, iA, i] += mT[j, i] * <float complex> ph
                 for i in range(N2):
                     # 3a: construct M[1:, :, 0, :]
-                    M[iA, j, 0, i] = M[iA, j, 0, i] + mT[j, i] * <float complex> cph
+                    M[iA, j, 0, i] += mT[j, i] * <float complex> cph
 
             # Increment phases
             ph = ph * pha
@@ -245,7 +245,7 @@ cdef void _unfold64_2(const Py_ssize_t NA, const double[:] kA2pi,
     # following way:
     # 1. Fill the diagonal which corresponds to zero phases, i.e. M[:N1, :N2] = sum(m, 0) / w
     # 2. Construct the rest of the column M[:N1, N2:].
-    # 3. Loop neighbouring columns and perform these steps:
+    # 3. Loop neighboring columns and perform these steps:
     #    a) calculate the first N1 rows
     #    b) copy from the previous column-block the first N-1 blocks into 1:N
 
@@ -268,7 +268,7 @@ cdef void _unfold64_2(const Py_ssize_t NA, const double[:] kA2pi,
             for j in range(N1):
                 for i in range(N2):
                     #(0,0,0,0) (C-index)
-                    M[0, j, 0, i] = M[0, j, 0, i] + mT[j, i] * <float> w
+                    M[0, j, 0, i] += mT[j, i] * <float> w
 
             # Initial phases along the column
             pha = w * pha_step
@@ -280,10 +280,10 @@ cdef void _unfold64_2(const Py_ssize_t NA, const double[:] kA2pi,
                 for j in range(N1):
                     for i in range(N2):
                         #(0,0,0,iA)
-                        M[0, j, iA, i] = M[0, j, iA, i] + mT[j, i] * <float complex> ph
+                        M[0, j, iA, i] += mT[j, i] * <float complex> ph
                     for i in range(N2):
                         #(0,iA,0,0)
-                        M[iA, j, 0, i] = M[iA, j, 0, i] + mT[j, i] * <float complex> cph
+                        M[iA, j, 0, i] += mT[j, i] * <float complex> cph
 
                 # Increment phases
                 pha = pha * pha_step
@@ -297,10 +297,10 @@ cdef void _unfold64_2(const Py_ssize_t NA, const double[:] kA2pi,
                 for j in range(N1):
                     for i in range(N2):
                         #(0,0,iB,0)
-                        M[0, j, iB*NA, i] = M[0, j, iB*NA, i] + mT[j, i] * <float complex>  ph
+                        M[0, j, iB*NA, i] += mT[j, i] * <float complex>  ph
                     for i in range(N2):
                         #(iB,0,0,0)
-                        M[iB*NA, j, 0, i] = M[iB*NA, j, 0, i] + mT[j, i] * <float complex> cph
+                        M[iB*NA, j, 0, i] += mT[j, i] * <float complex> cph
 
                 pha = pha_step
                 for iA in range(1, NA):
@@ -310,20 +310,20 @@ cdef void _unfold64_2(const Py_ssize_t NA, const double[:] kA2pi,
                     for j in range(N1):
                         for i in range(N2):
                             #(0,0,iB,iA)
-                            M[0, j, iB*NA+iA, i] = M[0, j, iB*NA+iA, i] + mT[j, i] * <float complex> ph
+                            M[0, j, iB*NA+iA, i] += mT[j, i] * <float complex> ph
                         for i in range(N2):
                             #(0,iA,iB,0)
-                            M[iA, j, iB*NA, i] = M[iA, j, iB*NA, i] + mT[j, i] * <float complex> cph
+                            M[iA, j, iB*NA, i] += mT[j, i] * <float complex> cph
 
                     ph = pha * phb.conjugate()
                     cph = (pha * phb).conjugate()
                     for j in range(N1):
                         for i in range(N2):
                             #(iB,0,0,iA)
-                            M[iB*NA, j, iA, i] = M[iB*NA, j, iA, i] + mT[j, i] * <float complex> ph
+                            M[iB*NA, j, iA, i] += mT[j, i] * <float complex> ph
                         for i in range(N2):
                             #(iB,iA,0,0)
-                            M[iB*NA+iA, j, 0, i] = M[iB*NA+iA, j, 0, i] + mT[j, i] * <float complex> cph
+                            M[iB*NA+iA, j, 0, i] += mT[j, i] * <float complex> cph
 
                     # Increment phases
                     pha = pha * pha_step
@@ -446,7 +446,7 @@ cdef void _unfold128_matrix(const double w,
                             ph0 = ph1
                             for _ in range(B0):
                                 for i in range(N2):
-                                    MJ[I] = MJ[I] + mj[i] * ph0
+                                    MJ[I] += mj[i] * ph0
                                     I += 1
                                 ph0 = ph0 * aph0
                             ph1 = ph1 * aph1
@@ -506,7 +506,7 @@ cdef void _unfold128_1(const Py_ssize_t NA, const double[:] kA2pi,
         # 1: construct M[0, :, 0, :]
         for j in range(N1):
             for i in range(N2):
-                M[0, j, 0, i] = M[0, j, 0, i] + mT[j, i] * w
+                M[0, j, 0, i] += mT[j, i] * w
 
         # Initial phases along the column
         pha = cos(k) - 1j * sin(k)
@@ -518,10 +518,10 @@ cdef void _unfold128_1(const Py_ssize_t NA, const double[:] kA2pi,
             for j in range(N1):
                 for i in range(N2):
                     # 2: construct M[0, :, 1:, :]
-                    M[0, j, iA, i] = M[0, j, iA, i] + mT[j, i] * ph
+                    M[0, j, iA, i] += mT[j, i] * ph
                 for i in range(N2):
                     # 3a: construct M[1:, :, 0, :]
-                    M[iA, j, 0, i] = M[iA, j, 0, i] + mT[j, i] * cph
+                    M[iA, j, 0, i] += mT[j, i] * cph
 
             # Increment phases
             ph = ph * pha
@@ -574,7 +574,7 @@ cdef void _unfold128_2(const Py_ssize_t NA, const double[:] kA2pi,
             for j in range(N1):
                 for i in range(N2):
                     #(0,0,0,0) (C-index)
-                    M[0, j, 0, i] = M[0, j, 0, i] + mT[j, i] * w
+                    M[0, j, 0, i] += mT[j, i] * w
 
             # Initial phases along the column
             pha = w * pha_step
@@ -586,10 +586,10 @@ cdef void _unfold128_2(const Py_ssize_t NA, const double[:] kA2pi,
                 for j in range(N1):
                     for i in range(N2):
                         #(0,0,0,iA)
-                        M[0, j, iA, i] = M[0, j, iA, i] + mT[j, i] * ph
+                        M[0, j, iA, i] += mT[j, i] * ph
                     for i in range(N2):
                         #(0,iA,0,0)
-                        M[iA, j, 0, i] = M[iA, j, 0, i] + mT[j, i] * cph
+                        M[iA, j, 0, i] += mT[j, i] * cph
 
                 # Increment phases
                 pha = pha * pha_step
@@ -603,10 +603,10 @@ cdef void _unfold128_2(const Py_ssize_t NA, const double[:] kA2pi,
                 for j in range(N1):
                     for i in range(N2):
                         #(0,0,iB,0)
-                        M[0, j, iB*NA, i] = M[0, j, iB*NA, i] + mT[j, i] * ph
+                        M[0, j, iB*NA, i] += mT[j, i] * ph
                     for i in range(N2):
                         #(iB,0,0,0)
-                        M[iB*NA, j, 0, i] = M[iB*NA, j, 0, i] + mT[j, i] * cph
+                        M[iB*NA, j, 0, i] += mT[j, i] * cph
 
                 pha = pha_step
                 for iA in range(1, NA):
@@ -616,20 +616,20 @@ cdef void _unfold128_2(const Py_ssize_t NA, const double[:] kA2pi,
                     for j in range(N1):
                         for i in range(N2):
                             #(0,0,iB,iA)
-                            M[0, j, iB*NA+iA, i] = M[0, j, iB*NA+iA, i] + mT[j, i] * ph
+                            M[0, j, iB*NA+iA, i] += mT[j, i] * ph
                         for i in range(N2):
                             #(0,iA,iB,0)
-                            M[iA, j, iB*NA, i] = M[iA, j, iB*NA, i] + mT[j, i] * cph
+                            M[iA, j, iB*NA, i] += mT[j, i] * cph
 
                     ph = pha * phb.conjugate()
                     cph = (pha * phb).conjugate()
                     for j in range(N1):
                         for i in range(N2):
                             #(iB,0,0,iA)
-                            M[iB*NA, j, iA, i] = M[iB*NA, j, iA, i] + mT[j, i] * ph
+                            M[iB*NA, j, iA, i] += mT[j, i] * ph
                         for i in range(N2):
                             #(iB,iA,0,0)
-                            M[iB*NA+iA, j, 0, i] = M[iB*NA+iA, j, 0, i] + mT[j, i] * cph
+                            M[iB*NA+iA, j, 0, i] += mT[j, i] * cph
 
                     # Increment phases
                     pha = pha * pha_step

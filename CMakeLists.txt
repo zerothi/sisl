@@ -159,6 +159,7 @@ list(POP_BACK CMAKE_MESSAGE_INDENT)
 
 # Parse Cython global options
 if(WITH_COVERAGE)
+  add_compile_definitions(CYTHON_TRACE=1)
   add_compile_definitions(CYTHON_TRACE_NOGIL=1)
 endif()
 if(WITH_ANNOTATE)

@@ -210,10 +210,10 @@ def sparse_dense(M):
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 def _sparse_dense(ints_st[::1] ptr,
-                   ints_st[::1] ncol,
-                   ints_st[::1] col,
-                   numerics_st[:, ::1] data,
-                   numerics_st[:, :, ::1] dense):
+                  ints_st[::1] ncol,
+                  ints_st[::1] col,
+                  numerics_st[:, ::1] data,
+                  numerics_st[:, :, ::1] dense):
 
     cdef ints_st r, ind, ix, s2
 
