@@ -53,6 +53,7 @@ import argparse as argp
 import os
 import sys
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 
@@ -72,7 +73,7 @@ _DEBUG = os.environ.get("SISL_TS_FFT_DEBUG", "False")
 _DEBUG = _DEBUG.lower() in ("true", "t", "1", "y", "yes", "on")
 
 
-def pyamg_solve(A, b, tolerance=1e-12, accel=None, title=""):
+def pyamg_solve(A, b, tolerance: float = 1e-12, accel=None, title: str = ""):
     import pyamg
 
     print(f"\nSetting up pyamg solver... {title}")
@@ -107,14 +108,14 @@ def pyamg_solve(A, b, tolerance=1e-12, accel=None, title=""):
 def solve_poisson(
     geometry,
     shape,
-    radius="empirical",
+    radius: float = 3.0,
     dtype=np.float64,
-    tolerance=1e-8,
+    tolerance: float = 1e-8,
     accel=None,
-    boundary_fft=True,
-    device_val=None,
-    plot_boundary=False,
-    box=False,
+    boundary_fft: bool = True,
+    device_val: Optional[float] = None,
+    plot_boundary: bool = False,
+    box: bool = False,
     boundary=None,
     **elecs_V,
 ):
@@ -146,7 +147,7 @@ def solve_poisson(
     else:
         bc = []
 
-        def bc2bc(s):
+        def bc2bc(s: str) -> str:
             return {
                 "periodic": "PERIODIC",
                 "p": "PERIODIC",
@@ -520,6 +521,11 @@ def fftpoisson_fix_run(args):
             f">\n>\n>{_script}: No out-files has been specified, work will be carried out but not saved!\n>\n>\n"
         )
 
+    # Fix the cases where the arguments hasn't been added
+    if not _DEBUG:
+        args.plot = None
+        args.plot_boundary = False
+
     # Read in geometry
     geometry = si.get_sile(args.geometry).read_geometry()
 
@@ -566,28 +572,27 @@ def fftpoisson_fix_run(args):
         **elecs_V,
     )
 
-    if _DEBUG:
-        if not args.plot is None:
-            dat = V.average(args.plot)
-            import matplotlib.pyplot as plt
+    if not args.plot is None:
+        dat = V.average(args.plot)
+        import matplotlib.pyplot as plt
 
-            axs = [
-                np.linspace(0, V.lattice.length[ax], shape, endpoint=False)
-                for ax, shape in enumerate(V.shape)
-            ]
-            idx = list(range(3))
+        axs = [
+            np.linspace(0, V.lattice.length[ax], shape, endpoint=False)
+            for ax, shape in enumerate(V.shape)
+        ]
+        idx = list(range(3))
 
-            # Now plot data
-            del axs[args.plot]
-            del idx[args.plot]
+        # Now plot data
+        del axs[args.plot]
+        del idx[args.plot]
 
-            X, Y = np.meshgrid(*axs)
-            plt.contourf(X, Y, np.squeeze(dat.grid).T)
-            plt.colorbar()
-            plt.title(f"Averaged over {'ABC'[args.plot]} axis")
-            plt.xlabel(f"Distance along {'ABC'[idx[0]]} [Ang]")
-            plt.ylabel(f"Distance along {'ABC'[idx[1]]} [Ang]")
-            plt.show()
+        X, Y = np.meshgrid(*axs)
+        plt.contourf(X, Y, np.squeeze(dat.grid).T)
+        plt.colorbar()
+        plt.title(f"Averaged over {'ABC'[args.plot]} axis")
+        plt.xlabel(f"Distance along {'ABC'[idx[0]]} [Ang]")
+        plt.ylabel(f"Distance along {'ABC'[idx[1]]} [Ang]")
+        plt.show()
 
     if np.any(np.array(args.shape) != np.array(V.shape)):
         print("\nInterpolating the solution...")
