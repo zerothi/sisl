@@ -192,18 +192,19 @@ class _ncSileTBtrans(SileCDFTBtrans):
         Parameters
         ----------
         E :
-           if `int`, return it-self, else return the energy index which is
-           closests to the energy.
+           return the energy index which is
+           closest to the energy passed.
            For a `str` it will be parsed to a float and treated as such.
         method :
             how non-equal values should be located.
-            * `nearest` takes the closests value
-            * `above` takes the closests value above `E`.
-            * `below` takes the closests value below `E`.
+            * `nearest` takes the closest value
+            * `above` takes the closest value above `E`.
+            * `below` takes the closest value below `E`.
         """
-        warn(
-            f"{self.__class__.__name__}.Eindex handles int's the same as floats [>0.15.2]."
-        )
+        if isinstance(E, int):
+            warn(
+                f"{self.__class__.__name__}.Eindex handles int's the same as floats [>0.15.2]."
+            )
         E = float(E)
 
         dE = self.E - E
@@ -245,6 +246,11 @@ class _ncSileTBtrans(SileCDFTBtrans):
             )
         return idxE
 
+    def _argsort_E(self):
+        """Internal routine for returning energies and transmission in a sorted array"""
+        idx_sort = np.argsort(self.E)
+        return idx_sort
+
     def _bias_window_integrator(self, elec_from: ElecType = 0, elec_to: ElecType = 1):
         r"""An integrator for the bias window between two electrodes
 
@@ -272,7 +278,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
         kt_to = self.kT(elec_to)
         mu_to = self.chemical_potential(elec_to)
         # Get energies
-        E = self._E_T_sorted(elec_from, elec_to)[0]
+        E = self.E[self._argsort_E()]
         dE = E[1] - E[0]
 
         def integrator(E):

@@ -765,14 +765,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         else:
             return self._value_E("DOS", elec, kavg=kavg, E=E) * fact
 
-    def _E_T_sorted(self, elec_from, elec_to, kavg=True):
-        """Internal routine for returning energies and transmission in a sorted array"""
-        E = self.E
-        idx_sort = np.argsort(E)
-        # Get transmission
-        T = self.transmission(elec_from, elec_to, kavg)
-        return E[idx_sort], T[idx_sort]
-
     def current(
         self, elec_from: ElecType = 0, elec_to: ElecType = 1, kavg=True
     ) -> float:
@@ -852,7 +844,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_from = self._elec(elec_from)
         elec_to = self._elec(elec_to)
         # Get energies
-        E, T = self._E_T_sorted(elec_from, elec_to, kavg)
+        idx_sort = self._argsort_E()
+        T = self.transmission(elec_from, elec_to, kavg=kavg)
+        E = self.E[idx_sort]
+        T = T[idx_sort]
 
         dE = E[1] - E[0]
         window_warning(
@@ -1674,20 +1669,20 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         # Do integration of data
         def func_out(data, A):
-            i, weight = A
-            D = self._sparse_data("J", elec, i, kavg=kavg)
+            E, weight = A
+            D = self._sparse_data("J", elec, E, kavg=kavg)
             D[D < 0] = 0
             return data + D * weight
 
         def func_in(data, A):
-            i, weight = A
-            D = self._sparse_data("J", elec, i, kavg=kavg)
+            E, weight = A
+            D = self._sparse_data("J", elec, E, kavg=kavg)
             D[D > 0] = 0
             return data + D * weight
 
         def func_all(data, A):
-            i, weight = A
-            D = self._sparse_data("J", elec, i, kavg=kavg)
+            E, weight = A
+            D = self._sparse_data("J", elec, E, kavg=kavg)
             return data + D * weight
 
         # nonlocal cannot be used in an if-statement
@@ -1710,7 +1705,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 "wrong value [all/both/+-/inout, +/out,-/in] allowed."
             )
 
-        J = reduce(getdata, enumerate(integrator(self.E)), 0.0)
+        J = reduce(getdata, zip(self.E, integrator(self.E)), 0.0)
 
         return (
             self._sparse_data_to_matrix(J, isc, orbitals)

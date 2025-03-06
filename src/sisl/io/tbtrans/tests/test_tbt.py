@@ -261,19 +261,22 @@ def test_1_graphene_all_content(sisl_files):
     DOS = tbt.DOS
     ADOS = tbt.ADOS
 
-    assert DOS(2, atoms=True, sum=False).size == geom.names["Device"].size
-    assert np.allclose(DOS(2, atoms="Device", sum=False), DOS(2, atoms=True, sum=False))
-    assert DOS(2, orbitals=True, sum=False).size == geom.a2o("Device", all=True).size
-    assert ADOS(left, 2, atoms=True, sum=False).size == geom.names["Device"].size
+    assert DOS(2.0, atoms=True, sum=False).size == geom.names["Device"].size
+    assert np.allclose(
+        DOS(2.0, atoms="Device", sum=False), DOS(2.0, atoms=True, sum=False)
+    )
+    assert DOS(2.0, orbitals=True, sum=False).size == geom.a2o("Device", all=True).size
+    assert ADOS(left, 2.0, atoms=True, sum=False).size == geom.names["Device"].size
     assert (
-        ADOS(left, 2, orbitals=True, sum=False).size
+        ADOS(left, 2.0, orbitals=True, sum=False).size
         == geom.a2o("Device", all=True).size
     )
     assert np.allclose(
-        ADOS(left, 2, atoms="Device", sum=False), ADOS(left, 2, atoms=True, sum=False)
+        ADOS(left, 2.0, atoms="Device", sum=False),
+        ADOS(left, 2.0, atoms=True, sum=False),
     )
 
-    for E in (None, 2, 3):
+    for E in (None, 2.0, 3.0):
         assert np.allclose(DOS(E), ADOS(left, E) + ADOS(right, E), atol=1e-5)
 
         for o, indices in (("atoms", range(8, 12)), ("orbitals", range(50, 70))):
@@ -293,7 +296,7 @@ def test_1_graphene_all_content(sisl_files):
             )
 
     # Check orbital currents
-    E = 3
+    E = 0.75
     # Sum of orbital current should be 0 (in == out)
     # However, when eta is *big*, this tends to get blurred.
     orb_left = tbt.orbital_transmission(E, left)
@@ -643,7 +646,7 @@ def test_1_graphene_all_sparse_data_isc_request(sisl_files):
 
     # request the full matrix
     for elec in [0, 1]:
-        J_all = tbt.orbital_transmission(3, elec)
+        J_all = tbt.orbital_transmission(0.75, elec)
         J_all.eliminate_zeros()
 
         # Ensure we actually have something
@@ -651,7 +654,7 @@ def test_1_graphene_all_sparse_data_isc_request(sisl_files):
 
         # partial summed isc
         # Test that the full matrix and individual access is the same
-        J_sum = sum(tbt.orbital_transmission(3, elec, isc=isc) for isc in sc.sc_off)
+        J_sum = sum(tbt.orbital_transmission(0.75, elec, isc=isc) for isc in sc.sc_off)
         assert J_sum.nnz == J_all.nnz
         assert (J_sum - J_all).nnz == 0
 
@@ -660,8 +663,8 @@ def test_1_graphene_all_sparse_data_orbitals(sisl_files):
     tbt = sisl.get_sile(sisl_files("siesta", "tbtrans", "graphene", "graphene.TBT.nc"))
 
     # request the full matrix
-    J_all = tbt.orbital_transmission(3, 0)
-    J_12 = tbt.orbital_transmission(3, 0, orbitals=[2, 3])
+    J_all = tbt.orbital_transmission(0.75, 0)
+    J_12 = tbt.orbital_transmission(0.75, 0, orbitals=[2, 3])
 
     assert J_12.nnz < J_all.nnz // 2
 
@@ -672,4 +675,4 @@ def test_projection_raise(sisl_files):
     )
 
     with pytest.raises(sisl.io.tbtrans.MissingFDFTBtransError):
-        tbt.orbital_transmission(2, 0)
+        tbt.orbital_transmission(1.995, 0)
