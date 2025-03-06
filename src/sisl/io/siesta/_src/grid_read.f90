@@ -7,7 +7,7 @@ subroutine read_grid_sizes(fname, nspin, mesh)
 
   implicit none
 
-  ! Precision 
+  ! Precision
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
 
@@ -42,7 +42,7 @@ subroutine read_grid_cell(fname, cell)
 
   implicit none
 
-  ! Precision 
+  ! Precision
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
 
@@ -73,7 +73,7 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
 
   implicit none
 
-  ! Precision 
+  ! Precision
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
 
@@ -120,5 +120,3 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
   call close_file(iu)
 
 end subroutine read_grid
-
-

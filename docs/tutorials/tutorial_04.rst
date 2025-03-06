@@ -11,7 +11,7 @@ used. First, recall that the number of supercells can be retrieved by::
    >>> print(geometry)
    {na: 1, no: 1, species:
     {Atoms(1):
-       (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000], 
+       (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000],
     },
     nsc: [1, 1, 1], maxR: -1.0
    }
@@ -53,7 +53,7 @@ which results in this underlying geometry:
 .. image:: figures/04_supercell.png
    :width: 200pt
    :align: center
-	
+
 With this setup, sisl, can handle couplings that are within the defined supercell
 structure, see green, full arrow. Any other couplings that reach farther than the
 specified supercell cannot be defined (and will thus *always* be zero), see the
@@ -88,5 +88,3 @@ blue (second atom) arrows. When dealing with Hamiltonians the supercell is extre
 important to obtain the correct electronic structure. If one wishes to use the 3rd
 nearest neighbour couplings one is forced to use a supercell of ``[5, 5, 1]`` (please
 try and convince yourself of this).
-
-

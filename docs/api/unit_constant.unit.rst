@@ -1,9 +1,8 @@
-.. _unit:
 
 Unit conversion
 ===============
 
-.. module:: sisl.unit
+.. currentmodule:: sisl.unit
 
 Generic conversion utility between different units.
 

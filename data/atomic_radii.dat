@@ -1,102 +1,102 @@
-1	H	hydrogen	25	53	120	38	nodata	
-2	He	helium	nodata	31	140	32	nodata	
+1	H	hydrogen	25	53	120	38	nodata
+2	He	helium	nodata	31	140	32	nodata
 3	Li	lithium	145	167	182	134	nodata	152
 4	Be	beryllium	105	112	153 90	85	112
-5	B	boron	85	87	192 82	73	
-6	C	carbon	70	67	170	77	60	
-7	N	nitrogen	65	56	155	75	54	
-8	O	oxygen	60	48	152	73	53	
-9	F	fluorine	50	42	147	71	53	
-10	Ne	neon	nodata	38	154	69	nodata	
+5	B	boron	85	87	192 82	73
+6	C	carbon	70	67	170	77	60
+7	N	nitrogen	65	56	155	75	54
+8	O	oxygen	60	48	152	73	53
+9	F	fluorine	50	42	147	71	53
+10	Ne	neon	nodata	38	154	69	nodata
 11	Na	sodium	180	190	227	154	nodata	186
 12	Mg	magnesium	150	145	173	130	127	160
 13	Al	aluminium	125	118	184 118	111	143
-14	Si	silicon	110	111	210	111	102	
-15	P	phosphorus	100	98	180	106	94	
-16	S	sulfur	100	88	180	102	95	
-17	Cl	chlorine	100	79	175	99	93	
-18	Ar	argon	71	71	188	97	96	
+14	Si	silicon	110	111	210	111	102
+15	P	phosphorus	100	98	180	106	94
+16	S	sulfur	100	88	180	102	95
+17	Cl	chlorine	100	79	175	99	93
+18	Ar	argon	71	71	188	97	96
 19	K	potassium	220	243	275	196	nodata	227
 20	Ca	calcium	180	194	231 174	133	197
-21	Sc	scandium	160	184	211 144	114	162 
+21	Sc	scandium	160	184	211 144	114	162
 22	Ti	titanium	140	176	nodata	136	108	147
-23	V	vanadium	135	171	nodata	125	106	134 
-24	Cr	chromium	140	166	nodata	127	103	128 
-25	Mn	manganese	140	161	nodata	139	103	127 
-26	Fe	iron	140	156	nodata	125	102	126 
-27	Co	cobalt	135	152	nodata	126	96	125 
-28	Ni	nickel	135	149	163	121	101	124 
-29	Cu	copper	135	145	140	138	120	128 
-30	Zn	zinc	135	142	139	131	nodata	134 
-31	Ga	gallium	130	136	187	126	121	135 
-32	Ge	germanium	125	125	211 122	114	
-33	As	arsenic	115	114	185	119	106	
-34	Se	selenium	115	103	190	116	107	
-35	Br	bromine	115	94	185	114	110	
-36	Kr	krypton	nodata	88	202	110	108	
+23	V	vanadium	135	171	nodata	125	106	134
+24	Cr	chromium	140	166	nodata	127	103	128
+25	Mn	manganese	140	161	nodata	139	103	127
+26	Fe	iron	140	156	nodata	125	102	126
+27	Co	cobalt	135	152	nodata	126	96	125
+28	Ni	nickel	135	149	163	121	101	124
+29	Cu	copper	135	145	140	138	120	128
+30	Zn	zinc	135	142	139	131	nodata	134
+31	Ga	gallium	130	136	187	126	121	135
+32	Ge	germanium	125	125	211 122	114
+33	As	arsenic	115	114	185	119	106
+34	Se	selenium	115	103	190	116	107
+35	Br	bromine	115	94	185	114	110
+36	Kr	krypton	nodata	88	202	110	108
 37	Rb	rubidium	235	265	303 211	nodata	248
 38	Sr	strontium	200	219	249 192	139	215
-39	Y	yttrium	180	212	nodata	162	124	180 
+39	Y	yttrium	180	212	nodata	162	124	180
 40	Zr	zirconium	155	206	nodata	148	121	160
-41	Nb	niobium	145	198	nodata	137	116	146 
-42	Mo	molybdenum	145	190	nodata	145	113	139 
-43	Tc	technetium	135	183	nodata	156	110	136 
-44	Ru	ruthenium	130	178	nodata	126	103	134 
-45	Rh	rhodium	135	173	nodata	135	106	134 
-46	Pd	palladium	140	169	163	131	112	137 
-47	Ag	silver	160	165	172	153	137	144 
-48	Cd	cadmium	155	161	158	148	nodata	151 
+41	Nb	niobium	145	198	nodata	137	116	146
+42	Mo	molybdenum	145	190	nodata	145	113	139
+43	Tc	technetium	135	183	nodata	156	110	136
+44	Ru	ruthenium	130	178	nodata	126	103	134
+45	Rh	rhodium	135	173	nodata	135	106	134
+46	Pd	palladium	140	169	163	131	112	137
+47	Ag	silver	160	165	172	153	137	144
+48	Cd	cadmium	155	161	158	148	nodata	151
 49	In	indium	155	156	193	144	146	167
-50	Sn	tin	145	145	217	141	132	
-51	Sb	antimony	145	133	206 138	127	
-52	Te	tellurium	140	123	206	135	121	
-53	I	iodine	140	115	198	133	125	
-54	Xe	xenon	nodata	108	216	130	122	
+50	Sn	tin	145	145	217	141	132
+51	Sb	antimony	145	133	206 138	127
+52	Te	tellurium	140	123	206	135	121
+53	I	iodine	140	115	198	133	125
+54	Xe	xenon	nodata	108	216	130	122
 55	Cs	caesium	260	298	343 225	nodata	265
 56	Ba	barium	215	253	268 198	149	222
-57	La	lanthanum	195	nodata	nodata	169	139	187 
-58	Ce	cerium	185	nodata	nodata	nodata	131	181.8 
-59	Pr	praseodymium	185	247	nodata	nodata	128	182.4 
-60	Nd	neodymium	185	206	nodata	nodata	nodata	181.4 
-61	Pm	promethium	185	205	nodata	nodata	nodata	183.4 
-62	Sm	samarium	185	238	nodata	nodata	nodata	180.4 
-63	Eu	europium	185	231	nodata	nodata	nodata	180.4 
-64	Gd	gadolinium	180	233	nodata	nodata	132	180.4 
-65	Tb	terbium	175	225	nodata	nodata	nodata	177.3 
-66	Dy	dysprosium	175	228	nodata	nodata	nodata	178.1 
-67	Ho	holmium	175	nodata	nodata	nodata	nodata	176.2 
-68	Er	erbium	175	226	nodata	nodata	nodata	176.1 
-69	Tm	thulium	175	222	nodata	nodata	nodata	175.9 
-70	Yb	ytterbium	175	222	nodata	nodata	nodata	176 
-71	Lu	lutetium	175	217	nodata	160	131	173.8 
+57	La	lanthanum	195	nodata	nodata	169	139	187
+58	Ce	cerium	185	nodata	nodata	nodata	131	181.8
+59	Pr	praseodymium	185	247	nodata	nodata	128	182.4
+60	Nd	neodymium	185	206	nodata	nodata	nodata	181.4
+61	Pm	promethium	185	205	nodata	nodata	nodata	183.4
+62	Sm	samarium	185	238	nodata	nodata	nodata	180.4
+63	Eu	europium	185	231	nodata	nodata	nodata	180.4
+64	Gd	gadolinium	180	233	nodata	nodata	132	180.4
+65	Tb	terbium	175	225	nodata	nodata	nodata	177.3
+66	Dy	dysprosium	175	228	nodata	nodata	nodata	178.1
+67	Ho	holmium	175	nodata	nodata	nodata	nodata	176.2
+68	Er	erbium	175	226	nodata	nodata	nodata	176.1
+69	Tm	thulium	175	222	nodata	nodata	nodata	175.9
+70	Yb	ytterbium	175	222	nodata	nodata	nodata	176
+71	Lu	lutetium	175	217	nodata	160	131	173.8
 72	Hf	hafnium	155	208	nodata	150	122	159
-73	Ta	tantalum	145	200	nodata	138	119	146 
-74	W	tungsten	135	193	nodata	146	115	139 
-75	Re	rhenium	135	188	nodata	159	110	137 
-76	Os	osmium	130	185	nodata	128	109	135 
-77	Ir	iridium	135	180	nodata	137	107	135.5 
-78	Pt	platinum	135	177	175	128	110	138.5 
-79	Au	gold	135	174	166	144	123	144 
-80	Hg	mercury	150	171	155	149	nodata	151 
+73	Ta	tantalum	145	200	nodata	138	119	146
+74	W	tungsten	135	193	nodata	146	115	139
+75	Re	rhenium	135	188	nodata	159	110	137
+76	Os	osmium	130	185	nodata	128	109	135
+77	Ir	iridium	135	180	nodata	137	107	135.5
+78	Pt	platinum	135	177	175	128	110	138.5
+79	Au	gold	135	174	166	144	123	144
+80	Hg	mercury	150	171	155	149	nodata	151
 81	Tl	thallium	190	156	196	148	150	170
-82	Pb	lead	180	154	202	147	137	
-83	Bi	bismuth	160	143	207 146	135	
-84	Po	polonium	190	135	197 nodata	129	
-85	At	astatine	nodata	nodata	202 nodata	138	
-86	Rn	radon	nodata	120	220 145	133	
+82	Pb	lead	180	154	202	147	137
+83	Bi	bismuth	160	143	207 146	135
+84	Po	polonium	190	135	197 nodata	129
+85	At	astatine	nodata	nodata	202 nodata	138
+86	Rn	radon	nodata	120	220 145	133
 87	Fr	francium	nodata	nodata	348 nodata	nodata	nodata
 88	Ra	radium	215	nodata	283 nodata	159	nodata
-89	Ac	actinium	195	nodata	nodata	nodata	140	
-90	Th	thorium	180	nodata	nodata	nodata	136	179 
+89	Ac	actinium	195	nodata	nodata	nodata	140
+90	Th	thorium	180	nodata	nodata	nodata	136	179
 91	Pa	protactinium	180	nodata	nodata	nodata	129	163 d
 92	U	uranium	175	nodata	186	nodata	118	156 e
 93	Np	neptunium	175	nodata	nodata	nodata	116	155 e
 94	Pu	plutonium	175	nodata	nodata	nodata	nodata	159 e
-95	Am	americium	175	nodata	nodata	nodata	nodata	173 
-96	Cm	curium	nodata	nodata	nodata	nodata	nodata	174 
-97	Bk	berkelium	nodata	nodata	nodata	nodata	nodata	170 
-98	Cf	californium	nodata	nodata	nodata	nodata	nodata	186+/- 2 
-99	Es	einsteinium	nodata	nodata	nodata	nodata	nodata	186+/- 2 
+95	Am	americium	175	nodata	nodata	nodata	nodata	173
+96	Cm	curium	nodata	nodata	nodata	nodata	nodata	174
+97	Bk	berkelium	nodata	nodata	nodata	nodata	nodata	170
+98	Cf	californium	nodata	nodata	nodata	nodata	nodata	186+/- 2
+99	Es	einsteinium	nodata	nodata	nodata	nodata	nodata	186+/- 2
 100	Fm	fermium	nodata	nodata	nodata	nodata	nodata	nodata
 101	Md	mendelevium	nodata	nodata	nodata	nodata	nodata	nodata
 102	No	nobelium	nodata	nodata	nodata	nodata	nodata	nodata

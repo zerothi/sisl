@@ -31,4 +31,3 @@ prune __pycache__
 # lastly, remove all these files
 global-exclude *.py[cod] __pycache__ *.so *.sh
 global-exclude *.html .git* CMakeLists.txt
-

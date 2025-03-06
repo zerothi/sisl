@@ -11,7 +11,7 @@ Here we list the currently default geometries:
 * `honeycomb` (graphene unit-cell)::
 
      hBN = geom.honeycomb(1.5, [Atom('B'), Atom('N')])
-  
+
 * `graphene` (equivalent to `honeycomb` with Carbon atoms)::
 
      graphene = geom.graphene(1.42)
@@ -27,9 +27,7 @@ Here we list the currently default geometries:
 * Nanotubes with different chirality::
 
      ntb = geom.nanotube(1.54, chirality=(n, m))
-  
+
 * Diamond::
 
      d = geom.diamond(3.57)
-
-

@@ -389,3 +389,14 @@ orphan_prefix = "orphan."
     directory = "fix"
     name = "Bugfixes"
     showcontent = true
+
+[tool.rstcheck]
+ignore_directives = [
+    "autosummary",
+    "module",
+    "toctree",
+]
+ignore_roles = [
+    "download",
+    "ref",
+]

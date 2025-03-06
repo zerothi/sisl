@@ -20,7 +20,7 @@ _shifted=0
 function _help {
     echo "Use the following commands:"
     echo "  $0 M  :  steps the major revision, minor, micro turns 0"
-    echo "  $0 m  :  steps the minor revision, micro turns 0" 
+    echo "  $0 m  :  steps the minor revision, micro turns 0"
     echo "  $0 u  :  steps the minor revision"
     echo ""
     echo "Example, previous version is 0.1.3"
@@ -139,5 +139,3 @@ git add setup.py
 git commit -s -m "Reverting internal release"
 git push
 git push --follow-tags
-
-

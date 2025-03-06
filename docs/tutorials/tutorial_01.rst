@@ -11,7 +11,7 @@ The *only* required information is the atomic coordinates::
    >>> print(single_hydrogen)
    {na: 1, no: 1, species:
     {Atoms(1):
-       (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000], 
+       (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000],
     },
     nsc: [1, 1, 1], maxR: -1.0
    }
@@ -35,7 +35,7 @@ To specify the atomic specie one may do::
    >>> single_carbon = Geometry([[0., 0., 0.]], Atom('C'))
 
 which changes the Hydrogen to a Carbon atom.
-   
+
 To create a geometry with two different atomic species, for instance a chain
 of alternating Natrium an Chloride atoms, separated by 1.6 A one may do::
 
@@ -57,5 +57,4 @@ which is twice the length of the first chain with alternating Natrium and Chlori
 but otherwise identical.
 
 This is the most basic form of creating geometries in sisl and is the starting
-point of almost anything related to sisl. 
-
+point of almost anything related to sisl.

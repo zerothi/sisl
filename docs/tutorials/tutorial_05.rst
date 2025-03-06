@@ -21,7 +21,7 @@ Here we create a square lattice and from this a `Hamiltonian`::
   {spin: 1, non-zero: 0
    {na: 1, no: 1, species:
     {Atoms(1):
-      (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000], 
+      (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000],
     },
    nsc: [1, 1, 1], maxR: -1.0
    }
@@ -41,7 +41,7 @@ how the Hamiltonian can be setup in a more easy way.
 Example -- square
 ~~~~~~~~~~~~~~~~~
 
-Let us try and continue from :ref:`tutorial-01` and create a square 
+Let us try and continue from :ref:`tutorial-01` and create a square
 2D lattice with one atom in the unit-cell and a supercell which couples only
 to nearest neighbour atoms.
 
@@ -61,7 +61,7 @@ and the 4 nearest neighbour couplings to, :math:`-4` and :math:`1`, respectively
   {spin: 1, non-zero: 5
    {na: 1, no: 1, species:
     {Atoms(1):
-      (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000], 
+      (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000],
     },
     nsc: [3, 3, 1], maxR: -1.0
    }
@@ -123,8 +123,5 @@ These are specified as this::
 .. image:: figures/05_graphene_bs.png
    :width: 300pt
    :align: center
-	   
+
 The complete code for this example (plus the band-structure) can be found :download:`here <tutorial_05_graphene.py>`.
-
-
-

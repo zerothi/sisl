@@ -38,4 +38,3 @@ subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
   call close_file(iu)
 
 end subroutine write_dm
-

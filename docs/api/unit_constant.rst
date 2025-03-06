@@ -1,8 +1,10 @@
 .. _unit_constant:
 
-===================
+*******************
 Units and constants
-===================
+*******************
+
+.. currentmodule:: sisl
 
 In `sisl` values are forced to be in the following units:
 
@@ -23,4 +25,3 @@ the handling of physical constants.
 
    unit_constant.unit
    unit_constant.constant
-

@@ -1,11 +1,10 @@
-.. _utilities:
+.. .. _utilities:
 
-=========
+*********
 Utilities
-=========
+*********
 
 .. module:: sisl.utils
-.. currentmodule:: sisl
 
 Various helper classes and functions that make using `sisl` easier.
 
@@ -15,5 +14,3 @@ Various helper classes and functions that make using `sisl` easier.
 
    utilities.shape
    utilities.misc
-
-

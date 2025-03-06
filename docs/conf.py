@@ -560,7 +560,7 @@ pybtex.plugin.register_plugin(
 pybtex.plugin.register_plugin("pybtex.style.formatting", "rev_year", RevYearPlain)
 
 # Tell nbsphinx to wait, at least X seconds for each cell
-nbsphinx_timeout = 600
+nbsphinx_timeout = 30
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""

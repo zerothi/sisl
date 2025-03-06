@@ -1,9 +1,8 @@
-.. _constant:
 
 Constants
 =========
 
-.. module:: sisl.constant
+.. currentmodule:: sisl
 
 
 A pre-set set of physical constants. The SI units are following the *new* convention
@@ -35,4 +34,3 @@ while one can just as easily convert the units (which ensures thay stay like ano
 
 >>> c('Ang/ps')
 2997924.58 Ang/ps
-

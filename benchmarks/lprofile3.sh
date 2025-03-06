@@ -17,4 +17,3 @@ echo "saving stats to: $stats"
 
 kernprof -l $script $@
 python3 -m line_profiler $script.lprof > $stats
-

@@ -38,5 +38,3 @@ contains
   end function linear2pm
 
 end subroutine siesta_sc_off
-
-
