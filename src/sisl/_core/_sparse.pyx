@@ -8,16 +8,16 @@ import numpy as np
 cimport numpy as cnp
 from numpy cimport dtype, ndarray
 
-from sisl._core._dtypes cimport inline_sum, ints_st, numerics_st, ssize_st, type2dtype
+from sisl._core._dtypes cimport inline_sum, int_sp_st, numerics_st, type2dtype
 from sisl._indices cimport in_1d
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void ncol2ptr(const ints_st nr, const ints_st[::1] ncol, ints_st[::1] ptr,
-                   const ints_st per_row, const ints_st per_elem) noexcept nogil:
-    cdef ssize_st r, rr, ir
+cdef void ncol2ptr(const int_sp_st nr, const int_sp_st[::1] ncol, int_sp_st[::1] ptr,
+                   const int_sp_st per_row, const int_sp_st per_elem) noexcept nogil:
+    cdef Py_ssize_t r, rr, ir
 
     # this is NC/SOC
     ptr[0] = 0
@@ -36,28 +36,28 @@ cdef void ncol2ptr(const ints_st nr, const ints_st[::1] ncol, ints_st[::1] ptr,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def fold_csr_matrix(ints_st[::1] ptr,
-                    ints_st[::1] ncol,
-                    ints_st[::1] col,
-                    ints_st per_row = 1,
+def fold_csr_matrix(int_sp_st[::1] ptr,
+                    int_sp_st[::1] ncol,
+                    int_sp_st[::1] col,
+                    int_sp_st per_row = 1,
                     ):
     """ Fold all columns into a square matrix """
 
     # Number of rows
-    cdef ints_st nr = ncol.shape[0]
+    cdef int_sp_st nr = ncol.shape[0]
 
-    cdef object dtype = type2dtype[ints_st](1)
-    cdef ndarray[ints_st, mode='c'] FOLD_ptr = np.empty([nr*per_row+ 1], dtype=dtype)
-    cdef ndarray[ints_st, mode='c'] FOLD_ncol = np.empty([nr*per_row], dtype=dtype)
-    cdef ndarray[ints_st, mode='c'] FOLD_col = np.empty([inline_sum(ncol)*per_row*per_row], dtype=dtype)
+    cdef object dtype = type2dtype[int_sp_st](1)
+    cdef ndarray[int_sp_st, mode='c'] FOLD_ptr = np.empty([nr*per_row+ 1], dtype=dtype)
+    cdef ndarray[int_sp_st, mode='c'] FOLD_ncol = np.empty([nr*per_row], dtype=dtype)
+    cdef ndarray[int_sp_st, mode='c'] FOLD_col = np.empty([inline_sum(ncol)*per_row*per_row], dtype=dtype)
 
-    cdef ints_st[::1] fold_ptr = FOLD_ptr
-    cdef ints_st[::1] fold_ncol = FOLD_ncol
-    cdef ints_st[::1] fold_col = FOLD_col
+    cdef int_sp_st[::1] fold_ptr = FOLD_ptr
+    cdef int_sp_st[::1] fold_ncol = FOLD_ncol
+    cdef int_sp_st[::1] fold_col = FOLD_col
 
     # local variables
-    cdef ints_st r, rr, ir, c, ic, nz, ind
-    cdef ints_st[::1] tmp
+    cdef int_sp_st r, rr, ir, c, ic, nz, ind
+    cdef int_sp_st[::1] tmp
 
     nz = 0
     fold_ptr[0] = 0
@@ -125,28 +125,28 @@ def fold_csr_matrix(ints_st[::1] ptr,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def fold_csr_matrix_diag(ints_st[::1] ptr,
-                         ints_st[::1] ncol,
-                         ints_st[::1] col,
-                         ints_st per_row,
+def fold_csr_matrix_diag(int_sp_st[::1] ptr,
+                         int_sp_st[::1] ncol,
+                         int_sp_st[::1] col,
+                         int_sp_st per_row,
                     ):
     """ Fold all columns into a square matrix """
 
     # Number of rows
-    cdef ints_st nr = ncol.shape[0]
+    cdef int_sp_st nr = ncol.shape[0]
 
-    cdef object dtype = type2dtype[ints_st](1)
-    cdef ndarray[ints_st, mode='c'] FOLD_ptr = np.empty([nr*per_row+ 1], dtype=dtype)
-    cdef ndarray[ints_st, mode='c'] FOLD_ncol = np.empty([nr*per_row], dtype=dtype)
-    cdef ndarray[ints_st, mode='c'] FOLD_col = np.empty([inline_sum(ncol)*per_row], dtype=dtype)
+    cdef object dtype = type2dtype[int_sp_st](1)
+    cdef ndarray[int_sp_st, mode='c'] FOLD_ptr = np.empty([nr*per_row+ 1], dtype=dtype)
+    cdef ndarray[int_sp_st, mode='c'] FOLD_ncol = np.empty([nr*per_row], dtype=dtype)
+    cdef ndarray[int_sp_st, mode='c'] FOLD_col = np.empty([inline_sum(ncol)*per_row], dtype=dtype)
 
-    cdef ints_st[::1] fold_ptr = FOLD_ptr
-    cdef ints_st[::1] fold_ncol = FOLD_ncol
-    cdef ints_st[::1] fold_col = FOLD_col
+    cdef int_sp_st[::1] fold_ptr = FOLD_ptr
+    cdef int_sp_st[::1] fold_ncol = FOLD_ncol
+    cdef int_sp_st[::1] fold_col = FOLD_col
 
     # local variables
-    cdef ints_st r, rr, ir, c, ic, nz, ind
-    cdef ints_st[::1] tmp
+    cdef int_sp_st r, rr, ir, c, ic, nz, ind
+    cdef int_sp_st[::1] tmp
 
     nz = 0
     fold_ptr[0] = 0
@@ -209,13 +209,13 @@ def sparse_dense(M):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-def _sparse_dense(ints_st[::1] ptr,
-                  ints_st[::1] ncol,
-                  ints_st[::1] col,
+def _sparse_dense(int_sp_st[::1] ptr,
+                  int_sp_st[::1] ncol,
+                  int_sp_st[::1] col,
                   numerics_st[:, ::1] data,
                   numerics_st[:, :, ::1] dense):
 
-    cdef ints_st r, ind, ix, s2
+    cdef int_sp_st r, ind, ix, s2
 
     s2 = dense.shape[2]
     for r in range(ncol.shape[0]):

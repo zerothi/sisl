@@ -6,7 +6,7 @@ cimport cython
 import numpy as np
 cimport numpy as cnp
 
-from sisl._core._dtypes cimport floats_st, ints_st
+from sisl._core._dtypes cimport floats_st, int_sp_st
 from ._common import comply_gauge
 from ._matrix_phase import *
 from ._matrix_phase_sc import *
@@ -47,13 +47,13 @@ def phase_dk(gauge, M, sc, cnp.ndarray[floats_st] K, dtype):
 
     return p_opt, phases
 
-def matrix_k(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
+def matrix_k(gauge, M, const int_sp_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype)
     p_opt, phases = phase_dk(gauge, M, sc, k, dtype)
 
-    cdef ints_st udx = idx
+    cdef int_sp_st udx = idx
     # Check that the dimension *works*
-    cdef ints_st shapem1 = M.shape[-1]
+    cdef int_sp_st shapem1 = M.shape[-1]
     if idx < 0:
         udx += shapem1
     if udx < 0 or shapem1 <= udx:
@@ -105,7 +105,7 @@ def matrix_k_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     return phase_csr_nc(csr.ptr, csr.ncol, csr.col, csr._D, phases, p_opt).asformat(format)
 
 
-def matrix_k_diag(gauge, M, const ints_st idx, const ints_st per_row,
+def matrix_k_diag(gauge, M, const int_sp_st idx, const int_sp_st per_row,
                   sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
     p_opt, phases = phase_dk(gauge, M, sc, k, dtype)

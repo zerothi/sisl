@@ -8,7 +8,7 @@ import numpy as np
 
 from numpy cimport dtype, ndarray
 
-from sisl._core._dtypes cimport floats_st, ssize_st, type2dtype
+from sisl._core._dtypes cimport floats_st, type2dtype
 
 
 @cython.boundscheck(False)
@@ -43,7 +43,7 @@ def product3(const floats_st[::1] v):
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 def is_ascending(const floats_st[::1] v):
-    cdef ssize_st i
+    cdef Py_ssize_t i
     for i in range(1, v.shape[0]):
         if v[i-1] > v[i]:
             return 0
@@ -61,7 +61,7 @@ def xyz_to_spherical_cos_phi(floats_st[::1] x,
 
     Returns x = R, y = theta, z = cos_phi
     """
-    cdef ssize_st i
+    cdef Py_ssize_t i
     cdef floats_st R
 
     if floats_st is cython.float:

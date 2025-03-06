@@ -70,8 +70,8 @@ cdef inline object type2dtype(const _type2dtype_types_st v):
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.boundscheck(False)
-cdef inline ssize_st inline_sum(const _inline_sum_st[::1] array) noexcept nogil:
-    cdef ssize_st total, i
+cdef inline Py_ssize_t inline_sum(const _inline_sum_st[::1] array) noexcept nogil:
+    cdef Py_ssize_t total, i
 
     total = 0
     for i in range(array.shape[0]):

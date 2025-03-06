@@ -8,7 +8,7 @@ import numpy as np
 
 cimport numpy as cnp
 
-from sisl._core._dtypes cimport complexs_st, ints_st, numerics_st, reals_st
+from sisl._core._dtypes cimport complexs_st, floatcomplexs_st, int_sp_st, reals_st
 
 """
 These routines converts an array of n-values into a spin-box matrix.
@@ -43,9 +43,9 @@ M[7] == Delta[1, 1]
 """
 
 
-cdef inline void matrix_add_csr_nc(const ints_st[::1] v_ptr,
-                                   const ints_st r,
-                                   const ints_st r_idx,
+cdef inline void matrix_add_csr_nc(const int_sp_st[::1] v_ptr,
+                                   const int_sp_st r,
+                                   const int_sp_st r_idx,
                                    complexs_st[::1] v,
                                    const complexs_st *M) noexcept nogil:
     v[v_ptr[r] + r_idx] += M[0]
@@ -53,8 +53,8 @@ cdef inline void matrix_add_csr_nc(const ints_st[::1] v_ptr,
     v[v_ptr[r+1] + r_idx] += M[2]
     v[v_ptr[r+1] + r_idx+1] += M[3]
 
-cdef inline void matrix_add_array_nc(const ints_st r,
-                                     const ints_st c,
+cdef inline void matrix_add_array_nc(const int_sp_st r,
+                                     const int_sp_st c,
                                      complexs_st[:, ::1] v,
                                      const complexs_st *M) noexcept nogil:
     v[r, c] += M[0]
@@ -98,9 +98,9 @@ cdef inline void matrix_box_so_cmplx(const _internal_complexs_st *data,
     M[3] = <complexs_st> (data[1] * phase)
 
 
-cdef inline void matrix_add_csr_nambu(const ints_st[::1] v_ptr,
-                                      const ints_st r,
-                                      const ints_st r_idx,
+cdef inline void matrix_add_csr_nambu(const int_sp_st[::1] v_ptr,
+                                      const int_sp_st r,
+                                      const int_sp_st r_idx,
                                       complexs_st[::1] v,
                                       const complexs_st *M) noexcept nogil:
     # H e-e
@@ -128,8 +128,8 @@ cdef inline void matrix_add_csr_nambu(const ints_st[::1] v_ptr,
     v[v_ptr[r+3] + r_idx+2] += M[10]
     v[v_ptr[r+3] + r_idx+3] += M[11]
 
-cdef inline void matrix_add_array_nambu(const ints_st r,
-                                        const ints_st c,
+cdef inline void matrix_add_array_nambu(const int_sp_st r,
+                                        const int_sp_st c,
                                         complexs_st[:, ::1] v,
                                         const complexs_st *M) noexcept nogil:
     # H e-e

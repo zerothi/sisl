@@ -23,12 +23,15 @@ from numpy cimport (
 
 # Generic typedefs for sisl internal naming convention
 ctypedef size_t size_st
-ctypedef Py_ssize_t ssize_st
 
 
 ctypedef fused ints_st:
     int
     long
+
+
+ctypedef fused int_sp_st:
+    int
 
 
 ctypedef fused floats_st:
@@ -99,4 +102,4 @@ ctypedef fused _inline_sum_st:
     uint32_t
     uint64_t
 
-cdef ssize_st inline_sum(const _inline_sum_st[::1] array) noexcept nogil
+cdef Py_ssize_t inline_sum(const _inline_sum_st[::1] array) noexcept nogil

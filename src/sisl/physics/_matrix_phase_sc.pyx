@@ -15,9 +15,7 @@ from sisl._core._dtypes cimport (
     floatcomplexs_st,
     floats_st,
     inline_sum,
-    ints_st,
-    numerics_st,
-    ssize_st,
+    int_sp_st,
     type2dtype,
 )
 from sisl._core._sparse cimport ncol2ptr
@@ -53,32 +51,39 @@ __all__ = [
 ]
 
 
-def phase_sc_csr(ints_st[::1] ptr,
-                  ints_st[::1] ncol,
-                  ints_st[::1] col,
-                  const ints_st nc,
-                  numerics_st[:, ::1] D,
-                  const int idx,
-                  floatcomplexs_st[::1] phases,
-                  const int p_opt):
+ctypedef fused phases_st:
+    float
+    double
+    float complex
+    double complex
+
+
+def phase_sc_csr(int_sp_st[::1] ptr,
+                  int_sp_st[::1] ncol,
+                  int_sp_st[::1] col,
+                  const int_sp_st nc,
+                  floatcomplexs_st[:, ::1] D,
+                  const int_sp_st idx,
+                  const phases_st[::1] phases,
+                  const int_sp_st p_opt):
 
     # Now copy the sparse matrix form
-    cdef ints_st nr = ncol.shape[0]
-    cdef object idtype = type2dtype[ints_st](1)
-    cdef cnp.ndarray[ints_st, mode='c'] V_PTR = np.empty([nr + 1], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_NCOL = np.empty([nr], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_COL = np.empty([inline_sum(ncol)], dtype=idtype)
+    cdef int_sp_st nr = ncol.shape[0]
+    cdef object idtype = type2dtype[int_sp_st](1)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_PTR = np.empty([nr + 1], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_NCOL = np.empty([nr], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_COL = np.empty([inline_sum(ncol)], dtype=idtype)
 
-    cdef ints_st[::1] v_ptr = V_PTR
-    cdef ints_st[::1] v_ncol = V_NCOL
-    cdef ints_st[::1] v_col = V_COL
+    cdef int_sp_st[::1] v_ptr = V_PTR
+    cdef int_sp_st[::1] v_ncol = V_NCOL
+    cdef int_sp_st[::1] v_col = V_COL
 
-    cdef object dtype = type2dtype[floatcomplexs_st](1)
-    cdef cnp.ndarray[floatcomplexs_st, mode='c'] V = np.zeros([v_col.shape[0]], dtype=dtype)
-    cdef floatcomplexs_st[::1] v = V
+    cdef object dtype = type2dtype[phases_st](1)
+    cdef cnp.ndarray[phases_st, mode='c'] V = np.zeros([v_col.shape[0]], dtype=dtype)
+    cdef phases_st[::1] v = V
 
-    cdef ints_st r, c, ind, cind
-    cdef floatcomplexs_st ph
+    cdef int_sp_st r, c, ind, cind
+    cdef phases_st ph
 
     # Copy ncol
     v_ncol[:] = ncol[:]
@@ -91,7 +96,7 @@ def phase_sc_csr(ints_st[::1] ptr,
             for r in range(nr):
                 v_ptr[r] = cind
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    v[cind] = <floatcomplexs_st> D[ind, idx]
+                    v[cind] = <phases_st> D[ind, idx]
                     v_col[cind] = col[ind]
                     cind = cind + 1
 
@@ -100,7 +105,7 @@ def phase_sc_csr(ints_st[::1] ptr,
                 v_ptr[r] = cind
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     ph = phases[ind]
-                    v[cind] = <floatcomplexs_st> (D[ind, idx] * ph)
+                    v[cind] = <phases_st> (D[ind, idx] * ph)
                     v_col[cind] = col[ind]
                     cind = cind + 1
 
@@ -109,7 +114,7 @@ def phase_sc_csr(ints_st[::1] ptr,
                 v_ptr[r] = cind
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     ph = phases[col[ind] / nr]
-                    v[cind] = <floatcomplexs_st> (D[ind, idx] * ph)
+                    v[cind] = <phases_st> (D[ind, idx] * ph)
                     v_col[cind] = col[ind]
                     cind = cind + 1
 
@@ -118,75 +123,75 @@ def phase_sc_csr(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nc))
 
 
-def phase_sc_array(ints_st[::1] ptr,
-                    ints_st[::1] ncol,
-                    ints_st[::1] col,
-                    const ints_st nc,
-                    numerics_st[:, ::1] D,
-                    const int idx,
-                    floatcomplexs_st[::1] phases,
-                    const int p_opt):
+def phase_sc_array(int_sp_st[::1] ptr,
+                    int_sp_st[::1] ncol,
+                    int_sp_st[::1] col,
+                    const int_sp_st nc,
+                    floatcomplexs_st[:, ::1] D,
+                    const int_sp_st idx,
+                    const phases_st[::1] phases,
+                    const int_sp_st p_opt):
 
-    cdef ints_st nr = ncol.shape[0]
+    cdef int_sp_st nr = ncol.shape[0]
 
-    cdef object dtype = type2dtype[floatcomplexs_st](1)
-    cdef cnp.ndarray[floatcomplexs_st, ndim=2, mode='c'] V = np.zeros([nr, nc], dtype=dtype)
-    cdef floatcomplexs_st[:, ::1] v = V
+    cdef object dtype = type2dtype[phases_st](1)
+    cdef cnp.ndarray[phases_st, ndim=2, mode='c'] V = np.zeros([nr, nc], dtype=dtype)
+    cdef phases_st[:, ::1] v = V
 
-    cdef ints_st r, c, ind
-    cdef floatcomplexs_st ph
+    cdef int_sp_st r, c, ind
+    cdef phases_st ph
 
     with nogil:
         if p_opt == -1:
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    v[r, col[ind]] = <floatcomplexs_st> D[ind, idx]
+                    v[r, col[ind]] = <phases_st> D[ind, idx]
 
         elif p_opt == 0:
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     ph = phases[ind]
-                    v[r, col[ind]] = <floatcomplexs_st> (D[ind, idx] * ph)
+                    v[r, col[ind]] = <phases_st> (D[ind, idx] * ph)
 
         else:
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     ph = phases[col[ind] / nr]
-                    v[r, col[ind]] = <floatcomplexs_st> (D[ind, idx] * ph)
+                    v[r, col[ind]] = <phases_st> (D[ind, idx] * ph)
 
     return V
 
 
-def phase_sc_csr_nc(ints_st[::1] ptr,
-                     ints_st[::1] ncol,
-                     ints_st[::1] col,
-                     const ints_st nc,
-                     numerics_st[:, ::1] D,
-                     complexs_st[::1] phases,
-                     const int p_opt):
+def phase_sc_csr_nc(int_sp_st[::1] ptr,
+                     int_sp_st[::1] ncol,
+                     int_sp_st[::1] col,
+                     const int_sp_st nc,
+                     floatcomplexs_st[:, ::1] D,
+                     const complexs_st[::1] phases,
+                     const int_sp_st p_opt):
 
     # Now copy the sparse matrix form
-    cdef ints_st nr = ncol.shape[0]
-    cdef object idtype = type2dtype[ints_st](1)
-    cdef cnp.ndarray[ints_st, mode='c'] V_PTR = np.empty([nr*2 + 1], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_NCOL = np.empty([nr*2], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_COL = np.empty([inline_sum(ncol)*4], dtype=idtype)
+    cdef int_sp_st nr = ncol.shape[0]
+    cdef object idtype = type2dtype[int_sp_st](1)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_PTR = np.empty([nr*2 + 1], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_NCOL = np.empty([nr*2], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_COL = np.empty([inline_sum(ncol)*4], dtype=idtype)
 
-    cdef ints_st[::1] v_ptr = V_PTR
-    cdef ints_st[::1] v_ncol = V_NCOL
-    cdef ints_st[::1] v_col = V_COL
+    cdef int_sp_st[::1] v_ptr = V_PTR
+    cdef int_sp_st[::1] v_ncol = V_NCOL
+    cdef int_sp_st[::1] v_col = V_COL
 
     cdef object dtype = type2dtype[complexs_st](1)
     cdef cnp.ndarray[complexs_st, mode='c'] V = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef complexs_st[::1] v = V
 
-    cdef ints_st r, rr, cind, c, ind
+    cdef int_sp_st r, rr, cind, c, ind
     cdef complexs_st ph
     cdef f_matrix_box_nc func
-    cdef numerics_st *d
+    cdef floatcomplexs_st *d
     cdef complexs_st *M = [0, 0, 0, 0]
 
-    if numerics_st in complexs_st:
+    if floatcomplexs_st in complexs_st:
         func = matrix_box_nc_cmplx
     else:
         func = matrix_box_nc_real
@@ -261,27 +266,27 @@ def phase_sc_csr_nc(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nc * 2))
 
 
-def phase_sc_array_nc(ints_st[::1] ptr,
-                       ints_st[::1] ncol,
-                       ints_st[::1] col,
-                       const ints_st nc,
-                       numerics_st[:, ::1] D,
-                       complexs_st[::1] phases,
-                       const int p_opt):
+def phase_sc_array_nc(int_sp_st[::1] ptr,
+                       int_sp_st[::1] ncol,
+                       int_sp_st[::1] col,
+                       const int_sp_st nc,
+                       floatcomplexs_st[:, ::1] D,
+                       const complexs_st[::1] phases,
+                       const int_sp_st p_opt):
 
-    cdef ints_st nr = ncol.shape[0]
+    cdef int_sp_st nr = ncol.shape[0]
 
     cdef object dtype = type2dtype[complexs_st](1)
     cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] V = np.zeros([nr*2, nc*2], dtype=dtype)
     cdef complexs_st[:, ::1] v = V
 
     cdef complexs_st ph
-    cdef ints_st r, rr, c, ind
-    cdef numerics_st *d
+    cdef int_sp_st r, rr, c, ind
+    cdef floatcomplexs_st *d
     cdef f_matrix_box_nc func
     cdef complexs_st *M = [0, 0, 0, 0]
 
-    if numerics_st in complexs_st:
+    if floatcomplexs_st in complexs_st:
         func = matrix_box_nc_cmplx
     else:
         func = matrix_box_nc_real
@@ -322,32 +327,32 @@ def phase_sc_array_nc(ints_st[::1] ptr,
 
     return V
 
-def phase_sc_csr_diag(ints_st[::1] ptr,
-                      ints_st[::1] ncol,
-                      ints_st[::1] col,
-                      const ints_st nc,
-                      numerics_st[:, ::1] D,
-                      const int idx,
-                      complexs_st[::1] phases,
-                      const int p_opt,
-                      const int per_row):
+def phase_sc_csr_diag(int_sp_st[::1] ptr,
+                      int_sp_st[::1] ncol,
+                      int_sp_st[::1] col,
+                      const int_sp_st nc,
+                      floatcomplexs_st[:, ::1] D,
+                      const int_sp_st idx,
+                      const complexs_st[::1] phases,
+                      const int_sp_st p_opt,
+                      const int_sp_st per_row):
 
     # Now copy the sparse matrix form
-    cdef ints_st nr = ncol.shape[0]
-    cdef object idtype = type2dtype[ints_st](1)
-    cdef cnp.ndarray[ints_st, mode='c'] V_PTR = np.empty([nr*per_row + 1], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_NCOL = np.empty([nr*per_row], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_COL = np.empty([inline_sum(ncol)*per_row], dtype=idtype)
+    cdef int_sp_st nr = ncol.shape[0]
+    cdef object idtype = type2dtype[int_sp_st](1)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_PTR = np.empty([nr*per_row + 1], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_NCOL = np.empty([nr*per_row], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_COL = np.empty([inline_sum(ncol)*per_row], dtype=idtype)
 
-    cdef ints_st[::1] v_ptr = V_PTR
-    cdef ints_st[::1] v_ncol = V_NCOL
-    cdef ints_st[::1] v_col = V_COL
+    cdef int_sp_st[::1] v_ptr = V_PTR
+    cdef int_sp_st[::1] v_ncol = V_NCOL
+    cdef int_sp_st[::1] v_col = V_COL
 
     cdef object dtype = type2dtype[complexs_st](1)
     cdef cnp.ndarray[complexs_st, mode='c'] V = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef complexs_st[::1] v = V
 
-    cdef ints_st r, rr, ir, cind, c, ind, ic
+    cdef int_sp_st r, rr, ir, cind, c, ind, ic
     cdef complexs_st ph
 
     # We have to do it manually due to the double elements per row, but only
@@ -408,24 +413,24 @@ def phase_sc_csr_diag(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * per_row, nc * per_row))
 
 
-def phase_sc_array_diag(ints_st[::1] ptr,
-                         ints_st[::1] ncol,
-                         ints_st[::1] col,
-                         const ints_st nc,
-                         numerics_st[:, ::1] D,
-                         const int idx,
-                         complexs_st[::1] phases,
-                         const int p_opt,
-                         const int per_row):
+def phase_sc_array_diag(int_sp_st[::1] ptr,
+                         int_sp_st[::1] ncol,
+                         int_sp_st[::1] col,
+                         const int_sp_st nc,
+                         floatcomplexs_st[:, ::1] D,
+                         const int_sp_st idx,
+                         const complexs_st[::1] phases,
+                         const int_sp_st p_opt,
+                         const int_sp_st per_row):
 
-    cdef ints_st nr = ncol.shape[0]
+    cdef int_sp_st nr = ncol.shape[0]
 
     cdef object dtype = type2dtype[complexs_st](1)
     cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] V = np.zeros([nr*per_row, nc*per_row], dtype=dtype)
     cdef complexs_st[:, ::1] v = V
 
     cdef complexs_st d
-    cdef ints_st r, rr, c, ind, ic
+    cdef int_sp_st r, rr, c, ind, ic
 
     with nogil:
         if p_opt == -1:
@@ -458,36 +463,36 @@ def phase_sc_array_diag(ints_st[::1] ptr,
     return V
 
 
-def phase_sc_csr_so(ints_st[::1] ptr,
-                     ints_st[::1] ncol,
-                     ints_st[::1] col,
-                     const ints_st nc,
-                     numerics_st[:, ::1] D,
-                     complexs_st[::1] phases,
-                     const int p_opt):
+def phase_sc_csr_so(int_sp_st[::1] ptr,
+                     int_sp_st[::1] ncol,
+                     int_sp_st[::1] col,
+                     const int_sp_st nc,
+                     floatcomplexs_st[:, ::1] D,
+                     const complexs_st[::1] phases,
+                     const int_sp_st p_opt):
 
     # Now copy the sparse matrix form
-    cdef ints_st nr = ncol.shape[0]
-    cdef object idtype = type2dtype[ints_st](1)
-    cdef cnp.ndarray[ints_st, mode='c'] V_PTR = np.empty([nr*2 + 1], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_NCOL = np.empty([nr*2], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_COL = np.empty([inline_sum(ncol)*4], dtype=idtype)
+    cdef int_sp_st nr = ncol.shape[0]
+    cdef object idtype = type2dtype[int_sp_st](1)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_PTR = np.empty([nr*2 + 1], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_NCOL = np.empty([nr*2], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_COL = np.empty([inline_sum(ncol)*4], dtype=idtype)
 
-    cdef ints_st[::1] v_ptr = V_PTR
-    cdef ints_st[::1] v_ncol = V_NCOL
-    cdef ints_st[::1] v_col = V_COL
+    cdef int_sp_st[::1] v_ptr = V_PTR
+    cdef int_sp_st[::1] v_ncol = V_NCOL
+    cdef int_sp_st[::1] v_col = V_COL
 
     cdef object dtype = type2dtype[complexs_st](1)
     cdef cnp.ndarray[complexs_st, mode='c'] V = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef complexs_st[::1] v = V
 
-    cdef ints_st r, rr, cind, c, ind
+    cdef int_sp_st r, rr, cind, c, ind
     cdef complexs_st ph
     cdef f_matrix_box_so func
-    cdef numerics_st *d
+    cdef floatcomplexs_st *d
     cdef complexs_st *M = [0, 0, 0, 0]
 
-    if numerics_st in complexs_st:
+    if floatcomplexs_st in complexs_st:
         func = matrix_box_so_cmplx
     else:
         func = matrix_box_so_real
@@ -562,27 +567,27 @@ def phase_sc_csr_so(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nc * 2))
 
 
-def phase_sc_array_so(ints_st[::1] ptr,
-                       ints_st[::1] ncol,
-                       ints_st[::1] col,
-                       const ints_st nc,
-                       numerics_st[:, ::1] D,
-                       complexs_st[::1] phases,
-                       const int p_opt):
+def phase_sc_array_so(int_sp_st[::1] ptr,
+                       int_sp_st[::1] ncol,
+                       int_sp_st[::1] col,
+                       const int_sp_st nc,
+                       floatcomplexs_st[:, ::1] D,
+                       const complexs_st[::1] phases,
+                       const int_sp_st p_opt):
 
-    cdef ints_st nr = ncol.shape[0]
+    cdef int_sp_st nr = ncol.shape[0]
 
     cdef object dtype = type2dtype[complexs_st](1)
     cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] V = np.zeros([nr*2, nc*2], dtype=dtype)
     cdef complexs_st[:, ::1] v = V
 
     cdef complexs_st ph
-    cdef ints_st r, rr, c, ind
+    cdef int_sp_st r, rr, c, ind
     cdef f_matrix_box_so func
-    cdef numerics_st *d
+    cdef floatcomplexs_st *d
     cdef complexs_st *M = [0, 0, 0, 0]
 
-    if numerics_st in complexs_st:
+    if floatcomplexs_st in complexs_st:
         func = matrix_box_so_cmplx
     else:
         func = matrix_box_so_real
@@ -624,36 +629,36 @@ def phase_sc_array_so(ints_st[::1] ptr,
     return V
 
 
-def phase_sc_csr_nambu(ints_st[::1] ptr,
-                        ints_st[::1] ncol,
-                        ints_st[::1] col,
-                        const ints_st nc,
-                        numerics_st[:, ::1] D,
-                        complexs_st[::1] phases,
-                        const int p_opt):
+def phase_sc_csr_nambu(int_sp_st[::1] ptr,
+                        int_sp_st[::1] ncol,
+                        int_sp_st[::1] col,
+                        const int_sp_st nc,
+                        floatcomplexs_st[:, ::1] D,
+                        const complexs_st[::1] phases,
+                        const int_sp_st p_opt):
 
     # Now copy the sparse matrix form
-    cdef ints_st nr = ncol.shape[0]
-    cdef object idtype = type2dtype[ints_st](1)
-    cdef cnp.ndarray[ints_st, mode='c'] V_PTR = np.empty([nr*4 + 1], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_NCOL = np.empty([nr*4], dtype=idtype)
-    cdef cnp.ndarray[ints_st, mode='c'] V_COL = np.empty([inline_sum(ncol)*16], dtype=idtype)
+    cdef int_sp_st nr = ncol.shape[0]
+    cdef object idtype = type2dtype[int_sp_st](1)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_PTR = np.empty([nr*4 + 1], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_NCOL = np.empty([nr*4], dtype=idtype)
+    cdef cnp.ndarray[int_sp_st, mode='c'] V_COL = np.empty([inline_sum(ncol)*16], dtype=idtype)
 
-    cdef ints_st[::1] v_ptr = V_PTR
-    cdef ints_st[::1] v_ncol = V_NCOL
-    cdef ints_st[::1] v_col = V_COL
+    cdef int_sp_st[::1] v_ptr = V_PTR
+    cdef int_sp_st[::1] v_ncol = V_NCOL
+    cdef int_sp_st[::1] v_col = V_COL
 
     cdef object dtype = type2dtype[complexs_st](1)
     cdef cnp.ndarray[complexs_st, mode='c'] V = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef complexs_st[::1] v = V
 
-    cdef ints_st r, rr, cind, c, ind, ic
+    cdef int_sp_st r, rr, cind, c, ind, ic
     cdef complexs_st ph
     cdef f_matrix_box_nambu func
-    cdef numerics_st *d
+    cdef floatcomplexs_st *d
     cdef complexs_st *M = [0] * 16
 
-    if numerics_st in complexs_st:
+    if floatcomplexs_st in complexs_st:
         func = matrix_box_nambu_cmplx
     else:
         func = matrix_box_nambu_real
@@ -740,27 +745,27 @@ def phase_sc_csr_nambu(ints_st[::1] ptr,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr * 4, nc * 4))
 
 
-def phase_sc_array_nambu(ints_st[::1] ptr,
-                          ints_st[::1] ncol,
-                          ints_st[::1] col,
-                          const ints_st nc,
-                          numerics_st[:, ::1] D,
-                          complexs_st[::1] phases,
-                          const int p_opt):
+def phase_sc_array_nambu(int_sp_st[::1] ptr,
+                          int_sp_st[::1] ncol,
+                          int_sp_st[::1] col,
+                          const int_sp_st nc,
+                          floatcomplexs_st[:, ::1] D,
+                          const complexs_st[::1] phases,
+                          const int_sp_st p_opt):
 
-    cdef ints_st nr = ncol.shape[0]
+    cdef int_sp_st nr = ncol.shape[0]
 
     cdef object dtype = type2dtype[complexs_st](1)
     cdef cnp.ndarray[complexs_st, ndim=2, mode='c'] V = np.zeros([nr*4, nc*4], dtype=dtype)
     cdef complexs_st[:, ::1] v = V
 
     cdef complexs_st ph
-    cdef ints_st r, rr, c, ind
+    cdef int_sp_st r, rr, c, ind
     cdef f_matrix_box_nambu func
-    cdef numerics_st *d
+    cdef floatcomplexs_st *d
     cdef complexs_st *M = [0] * 16
 
-    if numerics_st in complexs_st:
+    if floatcomplexs_st in complexs_st:
         func = matrix_box_nambu_cmplx
     else:
         func = matrix_box_nambu_real

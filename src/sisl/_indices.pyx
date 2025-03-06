@@ -9,7 +9,7 @@ import numpy as np
 cimport numpy as cnp
 from numpy cimport dtype, ndarray
 
-from sisl._core._dtypes cimport floats_st, ints_st, ssize_st, type2dtype
+from sisl._core._dtypes cimport floats_st, ints_st, type2dtype
 
 
 @cython.boundscheck(False)
@@ -26,14 +26,14 @@ def indices_only(ints_st[::1] element, ints_st[::1] test_element):
         values to find the indices of in `element`
     """
     # Ensure contiguous arrays
-    cdef ssize_st n_element = element.shape[0]
-    cdef ssize_st n_test_element = test_element.shape[0]
+    cdef Py_ssize_t n_element = element.shape[0]
+    cdef Py_ssize_t n_test_element = test_element.shape[0]
 
     cdef object dtype = type2dtype[ints_st](1)
     cdef ndarray[ints_st, mode='c'] IDX = np.empty([max(n_test_element, n_element)], dtype=dtype)
     cdef ints_st[::1] idx = IDX
 
-    cdef ssize_st i, j, n
+    cdef Py_ssize_t i, j, n
 
     n = 0
     with nogil:
@@ -82,13 +82,13 @@ def indices(ints_st[::1] element, ints_st[::1] test_element, ints_st offset=0,
         index offset
     """
     # Ensure contiguous arrays
-    cdef ssize_st n_element = element.shape[0]
-    cdef ssize_st n_test_element = test_element.shape[0]
+    cdef Py_ssize_t n_element = element.shape[0]
+    cdef Py_ssize_t n_test_element = test_element.shape[0]
 
     cdef object dtype = type2dtype[ints_st](1)
     cdef ndarray[ints_st, mode='c'] IDX = np.empty([n_test_element], dtype=dtype)
     cdef ints_st[::1] idx = IDX
-    cdef ssize_st i, j
+    cdef Py_ssize_t i, j
     cdef ints_st ctest_element, celement
 
     if offset < 0:
@@ -162,15 +162,15 @@ def indices_in_cylinder(floats_st[:, ::1] dxyz, const floats_st R, const floats_
     index :
        indices of all dxyz coordinates that are within the cylinder
     """
-    cdef ssize_st n = dxyz.shape[0]
-    cdef ssize_st nxyz = dxyz.shape[1] - 1
+    cdef Py_ssize_t n = dxyz.shape[0]
+    cdef Py_ssize_t nxyz = dxyz.shape[1] - 1
 
     cdef ndarray[int32_t] IDX = np.empty([n], dtype=np.int32)
     cdef int[::1] idx = IDX
 
     cdef floats_st R2 = R * R
     cdef floats_st L2
-    cdef ssize_st i, j, m
+    cdef Py_ssize_t i, j, m
     cdef bint skip
 
     # Reset number of elements
@@ -213,12 +213,12 @@ def indices_in_sphere(floats_st[:, ::1] dxyz, const floats_st R):
     index:
        indices of all dxyz coordinates that are within the sphere of radius `R`
     """
-    cdef ssize_st n = dxyz.shape[0]
+    cdef Py_ssize_t n = dxyz.shape[0]
     cdef ndarray[int32_t, mode='c'] IDX = np.empty([n], dtype=np.int32)
     cdef int[::1] idx = IDX
 
     cdef floats_st R2 = R * R
-    cdef ssize_st i, m
+    cdef Py_ssize_t i, m
 
     # Reset number of elements
     m = 0
@@ -254,7 +254,7 @@ def indices_in_sphere_with_dist(floats_st[:, ::1] dxyz, const floats_st R):
     dist :
        distances for the coordinates within the sphere of radius `R` (corresponds to `index`)
     """
-    cdef ssize_st n = dxyz.shape[0]
+    cdef Py_ssize_t n = dxyz.shape[0]
     cdef ndarray[int32_t, mode='c'] IDX = np.empty([n], dtype=np.int32)
     cdef object dtype = type2dtype[floats_st](1)
     cdef ndarray[floats_st, mode='c'] DIST = np.empty([n], dtype=dtype)
@@ -263,7 +263,7 @@ def indices_in_sphere_with_dist(floats_st[:, ::1] dxyz, const floats_st R):
 
     cdef floats_st R2 = R * R
     cdef floats_st d
-    cdef ssize_st i, m
+    cdef Py_ssize_t i, m
 
     with nogil:
 
@@ -314,10 +314,10 @@ def indices_le(ndarray a, const floats_st V):
     cdef ndarray[int32_t, mode='c'] IDX = np.empty([a.shape[0]], dtype=np.int32)
     cdef int[::1] idx = IDX
 
-    cdef ssize_st ndim = a.ndim
+    cdef Py_ssize_t ndim = a.ndim
     cdef floats_st[::1] A1
     cdef floats_st[:, ::1] A2
-    cdef ssize_st n
+    cdef Py_ssize_t n
 
     if ndim == 1:
         A1 = a
@@ -338,9 +338,9 @@ def indices_le(ndarray a, const floats_st V):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef ssize_st _indices_le1(const floats_st[::1] a, const floats_st V, int[::1] idx) noexcept nogil:
-    cdef ssize_st N = a.shape[0]
-    cdef ssize_st i, n
+cdef Py_ssize_t _indices_le1(const floats_st[::1] a, const floats_st V, int[::1] idx) noexcept nogil:
+    cdef Py_ssize_t N = a.shape[0]
+    cdef Py_ssize_t i, n
     n = 0
     for i in range(N):
         if a[i] <= V:
@@ -352,8 +352,8 @@ cdef ssize_st _indices_le1(const floats_st[::1] a, const floats_st V, int[::1] i
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline bint all_le(const floats_st[:, ::1] a, const ssize_st i, const floats_st V) noexcept nogil:
-    cdef ssize_st j
+cdef inline bint all_le(const floats_st[:, ::1] a, const Py_ssize_t i, const floats_st V) noexcept nogil:
+    cdef Py_ssize_t j
     for j in range(a.shape[1]):
         if a[i, j] > V:
             return 0
@@ -363,9 +363,9 @@ cdef inline bint all_le(const floats_st[:, ::1] a, const ssize_st i, const float
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef ssize_st _indices_le2(const floats_st[:, ::1] a, const floats_st V, int[::1] idx) noexcept nogil:
-    cdef ssize_st N = a.shape[0]
-    cdef ssize_st i, n
+cdef Py_ssize_t _indices_le2(const floats_st[:, ::1] a, const floats_st V, int[::1] idx) noexcept nogil:
+    cdef Py_ssize_t N = a.shape[0]
+    cdef Py_ssize_t i, n
     n = 0
     for i in range(N):
         if all_le(a, i, V):
@@ -395,10 +395,10 @@ def indices_fabs_le(ndarray a, const floats_st V):
     cdef ndarray[int32_t, mode='c'] IDX = np.empty([a.shape[0]], dtype=np.int32)
     cdef int[::1] idx = IDX
 
-    cdef ssize_st ndim = a.ndim
+    cdef Py_ssize_t ndim = a.ndim
     cdef floats_st[::1] A1
     cdef floats_st[:, ::1] A2
-    cdef ssize_st n
+    cdef Py_ssize_t n
 
     if ndim == 1:
         A1 = a
@@ -419,8 +419,8 @@ def indices_fabs_le(ndarray a, const floats_st V):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline floats_st fabs2(const floats_st[:, ::1] a, const ssize_st i) noexcept nogil:
-    cdef ssize_st j
+cdef inline floats_st fabs2(const floats_st[:, ::1] a, const Py_ssize_t i) noexcept nogil:
+    cdef Py_ssize_t j
     cdef floats_st abs2 = 0.
 
     for j in range(a.shape[1]):
@@ -431,9 +431,9 @@ cdef inline floats_st fabs2(const floats_st[:, ::1] a, const ssize_st i) noexcep
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef ssize_st _indices_fabs_le1(const floats_st[::1] a, const floats_st V, int[::1] idx) noexcept nogil:
-    cdef ssize_st N = a.shape[0]
-    cdef ssize_st i, n
+cdef Py_ssize_t _indices_fabs_le1(const floats_st[::1] a, const floats_st V, int[::1] idx) noexcept nogil:
+    cdef Py_ssize_t N = a.shape[0]
+    cdef Py_ssize_t i, n
     n = 0
     if floats_st is cython.float:
         for i in range(N):
@@ -451,8 +451,8 @@ cdef ssize_st _indices_fabs_le1(const floats_st[::1] a, const floats_st V, int[:
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline bint all_fabs_le(const floats_st[:, ::1] a, const ssize_st i, const floats_st V) noexcept nogil:
-    cdef ssize_st j
+cdef inline bint all_fabs_le(const floats_st[:, ::1] a, const Py_ssize_t i, const floats_st V) noexcept nogil:
+    cdef Py_ssize_t j
 
     if floats_st is cython.float:
         for j in range(a.shape[1]):
@@ -470,9 +470,9 @@ cdef inline bint all_fabs_le(const floats_st[:, ::1] a, const ssize_st i, const 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef ssize_st _indices_fabs_le2(const floats_st[:, ::1] a, const floats_st V, int[::1] idx) noexcept nogil:
-    cdef ssize_st N = a.shape[0]
-    cdef ssize_st i, n
+cdef Py_ssize_t _indices_fabs_le2(const floats_st[:, ::1] a, const floats_st V, int[::1] idx) noexcept nogil:
+    cdef Py_ssize_t N = a.shape[0]
+    cdef Py_ssize_t i, n
     n = 0
     for i in range(N):
         if all_fabs_le(a, i, V):
@@ -490,10 +490,10 @@ def indices_gt_le(ndarray a, const floats_st V1, const floats_st V2):
     cdef ndarray[int32_t, mode='c'] IDX = np.empty([a.shape[0]], dtype=np.int32)
     cdef int[::1] idx = IDX
 
-    cdef ssize_st ndim = a.ndim
+    cdef Py_ssize_t ndim = a.ndim
     cdef floats_st[::1] A1
     cdef floats_st[:, ::1] A2
-    cdef ssize_st n
+    cdef Py_ssize_t n
 
     if ndim == 1:
         A1 = a
@@ -515,10 +515,10 @@ def indices_gt_le(ndarray a, const floats_st V1, const floats_st V2):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef ssize_st _indices_gt_le1(const floats_st[::1] a, const floats_st V1, const floats_st
+cdef Py_ssize_t _indices_gt_le1(const floats_st[::1] a, const floats_st V1, const floats_st
                                 V2, int[::1] idx) noexcept nogil:
-    cdef ssize_st N = a.shape[0]
-    cdef ssize_st i, n
+    cdef Py_ssize_t N = a.shape[0]
+    cdef Py_ssize_t i, n
     n = 0
     for i in range(N):
         if V1 < a[i]:
@@ -533,10 +533,10 @@ cdef ssize_st _indices_gt_le1(const floats_st[::1] a, const floats_st V1, const 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef ssize_st _indices_gt_le2(const floats_st[:, ::1] a, const floats_st V1, const floats_st
+cdef Py_ssize_t _indices_gt_le2(const floats_st[:, ::1] a, const floats_st V1, const floats_st
                               V2, int[::1] idx) noexcept nogil:
-    cdef ssize_st N = a.shape[0]
-    cdef ssize_st i, n
+    cdef Py_ssize_t N = a.shape[0]
+    cdef Py_ssize_t i, n
     n = 0
     for i in range(N):
         if all_gt_le(a, i, V1, V2):
@@ -549,9 +549,9 @@ cdef ssize_st _indices_gt_le2(const floats_st[:, ::1] a, const floats_st V1, con
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline bint all_gt_le(const floats_st[:, ::1] a, const ssize_st i, const floats_st V1,
+cdef inline bint all_gt_le(const floats_st[:, ::1] a, const Py_ssize_t i, const floats_st V1,
                           const floats_st V2) noexcept nogil:
-    cdef ssize_st j
+    cdef Py_ssize_t j
     for j in range(a.shape[1]):
         if a[i, j] <= V1:
             return 0
@@ -563,8 +563,8 @@ cdef inline bint all_gt_le(const floats_st[:, ::1] a, const ssize_st i, const fl
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 cdef inline bint in_1d(const ints_st[::1] array, const ints_st v) noexcept nogil:
-    cdef ssize_st N = array.shape[0]
-    cdef ssize_st i
+    cdef Py_ssize_t N = array.shape[0]
+    cdef Py_ssize_t i
     for i in range(N):
         if array[i] == v:
             return 1
@@ -599,7 +599,7 @@ def index_sorted(ints_st[::1] a, const ints_st v):
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-cdef ssize_st _index_sorted(const ints_st[::1] a, const _ints_index_sorted_st v) noexcept nogil:
+cdef Py_ssize_t _index_sorted(const ints_st[::1] a, const _ints_index_sorted_st v) noexcept nogil:
     """ Return index for the value v in a sorted array, otherwise return -1
 
     This implements a binary search method
@@ -615,8 +615,8 @@ cdef ssize_st _index_sorted(const ints_st[::1] a, const _ints_index_sorted_st v)
     -------
     int : 0 if not unique, otherwise 1.
     """
-    cdef ssize_st MIN1 = -1
-    cdef ssize_st i, L, R
+    cdef Py_ssize_t MIN1 = -1
+    cdef Py_ssize_t i, L, R
 
     # Simple binary search
     R = a.shape[0] - 1
@@ -653,8 +653,8 @@ def is_sorted_unique(ints_st[::1] a):
     int : 0 if not unique, otherwise 1.
     """
     # Ensure contiguous arrays
-    cdef ssize_st n = a.shape[0]
-    cdef ssize_st i, ret = 1
+    cdef Py_ssize_t n = a.shape[0]
+    cdef Py_ssize_t i, ret = 1
 
     if n > 1:
         # only check for larger than 1 arrays
@@ -690,15 +690,15 @@ def list_index_le(ints_st[::1] a, ints_st[::1] b):
     indices with same length as `a`
     """
     # Ensure contiguous arrays
-    cdef ssize_st na = a.shape[0]
-    cdef ssize_st nb = b.shape[0]
+    cdef Py_ssize_t na = a.shape[0]
+    cdef Py_ssize_t nb = b.shape[0]
     cdef object dtype = type2dtype[ints_st](1)
     cdef ndarray[ints_st] C = np.empty([na], dtype=dtype)
     cdef ints_st[::1] c = C
 
-    cdef ssize_st ia, ib
+    cdef Py_ssize_t ia, ib
     cdef ints_st ai, alast
-    cdef ssize_st start = 0
+    cdef Py_ssize_t start = 0
 
     if na > 0:
         alast = a[0]

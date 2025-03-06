@@ -7,7 +7,7 @@ import numpy as np
 cimport numpy as cnp
 
 from ._common import comply_gauge
-from sisl._core._dtypes cimport floats_st
+from sisl._core._dtypes cimport floats_st, int_sp_st
 from ._matrix_phase3 import *
 from ._phase import *
 
@@ -57,7 +57,7 @@ def phase_ddk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
     return p_opt, Rd, Ro
 
 
-def matrix_ddk(gauge, M, const int idx, sc, cnp.ndarray[floats_st] k, dtype, format):
+def matrix_ddk(gauge, M, const int_sp_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype)
     p_opt, Rd, Ro = phase_ddk(gauge, M, sc, k, dtype)
 
@@ -111,7 +111,7 @@ def matrix_ddk_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     return dd
 
 
-def matrix_ddk_diag(gauge, M, const int idx, const int per_row,
+def matrix_ddk_diag(gauge, M, const int_sp_st idx, const int_sp_st per_row,
                     sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
     p_opt, Rd, Ro = phase_ddk(gauge, M, sc, k, dtype)

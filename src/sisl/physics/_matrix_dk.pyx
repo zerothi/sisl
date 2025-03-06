@@ -7,7 +7,7 @@ import numpy as np
 
 cimport numpy as cnp
 
-from sisl._core._dtypes cimport floats_st, ints_st
+from sisl._core._dtypes cimport floats_st, int_sp_st
 
 from ._common import comply_gauge
 from ._matrix_phase import *
@@ -51,7 +51,7 @@ def phase_dk(gauge, M, sc, cnp.ndarray[floats_st] k, dtype):
     return p_opt, iRs
 
 
-def matrix_dk(gauge, M, const ints_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
+def matrix_dk(gauge, M, const int_sp_st idx, sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
     p_opt, iRs = phase_dk(gauge, M, sc, k, dtype)
 
@@ -79,7 +79,7 @@ def matrix_dk_nc(gauge, M, sc, cnp.ndarray[floats_st] k, dtype, format):
     return d1.asformat(format), d2.asformat(format), d3.asformat(format)
 
 
-def matrix_dk_diag(gauge, M, const ints_st idx, const ints_st per_row,
+def matrix_dk_diag(gauge, M, const int_sp_st idx, const int_sp_st per_row,
                    sc, cnp.ndarray[floats_st] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
     p_opt, iRs = phase_dk(gauge, M, sc, k, dtype)
