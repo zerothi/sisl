@@ -544,12 +544,11 @@ state coefficients
                \big[\sum_i |\psi_{\alpha,i}|^2\big]^q}
 
         where :math:`\alpha` is the band index and :math:`i` is the orbital.
-        The order of the IPR is defaulted to :math:`q=2`, see :eq:`ipr2` for details.
+        The order of the IPR is defaulted to :math:`q=2`, see following equation for details.
         The IPR may be used to distinguish Anderson localization and extended
         states:
 
         .. math::
-           :label: ipr2
            :nowrap:
 
             \begin{align}
@@ -561,7 +560,7 @@ state coefficients
                \end{aligned}\right.
             \end{align}
 
-        For further details see :cite:`Murphy2011`. Note that for eigen states the IPR reduces to:
+        For further details see :cite:`Murphy2011`. Note that for eigenstates the IPR reduces to:
 
         .. math::
             I_{q,\alpha} = \sum_i |\psi_{\alpha,i}|^{2q}
@@ -694,20 +693,21 @@ state coefficients
 
         * for ``matrix`` it will compute off-diagonal elements as well
 
-        .. math::
-            \mathbf A_{\alpha\beta} = \langle\psi_\alpha|\mathbf M|\psi'_\beta\rangle
+            .. math::
+                \mathbf A_{\alpha\beta} = \langle\psi_\alpha|\mathbf M|\psi'_\beta\rangle
 
         * for ``diag`` only the diagonal components will be returned
 
-        .. math::
-            \mathbf a_\alpha = \langle\psi_\alpha|\mathbf M|\psi_\alpha\rangle
+            .. math::
+                \mathbf a_\alpha = \langle\psi_\alpha|\mathbf M|\psi_\alpha\rangle
 
         * for ``basis``, only do inner products for individual states, but return them basis-resolved
 
-        .. math::
-            \mathbf A_{\alpha\beta} = \psi^*_{\alpha,\beta} \mathbf M|\psi_\alpha\rangle_\beta
+            .. math::
+                \mathbf A_{\alpha\beta} = \psi^*_{\alpha,\beta} \mathbf M|\psi_\alpha\rangle_\beta
 
         * for ``atoms``, only do inner products for individual states, but return them atom-resolved
+
 
         Parameters
         ----------
@@ -725,8 +725,9 @@ state coefficients
             * ``diagonal`` only return the diagonal of the inner product ('ii' elements)
             * ``matrix`` a matrix with diagonals and the off-diagonals ('ij' elements)
             * ``hadamard`` only do element wise products for the states (equivalent to
-            basis resolved inner-products)
+              basis resolved inner-products)
             * ``atoms`` only do inner products for individual states, but return them atom-resolved
+
 
         Notes
         -----

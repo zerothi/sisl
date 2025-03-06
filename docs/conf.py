@@ -334,7 +334,7 @@ napoleon_type_aliases = autodoc_type_aliases
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = [
-    "docs/release/template.rst",
+    "template.rst",
     "build",
     "_build",
     "**/setupegg.py",
