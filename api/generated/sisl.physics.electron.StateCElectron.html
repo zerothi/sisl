@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -123,7 +123,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">Bibliography</a></li>
 </ul>
@@ -606,22 +606,25 @@ degeneracy decoupling.</p>
 <span class="sig-name descname"><span class="pre">inner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'diagonal'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.StateCElectron.inner" title="Link to this definition"></a></dt>
 <dd><p>Calculate the inner product as <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle\)</span></p>
 <p>Inner product calculation allows for a variety of things.</p>
-<ul class="simple">
-<li><p>for <code class="docutils literal notranslate"><span class="pre">matrix</span></code> it will compute off-diagonal elements as well</p></li>
-</ul>
-<div class="math notranslate nohighlight">
+<ul>
+<li><p>for <code class="docutils literal notranslate"><span class="pre">matrix</span></code> it will compute off-diagonal elements as well</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
 \[\mathbf A_{\alpha\beta} = \langle\psi_\alpha|\mathbf M|\psi'_\beta\rangle\]</div>
-<ul class="simple">
-<li><p>for <code class="docutils literal notranslate"><span class="pre">diag</span></code> only the diagonal components will be returned</p></li>
-</ul>
-<div class="math notranslate nohighlight">
+</div></blockquote>
+</li>
+<li><p>for <code class="docutils literal notranslate"><span class="pre">diag</span></code> only the diagonal components will be returned</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
 \[\mathbf a_\alpha = \langle\psi_\alpha|\mathbf M|\psi_\alpha\rangle\]</div>
-<ul class="simple">
-<li><p>for <code class="docutils literal notranslate"><span class="pre">basis</span></code>, only do inner products for individual states, but return them basis-resolved</p></li>
-</ul>
-<div class="math notranslate nohighlight">
+</div></blockquote>
+</li>
+<li><p>for <code class="docutils literal notranslate"><span class="pre">basis</span></code>, only do inner products for individual states, but return them basis-resolved</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
 \[\mathbf A_{\alpha\beta} = \psi^*_{\alpha,\beta} \mathbf M|\psi_\alpha\rangle_\beta\]</div>
-<ul class="simple">
+</div></blockquote>
+</li>
 <li><p>for <code class="docutils literal notranslate"><span class="pre">atoms</span></code>, only do inner products for individual states, but return them atom-resolved</p></li>
 </ul>
 <dl class="field-list simple">
@@ -637,10 +640,10 @@ full matrix.</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">diagonal</span></code> only return the diagonal of the inner product (‘ii’ elements)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">matrix</span></code> a matrix with diagonals and the off-diagonals (‘ij’ elements)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hadamard</span></code> only do element wise products for the states (equivalent to</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hadamard</span></code> only do element wise products for the states (equivalent to
+basis resolved inner-products)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">atoms</span></code> only do inner products for individual states, but return them atom-resolved</p></li>
 </ul>
-<p>basis resolved inner-products)
-* <code class="docutils literal notranslate"><span class="pre">atoms</span></code> only do inner products for individual states, but return them atom-resolved</p>
 </p></li>
 </ul>
 </dd>
@@ -679,10 +682,10 @@ One have to add the overlap matrix in the <em class="xref py py-obj">matrix</em>
 \[I_{q,\alpha} = \frac{\sum_i |\psi_{\alpha,i}|^{2q}}{
    \big[\sum_i |\psi_{\alpha,i}|^2\big]^q}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\alpha\)</span> is the band index and <span class="math notranslate nohighlight">\(i\)</span> is the orbital.
-The order of the IPR is defaulted to <span class="math notranslate nohighlight">\(q=2\)</span>, see <a class="reference internal" href="sisl.physics.phonon.ModePhonon.html#equation-ipr2">(1)</a> for details.
+The order of the IPR is defaulted to <span class="math notranslate nohighlight">\(q=2\)</span>, see following equation for details.
 The IPR may be used to distinguish Anderson localization and extended
 states:</p>
-<div class="math notranslate nohighlight" id="equation-ipr2">
+<div class="math notranslate nohighlight">
  \begin{align}
   \lim_{L\to\infty} I_{2,\alpha} = \left\{
     \begin{aligned}
@@ -690,7 +693,7 @@ states:</p>
      \\
      \text{const.} &amp;\quad \text{localized state}
     \end{aligned}\right.
- \end{align}</div><p>For further details see <span id="id6">[<a class="reference internal" href="../../references.html#id13" title="N. C. Murphy, R. Wortis, and W. A. Atkinson. Generalized inverse participation ratio as a possible measure of localization for interacting systems. Phys. Rev. B, May 2011. URL: https://doi.org/10.1103/physrevb.83.184206, doi:10.1103/physrevb.83.184206.">7</a>]</span>. Note that for eigen states the IPR reduces to:</p>
+ \end{align}</div><p>For further details see <span id="id6">[<a class="reference internal" href="../../references.html#id13" title="N. C. Murphy, R. Wortis, and W. A. Atkinson. Generalized inverse participation ratio as a possible measure of localization for interacting systems. Phys. Rev. B, May 2011. URL: https://doi.org/10.1103/physrevb.83.184206, doi:10.1103/physrevb.83.184206.">7</a>]</span>. Note that for eigenstates the IPR reduces to:</p>
 <div class="math notranslate nohighlight">
 \[I_{q,\alpha} = \sum_i |\psi_{\alpha,i}|^{2q}\]</div>
 <p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>

@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,7 +85,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../references.html">Bibliography</a></li>
 </ul>
@@ -909,14 +909,6 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_E</span><span class="p">(</span><span class="s2">&quot;DOS&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">)</span> <span class="o">*</span> <span class="n">fact</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_E_T_sorted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal routine for returning energies and transmission in a sorted array&quot;&quot;&quot;</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span>
-        <span class="n">idx_sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-        <span class="c1"># Get transmission</span>
-        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">E</span><span class="p">[</span><span class="n">idx_sort</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="n">idx_sort</span><span class="p">]</span>
-
 <div class="viewcode-block" id="tbtncSileTBtrans.current">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.current">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span>
@@ -1001,7 +993,10 @@
         <span class="n">elec_from</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec_from</span><span class="p">)</span>
         <span class="n">elec_to</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec_to</span><span class="p">)</span>
         <span class="c1"># Get energies</span>
-        <span class="n">E</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E_T_sorted</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="p">)</span>
+        <span class="n">idx_sort</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argsort_E</span><span class="p">()</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">idx_sort</span><span class="p">]</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">idx_sort</span><span class="p">]</span>
 
         <span class="n">dE</span> <span class="o">=</span> <span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">window_warning</span><span class="p">(</span>
@@ -1850,20 +1845,20 @@
 
         <span class="c1"># Do integration of data</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">func_out</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
-            <span class="n">i</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">A</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span>
+            <span class="n">E</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">A</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span>
             <span class="n">D</span><span class="p">[</span><span class="n">D</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">return</span> <span class="n">data</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">weight</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">func_in</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
-            <span class="n">i</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">A</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span>
+            <span class="n">E</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">A</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span>
             <span class="n">D</span><span class="p">[</span><span class="n">D</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">return</span> <span class="n">data</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">weight</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">func_all</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
-            <span class="n">i</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">A</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span>
+            <span class="n">E</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">A</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">data</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">weight</span>
 
         <span class="c1"># nonlocal cannot be used in an if-statement</span>
@@ -1886,7 +1881,7 @@
                 <span class="s2">&quot;wrong value [all/both/+-/inout, +/out,-/in] allowed.&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">J</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">getdata</span><span class="p">,</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">integrator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)),</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">getdata</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">integrator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)),</span> <span class="mf">0.0</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data_to_matrix</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span>

@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,7 +85,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../references.html">Bibliography</a></li>
 </ul>
@@ -134,6 +134,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.brillouinzone</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonkhorstPack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.siesta</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">PropertyDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.cmd</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
@@ -236,7 +237,7 @@
     <span class="n">version</span><span class="p">,</span> <span class="o">*</span><span class="n">spec</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
-    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># Convert version to a tuple</span>
@@ -905,6 +906,48 @@
             <span class="n">assign</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">val</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="stdoutSileSiesta.read_brillouinzone">
+<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.stdoutSileSiesta.html#sisl.io.siesta.stdoutSileSiesta.read_brillouinzone">[docs]</a>
+    <span class="nd">@SileBinder</span><span class="p">()</span>
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MonkhorstPack</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parses the k-grid section if present, otherwise returns the</span>
+<span class="sd">        :math:`\Gamma`-point&quot;&quot;&quot;</span>
+
+        <span class="c1"># store position, read geometry, then reposition file.</span>
+        <span class="n">tell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">tell</span><span class="p">)</span>
+
+        <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span>
+            <span class="s2">&quot;siesta: k-grid: Number of k-points&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">trs</span><span class="o">=</span><span class="n">trs</span><span class="p">)</span>
+
+        <span class="n">nk</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># default kcell and kdispl</span>
+        <span class="n">kcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">kdispl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="c1"># if next line also contains &#39;siesta: k-grid:&#39; then we can step_to</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;siesta: k-grid:&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span>
+                <span class="s2">&quot;siesta: k-grid: Supercell and displacements&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">kdispl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">kcell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">kcell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+                    <span class="n">kcell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">kcell</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="n">kdispl</span><span class="p">,</span> <span class="n">trs</span><span class="o">=</span><span class="n">trs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="stdoutSileSiesta.read_data">
@@ -1577,7 +1620,7 @@
                             <span class="s2">&quot;Mulliken Atomic Populations&quot;</span><span class="p">,</span>
                             <span class="s2">&quot;Mulliken Net Atomic Populations&quot;</span><span class="p">,</span>
                         <span class="p">]</span>
-                <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="k">pass</span>
 
         <span class="k">else</span><span class="p">:</span>

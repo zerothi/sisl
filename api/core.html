@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,7 +125,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
 </ul>
@@ -159,6 +159,33 @@
 <span id="core"></span><h1>Functional programming<a class="headerlink" href="#functional-programming" title="Link to this heading"></a></h1>
 <p>sisl provides simple functionality that may be used by various
 sisl objects.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>All of these <em>functional</em> methods can automatically handle external
+classes. But only if <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> has an internal conversion of that
+object.</p>
+<p>E.g. one can do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ase.build</span><span class="w"> </span><span class="kn">import</span> <span class="n">bulk</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">si</span>
+
+<span class="n">bulk_rotated</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">bulk</span><span class="p">(</span><span class="s2">&quot;Au&quot;</span><span class="p">),</span> <span class="mi">30</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Note that <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will automatically convert the <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object
+to a <a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.Geometry</span></code></a>, and then do the rotation call.</p>
+<p>There are a couple of scenarios:</p>
+<ol class="arabic simple">
+<li><p>The <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> function returns the same object as the input.
+In the above case, a <a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a>.
+When this is the case the method will try and convert it back
+to the input class. And if this succeeds, it will be returned.
+To forcefully return the <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> type, do <code class="docutils literal notranslate"><span class="pre">si.rotate(...,</span> <span class="pre">ret_sisl=True)</span></code>.</p></li>
+<li><p>The <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> function returns something different from the input.
+In this case, the value is returned <em>as-is</em>, regardless of <code class="docutils literal notranslate"><span class="pre">ret_sisl</span></code>.</p></li>
+</ol>
+<p>The functional methods will not allow Python built-in’s to convert.
+Since that can lead to ambiguous behaviour.</p>
+</div>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.add.html#sisl.add" title="sisl.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>())</p></td>

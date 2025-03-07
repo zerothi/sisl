@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -89,7 +89,7 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.unit.unit_convert.html">unit_convert</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.unit.unit_default.html">unit_default</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.unit.units.html">sisl.unit.units</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-sisl.unit.siesta">Siesta units</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#siesta-units">Siesta units</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="unit_constant.constant.html">Constants</a></li>
@@ -111,7 +111,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
 </ul>
@@ -142,8 +142,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-sisl.unit">
-<span id="unit-conversion"></span><span id="unit"></span><h1>Unit conversion<a class="headerlink" href="#module-sisl.unit" title="Link to this heading"></a></h1>
+  <section id="unit-conversion">
+<h1>Unit conversion<a class="headerlink" href="#unit-conversion" title="Link to this heading"></a></h1>
 <p>Generic conversion utility between different units.</p>
 <p>All different codes unit conversion routines
 should adhere to the same routine names for consistency and
@@ -172,8 +172,8 @@ the units defined in the respective code.</p>
 <p>The <a class="reference internal" href="generated/sisl.unit.units.html#sisl.unit.units" title="sisl.unit.units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">units</span></code></a> object is by far the easiest version to use since it handles
 complex units (Ry/kg/Bohr N) while <a class="reference internal" href="generated/sisl.unit.unit_convert.html#sisl.unit.unit_convert" title="sisl.unit.unit_convert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit_convert</span></code></a> is the basic unit-conversion
 table that only converts simple units. E.g. Ry to eV etc.</p>
-<section id="module-sisl.unit.siesta">
-<span id="siesta-units"></span><h2>Siesta units<a class="headerlink" href="#module-sisl.unit.siesta" title="Link to this heading"></a></h2>
+<section id="siesta-units">
+<h2>Siesta units<a class="headerlink" href="#siesta-units" title="Link to this heading"></a></h2>
 <p>This subpackage implements the unit conversions used in <a class="reference external" href="https://siesta-project.org">Siesta</a>.</p>
 <p>To use the unit conversion from <a class="reference external" href="https://siesta-project.org">Siesta</a>, simply import <code class="xref py py-obj docutils literal notranslate"><span class="pre">units</span></code> as:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>

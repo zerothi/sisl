@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -123,7 +123,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
@@ -185,25 +185,28 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read" title="sisl.io.siesta.tshsSileSiesta.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_fermi_level" title="sisl.io.siesta.tshsSileSiesta.read_fermi_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fermi_level</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_brillouinzone" title="sisl.io.siesta.tshsSileSiesta.read_brillouinzone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_brillouinzone</span></code></a>([trs])</p></td>
+<td><p>Read the Brillouin zone object</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_fermi_level" title="sisl.io.siesta.tshsSileSiesta.read_fermi_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fermi_level</span></code></a>()</p></td>
 <td><p>Query the Fermi-level contained in the file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_geometry" title="sisl.io.siesta.tshsSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([atoms])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_geometry" title="sisl.io.siesta.tshsSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([atoms])</p></td>
 <td><p>Returns Geometry object from a TranSiesta file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_hamiltonian" title="sisl.io.siesta.tshsSileSiesta.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>([geometry])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_hamiltonian" title="sisl.io.siesta.tshsSileSiesta.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>([geometry])</p></td>
 <td><p>Electronic structure from the siesta.TSHS file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_lattice" title="sisl.io.siesta.tshsSileSiesta.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_lattice" title="sisl.io.siesta.tshsSileSiesta.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
 <td><p>Returns a Lattice object from a TranSiesta file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_overlap" title="sisl.io.siesta.tshsSileSiesta.read_overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_overlap</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_overlap" title="sisl.io.siesta.tshsSileSiesta.read_overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_overlap</span></code></a>(**kwargs)</p></td>
 <td><p>Returns the overlap matrix from the TranSiesta file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.write" title="sisl.io.siesta.tshsSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.write" title="sisl.io.siesta.tshsSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.write_hamiltonian" title="sisl.io.siesta.tshsSileSiesta.write_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_hamiltonian</span></code></a>(H, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.write_hamiltonian" title="sisl.io.siesta.tshsSileSiesta.write_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_hamiltonian</span></code></a>(H, **kwargs)</p></td>
 <td><p>Writes the Hamiltonian to a siesta.TSHS file</p></td>
 </tr>
 </tbody>
@@ -291,6 +294,20 @@ If None, the default colorscale is used for each backend.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tshsSileSiesta.read_brillouinzone">
+<span class="sig-name descname"><span class="pre">read_brillouinzone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tshsSileSiesta.read_brillouinzone" title="Link to this definition"></a></dt>
+<dd><p>Read the Brillouin zone object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><em>MonkhorstPack</em></a></p>
 </dd>
 </dl>
 </dd></dl>

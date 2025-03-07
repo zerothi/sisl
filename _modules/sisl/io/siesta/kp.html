@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,7 +85,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../references.html">Bibliography</a></li>
 </ul>
@@ -120,14 +120,14 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">LatticeChild</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.brillouinzone</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrillouinZone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LatticeLike</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.siesta</span><span class="w"> </span><span class="kn">import</span> <span class="n">unit_convert</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..sile</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span>
@@ -136,8 +136,6 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;kpSileSiesta&quot;</span><span class="p">,</span> <span class="s2">&quot;rkpSileSiesta&quot;</span><span class="p">]</span>
 
 <span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
-
-<span class="n">TLattice</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Lattice</span><span class="p">,</span> <span class="n">LatticeChild</span><span class="p">]]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
@@ -148,7 +146,7 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.read_data">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LatticeLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns K-points from the file (note that these are in reciprocal units)</span>
 
 <span class="sd">        Parameters</span>
@@ -190,7 +188,7 @@
 <span class="sd">           k-points in units 1/Bohr</span>
 <span class="sd">        weight : array_like</span>
 <span class="sd">           same length as k, weights of k-points</span>
-<span class="sd">        fmt : str, optional</span>
+<span class="sd">        fmt :</span>
 <span class="sd">           format for the k-values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -207,12 +205,12 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.read_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">LatticeLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns K-points from the file (note that these are in reciprocal units)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        lattice : LatticeChild</span>
+<span class="sd">        lattice :</span>
 <span class="sd">           required supercell for the BrillouinZone object</span>
 
 <span class="sd">        Returns</span>
@@ -222,23 +220,21 @@
         <span class="n">k</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.brillouinzone</span><span class="w"> </span><span class="kn">import</span> <span class="n">BrillouinZone</span>
 
-        <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
-        <span class="n">bz</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
-        <span class="n">bz</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">bz</span></div>
 
 
 <div class="viewcode-block" id="kpSileSiesta.write_brillouinzone">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.kpSileSiesta.html#sisl.io.siesta.kpSileSiesta.write_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes BrillouinZone-points to file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        bz : BrillouinZone</span>
+<span class="sd">        bz :</span>
 <span class="sd">           object contain all weights and k-points</span>
-<span class="sd">        fmt : str, optional</span>
+<span class="sd">        fmt :</span>
 <span class="sd">           format for the k-values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># And convert to 1/Bohr</span>
@@ -282,12 +278,12 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.read_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">TLattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">LatticeLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrillouinZone</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns K-points from the file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        lattice : LatticeChild</span>
+<span class="sd">        lattice :</span>
 <span class="sd">           required supercell for the BrillouinZone object</span>
 
 <span class="sd">        Returns</span>
@@ -306,7 +302,7 @@
 <div class="viewcode-block" id="rkpSileSiesta.write_brillouinzone">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.rkpSileSiesta.html#sisl.io.siesta.rkpSileSiesta.write_brillouinzone">[docs]</a>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">:</span> <span class="n">BrillouinZone</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.9e&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes BrillouinZone-points to file</span>
 
 <span class="sd">        Parameters</span>

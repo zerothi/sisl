@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,7 +85,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../references.html">Bibliography</a></li>
 </ul>
@@ -197,48 +197,48 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    bands_data:</span>
+<span class="sd">    bands_data :</span>
 <span class="sd">        The object containing the data to plot.</span>
-<span class="sd">    Erange:</span>
+<span class="sd">    Erange :</span>
 <span class="sd">        The energy range to plot.</span>
-<span class="sd">        If None, the range is determined by ``bands_range``.</span>
-<span class="sd">    E0:</span>
+<span class="sd">        If None, the range is determined by `bands_range`.</span>
+<span class="sd">    E0 :</span>
 <span class="sd">        The energy reference.</span>
-<span class="sd">    E_axis:</span>
+<span class="sd">    E_axis :</span>
 <span class="sd">        Axis to plot the energies.</span>
-<span class="sd">    bands_range:</span>
-<span class="sd">        The bands to plot. Only used if ``Erange`` is None.</span>
+<span class="sd">    bands_range :</span>
+<span class="sd">        The bands to plot. Only used if `Erange` is None.</span>
 <span class="sd">        If None, the 15 bands above and below the Fermi level are plotted.</span>
-<span class="sd">    spin:</span>
+<span class="sd">    spin :</span>
 <span class="sd">        Which spin channel to display. Only meaningful for spin-polarized calculations.</span>
 <span class="sd">        If None and the calculation is spin polarized, both are plotted.</span>
-<span class="sd">    bands_style:</span>
+<span class="sd">    bands_style :</span>
 <span class="sd">        Styling attributes for bands.</span>
-<span class="sd">    spindown_style:</span>
+<span class="sd">    spindown_style :</span>
 <span class="sd">        Styling attributes for the spin down bands (if present). Any missing attribute</span>
-<span class="sd">        will be taken from ``bands_style``.</span>
-<span class="sd">    colorscale:</span>
+<span class="sd">        will be taken from `bands_style`.</span>
+<span class="sd">    colorscale :</span>
 <span class="sd">        Colorscale to use for the bands in case the color attribute is an array of values.</span>
 <span class="sd">        If None, the default colorscale is used for each backend.</span>
-<span class="sd">    gap:</span>
+<span class="sd">    gap :</span>
 <span class="sd">        Whether to display the gap.</span>
-<span class="sd">    gap_tol:</span>
+<span class="sd">    gap_tol :</span>
 <span class="sd">        Tolerance in k for determining whether two gaps are the same.</span>
-<span class="sd">    gap_color:</span>
+<span class="sd">    gap_color :</span>
 <span class="sd">        Color of the gap.</span>
-<span class="sd">    gap_marker:</span>
-<span class="sd">        Marker styles for the gap (as plotly marker&#39;s styles).</span>
-<span class="sd">    direct_gaps_only:</span>
+<span class="sd">    gap_marker :</span>
+<span class="sd">        Marker styles for the gap (as `plotly` marker&#39;s styles).</span>
+<span class="sd">    direct_gaps_only :</span>
 <span class="sd">        Whether to only display direct gaps.</span>
-<span class="sd">    custom_gaps:</span>
+<span class="sd">    custom_gaps :</span>
 <span class="sd">        List of custom gaps to display. See the showcase notebooks for examples.</span>
-<span class="sd">    line_mode:</span>
+<span class="sd">    line_mode :</span>
 <span class="sd">        The method used to draw the band lines.</span>
-<span class="sd">    group_legend:</span>
+<span class="sd">    group_legend :</span>
 <span class="sd">        Whether to group all bands in the legend to show a single legend item.</span>
 
 <span class="sd">        If the bands are spin polarized, bands are grouped by spin channel.</span>
-<span class="sd">    backend:</span>
+<span class="sd">    backend :</span>
 <span class="sd">        The backend to use to generate the figure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -330,54 +330,54 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    bands_data:</span>
+<span class="sd">    bands_data :</span>
 <span class="sd">        The object containing the data to plot.</span>
-<span class="sd">    Erange:</span>
+<span class="sd">    Erange :</span>
 <span class="sd">        The energy range to plot.</span>
-<span class="sd">        If None, the range is determined by ``bands_range``.</span>
-<span class="sd">    E0:</span>
+<span class="sd">        If None, the range is determined by `bands_range`.</span>
+<span class="sd">    E0 :</span>
 <span class="sd">        The energy reference.</span>
-<span class="sd">    E_axis:</span>
+<span class="sd">    E_axis :</span>
 <span class="sd">        Axis to plot the energies.</span>
-<span class="sd">    bands_range:</span>
-<span class="sd">        The bands to plot. Only used if ``Erange`` is None.</span>
+<span class="sd">    bands_range :</span>
+<span class="sd">        The bands to plot. Only used if `Erange` is None.</span>
 <span class="sd">        If None, the 15 bands above and below the Fermi level are plotted.</span>
-<span class="sd">    spin:</span>
+<span class="sd">    spin :</span>
 <span class="sd">        Which spin channel to display. Only meaningful for spin-polarized calculations.</span>
 <span class="sd">        If None and the calculation is spin polarized, both are plotted.</span>
-<span class="sd">    bands_style:</span>
+<span class="sd">    bands_style :</span>
 <span class="sd">        Styling attributes for bands.</span>
-<span class="sd">    spindown_style:</span>
+<span class="sd">    spindown_style :</span>
 <span class="sd">        Styling attributes for the spin down bands (if present). Any missing attribute</span>
-<span class="sd">        will be taken from ``bands_style``.</span>
-<span class="sd">    gap:</span>
+<span class="sd">        will be taken from `bands_style`.</span>
+<span class="sd">    gap :</span>
 <span class="sd">        Whether to display the gap.</span>
-<span class="sd">    gap_tol:</span>
+<span class="sd">    gap_tol :</span>
 <span class="sd">        Tolerance in k for determining whether two gaps are the same.</span>
-<span class="sd">    gap_color:</span>
+<span class="sd">    gap_color :</span>
 <span class="sd">        Color of the gap.</span>
-<span class="sd">    gap_marker:</span>
-<span class="sd">        Marker styles for the gap (as plotly marker&#39;s styles).</span>
-<span class="sd">    direct_gaps_only:</span>
+<span class="sd">    gap_marker :</span>
+<span class="sd">        Marker styles for the gap (as `plotly` marker&#39;s styles).</span>
+<span class="sd">    direct_gaps_only :</span>
 <span class="sd">        Whether to only display direct gaps.</span>
-<span class="sd">    custom_gaps:</span>
+<span class="sd">    custom_gaps :</span>
 <span class="sd">        List of custom gaps to display. See the showcase notebooks for examples.</span>
-<span class="sd">    bands_mode:</span>
+<span class="sd">    bands_mode :</span>
 <span class="sd">        The method used to draw the band lines.</span>
-<span class="sd">    bands_group_legend:</span>
+<span class="sd">    bands_group_legend :</span>
 <span class="sd">        Whether to group all bands in the legend to show a single legend item.</span>
 
 <span class="sd">        If the bands are spin polarized, bands are grouped by spin channel.</span>
-<span class="sd">    groups:</span>
+<span class="sd">    groups :</span>
 <span class="sd">        Orbital groups to plots. See showcase notebook for examples.</span>
-<span class="sd">    fatbands_var:</span>
+<span class="sd">    fatbands_var :</span>
 <span class="sd">        The variable to use from bands_data to determine the width of the fatbands.</span>
-<span class="sd">        This variable must have as coordinates (k, band, orb, [spin]).</span>
-<span class="sd">    fatbands_mode:</span>
+<span class="sd">        This variable must have as coordinates ``(k, band, orb, [spin])``.</span>
+<span class="sd">    fatbands_mode :</span>
 <span class="sd">        The method used to draw the fatbands.</span>
-<span class="sd">    fatbands_scale:</span>
+<span class="sd">    fatbands_scale :</span>
 <span class="sd">        Factor that scales the size of all fatbands.</span>
-<span class="sd">    backend:</span>
+<span class="sd">    backend :</span>
 <span class="sd">        The backend to use to generate the figure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bands_data</span> <span class="o">=</span> <span class="n">accept_data</span><span class="p">(</span><span class="n">bands_data</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">BandsData</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

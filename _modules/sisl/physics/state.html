@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,7 +85,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
@@ -681,12 +681,11 @@
 <span class="sd">               \big[\sum_i |\psi_{\alpha,i}|^2\big]^q}</span>
 
 <span class="sd">        where :math:`\alpha` is the band index and :math:`i` is the orbital.</span>
-<span class="sd">        The order of the IPR is defaulted to :math:`q=2`, see :eq:`ipr2` for details.</span>
+<span class="sd">        The order of the IPR is defaulted to :math:`q=2`, see following equation for details.</span>
 <span class="sd">        The IPR may be used to distinguish Anderson localization and extended</span>
 <span class="sd">        states:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           :label: ipr2</span>
 <span class="sd">           :nowrap:</span>
 
 <span class="sd">            \begin{align}</span>
@@ -698,7 +697,7 @@
 <span class="sd">               \end{aligned}\right.</span>
 <span class="sd">            \end{align}</span>
 
-<span class="sd">        For further details see :cite:`Murphy2011`. Note that for eigen states the IPR reduces to:</span>
+<span class="sd">        For further details see :cite:`Murphy2011`. Note that for eigenstates the IPR reduces to:</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            I_{q,\alpha} = \sum_i |\psi_{\alpha,i}|^{2q}</span>
@@ -840,20 +839,21 @@
 
 <span class="sd">        * for ``matrix`` it will compute off-diagonal elements as well</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            \mathbf A_{\alpha\beta} = \langle\psi_\alpha|\mathbf M|\psi&#39;_\beta\rangle</span>
+<span class="sd">            .. math::</span>
+<span class="sd">                \mathbf A_{\alpha\beta} = \langle\psi_\alpha|\mathbf M|\psi&#39;_\beta\rangle</span>
 
 <span class="sd">        * for ``diag`` only the diagonal components will be returned</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            \mathbf a_\alpha = \langle\psi_\alpha|\mathbf M|\psi_\alpha\rangle</span>
+<span class="sd">            .. math::</span>
+<span class="sd">                \mathbf a_\alpha = \langle\psi_\alpha|\mathbf M|\psi_\alpha\rangle</span>
 
 <span class="sd">        * for ``basis``, only do inner products for individual states, but return them basis-resolved</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            \mathbf A_{\alpha\beta} = \psi^*_{\alpha,\beta} \mathbf M|\psi_\alpha\rangle_\beta</span>
+<span class="sd">            .. math::</span>
+<span class="sd">                \mathbf A_{\alpha\beta} = \psi^*_{\alpha,\beta} \mathbf M|\psi_\alpha\rangle_\beta</span>
 
 <span class="sd">        * for ``atoms``, only do inner products for individual states, but return them atom-resolved</span>
+
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -871,8 +871,9 @@
 <span class="sd">            * ``diagonal`` only return the diagonal of the inner product (&#39;ii&#39; elements)</span>
 <span class="sd">            * ``matrix`` a matrix with diagonals and the off-diagonals (&#39;ij&#39; elements)</span>
 <span class="sd">            * ``hadamard`` only do element wise products for the states (equivalent to</span>
-<span class="sd">            basis resolved inner-products)</span>
+<span class="sd">              basis resolved inner-products)</span>
 <span class="sd">            * ``atoms`` only do inner products for individual states, but return them atom-resolved</span>
+
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>

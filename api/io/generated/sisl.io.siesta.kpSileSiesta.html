@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -142,7 +142,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
@@ -259,7 +259,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dd><p>Returns K-points from the file (note that these are in reciprocal units)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lattice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">LatticeChild</span></code>) – required supercell for the BrillouinZone object</p>
+<dd class="field-odd"><p><strong>lattice</strong> (<a class="reference internal" href="../../generated/sisl.typing.LatticeLike.html#sisl.typing.LatticeLike" title="sisl.typing.LatticeLike"><em>LatticeLike</em></a>) – required supercell for the BrillouinZone object</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>bz</strong></p>
@@ -276,7 +276,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dd><p>Returns K-points from the file (note that these are in reciprocal units)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lattice</strong> (<a class="reference internal" href="../../generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a><em> | </em><em>LatticeChild</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – if supplied the returned k-points will be in reduced coordinates</p>
+<dd class="field-odd"><p><strong>lattice</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../../generated/sisl.typing.LatticeLike.html#sisl.typing.LatticeLike" title="sisl.typing.LatticeLike"><em>LatticeLike</em></a><em>]</em>) – if supplied the returned k-points will be in reduced coordinates</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -307,9 +307,12 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BrillouinZone</span></code>) – object contain all weights and k-points</p></li>
-<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – format for the k-values</p></li>
+<li><p><strong>bz</strong> (<a class="reference internal" href="../../generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – object contain all weights and k-points</p></li>
+<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – format for the k-values</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -323,7 +326,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – k-points in units 1/Bohr</p></li>
 <li><p><strong>weight</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – same length as k, weights of k-points</p></li>
-<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – format for the k-values</p></li>
+<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – format for the k-values</p></li>
 </ul>
 </dd>
 </dl>

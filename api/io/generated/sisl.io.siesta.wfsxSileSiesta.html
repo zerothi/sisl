@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -142,7 +142,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
@@ -307,22 +307,22 @@ coordinates are new, just pass the values for them, they will get overwritten.</
 </p></li>
 <li><p><strong>need_H</strong> – Whether the Hamiltonian is needed to read the WFSX file.</p></li>
 <li><p><strong>Erange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The energy range to plot.
-If None, the range is determined by <code class="docutils literal notranslate"><span class="pre">bands_range</span></code>.</p></li>
+If None, the range is determined by <em class="xref py py-obj">bands_range</em>.</p></li>
 <li><p><strong>E0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The energy reference.</p></li>
 <li><p><strong>E_axis</strong> (<em>Literal</em><em>[</em><em>'x'</em><em>, </em><em>'y'</em><em>]</em>) – Axis to plot the energies.</p></li>
-<li><p><strong>bands_range</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>]</em>) – The bands to plot. Only used if <code class="docutils literal notranslate"><span class="pre">Erange</span></code> is None.
+<li><p><strong>bands_range</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>]</em>) – The bands to plot. Only used if <em class="xref py py-obj">Erange</em> is None.
 If None, the 15 bands above and below the Fermi level are plotted.</p></li>
 <li><p><strong>spin</strong> (<em>Optional</em><em>[</em><em>Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>]</em><em>]</em>) – Which spin channel to display. Only meaningful for spin-polarized calculations.
 If None and the calculation is spin polarized, both are plotted.</p></li>
 <li><p><strong>bands_style</strong> (<em>StyleSpec</em>) – Styling attributes for bands.</p></li>
 <li><p><strong>spindown_style</strong> (<em>StyleSpec</em>) – Styling attributes for the spin down bands (if present). Any missing attribute
-will be taken from <code class="docutils literal notranslate"><span class="pre">bands_style</span></code>.</p></li>
+will be taken from <em class="xref py py-obj">bands_style</em>.</p></li>
 <li><p><strong>colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the bands in case the color attribute is an array of values.
 If None, the default colorscale is used for each backend.</p></li>
 <li><p><strong>gap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to display the gap.</p></li>
 <li><p><strong>gap_tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Tolerance in k for determining whether two gaps are the same.</p></li>
 <li><p><strong>gap_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Color of the gap.</p></li>
-<li><p><strong>gap_marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Marker styles for the gap (as plotly marker’s styles).</p></li>
+<li><p><strong>gap_marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Marker styles for the gap (as <a class="reference external" href="https://plotly.com/python-api-reference/generated/plotly.html#module-plotly" title="(in )"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotly</span></code></a> marker’s styles).</p></li>
 <li><p><strong>direct_gaps_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to only display direct gaps.</p></li>
 <li><p><strong>custom_gaps</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of custom gaps to display. See the showcase notebooks for examples.</p></li>
 <li><p><strong>line_mode</strong> (<em>Literal</em><em>[</em><em>'line'</em><em>, </em><em>'scatter'</em><em>, </em><em>'area_line'</em><em>]</em>) – The method used to draw the band lines.</p></li>
@@ -377,20 +377,20 @@ coordinates are new, just pass the values for them, they will get overwritten.</
 </p></li>
 <li><p><strong>need_H</strong> – Whether the Hamiltonian is needed to read the WFSX file.</p></li>
 <li><p><strong>Erange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The energy range to plot.
-If None, the range is determined by <code class="docutils literal notranslate"><span class="pre">bands_range</span></code>.</p></li>
+If None, the range is determined by <em class="xref py py-obj">bands_range</em>.</p></li>
 <li><p><strong>E0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The energy reference.</p></li>
 <li><p><strong>E_axis</strong> (<em>Literal</em><em>[</em><em>'x'</em><em>, </em><em>'y'</em><em>]</em>) – Axis to plot the energies.</p></li>
-<li><p><strong>bands_range</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>]</em>) – The bands to plot. Only used if <code class="docutils literal notranslate"><span class="pre">Erange</span></code> is None.
+<li><p><strong>bands_range</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>]</em>) – The bands to plot. Only used if <em class="xref py py-obj">Erange</em> is None.
 If None, the 15 bands above and below the Fermi level are plotted.</p></li>
 <li><p><strong>spin</strong> (<em>Optional</em><em>[</em><em>Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>]</em><em>]</em>) – Which spin channel to display. Only meaningful for spin-polarized calculations.
 If None and the calculation is spin polarized, both are plotted.</p></li>
 <li><p><strong>bands_style</strong> (<em>StyleSpec</em>) – Styling attributes for bands.</p></li>
 <li><p><strong>spindown_style</strong> (<em>StyleSpec</em>) – Styling attributes for the spin down bands (if present). Any missing attribute
-will be taken from <code class="docutils literal notranslate"><span class="pre">bands_style</span></code>.</p></li>
+will be taken from <em class="xref py py-obj">bands_style</em>.</p></li>
 <li><p><strong>gap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to display the gap.</p></li>
 <li><p><strong>gap_tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Tolerance in k for determining whether two gaps are the same.</p></li>
 <li><p><strong>gap_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Color of the gap.</p></li>
-<li><p><strong>gap_marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Marker styles for the gap (as plotly marker’s styles).</p></li>
+<li><p><strong>gap_marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Marker styles for the gap (as <a class="reference external" href="https://plotly.com/python-api-reference/generated/plotly.html#module-plotly" title="(in )"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotly</span></code></a> marker’s styles).</p></li>
 <li><p><strong>direct_gaps_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to only display direct gaps.</p></li>
 <li><p><strong>custom_gaps</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of custom gaps to display. See the showcase notebooks for examples.</p></li>
 <li><p><strong>bands_mode</strong> (<em>Literal</em><em>[</em><em>'line'</em><em>, </em><em>'scatter'</em><em>, </em><em>'area_line'</em><em>]</em>) – The method used to draw the band lines.</p></li>
@@ -399,7 +399,7 @@ will be taken from <code class="docutils literal notranslate"><span class="pre">
 </p></li>
 <li><p><strong>groups</strong> (<em>OrbitalQueries</em>) – Orbital groups to plots. See showcase notebook for examples.</p></li>
 <li><p><strong>fatbands_var</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The variable to use from bands_data to determine the width of the fatbands.
-This variable must have as coordinates (k, band, orb, [spin]).</p></li>
+This variable must have as coordinates <code class="docutils literal notranslate"><span class="pre">(k,</span> <span class="pre">band,</span> <span class="pre">orb,</span> <span class="pre">[spin])</span></code>.</p></li>
 <li><p><strong>fatbands_mode</strong> (<em>Literal</em><em>[</em><em>'line'</em><em>, </em><em>'scatter'</em><em>, </em><em>'area_line'</em><em>]</em>) – The method used to draw the fatbands.</p></li>
 <li><p><strong>fatbands_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Factor that scales the size of all fatbands.</p></li>
 <li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>

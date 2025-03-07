@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,8 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -142,7 +144,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
@@ -214,31 +216,34 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_basis" title="sisl.io.siesta.stdoutSileSiesta.read_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_basis</span></code></a>()</p></td>
 <td><p>Reads the basis as found in the output file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_charge" title="sisl.io.siesta.stdoutSileSiesta.read_charge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_charge</span></code></a>(name[, iscf, imd, key_scf, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_brillouinzone" title="sisl.io.siesta.stdoutSileSiesta.read_brillouinzone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_brillouinzone</span></code></a>([trs])</p></td>
+<td><p>Parses the k-grid section if present, otherwise returns the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_charge" title="sisl.io.siesta.stdoutSileSiesta.read_charge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_charge</span></code></a>(name[, iscf, imd, key_scf, ...])</p></td>
 <td><p>Read charges calculated in SCF loop or MD loop (or both)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_data" title="sisl.io.siesta.stdoutSileSiesta.read_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_data</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_data" title="sisl.io.siesta.stdoutSileSiesta.read_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_data</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Read specific content in the Siesta out file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_energy" title="sisl.io.siesta.stdoutSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_energy" title="sisl.io.siesta.stdoutSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a>()</p></td>
 <td><p>Reads the final energy distribution</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="sisl.io.siesta.stdoutSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a>([total, max, key, skip_final])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="sisl.io.siesta.stdoutSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a>([total, max, key, skip_final])</p></td>
 <td><p>Reads the forces from the Siesta output file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_geometry" title="sisl.io.siesta.stdoutSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([skip_input])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_geometry" title="sisl.io.siesta.stdoutSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([skip_input])</p></td>
 <td><p>Reads the geometry from the Siesta output file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_moment" title="sisl.io.siesta.stdoutSileSiesta.read_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_moment</span></code></a>([orbitals, quantity])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_moment" title="sisl.io.siesta.stdoutSileSiesta.read_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_moment</span></code></a>([orbitals, quantity])</p></td>
 <td><p>Reads the moments from the Siesta output file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_scf" title="sisl.io.siesta.stdoutSileSiesta.read_scf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_scf</span></code></a>([key, iscf, as_dataframe, ret_header])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_scf" title="sisl.io.siesta.stdoutSileSiesta.read_scf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_scf</span></code></a>([key, iscf, as_dataframe, ret_header])</p></td>
 <td><p>Parse SCF information and return a table of SCF information depending on what is requested</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_stress" title="sisl.io.siesta.stdoutSileSiesta.read_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_stress</span></code></a>([key, skip_final])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_stress" title="sisl.io.siesta.stdoutSileSiesta.read_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_stress</span></code></a>([key, skip_final])</p></td>
 <td><p>Reads the stresses from the Siesta output file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.write" title="sisl.io.siesta.stdoutSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.write" title="sisl.io.siesta.stdoutSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
 </tbody>
@@ -354,6 +359,41 @@ specifying which species in the calculation.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../generated/sisl.Atoms.html#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.stdoutSileSiesta.read_brillouinzone">
+<span class="sig-name descname"><span class="pre">read_brillouinzone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/stdout.html#stdoutSileSiesta.read_brillouinzone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.stdoutSileSiesta.read_brillouinzone" title="Link to this definition"></a></dt>
+<dd><p>Parses the k-grid section if present, otherwise returns the
+<span class="math notranslate nohighlight">\(\Gamma\)</span>-point</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>This method defaults to return the first item(s).</p>
+<p>This method enables slicing for handling multiple values (see <code class="docutils literal notranslate"><span class="pre">[...|default]</span></code>).</p>
+<p>This is an optional handler enabling returning multiple elements if <code class="docutils literal notranslate"><span class="pre">read_brillouinzone[...|0]</span></code>
+allows this.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">single</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">read_brillouinzone</span><span class="p">()</span> <span class="c1"># returns the default entry of read_brillouinzone[...|0]</span>
+</pre></div>
+</div>
+<p>To retrieve the first two elements that <code class="docutils literal notranslate"><span class="pre">read_brillouinzone</span></code> will return</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">first_two</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">read_brillouinzone</span><span class="p">[:</span><span class="mi">2</span><span class="p">]()</span>
+</pre></div>
+</div>
+<p>Retrieving the last two is done equivalently:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">last_two</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">read_brillouinzone</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]()</span>
+</pre></div>
+</div>
+<p>While one can store the sliced function <code class="docutils literal notranslate"><span class="pre">tmp</span> <span class="pre">=</span> <span class="pre">obj.read_brillouinzone[:]</span></code> one
+will loose the slice after each call.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><em>MonkhorstPack</em></a></p>
 </dd>
 </dl>
 </dd></dl>

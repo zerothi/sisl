@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,7 +85,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
@@ -133,7 +133,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core.sparse_geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseOrbital</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">GaugeType</span><span class="p">,</span> <span class="n">KPoint</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._matrix_ddk</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -1139,7 +1139,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">MT22</span> <span class="o">=</span> <span class="mi">6</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">MT0</span> <span class="o">=</span> <span class="mi">7</span>
 
-            <span class="c1"># The overlap is the same as non-collinear</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk_nambu</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Sk_nambu</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dPk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dPk_nambu</span>
@@ -1227,10 +1226,10 @@
                             <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span>
                             <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span>
                             <span class="c1"># delta, note the singlet</span>
-                            <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span>
-                            <span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span>
-                            <span class="n">p</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span>
-                            <span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(),</span>
+                            <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                            <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+                            <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+                            <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
                             <span class="c1"># because it is already off-diagonal</span>
                             <span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">:],</span>
                         <span class="p">]</span>
@@ -1252,13 +1251,13 @@
                             <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
                             <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
                             <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                            <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span>
+                            <span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span>
                             <span class="n">p</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span>
-                            <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span>
+                            <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span>
                             <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span>
-                            <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span>
+                            <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span>
                             <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span>
-                            <span class="n">p</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span>
+                            <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span>
                             <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">15</span><span class="p">],</span>
                             <span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">16</span><span class="p">:],</span>
                         <span class="p">]</span>
@@ -1271,14 +1270,13 @@
                 <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="n">nv</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.1001</span><span class="p">:</span>  <span class="c1"># no atom closer than 0.1001 Ang!</span>
-                    <span class="c1"># We check that the the parameters here is Hermitian</span>
+                    <span class="c1"># We check that the parameters here is Hermitian</span>
                     <span class="n">p</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">is_complex</span><span class="p">:</span>
                         <span class="n">Me</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]]],</span> <span class="n">dtype_cplx</span><span class="p">)</span>
                         <span class="c1"># do Delta</span>
-                        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
                         <span class="n">Md</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                            <span class="p">[[</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]]],</span> <span class="n">dtype_cplx</span>
+                            <span class="p">[[</span><span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">]],</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">6</span><span class="p">]]],</span> <span class="n">dtype_cplx</span>
                         <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">Me</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -1288,26 +1286,36 @@
                             <span class="p">],</span>
                             <span class="n">dtype_cplx</span><span class="p">,</span>
                         <span class="p">)</span>
-                        <span class="c1"># do Delta</span>
-                        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
                         <span class="n">Md</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
                             <span class="p">[</span>
-                                <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">])],</span>
-                                <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">]),</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">]],</span>
+                                <span class="p">[</span>
+                                    <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span>
+                                    <span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">15</span><span class="p">]),</span>
+                                <span class="p">],</span>
+                                <span class="p">[</span>
+                                    <span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">15</span><span class="p">]),</span>
+                                    <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span>
+                                <span class="p">],</span>
                             <span class="p">],</span>
                             <span class="n">dtype_cplx</span><span class="p">,</span>
                         <span class="p">)</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Me</span><span class="p">,</span> <span class="n">Me</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()):</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">Me</span> <span class="o">-</span> <span class="n">Me</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
                         <span class="n">warn</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.create_construct is NOT &quot;</span>
-                            <span class="s2">&quot;Hermitian for M^e on-site terms. This is your responsibility! &quot;</span>
-                            <span class="s2">&quot;The code will continue silently, be AWARE!&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.create_construct got a &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;non-Hermitian on-site term for the M^e elements (</span><span class="si">{</span><span class="n">d</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="si">}</span><span class="s2">). &quot;</span>
+                            <span class="s2">&quot;The code will continue like nothing happened...&quot;</span>
                         <span class="p">)</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Md</span><span class="p">,</span> <span class="n">Md</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()):</span>
+                    <span class="c1"># The sub-diagonal Delta is equivalent to -D^*.</span>
+                    <span class="c1"># This means that to compare one should do:</span>
+                    <span class="c1">#   (-D.conjugate()).T.conjugate()</span>
+                    <span class="c1"># which can be reduced to the following:</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">Md</span> <span class="o">+</span> <span class="n">Md</span><span class="o">.</span><span class="n">T</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
                         <span class="n">warn</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.create_construct is NOT &quot;</span>
-                            <span class="s2">&quot;Hermitian for Delta on-site terms. This is your responsibility! &quot;</span>
-                            <span class="s2">&quot;The code will continue silently, be AWARE!&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.create_construct got a &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;non-Hermitian on-site term for the M^d elements (</span><span class="si">{</span><span class="n">d</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="si">}</span><span class="s2">). &quot;</span>
+                            <span class="s2">&quot;The code will continue like nothing happened...&quot;</span>
                         <span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_spinorbit</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">is_complex</span><span class="p">:</span>
@@ -1351,11 +1359,12 @@
                             <span class="p">],</span>
                             <span class="n">dtype_cplx</span><span class="p">,</span>
                         <span class="p">)</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">onsite</span><span class="p">,</span> <span class="n">onsite</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()):</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">onsite</span> <span class="o">-</span> <span class="n">onsite</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
                         <span class="n">warn</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.create_construct is NOT &quot;</span>
-                            <span class="s2">&quot;Hermitian for on-site terms. This is your responsibility! &quot;</span>
-                            <span class="s2">&quot;The code will continue silently, be AWARE!&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.create_construct got a &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;non-Hermitian on-site term elements (</span><span class="si">{</span><span class="n">d</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="si">}</span><span class="s2">). &quot;</span>
+                            <span class="s2">&quot;The code will continue like nothing happened...&quot;</span>
                         <span class="p">)</span>
 
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
@@ -1405,10 +1414,12 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals)&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns number of rows in the basis (accounts for the non-collinear cases)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="c1"># This will correctly multiply with the spinor size</span>
+        <span class="c1"># The spinors depends on NC/SOC/Nambu/Polarized</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">spinor</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Representation of the model&quot;&quot;&quot;</span>
@@ -1943,14 +1954,27 @@
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.transpose">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.transpose">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hermitian</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A transpose copy of this object, possibly apply the Hermitian conjugate as well</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;hermitian&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;conjugate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hermitian argument has changed to conjugate, please update &quot;</span> <span class="s2">&quot;your code&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.15.3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transpose</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">conjugate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A transpose copy of this object with options for spin-box and conjugations</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The overlap elements won&#39;t be conjugated, in case asked for.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        hermitian :</span>
-<span class="sd">           if true, also apply a spin-box Hermitian operator to ensure TRS, otherwise</span>
-<span class="sd">           only return the transpose values.</span>
+<span class="sd">        conjugate :</span>
+<span class="sd">           if true, also apply a conjugation of the values.</span>
+<span class="sd">           Together with ``spin=True``, this will result in the adjoint operator.</span>
 <span class="sd">        spin :</span>
 <span class="sd">           whether the spin-box is also transposed if this is false, and `hermitian` is true,</span>
 <span class="sd">           then only imaginary values will change sign.</span>
@@ -1963,40 +1987,57 @@
         <span class="n">D</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
 
         <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">hermitian</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">conjugate</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
                 <span class="c1"># conjugate the imaginary value and transpose spin-box</span>
+                <span class="c1"># For Nambu things are a bit different.</span>
+                <span class="c1"># This is because we have an extra Delta sub-matrix</span>
+                <span class="c1"># which is already *off-diagonal*.</span>
+                <span class="c1"># And so when you do a ^H, you&#39;ll here do a i-j ^H</span>
+                <span class="c1"># but also an internal -Delta^* that needs accounting.</span>
+                <span class="c1"># I.e. the Hermitian property says:</span>
+                <span class="c1">#  Delta_eihj = Delta_hjei^H</span>
+                <span class="c1">#             = (-Delta_ejhi^*)^H</span>
+                <span class="c1"># Which means:</span>
+                <span class="c1">#  Delta_ueiuhj = -Delta_uejuhi</span>
+                <span class="c1">#  Delta_ueidhj = -Delta_dejuhi</span>
+                <span class="c1">#  Delta_deiuhj = -Delta_uejdhi</span>
+                <span class="c1">#  Delta_deidhj = -Delta_dejdhi</span>
+                <span class="c1"># I.e. anti-Hermitian *only* in the electron-hole indices.</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
                     <span class="c1"># imaginary components (including transposing)</span>
                     <span class="c1">#    12,11,22,21</span>
                     <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
                     <span class="c1"># R12 &lt;-&gt; R21</span>
                     <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
-                    <span class="c1"># real S, otherwise imaginary components of Delta</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">]]</span>
+                    <span class="c1"># Delta values</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
-                    <span class="c1"># delta values</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">hermitian</span><span class="p">:</span>
+                    <span class="c1"># Delta values</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="n">conjugate</span><span class="p">:</span>
                 <span class="c1"># conjugate the imaginary value</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
                     <span class="c1"># imaginary components</span>
                     <span class="c1">#    12,11,22,21</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">]]</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[</span>
+                        <span class="p">:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+                    <span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">:])</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">8</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">spin</span><span class="p">:</span>
                 <span class="c1"># transpose spin-box, 12 &lt;-&gt; 21</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
                     <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]]</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">]]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">])</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
 
         <span class="k">elif</span> <span class="n">sp</span><span class="o">.</span><span class="n">is_spinorbit</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">hermitian</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">conjugate</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
                 <span class="c1"># conjugate the imaginary value and transpose spin-box</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
                     <span class="c1"># imaginary components (including transposing)</span>
@@ -2006,14 +2047,14 @@
                     <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
-            <span class="k">elif</span> <span class="n">hermitian</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">conjugate</span><span class="p">:</span>
                 <span class="c1"># conjugate the imaginary value</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
                     <span class="c1"># imaginary components</span>
                     <span class="c1">#    12,11,22,21</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">D</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">:])</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">spin</span><span class="p">:</span>
                 <span class="c1"># transpose spin-box, 12 &lt;-&gt; 21</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
@@ -2022,9 +2063,22 @@
                     <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
 
         <span class="k">elif</span> <span class="n">sp</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">hermitian</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
-                <span class="k">pass</span>  <span class="c1"># do nothing, it is already ensured Hermitian</span>
-            <span class="k">elif</span> <span class="n">hermitian</span> <span class="ow">or</span> <span class="n">spin</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">conjugate</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># While strictly not necessary, this is vital</span>
+                    <span class="c1"># if the user has wrong specification</span>
+                    <span class="c1"># of the on-site terms</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+            <span class="k">elif</span> <span class="n">conjugate</span><span class="p">:</span>
+                <span class="c1"># conjugate the imaginary value</span>
+                <span class="c1"># since for transposing D[:, 3] is the same</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">D</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">spin</span><span class="p">:</span>
                 <span class="c1"># conjugate the imaginary value</span>
                 <span class="c1"># since for transposing D[:, 3] is the same</span>
                 <span class="c1"># value used for [--, ud]</span>
@@ -2038,21 +2092,40 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
 
+        <span class="k">elif</span> <span class="n">conjugate</span><span class="p">:</span>
+            <span class="n">ns</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="p">:</span><span class="n">ns</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">:</span><span class="n">ns</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">conjugate</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
         <span class="k">return</span> <span class="n">new</span></div>
 
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.trs">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.trs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">trs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a new matrix with applied time-reversal-symmetry</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a matrix with applied time-reversal operator</span>
 
-<span class="sd">        Time reversal symmetry is applied using the following equality:</span>
+<span class="sd">        For a Hamiltonian to obey time reversal symmetry, it must hold this</span>
+<span class="sd">        equality:</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">            2\mathbf M^{\mathrm{TRS}} = \mathbf M + \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y</span>
+<span class="sd">            \mathbf M = \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y</span>
 
-<span class="sd">        where :math:`*` is the conjugation operator.</span>
+<span class="sd">        This method returns the RHS of the above equation.</span>
+
+<span class="sd">        If you want to ensure that your matrix fulfills TRS, simply do:</span>
+
+<span class="sd">        .. code::</span>
+
+<span class="sd">            M = (M + M.trs()) / 2</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This method will be obsoleted at some point when :issue:`816` is</span>
+<span class="sd">        completed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span>
@@ -2060,31 +2133,61 @@
 
         <span class="c1"># Apply Pauli-Y on the left and right of each spin-box</span>
         <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>  <span class="c1"># diag real, off imag</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>  <span class="c1"># diag imag, off real</span>
+
+                <span class="c1"># Re: S,Tu,Td</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">]]</span>
+                <span class="c1"># Im: S,Tu,Td</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">11</span><span class="p">]]</span>
+                <span class="c1"># Re: T0</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">14</span><span class="p">]</span>
+                <span class="c1"># nothing for Im T0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+
+                <span class="c1"># S,Tu,Td</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+                <span class="c1"># T0</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">])</span>
 
         <span class="k">elif</span> <span class="n">sp</span><span class="o">.</span><span class="n">is_spinorbit</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
-                <span class="c1"># [R11, R22, R12, I12, I11, I22, R21, I21]</span>
-                <span class="c1"># [R11, R22] = [R22, R11]</span>
-                <span class="c1"># [I12, I21] = [I21, I12] (conj + Y @ Y[sign-changes conj])</span>
-                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
-                <span class="c1"># [I11, I22] = -[I22, I11] (conj + Y @ Y[no sign change])</span>
-                <span class="c1"># [R12, R21] = -[R21, R12] (Y @ Y)</span>
-                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>  <span class="c1"># diag real, off imag</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>  <span class="c1"># diag imag, off real</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># [R11, R22, R12, I12, I11, I22, R21, I21]</span>
-                <span class="c1"># [11, 22] = [22, 11]^*</span>
                 <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
-                <span class="c1"># [12, 21] = -[21, 12]^* (Y @ Y)</span>
                 <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
 
         <span class="k">elif</span> <span class="n">sp</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
-                <span class="c1"># [R11, R22, R12, I12]</span>
-                <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># [R11, R22, 12]</span>
-                <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">sp</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+        <span class="k">elif</span> <span class="n">sp</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">):</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown spin-configuration: </span><span class="si">{</span><span class="n">sp</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+            <span class="c1"># The overlap component is diagonal (like a polarized)</span>
+            <span class="c1"># so we will take its conjugate</span>
+            <span class="c1"># This means that the overlap matrix *after*</span>
+            <span class="c1">#   (M + M.trs()) / 2</span>
+            <span class="c1"># will have 0 imaginary component.</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">new</span></div>
 
@@ -2109,15 +2212,17 @@
 <span class="sd">        is changed according to the following conversions:</span>
 
 <span class="sd">        Upscaling</span>
-<span class="sd">        * unpolarized -&gt; (polarized, non-colinear, spinorbit): Copy unpolarized value to both up and down components</span>
-<span class="sd">        * polarized -&gt; (non-colinear, spinorbit): Copy up and down components</span>
-<span class="sd">        * non-colinear -&gt; spinorbit: Copy first four spin components</span>
+<span class="sd">        * unpolarized -&gt; (polarized, non-colinear, spinorbit, nambu): Copy unpolarized value to both up and down components</span>
+<span class="sd">        * polarized -&gt; (non-colinear, spinorbit, nambu): Copy up and down components</span>
+<span class="sd">        * non-colinear -&gt; (spinorbit, nambu): Copy first four spin components</span>
+<span class="sd">        * spinorbit -&gt; nambu: Copy first four spin components</span>
 <span class="sd">        * all other new spin components are set to zero</span>
 
 <span class="sd">        Downscaling</span>
-<span class="sd">        * (polarized, non-colinear, spinorbit) -&gt; unpolarized: Set unpolarized value to a mix 0.5*up + 0.5*down</span>
-<span class="sd">        * (non-colinear, spinorbit) -&gt; polarized: Keep up and down spin components</span>
-<span class="sd">        * spinorbit -&gt; non-colinear: Keep first four spin components</span>
+<span class="sd">        * (polarized, non-colinear, spinorbit, nambu) -&gt; unpolarized: Set unpolarized value to a mix 0.5*up + 0.5*down</span>
+<span class="sd">        * (non-colinear, spinorbit, nambu) -&gt; polarized: Keep up and down spin components</span>
+<span class="sd">        * (spinorbit, nambu) -&gt; non-colinear: Keep first four spin components</span>
+<span class="sd">        * nambu -&gt; spinorbit: Keep first four spin components</span>
 <span class="sd">        * all other spin components are dropped</span>
 
 <span class="sd">        3. Orthogonality:</span>

@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,7 +125,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
@@ -256,19 +256,22 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.read" title="sisl.io.tbtrans.phtsencSilePHtrans.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.read_geometry" title="sisl.io.tbtrans.phtsencSilePHtrans.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.read_brillouinzone" title="sisl.io.tbtrans.phtsencSilePHtrans.read_brillouinzone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_brillouinzone</span></code></a>()</p></td>
+<td><p>Returns a <em class="xref py py-obj">BrillouinZone</em> object with the k-points associated</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.read_geometry" title="sisl.io.tbtrans.phtsencSilePHtrans.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Returns <em class="xref py py-obj">Geometry</em> object from this file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.read_lattice" title="sisl.io.tbtrans.phtsencSilePHtrans.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.read_lattice" title="sisl.io.tbtrans.phtsencSilePHtrans.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
 <td><p>Returns <em class="xref py py-obj">Lattice</em> object from this file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.self_energy" title="sisl.io.tbtrans.phtsencSilePHtrans.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>(elec, E[, k, sort])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.self_energy" title="sisl.io.tbtrans.phtsencSilePHtrans.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>(elec, E[, k, sort])</p></td>
 <td><p>Return the self-energy from the electrode <em class="xref py py-obj">elec</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.self_energy_average" title="sisl.io.tbtrans.phtsencSilePHtrans.self_energy_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy_average</span></code></a>(elec, E[, sort])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.self_energy_average" title="sisl.io.tbtrans.phtsencSilePHtrans.self_energy_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy_average</span></code></a>(elec, E[, sort])</p></td>
 <td><p>Return the k-averaged average self-energy from the electrode <em class="xref py py-obj">elec</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.write" title="sisl.io.tbtrans.phtsencSilePHtrans.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.write" title="sisl.io.tbtrans.phtsencSilePHtrans.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
 </tbody>
@@ -375,13 +378,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<em>Etype</em>) – if <em class="xref py py-obj">int</em>, return it-self, else return the energy index which is
-closests to the energy.
+<li><p><strong>E</strong> (<em>Etype</em>) – return the energy index which is
+closest to the energy passed.
 For a <em class="xref py py-obj">str</em> it will be parsed to a float and treated as such.</p></li>
 <li><p><strong>method</strong> (<em>Literal</em><em>[</em><em>'nearest'</em><em>, </em><em>'above'</em><em>, </em><em>'below'</em><em>]</em>) – how non-equal values should be located.
-* <em class="xref py py-obj">nearest</em> takes the closests value
-* <em class="xref py py-obj">above</em> takes the closests value above <a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.E" title="sisl.io.tbtrans.phtsencSilePHtrans.E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">E</span></code></a>.
-* <em class="xref py py-obj">below</em> takes the closests value below <a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.E" title="sisl.io.tbtrans.phtsencSilePHtrans.E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">E</span></code></a>.</p></li>
+* <em class="xref py py-obj">nearest</em> takes the closest value
+* <em class="xref py py-obj">above</em> takes the closest value above <a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.E" title="sisl.io.tbtrans.phtsencSilePHtrans.E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">E</span></code></a>.
+* <em class="xref py py-obj">below</em> takes the closest value below <a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.E" title="sisl.io.tbtrans.phtsencSilePHtrans.E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">E</span></code></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -824,6 +827,17 @@ If None, the default colorscale is used for each backend.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.phtsencSilePHtrans.read_brillouinzone">
+<span class="sig-name descname"><span class="pre">read_brillouinzone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtsencSilePHtrans.read_brillouinzone" title="Link to this definition"></a></dt>
+<dd><p>Returns a <em class="xref py py-obj">BrillouinZone</em> object with the k-points associated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a></p>
 </dd>
 </dl>
 </dd></dl>

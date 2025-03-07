@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3b86522e"></script>
+      <script src="../../../_static/documentation_options.js?v=76b122c3"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,7 +125,7 @@
 <p class="caption" role="heading"><span class="caption-text">Extras</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
 </ul>
@@ -304,46 +304,49 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.read" title="sisl.io.tbtrans.phtavncSilePHtrans.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_data" title="sisl.io.tbtrans.phtavncSilePHtrans.read_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_data</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_brillouinzone" title="sisl.io.tbtrans.phtavncSilePHtrans.read_brillouinzone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_brillouinzone</span></code></a>()</p></td>
+<td><p>Returns a <em class="xref py py-obj">BrillouinZone</em> object with the k-points associated</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_data" title="sisl.io.tbtrans.phtavncSilePHtrans.read_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_data</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Read specific type of data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_geometry" title="sisl.io.tbtrans.phtavncSilePHtrans.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_geometry" title="sisl.io.tbtrans.phtavncSilePHtrans.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Returns <em class="xref py py-obj">Geometry</em> object from this file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_lattice" title="sisl.io.tbtrans.phtavncSilePHtrans.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_lattice" title="sisl.io.tbtrans.phtavncSilePHtrans.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
 <td><p>Returns <em class="xref py py-obj">Lattice</em> object from this file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.reflection" title="sisl.io.tbtrans.phtavncSilePHtrans.reflection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reflection</span></code></a>([elec, kavg, from_single])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.reflection" title="sisl.io.tbtrans.phtavncSilePHtrans.reflection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reflection</span></code></a>([elec, kavg, from_single])</p></td>
 <td><p>Reflection into electrode <em class="xref py py-obj">elec</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.sparse_atom_to_vector" title="sisl.io.tbtrans.phtavncSilePHtrans.sparse_atom_to_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_atom_to_vector</span></code></a>(Dab)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.sparse_atom_to_vector" title="sisl.io.tbtrans.phtavncSilePHtrans.sparse_atom_to_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_atom_to_vector</span></code></a>(Dab)</p></td>
 <td><p>Reduce an atomic sparse matrix to a vector contribution of each atom</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_atom" title="sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_atom</span></code></a>(Dij[, uc, sum_dup])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_atom" title="sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_atom</span></code></a>(Dij[, uc, sum_dup])</p></td>
 <td><p>Reduce a sparse matrix in orbital sparse to a sparse matrix in atomic indices</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_scalar" title="sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_scalar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_scalar</span></code></a>(Dij[, activity])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_scalar" title="sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_scalar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_scalar</span></code></a>(Dij[, activity])</p></td>
 <td><p>Atomic scalar contribution of atoms for a sparse orbital matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_vector" title="sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_vector</span></code></a>(Dij[, uc, sum_dup])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_vector" title="sisl.io.tbtrans.phtavncSilePHtrans.sparse_orbital_to_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_orbital_to_vector</span></code></a>(Dij[, uc, sum_dup])</p></td>
 <td><p>Reduce an orbital sparse matrix to a vector contribution of each atom</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.transmission" title="sisl.io.tbtrans.phtavncSilePHtrans.transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transmission</span></code></a>([elec_from, elec_to, kavg])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.transmission" title="sisl.io.tbtrans.phtavncSilePHtrans.transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transmission</span></code></a>([elec_from, elec_to, kavg])</p></td>
 <td><p>Transmission from <em class="xref py py-obj">elec_from</em> to <em class="xref py py-obj">elec_to</em>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.transmission_bulk" title="sisl.io.tbtrans.phtavncSilePHtrans.transmission_bulk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transmission_bulk</span></code></a>([elec, kavg])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.transmission_bulk" title="sisl.io.tbtrans.phtavncSilePHtrans.transmission_bulk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transmission_bulk</span></code></a>([elec, kavg])</p></td>
 <td><p>Bulk transmission for the <em class="xref py py-obj">elec</em> electrode</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.transmission_eig" title="sisl.io.tbtrans.phtavncSilePHtrans.transmission_eig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transmission_eig</span></code></a>([elec_from, elec_to, kavg])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.transmission_eig" title="sisl.io.tbtrans.phtavncSilePHtrans.transmission_eig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transmission_eig</span></code></a>([elec_from, elec_to, kavg])</p></td>
 <td><p>Transmission eigenvalues from <em class="xref py py-obj">elec_from</em> to <em class="xref py py-obj">elec_to</em>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.vector_transmission" title="sisl.io.tbtrans.phtavncSilePHtrans.vector_transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vector_transmission</span></code></a>(E[, elec, kavg, isc, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.vector_transmission" title="sisl.io.tbtrans.phtavncSilePHtrans.vector_transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vector_transmission</span></code></a>(E[, elec, kavg, isc, ...])</p></td>
 <td><p>Vector for each atom being the sum of bond transmissions times the normalized bond vector between the atoms</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.write" title="sisl.io.tbtrans.phtavncSilePHtrans.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.write" title="sisl.io.tbtrans.phtavncSilePHtrans.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.write_tbtav" title="sisl.io.tbtrans.phtavncSilePHtrans.write_tbtav"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_tbtav</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.write_tbtav" title="sisl.io.tbtrans.phtavncSilePHtrans.write_tbtav"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_tbtav</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Wrapper for writing the k-averaged TBT.AV.nc file.</p></td>
 </tr>
 </tbody>
@@ -549,7 +552,7 @@ in real-space.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -663,13 +666,13 @@ False is equivalent to None.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<em>Etype</em>) – if <em class="xref py py-obj">int</em>, return it-self, else return the energy index which is
-closests to the energy.
+<li><p><strong>E</strong> (<em>Etype</em>) – return the energy index which is
+closest to the energy passed.
 For a <em class="xref py py-obj">str</em> it will be parsed to a float and treated as such.</p></li>
 <li><p><strong>method</strong> (<em>Literal</em><em>[</em><em>'nearest'</em><em>, </em><em>'above'</em><em>, </em><em>'below'</em><em>]</em>) – how non-equal values should be located.
-* <em class="xref py py-obj">nearest</em> takes the closests value
-* <em class="xref py py-obj">above</em> takes the closests value above <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.E" title="sisl.io.tbtrans.phtavncSilePHtrans.E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">E</span></code></a>.
-* <em class="xref py py-obj">below</em> takes the closests value below <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.E" title="sisl.io.tbtrans.phtavncSilePHtrans.E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">E</span></code></a>.</p></li>
+* <em class="xref py py-obj">nearest</em> takes the closest value
+* <em class="xref py py-obj">above</em> takes the closest value above <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.E" title="sisl.io.tbtrans.phtavncSilePHtrans.E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">E</span></code></a>.
+* <em class="xref py py-obj">below</em> takes the closest value below <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.E" title="sisl.io.tbtrans.phtavncSilePHtrans.E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">E</span></code></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -740,7 +743,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -791,7 +794,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -840,7 +843,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -889,7 +892,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1104,7 +1107,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1184,7 +1187,7 @@ in real-space.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1423,7 +1426,7 @@ device pivoting indices).</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOHP">
 <span class="sig-name descname"><span class="pre">orbital_ACOHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOHP" title="Link to this definition"></a></dt>
 <dd><p>Orbital resolved COHP analysis of the spectral function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COHP of the
 underlying geometry.</p>
 <p>The COHP analysis can be written as:</p>
@@ -1445,7 +1448,7 @@ other are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1473,7 +1476,7 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOOP">
 <span class="sig-name descname"><span class="pre">orbital_ACOOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOOP" title="Link to this definition"></a></dt>
 <dd><p>Orbital COOP analysis of the spectral function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COOP of the
 underlying geometry.</p>
 <p>The COOP analysis can be written as:</p>
@@ -1504,7 +1507,7 @@ other are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1540,7 +1543,7 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtavncSilePHtrans.orbital_COHP">
 <span class="sig-name descname"><span class="pre">orbital_COHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_COHP" title="Link to this definition"></a></dt>
 <dd><p>Orbital resolved COHP analysis of the Green function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COHP of the
 underlying geometry.</p>
 <p>The COHP analysis can be written as:</p>
@@ -1561,7 +1564,7 @@ other are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1594,7 +1597,7 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtavncSilePHtrans.orbital_COOP">
 <span class="sig-name descname"><span class="pre">orbital_COOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_COOP" title="Link to this definition"></a></dt>
 <dd><p>Orbital COOP analysis of the Green function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COOP of the
 underlying geometry.</p>
 <p>The COOP analysis can be written as:</p>
@@ -1625,7 +1628,7 @@ other are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1704,7 +1707,7 @@ To only get unit cell transmissions, pass <code class="docutils literal notransl
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1906,6 +1909,17 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.phtavncSilePHtrans.read_brillouinzone">
+<span class="sig-name descname"><span class="pre">read_brillouinzone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_brillouinzone" title="Link to this definition"></a></dt>
+<dd><p>Returns a <em class="xref py py-obj">BrillouinZone</em> object with the k-points associated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtavncSilePHtrans.read_data">
 <span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtavncSilePHtrans.read_data" title="Link to this definition"></a></dt>
 <dd><p>Read specific type of data.</p>
@@ -1991,7 +2005,7 @@ be a generic routine usable for other parts of <a class="reference internal" hre
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Dab</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix in atomic indices</p>
+<dd class="field-odd"><p><strong>Dab</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix in atomic indices</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
@@ -2013,7 +2027,7 @@ be a generic routine usable for other parts of <a class="reference internal" hre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix in orbital format</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix in orbital format</p></li>
 <li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the returned data are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
@@ -2024,7 +2038,7 @@ multi-orbital systems.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2049,7 +2063,7 @@ idea of <em>how much</em> this atom is governing the data in the matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the orbital sparse matrix.</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the orbital sparse matrix.</p></li>
 <li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the atomic activity, see explanation above</p></li>
 </ul>
 </dd>
@@ -2082,7 +2096,7 @@ be a generic routine usable for other parts of <a class="reference internal" hre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix</p></li>
 <li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the returned data are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
