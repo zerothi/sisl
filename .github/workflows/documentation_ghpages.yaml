@@ -83,8 +83,8 @@ jobs:
           make html
           rm -rf build/html/_sources
           touch build/html/.nojekyll
-          cd ..
           tar cvfz build-html.tar.gz build/html/
+          cd ..
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
