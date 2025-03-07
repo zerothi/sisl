@@ -80,48 +80,48 @@ def bands_plot(
 
     Parameters
     ----------
-    bands_data:
+    bands_data :
         The object containing the data to plot.
-    Erange:
+    Erange :
         The energy range to plot.
-        If None, the range is determined by ``bands_range``.
-    E0:
+        If None, the range is determined by `bands_range`.
+    E0 :
         The energy reference.
-    E_axis:
+    E_axis :
         Axis to plot the energies.
-    bands_range:
-        The bands to plot. Only used if ``Erange`` is None.
+    bands_range :
+        The bands to plot. Only used if `Erange` is None.
         If None, the 15 bands above and below the Fermi level are plotted.
-    spin:
+    spin :
         Which spin channel to display. Only meaningful for spin-polarized calculations.
         If None and the calculation is spin polarized, both are plotted.
-    bands_style:
+    bands_style :
         Styling attributes for bands.
-    spindown_style:
+    spindown_style :
         Styling attributes for the spin down bands (if present). Any missing attribute
-        will be taken from ``bands_style``.
-    colorscale:
+        will be taken from `bands_style`.
+    colorscale :
         Colorscale to use for the bands in case the color attribute is an array of values.
         If None, the default colorscale is used for each backend.
-    gap:
+    gap :
         Whether to display the gap.
-    gap_tol:
+    gap_tol :
         Tolerance in k for determining whether two gaps are the same.
-    gap_color:
+    gap_color :
         Color of the gap.
-    gap_marker:
-        Marker styles for the gap (as plotly marker's styles).
-    direct_gaps_only:
+    gap_marker :
+        Marker styles for the gap (as `plotly` marker's styles).
+    direct_gaps_only :
         Whether to only display direct gaps.
-    custom_gaps:
+    custom_gaps :
         List of custom gaps to display. See the showcase notebooks for examples.
-    line_mode:
+    line_mode :
         The method used to draw the band lines.
-    group_legend:
+    group_legend :
         Whether to group all bands in the legend to show a single legend item.
 
         If the bands are spin polarized, bands are grouped by spin channel.
-    backend:
+    backend :
         The backend to use to generate the figure.
     """
 
@@ -213,54 +213,54 @@ def fatbands_plot(
 
     Parameters
     ----------
-    bands_data:
+    bands_data :
         The object containing the data to plot.
-    Erange:
+    Erange :
         The energy range to plot.
-        If None, the range is determined by ``bands_range``.
-    E0:
+        If None, the range is determined by `bands_range`.
+    E0 :
         The energy reference.
-    E_axis:
+    E_axis :
         Axis to plot the energies.
-    bands_range:
-        The bands to plot. Only used if ``Erange`` is None.
+    bands_range :
+        The bands to plot. Only used if `Erange` is None.
         If None, the 15 bands above and below the Fermi level are plotted.
-    spin:
+    spin :
         Which spin channel to display. Only meaningful for spin-polarized calculations.
         If None and the calculation is spin polarized, both are plotted.
-    bands_style:
+    bands_style :
         Styling attributes for bands.
-    spindown_style:
+    spindown_style :
         Styling attributes for the spin down bands (if present). Any missing attribute
-        will be taken from ``bands_style``.
-    gap:
+        will be taken from `bands_style`.
+    gap :
         Whether to display the gap.
-    gap_tol:
+    gap_tol :
         Tolerance in k for determining whether two gaps are the same.
-    gap_color:
+    gap_color :
         Color of the gap.
-    gap_marker:
-        Marker styles for the gap (as plotly marker's styles).
-    direct_gaps_only:
+    gap_marker :
+        Marker styles for the gap (as `plotly` marker's styles).
+    direct_gaps_only :
         Whether to only display direct gaps.
-    custom_gaps:
+    custom_gaps :
         List of custom gaps to display. See the showcase notebooks for examples.
-    bands_mode:
+    bands_mode :
         The method used to draw the band lines.
-    bands_group_legend:
+    bands_group_legend :
         Whether to group all bands in the legend to show a single legend item.
 
         If the bands are spin polarized, bands are grouped by spin channel.
-    groups:
+    groups :
         Orbital groups to plots. See showcase notebook for examples.
-    fatbands_var:
+    fatbands_var :
         The variable to use from bands_data to determine the width of the fatbands.
-        This variable must have as coordinates (k, band, orb, [spin]).
-    fatbands_mode:
+        This variable must have as coordinates ``(k, band, orb, [spin])``.
+    fatbands_mode :
         The method used to draw the fatbands.
-    fatbands_scale:
+    fatbands_scale :
         Factor that scales the size of all fatbands.
-    backend:
+    backend :
         The backend to use to generate the figure.
     """
     bands_data = accept_data(bands_data, cls=BandsData, check=True)

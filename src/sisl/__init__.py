@@ -4,6 +4,8 @@
 # isort: skip_file
 from __future__ import annotations
 
+from sisl._debug_info import print_debug_info
+
 """
 sisl
 ====
@@ -223,6 +225,11 @@ def __getattr__(attr):
         import sisl.typing as typing
 
         return typing
+
+    if attr in ("print_debug_info", "debug_info"):
+        from ._debug_info import print_debug_info
+
+        return print_debug_info
 
     raise AttributeError(f"module {__name__} has no attribute {attr}")
 

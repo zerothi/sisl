@@ -310,22 +310,22 @@ def draw_gaps(
 
     Parameters
     ------------
-    bands_data: xr.Dataset
+    bands_data :
         The dataset containing bands energy information.
-    gap: bool
+    gap :
         Whether to draw the minimum gap passed as gap_info or not.
-    gap_info: dict
+    gap_info :
         Dictionary containing the information of the minimum gap,
         as returned by `calculate_gap`.
-    gap_tol: float
+    gap_tol :
         Tolerance in k to consider that two gaps are the same.
-    gap_color: str or None
+    gap_color :
         Color of the line that draws the gap.
-    gap_marker: str or None
+    gap_marker :
         Marker specification of the limits of the gap.
-    direct_gaps_only: bool
+    direct_gaps_only :
         Whether to draw the minimum gap only if it is a direct gap.
-    custom_gaps: list of dict
+    custom_gaps :
         List of custom gaps to draw. Each dict can contain the keys:
         - "from": the k value where the gap starts.
         - "to": the k value where the gap ends. If not present, equal to "from".
@@ -334,7 +334,7 @@ def draw_gaps(
         are polarized, the gap will be drawn for both spin components.
         - "color": Color of the line that draws the gap. Optional.
         - "marker": Marker specification for the limits of the gap. Optional.
-    E_axis: Literal["x", "y"]
+    E_axis:
         Axis where the energy is plotted.
     """
     draw_actions = []

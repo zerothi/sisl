@@ -47,6 +47,8 @@ import numpy as np
 import sisl
 
 print(f"sisl: {sisl.__version__}, {sisl.__file__}")
+# Extract debug-information, for completeness sake.
+sisl.debug_info()
 import pybtex
 
 # Figure out if we can locate the tests:
