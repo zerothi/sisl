@@ -226,7 +226,7 @@ class BandsData(XarrayData):
 
         Parameters
         ----------
-        bands_data: xr.Dataset
+        bands_data:
             The dataset containing the bands data. It should have at least an
             energy variable named 'E' and coordinates 'k' and 'band'. Optionally,
             it can have a 'spin' coordinate.
@@ -415,17 +415,17 @@ class BandsData(XarrayData):
         extra_vars:
             Additional variables to calculate for each eigenstate, apart from their energy.
             Each item of the list should be a dictionary with the following keys:
-                - 'name', str: The name of the variable.
-                - 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
-                spin index, and returns the values of the variable in a numpy array. This
-                function will be called for each eigenstate object separately. That is, once
-                for each (k-point, spin) combination.
-                - 'coords', tuple of str: The names of the  dimensions of the returned array.
-                The number of coordinates should match the number of dimensions.
-                - 'coords_values', dict: If this variable introduces a new coordinate, you should
-                pass the values for that coordinate here. If the coordinates were already defined
-                by another variable, they will already have values. If you are unsure that the
-                coordinates are new, just pass the values for them, they will get overwritten.
+            * 'name', str: The name of the variable.
+            * 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
+              spin index, and returns the values of the variable in a numpy array. This
+              function will be called for each eigenstate object separately. That is, once
+              for each (k-point, spin) combination.
+            * 'coords', tuple of str: The names of the  dimensions of the returned array.
+              The number of coordinates should match the number of dimensions.
+            * 'coords_values', dict: If this variable introduces a new coordinate, you should
+              pass the values for that coordinate here. If the coordinates were already defined
+              by another variable, they will already have values. If you are unsure that the
+              coordinates are new, just pass the values for them, they will get overwritten.
 
             Each item can also be a string indicating the name of a known variable: 'norm2', 'spin_moment', 'ipr'.
         """
@@ -533,17 +533,17 @@ class BandsData(XarrayData):
             Additional variables to calculate for each eigenstate, apart from their energy.
 
             Each item of the list should be a dictionary with the following keys:
-                - 'name', str: The name of the variable.
-                - 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
-                spin index, and returns the values of the variable in a numpy array. This
-                function will be called for each eigenstate object separately. That is, once
-                for each (k-point, spin) combination.
-                - 'coords', tuple of str: The names of the  dimensions of the returned array.
-                The number of coordinates should match the number of dimensions.
-                - 'coords_values', dict: If this variable introduces a new coordinate, you should
-                pass the values for that coordinate here. If the coordinates were already defined
-                by another variable, they will already have values. If you are unsure that the
-                coordinates are new, just pass the values for them, they will get overwritten.
+            * 'name', str: The name of the variable.
+            * 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
+              spin index, and returns the values of the variable in a numpy array. This
+              function will be called for each eigenstate object separately. That is, once
+              for each (k-point, spin) combination.
+            * 'coords', tuple of str: The names of the  dimensions of the returned array.
+              The number of coordinates should match the number of dimensions.
+            * 'coords_values', dict: If this variable introduces a new coordinate, you should
+              pass the values for that coordinate here. If the coordinates were already defined
+              by another variable, they will already have values. If you are unsure that the
+              coordinates are new, just pass the values for them, they will get overwritten.
 
             Each item can also be a string indicating the name of a known variable: 'norm2', 'spin_moment', 'ipr'.
         need_H:
@@ -725,19 +725,18 @@ def _get_eigenstate_wrapper(
         are already included, so no need to pass them here.
         Each item of the array defines a new quantity and should contain a dictionary
         with the following keys:
-            - 'name', str: The name of the quantity.
-            - 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
-            spin index, and returns the values of the quantity in a numpy array. This
-            function will be called for each eigenstate object separately. That is, once
-            for each (k-point, spin) combination.
-            - 'coords', tuple of str: The names of the  dimensions of the returned array.
-            The number of coordinates should match the number of dimensions.
-            of
-            - 'coords_values', dict: If this variable introduces a new coordinate, you should
-            pass the values for that coordinate here. If the coordinates were already defined
-            by another variable, they will already have values. If you are unsure that the
-            coordinates are new, just pass the values for them, they will get overwritten.
-    spin_moments: bool, optional
+        * 'name', str: The name of the quantity.
+        * 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
+          spin index, and returns the values of the quantity in a numpy array. This
+          function will be called for each eigenstate object separately. That is, once
+          for each (k-point, spin) combination.
+        * 'coords', tuple of str: The names of the  dimensions of the returned array.
+          The number of coordinates should match the number of dimensions.
+        * 'coords_values', dict: If this variable introduces a new coordinate, you should
+          pass the values for that coordinate here. If the coordinates were already defined
+          by another variable, they will already have values. If you are unsure that the
+          coordinates are new, just pass the values for them, they will get overwritten.
+    spin_moments:
         Whether to add, if the spin is not diagonal, spin moments.
 
     Returns

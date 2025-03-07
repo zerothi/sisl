@@ -35,7 +35,7 @@ automatically, given that you provide the data function and the plot function:
 import inspect
 from collections import ChainMap
 from collections.abc import Sequence
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, ObjectDispatcher
 from sisl._lib._docscrape import FunctionDoc
@@ -112,7 +112,7 @@ class PlotDispatch(AbstractDispatch):
 # --------------------------------------
 
 
-def create_plot_dispatch(function, name, plot_cls=None):
+def create_plot_dispatch(function: Callable, name: str, plot_cls=None):
     """From a function, creates a dispatch class that will be used by the dispatchers.
 
     By generating a different class for each function, we can have a different docstring
@@ -120,10 +120,10 @@ def create_plot_dispatch(function, name, plot_cls=None):
 
     Parameters
     -----------
-    function: function
+    function :
         function that will be executed when the dispatch is called. It will receive
         the object from the dispatch.
-    name: str
+    name :
         the class name
     """
     return type(
@@ -199,20 +199,20 @@ def register_plotable(
 
     When one of this pairs is registered:
 
-        - A plot handler is attached to the object's class, if not already there.
-        - The plotting function is attached to the plot handler.
+    * A plot handler is attached to the object's class, if not already there.
+    * The plotting function is attached to the plot handler.
 
-    Registering `ClassA` as a plotable means that given an object of `ClassA`,
+    Registering ``ClassA`` as a plotable means that given an object of ``ClassA``,
     one can plot it like:
 
-    ... code-block:: python
+    .. code-block:: python
 
-        object.plot()
-        # or
-        object.plot.some_plot_function()
+       object.plot()
+       # or
+       object.plot.some_plot_function()
 
     Effectively, the plotting function becomes a method of the class so that when
-    you call `object.plot()`, the object is passed to the plotting function.
+    you call ``object.plot()``, the object is passed to the plotting function.
 
     Parameters
     ------------
@@ -234,12 +234,13 @@ def register_plotable(
     name:
         name that will be used to identify the particular plot function that is being registered.
 
-        E.g.: If name is "nicely", the plotting function will be registered under "obj.plot.nicely()"
+        E.g.: If name is "nicely", the plotting function will be registered under
+        ``obj.plot.nicely()``
 
         If not provided:
-            - If `plotting_func` is provided, the name of the function will be used.
-            - If `plot_cls` is provided, `plot_cls.plot_class_key()` will be used, which
-                by default removes the "Plot" suffix from the class name.
+        * If `plotting_func` is provided, the name of the function will be used.
+        * If `plot_cls` is provided, ``plot_cls.plot_class_key()`` will be used, which
+           by default removes the "Plot" suffix from the class name.
     default:
         whether this way of plotting the class should be the default one.
     plot_handler_attr:
@@ -351,8 +352,8 @@ def _get_merged_parameters(
 
 
 def get_merged_signature(
-    func1: callable,
-    func2: callable,
+    func1: Callable,
+    func2: Callable,
     func1_slice: slice = slice(None),
     func1_prefix: str = "_",
     remove_func2_inputs: list[str] = [],
@@ -365,12 +366,12 @@ def get_merged_signature(
     the same name as an argument of the second function.
 
     It makes the arguments of the second function keyword-only so that the
-    signature shows an asterisk `*` between the arguments of the first and second
+    signature shows an asterisk ``*`` between the arguments of the first and second
     functions, which visually helps to distinguish between the two.
 
-    Since there can't be two **kwargs arguments, if function 1 contains a **kwargs
+    Since there can't be two ``**kwargs`` arguments, if function 1 contains a ``**kwargs``
     argument, it will be converted into an argument that accepts a dictionary.
-    This dictionary should then be expanded when calling function 1. The **kwargs
+    This dictionary should then be expanded when calling function 1. The ``**kwargs``
     argument of function 1 is also prefixed with `func1_prefix`.
 
     The function also returns a dictionary with useful information about the parameters
@@ -378,20 +379,20 @@ def get_merged_signature(
 
     Parameters
     ----------
-    func1
+    func1 :
         the first function
-    func2
+    func2 :
         the second function
-    func1_slice
+    func1_slice :
         the slice that will be used to get the arguments of the first function.
         E.g. `slice(1, None)` will get all arguments of the first function except the first one.
-    func1_prefix
+    func1_prefix :
         the prefix that will be added to the arguments of the first function
         when there is a name clash.
-    remove_func2_inputs
+    remove_func2_inputs :
         the arguments of the second function that should not be included in the
         merged signature.
-    ret_annotation
+    ret_annotation :
         the return annotation of the merged function.
 
     Returns
@@ -471,7 +472,7 @@ def get_merged_signature(
 
 
 def get_merged_function(
-    data_func: callable,
+    data_func: Callable,
     data_defaults: dict,
     plot_cls: type[Plot],
     data_input_key: str,
@@ -485,20 +486,20 @@ def get_merged_function(
 
     Parameters
     ----------
-    data_func:
+    data_func :
         the function that generates the data.
-    data_defaults:
+    data_defaults :
         the default values that should be passed to the data function. They
-        will be overriden by the arguments passed when the merged function
+        will be overridden by the arguments passed when the merged function
         is called.
-    plot_cls:
+    plot_cls :
         the plot class that will be used to plot the data.
-    data_input_key:
+    data_input_key :
         the name of the plot class' argument where the data should be passed.
-    signature:
+    signature :
         the signature of the merged function, this is built by the
         `get_merged_signature` function.
-    params_info:
+    params_info :
         information about the parameters of the merged function, this is built by
         the `get_merged_signature` function.
 
@@ -572,7 +573,7 @@ def register_data_source(
     This function attaches a plotting method to the data source class.
 
     This function also goes through all the possible entry points in the data source
-    (registred in the `new` class method) and appends a plotting method to each of them
+    (registered in the `new` class method) and appends a plotting method to each of them
     using `register_plotable`.
 
     The plotting function registered will be a merge of the data source and the plot class,
@@ -590,29 +591,30 @@ def register_data_source(
 
     Parameters
     ----------
-    data_source_cls:
+    data_source_cls :
         the class to register as plotable.
-    plot_cls:
+    plot_cls :
         the plot class to be used to plot the data
-    data_input_key:
+    data_input_key :
         the name of the plot's argument where the data should be passed.
-    name:
+    name :
         the name that will be used to identify the particular plot function that is being registered.
         If not provided, the name of the plot class will be used, removing the "Plot" suffix.
-    default:
+    default :
         if there is an entry point for which the default plot should be this one,
         include in the list the class of the object that defines the entry point.
 
         E.g.: If the data source has an entry point that is triggered by calling `new` with
-        `sisl.io.pdosSileSiesta` as a first argument, you can do `default=[sisl.io.pdosSileSiesta]`
+        `sisl.io.pdosSileSiesta` as a first argument, you can do
+        ``default=[sisl.io.pdosSileSiesta]``
         to make the plot the default for `sisl.io.pdosSileSiesta`.
-    plot_handler_attr:
+    plot_handler_attr :
         the attribute where the plot handler is or should be located in the class that you want to register.
-    data_source_defaults:
+    data_source_defaults :
         the default values that should be passed to the data source.
 
         NOTE: If an entry point does not support one of the keys in the defaults, it will not be registered.
-    **kwargs:
+    kwargs:
         passed directly to `register_plotable`
 
     See also
@@ -741,7 +743,7 @@ def register_sile_method(
     sile_cls:
         the sile class to register as plotable.
     method:
-        the method to use to read the data from the sile object, e.g. `"read_geometry"`.
+        the method to use to read the data from the sile object, e.g. ``"read_geometry"``.
     plot_cls:
         the plot class to be used to plot the data.
     data_input_key:
@@ -753,7 +755,7 @@ def register_sile_method(
         whether the plot being registered should be the default for this sile class.
     plot_handler_attr:
         the attribute where the plot handler is or should be located in the class that you want to register.
-    **kwargs:
+    kwargs:
         passed directly to `register_plotable`
 
     See also

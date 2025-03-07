@@ -42,5 +42,3 @@ def style_fatbands(data, groups=[{}]):
 
 class FatbandsData(OrbitalData):
     function = staticmethod(style_fatbands)
-
-    pass

@@ -133,11 +133,11 @@ class PDOSData(OrbitalData):
                 If nSpin == 4, the calculation is assumed to be with noncolinear spin.
         geometry: sisl.Geometry
             The geometry to which the data corresponds. It must have as many orbitals as the PDOS data.
-        E: numpy.ndarray of shape (nE,)
+        E:
             The energies to which the data corresponds.
-        E_units: str, optional
+        E_units:
             The units of the energy. Defaults to 'eV'.
-        extra_attrs: dict
+        extra_attrs:
             A dictionary of extra attributes to be added to the DataArray. One of the attributes that
         """
         # Understand what the spin class is for this data.
