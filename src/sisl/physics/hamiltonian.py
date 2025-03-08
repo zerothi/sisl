@@ -468,7 +468,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         q_tol : float, optional
             tolerance of charge for finding the Fermi-level
         apply_kwargs : dict, optional
-           keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
+           keyword arguments passed directly to ``bz.apply.renew(**apply_kwargs)``.
 
         Returns
         -------
@@ -533,7 +533,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             return Ef
 
         # Retrieve dispatcher for averaging
-        eigh = bz.apply(**apply_kwargs).array.eigh
+        eigh = bz.apply.renew(**apply_kwargs).array.eigh
 
         if self.spin.is_polarized and q.size == 2:
             if np.any(q >= len(self)):

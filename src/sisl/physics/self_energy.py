@@ -1102,7 +1102,7 @@ class RealSpaceSE(SelfEnergy):
         dtype : numpy.dtype, optional
           the resulting data type, default to ``np.complex128``
         apply_kwargs : dict, optional
-           keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
+           keyword arguments passed directly to ``bz.apply.renew(**apply_kwargs)``.
         **kwargs : dict, optional
            arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
@@ -1303,7 +1303,7 @@ class RealSpaceSE(SelfEnergy):
         no = len(self.parent)
 
         # calculate the Green function
-        G = bz.apply(**apply_kwargs).average(_func_bloch)(
+        G = bz.apply.renew(**apply_kwargs).average(_func_bloch)(
             dtype=dtype, no=no, tile=tile, idx0=idx0
         )
 

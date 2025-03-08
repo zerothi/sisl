@@ -458,11 +458,11 @@ class ObjectDispatcher(AbstractDispatcher):
             **{**self._attrs, **attrs},
         )
 
-    def __call__(self, **attrs):
+    def __call__(self, obj, *args, **kwargs):
         _log.debug(
-            f"call {self.__class__.__name__}{tuple(attrs.keys())}", extra={"obj": self}
+            f"call {self.__class__.__name__}{{obj={obj!s}}}", extra={"obj": self}
         )
-        return self.renew(**attrs)
+        return self[obj](*args, **kwargs)
 
     def __repr__(self):
         return f"<{self.__class__.__name__}{{obj={self._obj!r}}}>"

@@ -464,7 +464,7 @@ class BandsData(XarrayData):
             if not spin.is_diagonal:
                 spin_kwarg = {}
 
-            with bz.apply(zip=True) as parallel:
+            with bz.apply.renew(zip=True) as parallel:
                 spin_bands = parallel.dataarray.eigenstate(
                     wrap=partial(bands_wrapper, spin_index=spin_index),
                     **spin_kwarg,

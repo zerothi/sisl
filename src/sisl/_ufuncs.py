@@ -164,7 +164,7 @@ def register_sisl_dispatch(
 
                 # Obviously, the method has been called without finding the
                 # correct dispatch method.
-                def skip_built_ins(items):
+                def skip_builtins(items):
                     for cls, cls_func in items:
                         if not isinstance(cls, types.BuiltinFunctionType):
                             yield cls, cls_func
@@ -172,7 +172,26 @@ def register_sisl_dispatch(
                 # Whether to return a sisl object
                 ret_sisl = kwargs.pop("ret_sisl", False)
 
-                for cls, cls_func in skip_built_ins(method_registry.registry.items()):
+                if ret_sisl:
+                    # No matter what, we simply return the object
+                    def parse_obj(cls, input_obj, output_obj):
+                        return output_obj
+
+                else:
+                    # It depends, if a single value returned, or any value
+                    # in a tuple return is a sisl_obj corresponding to `cls`
+                    # then we'll convert that to the corresponding input object
+                    def parse_obj(cls, input_obj, output_obj):
+                        if isinstance(output_obj, tuple):
+                            return tuple(
+                                parse_obj(cls, input_obj, obj) for obj in output_obj
+                            )
+                        if isinstance(output_obj, cls):
+                            # return object back-converted to the input_obj type
+                            return output_obj.to(type(input_obj))
+                        return output_obj
+
+                for cls, cls_func in skip_builtins(method_registry.registry.items()):
 
                     # Try and get the conversion method
                     # Currently we'll only use `new` for consistency
@@ -185,17 +204,7 @@ def register_sisl_dispatch(
                             # Try and convert to a sisl-compatible object
                             sisl_obj = cls.new(obj)
                             sisl_obj = cls_func(sisl_obj, *args, **kwargs)
-                            if ret_sisl or not isinstance(sisl_obj, cls):
-                                # return the simple sisl object.
-                                # This will automatically return if the method it
-                                # self does not return the input argument. Because
-                                # then the path back to the original one is not
-                                # obvious.
-                                # E.g. sisl.center
-                                return sisl_obj
-
-                            # Back-convert the object into the object again
-                            return sisl_obj.to[type(obj)]()
+                            return parse_obj(cls, obj, sisl_obj)
 
                         except KeyError:
                             pass

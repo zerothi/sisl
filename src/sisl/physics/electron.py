@@ -772,7 +772,7 @@ def ahc(
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
        already used.
     apply_kwargs :
-       keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
+       keyword arguments passed directly to ``bz.apply.renew(**apply_kwargs)``.
     **berry_kwargs :
         arguments passed directly to the `berry_curvature` method.
 
@@ -842,7 +842,7 @@ def ahc(
         nonlocal berry_kwargs, distribution
         return es.berry_curvature(**berry_kwargs, distribution=distribution)
 
-    apply = bz.apply(**apply_kwargs)
+    apply = bz.apply.renew(**apply_kwargs)
     if k_average:
         apply = apply.average
     else:
@@ -940,7 +940,7 @@ def shc(
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
        already used.
     apply_kwargs :
-       keyword arguments passed directly to ``bz.apply(**apply_kwargs)``.
+       keyword arguments passed directly to ``bz.apply.renew(**apply_kwargs)``.
     **berry_kwargs : dict, optional
         arguments passed directly to the `berry_curvature` method.
 
@@ -1163,7 +1163,7 @@ def berry_phase(
        keyword arguments passed directly to the ``contour.eigenstate`` method.
        One should *not* pass ``k`` as that is already used.
     apply_kwargs :
-       keyword arguments passed directly to ``contour.apply(**apply_kwargs)``.
+       keyword arguments passed directly to ``contour.apply.renew(**apply_kwargs)``.
 
     Notes
     -----
@@ -1294,7 +1294,7 @@ def berry_phase(
                 prd = _process(prd, prev.inner(first, projection="matrix"))
             return prd
 
-    S = _berry(contour.apply(**apply_kwargs).iter.eigenstate(**eigenstate_kwargs))
+    S = _berry(contour.apply.renew(**apply_kwargs).iter.eigenstate(**eigenstate_kwargs))
 
     # Get the angle of the berry-phase
     # When using np.angle the returned value is in ]-pi; pi]
