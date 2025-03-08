@@ -66,7 +66,7 @@ Here is a short summary of how to do developments with `sisl`.
 
 2. Installing the project in development mode.
 
-   It is adviced to instal the project in *editable* mode for faster
+   It is advised to install the project in *editable* mode for faster
    turn-around times.
    Please follow :ref:`these instructions <installation-testing>`.
 
@@ -80,7 +80,7 @@ Here is a short summary of how to do developments with `sisl`.
       git checkout main
       git pull upstream main
 
-   If you are fixing an already opened issue (say :issue:`42`) it is adviced
+   If you are fixing an already opened issue (say :issue:`42`) it is advised
    to name your branch according to the issue number following a sensible name:
 
    .. code:: bash
@@ -107,6 +107,10 @@ Here is a short summary of how to do developments with `sisl`.
      button. Make sure the title and message are clear, concise, and self-
      explanatory. Then click the button to submit it.
 
+   * Likely, your contribution will need a comment for the release notes.
+     Please add one in ``/changes/`` by following the instructions found in
+     the ``README.rst`` there.
+
 5. Review process.
 
    The maintainers of `sisl` will do their best to respond as fast as possible.
@@ -122,7 +126,7 @@ External toolbox codes may be contributed `here <issue_>`_, then press
 
 There are two cases of external contributions:
 
-1. If the code is directly integratable into sisl it will be merged into the sisl source.
+1. If the code is directly integrable into sisl it will be merged into the sisl source.
 
 2. If the code is showing how to use sisl to calculate some physical quantity but is not a general
    implementation, it will be placed in toolbox directory.
