@@ -1,7 +1,7 @@
 .. _install:
 
-Installation
-============
+Detailed instructions
+=====================
 
 sisl is easy to install using any of your preferred methods.
 

@@ -23,7 +23,7 @@ import pathlib
 import sys
 from datetime import date
 from functools import wraps
-from typing import Literal
+from textwrap import indent
 
 _log = logging.getLogger("sisl_doc")
 
@@ -458,7 +458,12 @@ plot_formats = [("png", 90)]
 plot_pre_code = """\
 import numpy as np
 import matplotlib.pyplot as plt
-import sisl as si"""
+import sisl as si
+import plotly.io as pio
+np.random.seed(123987)
+np.set_printoptions(precision=4, suppress=True)
+pio.renderers.default = "notebook_connected"
+"""
 
 
 # Define header content
@@ -468,20 +473,11 @@ header = f"""\
 .. ipython:: python
    :suppress:
 
-   import numpy as np
-   import sisl as si
-   import matplotlib.pyplot as plt
-
-   np.random.seed(123987)
-   np.set_printoptions(precision=4, suppress=True)
+{indent(plot_pre_code, "   ")}
 """
 
 # IPython executables
-ipython_execlines = [
-    "import numpy as np",
-    "import sisl as si",
-    "import matplotlib.pyplot as plt",
-]
+ipython_execlines = plot_pre_code.splitlines()
 
 html_context = {
     "github_user": "zerothi",

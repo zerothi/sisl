@@ -3,6 +3,11 @@
 Quickstart
 ==========
 
+.. toctree::
+    :maxdepth: 1
+
+    overview
+
 Installation
 ------------
 
@@ -42,8 +47,13 @@ Installation
 
         Check out the advanced installation page.
 
+.. toctree::
+    :maxdepth: 2
+    :hidden:
 
-Quickstart tutorials
+    install
+
+Tutorials
 --------------------
 
 .. nbgallery::
@@ -52,14 +62,3 @@ Quickstart tutorials
    intro_tutorials/01_geometry.ipynb
    intro_tutorials/02_geometry_orbitals.ipynb
    intro_tutorials/03_geometry_sile.ipynb
-
-.. toctree::
-    :maxdepth: 2
-
-    overview
-
-.. toctree::
-    :maxdepth: 2
-    :hidden:
-
-    install
