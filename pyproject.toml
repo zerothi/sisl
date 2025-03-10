@@ -199,7 +199,7 @@ test = [
 
 docs = [
     "sphinx<8",
-    "plotly",
+    "plotly<6",
     "nbsphinx",
     "sphinx-rtd-theme",
     "sphinx-design",
