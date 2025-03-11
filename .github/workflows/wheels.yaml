@@ -57,7 +57,7 @@ jobs:
         include:
           # Linux 64 bit manylinux2014
           - os: ubuntu-20.04
-            cibw_archs: "x86_64"
+            cibw_archs: "x86_64 armv7l"
 
           # MacOS x86_64
           - os: macos-13
@@ -81,7 +81,7 @@ jobs:
         uses: fortran-lang/setup-fortran@v1
         with:
           compiler: gcc
-          version: 11
+          version: 12
 
       - name: Build wheels for CPython 3.13
         uses: pypa/cibuildwheel@v2.23.0
