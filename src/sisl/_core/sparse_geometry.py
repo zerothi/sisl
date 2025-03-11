@@ -1047,12 +1047,12 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
            geometry to describe the new sparse geometry
         P : list of scipy.sparse or scipy.sparse
            the new sparse matrices that are to be populated in the sparse
            matrix
-        **kwargs : optional
+        **kwargs :
            any arguments that are directly passed to the ``__init__`` method
            of the class.
 

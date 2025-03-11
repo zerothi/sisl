@@ -357,7 +357,7 @@ column indices of the sparse elements
         # Put into the output
         out.ncol = _a.arrayi([len(cols) for cols in out_col])
         out.ptr = _ncol_to_indptr(out.ncol)
-        out.col = concatenate(out_col)
+        out.col = concatenate(out_col).astype(np.int32, copy=False)
         out._nnz = len(out.col)
         out._D = full([out._nnz, out.dim], value, dtype=dtype)
         return out
@@ -1653,8 +1653,8 @@ column indices of the sparse elements
         if len(sps) == 1:
             m = sps[0].tocsr()
             out = cls(m.shape + (1,), nnzpr=1, nnz=1, dtype=dtype)
-            out.col = m.indices.copy()
-            out.ptr = m.indptr.copy()
+            out.col = m.indices.astype(np.int32, copy=True)
+            out.ptr = m.indptr.astype(np.int32, copy=True)
             out.ncol = np.diff(out.ptr)
             out._nnz = len(out.col)
             out._D = m.data.reshape(-1, 1).astype(dtype, copy=True)

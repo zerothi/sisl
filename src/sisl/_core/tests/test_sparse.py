@@ -75,6 +75,20 @@ def test_init_csr_inputs():
     SparseCSR((data, indices, indptr))
 
 
+def test_csr_matrix_int64_fail():
+    # fixes #901
+    s = sc.sparse.csr_matrix((2, 2))
+    s[0, 0] = 1
+    s[1, 1] = 1
+    # this will also break scipy, but here for testing purposes:
+    s.indices = s.indices.astype(np.int64)
+    s.indptr = s.indptr.astype(np.int64)
+    sp = SparseCSR.fromsp(s)
+    assert sp.col.dtype == np.int32
+    assert sp.ncol.dtype == np.int32
+    assert sp.ptr.dtype == np.int32
+
+
 def test_fail_align1():
     s1 = SparseCSR((10, 100), dtype=np.int32)
     s2 = SparseCSR((20, 100), dtype=np.int32)
