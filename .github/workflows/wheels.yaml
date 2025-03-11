@@ -39,7 +39,7 @@ jobs:
       CIBW_BEFORE_BUILD: >-
         rm -rf {package}/build
       # Instead of running pytest directly, we use a bash script that will set up
-      # the appropiate value for the SISL_FILES_TEST variable, a path pointing to
+      # the appropriate value for the SISL_FILES_TEST variable, a path pointing to
       # the sisl-files directory, which contains files for testing.
       CIBW_TEST_COMMAND: >-
         bash {project}/tools/build_tools/test_wheels.sh

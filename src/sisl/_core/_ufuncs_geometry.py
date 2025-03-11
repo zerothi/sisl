@@ -178,15 +178,15 @@ def sort(
 ) -> Union[Geometry, tuple[Geometry, list[list[int]]]]:
     r"""Sort atoms in a nested fashion according to various criteria
 
-    There are many ways to sort a `Geometry`.
-    - by Cartesian coordinates, `axes`/`axis`
-    - by lattice vectors, `lattice`
-    - by user defined vectors, `vector`
-    - by grouping atoms, `group`
-    - by a user defined function, `func`
-    - by a user defined function using internal sorting algorithm, `func_sort`
+    There are many ways to sort a `Geometry`:
 
-    - a combination of the above in arbitrary order
+    * by Cartesian coordinates, `axes`/`axis`
+    * by lattice vectors, `lattice`
+    * by user defined vectors, `vector`
+    * by grouping atoms, `group`
+    * by a user defined function, `func`
+    * by a user defined function using internal sorting algorithm, `func_sort`
+    * a combination of the above in arbitrary order
 
     Additionally one may sort ascending or descending.
 
@@ -196,11 +196,11 @@ def sort(
     ----------
     atoms : AtomsIndex, optional
        only perform sorting algorithm for subset of atoms. This is *NOT* a positional dependent
-       argument. All sorting algorithms will _only_ be performed on these atoms.
+       argument. All sorting algorithms will *only* be performed on these atoms.
        Default, all atoms will be sorted.
     ret_atoms : bool, optional
        return a list of list for the groups of atoms that have been sorted.
-    axis / axes : int or tuple of int, optional
+    axis, axes : int or tuple of int, optional
        sort coordinates according to Cartesian coordinates, if a tuple of
        ints is passed it will be equivalent to ``sort(axes=axes) == sort(axis0=axes[0], axis1=axes[1])``.
        This behaves differently than `numpy.lexsort`!
@@ -215,7 +215,7 @@ def sort(
        sort along a user defined vector, similar to `lattice` but with a user defined
        direction. Note that `lattice` sorting and `vector` sorting are *only* equivalent
        when the lattice vector is orthogonal to the other lattice vectors.
-    group : {'Z', 'symbol', 'tag', 'species'} or (str, ...), optional
+    group : {'Z', 'symbol', 'tag', 'species'} or (list of list), optional
        group together a set of atoms by various means.
        `group` may be one of the listed strings.
        For ``'Z'`` atoms will be grouped in atomic number
@@ -328,7 +328,7 @@ def sort(
     >>> geom.sort(vector=[2.2, 1., 0.])
 
     Integer specification has no influence on the order of operations.
-    It is _always_ the keyword argument order that determines the operation.
+    It is *always* the keyword argument order that determines the operation.
 
     >>> assert geom.sort(axis2=1, axis0=0, axis1=2) == geom.sort(axes=(1, 0, 2))
 
@@ -337,7 +337,7 @@ def sort(
     >>> geom.sort(group='Z') # 5, 6, 7
 
     One may group several elements together on an equal footing (``None`` means all non-mentioned elements)
-    The order of the groups are important (the first two are _not_ equal, the last three _are_ equal)
+    The order of the groups are important (the first two are *not* equal, the last three *are* equal)
 
     >>> geom.sort(group=('symbol', 'C'), axes=2) # C will be sorted along z
     >>> geom.sort(axes=1, atoms='C', axes1=2) # all along y, then C sorted along z
@@ -351,6 +351,12 @@ def sort(
     tag:
 
     >>> geom.sort(group0='mass', group1='tag')
+
+    One can also manually specify to only sort sub-groups via atomic indices, the
+    following will keep ``[0, 1, 2]`` and ``[3, 4, 5]`` in their respective relative
+    position, but each block of atoms will be sorted along the 2nd lattice vector:
+
+    >>> geom.sort(group=([0, 1, 2], [3, 4, 5]), axes=1)
 
     A too high `atol` may have unexpected side-effects. This is because of the way
     the sorting algorithm splits the sections for nested sorting.
@@ -535,7 +541,7 @@ def sort(
 
     def _group_vals(vals, groups, atoms, **kwargs):
         """
-        vals should be of size len(geometry) and be parsable
+        `vals` should be of size ``len(geometry)`` and be parseable
         by numpy
         """
         nl = NestedList()
@@ -632,14 +638,15 @@ def sort(
         return _group_vals(np.array(vals), groups, atoms, **kwargs)
 
     funcs["group"] = _group
+    funcs["groups"] = _group
 
-    def stripint(s):
+    def stripint(s: str) -> str:
         """Remove integers from end of string -> Allow multiple arguments"""
         if s[-1] in "0123456789":
             return stripint(s[:-1])
         return s
 
-    # Now perform cumultative sort function
+    # Now perform cumulative sort function
     # Our point is that we would like to allow users to do consecutive sorting
     # based on different keys
 
@@ -648,7 +655,7 @@ def sort(
     func_kw["ascend"] = True
     func_kw["atol"] = 1e-9
 
-    def update_flag(kw, arg, val):
+    def update_flag(kw, arg, val) -> bool:
         if arg in ("ascending", "ascend"):
             kw["ascend"] = val
             return True
@@ -683,6 +690,8 @@ def sort(
     atoms_flat = atoms.ravel()
 
     # Ensure that all atoms are present
+    # This is necessary so we don't remove any atoms.
+    # Currently, the non-sorted atoms *stay* in-place.
     if len(atoms_flat) != len(geometry):
         all_atoms = _a.arangei(len(geometry))
         all_atoms[np.sort(atoms_flat)] = atoms_flat[:]
