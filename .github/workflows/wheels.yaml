@@ -56,7 +56,7 @@ jobs:
       matrix:
         include:
           # Linux 64 bit manylinux2014
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             cibw_archs: "x86_64 armv7l"
 
           # MacOS x86_64
