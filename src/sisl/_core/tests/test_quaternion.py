@@ -12,12 +12,12 @@ from sisl import Quaternion
 def setup():
     class t:
         def __init__(self):
-            self.qx = Quaternion(90, [1, 0, 0])
-            self.qy = Quaternion(90, [0, 1, 0])
-            self.qz = Quaternion(90, [0, 0, 1])
-            self.Qx = Quaternion(90, [2, 0, 0])
-            self.Qy = Quaternion(90, [0, 2, 0])
-            self.Qz = Quaternion(90, [0, 0, 2])
+            self.qx = Quaternion(90, [1, 0, 0], rad=False)
+            self.qy = Quaternion(90, [0, 1, 0], rad=False)
+            self.qz = Quaternion(90, [0, 0, 1], rad=False)
+            self.Qx = Quaternion(90, [2, 0, 0], rad=False)
+            self.Qy = Quaternion(90, [0, 2, 0], rad=False)
+            self.Qz = Quaternion(90, [0, 0, 2], rad=False)
 
     return t()
 
@@ -27,6 +27,18 @@ class TestQuaternion:
     def test_copy(self, setup):
         qx = setup.qx.copy()
         assert qx == setup.qx
+        assert qx._v is not setup.qx._v.base
+
+    def test_init(self):
+        a = Quaternion(90, [1, 0, 1])
+        b = Quaternion([1, 0, 1], 90)
+        assert a == b
+        c = Quaternion([1, 0, 2, 1])
+        assert a != c
+
+    def test_str_repr(self):
+        a = Quaternion(90, [1, 0, 1])
+        assert str(a) != repr(a)
 
     def test_conj(self, setup):
         qx = setup.qx.conj()
@@ -34,11 +46,11 @@ class TestQuaternion:
 
     def test_norm(self, setup):
         for c in "xyz":
-            assert getattr(setup, "q" + c).norm() == 1.0
+            assert getattr(setup, "q" + c).norm() == pytest.approx(1.0)
 
     def test_degree1(self, setup):
         for c in "xyz":
-            assert getattr(setup, "q" + c).degree == 90
+            assert getattr(setup, "q" + c).angle(in_rad=False) == pytest.approx(90)
 
     def test_radians1(self, setup):
         rx = setup.qx.radian
@@ -84,9 +96,9 @@ class TestQuaternion:
         assert rx == setup.qx * setup.qy
 
     def test_fail_div1(self, setup):
-        with pytest.raises(ValueError):
+        with pytest.raises(NotImplementedError):
             setup.qx /= setup.qy
 
     def test_fail_div2(self, setup):
-        with pytest.raises(ValueError):
+        with pytest.raises(NotImplementedError):
             a = setup.qx / setup.qy

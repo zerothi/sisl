@@ -55,9 +55,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Linux 64 bit manylinux2014
+          # Linux 64 bit
           - os: ubuntu-22.04
-            cibw_archs: "x86_64 armv7l"
+            cibw_archs: "x86_64"
 
           # MacOS x86_64
           - os: macos-13

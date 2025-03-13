@@ -1110,7 +1110,7 @@ def rotate(
     geometry: Geometry,
     angle: float,
     v: Union[str, int, Coord],
-    origin: Optional[Union[int, Coord]] = None,
+    origin: Union[int, Coord] = (0, 0, 0),
     atoms: AtomsIndex = None,
     rad: bool = False,
     what: Optional[Literal["xyz", "abc", "abc+xyz", "x", "a", ...]] = None,
@@ -1135,7 +1135,7 @@ def rotate(
          lattice vectors (abc). Providing several is the combined direction.
     origin :
          the origin of rotation. Anything but ``[0, 0, 0]`` is equivalent
-         to a `geometry.translate(-origin).rotate(...).translate(origin)`.
+         to a ``geometry.translate(-origin).rotate(...).translate(origin)``.
          If this is an `int` it corresponds to the atomic index.
     atoms :
          only rotate the given atomic indices, if not specified, all
@@ -1163,9 +1163,7 @@ def rotate(
     Quaternion : class to rotate
     Lattice.rotate : rotation for a Lattice object
     """
-    if origin is None:
-        origin = [0.0, 0.0, 0.0]
-    elif isinstance(origin, Integral):
+    if isinstance(origin, Integral):
         origin = geometry.axyz(origin)
     origin = _a.asarray(origin)
 

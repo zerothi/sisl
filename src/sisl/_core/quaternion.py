@@ -8,6 +8,7 @@ import math as m
 import numpy as np
 
 from sisl._internal import set_module
+from sisl.messages import deprecation
 
 __all__ = ["Quaternion"]
 
@@ -16,77 +17,141 @@ __all__ = ["Quaternion"]
 class Quaternion:
     """
     Quaternion object to enable easy rotational quantities.
+
+    Parameters
+    ----------
+    *args :
+        For 1 argument, it is the length 4 vector describing the quaternion.
+        For 2 arguments, it is the angle, and vector.
+    rad :
+        when passing two arguments, for angle and vector, the `rad` value
+        decides which unit `angle` is in, for ``rad=True`` it is in radians.
+        Otherwise it will be in degrees.
+
+    Examples
+    --------
+
+    Construct a quaternion with angle 45°, all 3 are equivalent:
+
+    >>> q1 = Quaternion(45, [1, 2, 3], rad=False)
+    >>> q2 = Quaternion(np.pi/4, [1, 2, 3], rad=True)
+    >>> q3 = Quaternion([1, 2, 3], 45, rad=False)
+
+    If you have the full quaternion complex number, one can also
+    instantiate it directly without having to consider angles:
+
+    >>> q = Quaternion([1, 2, 3, 4])
     """
 
-    def __init__(self, angle=0.0, v=None, rad=False):
-        """Create quaternion object with angle and vector"""
-        if rad:
+    def __init__(self, *args, rad: bool = True):
+        """Create quaternion object"""
+        if len(args) == 1:
+            v = args[0]
+        elif len(args) == 2:
+            angle, v = args
+            try:
+                if len(v) == 3:
+                    # correct order, no need to swap
+                    pass
+                else:
+                    raise TypeError
+            except TypeError:
+                angle, v = v, angle
+
+            if not rad:
+                angle = angle * m.pi / 180
             half = angle / 2
+
+            if len(v) != 3:
+                raise ValueError(
+                    "Arguments for Quaternion are wrong? "
+                    "The vector must have length 3"
+                )
+
+            c = m.cos(half)
+            s = m.sin(half)
+
+            v = [c, *[i * s for i in v]]
         else:
-            half = angle / 360 * m.pi
+            raise ValueError(
+                f"{type(self).__name__} got wrong number of arguments, "
+                "only 1 or 2 arguments allowed."
+            )
+
+        if len(v) != 4:
+            raise ValueError(
+                "Arguments for Quaternion are wrong? " "The vector must have length 4"
+            )
         self._v = np.empty([4], np.float64)
-        self._v[0] = m.cos(half)
-        if v is None:
-            v = np.array([1, 0, 0], np.float64)
-        self._v[1:] = np.array(v[:3], np.float64) * m.sin(half)
+        self._v[:] = v
 
-    def copy(self):
-        """Return deepcopy of itself"""
-        q = Quaternion()
-        q._v = np.copy(self._v)
-        return q
+    def __str__(self) -> str:
+        """Stringify this quaternion object"""
+        angle = self.angle(in_rad=True)
+        return f"{type(self).__name__}{{θ={angle:.4f}, v={self._v[1:]}}}"
 
-    def conj(self):
-        """Returns the conjugate of it-self"""
-        q = self.copy()
-        q._v[1:] *= -1
-        return q
+    def __repr__(self) -> str:
+        """Representation of this quaternion object"""
+        angle = self.angle(in_rad=True)
+        return f"<{type(self).__name__} θ={angle:.4f}, v={self._v[1:]}>"
 
-    def norm(self):
+    def copy(self) -> Quaternion:
+        """Return a copy of itself"""
+        return Quaternion(self._v)
+
+    def conj(self) -> Quaternion:
+        """Returns the conjugate of the quaternion"""
+        return self.__class__(self._v * -1)
+
+    def norm(self) -> float:
         """Returns the norm of this quaternion"""
-        return np.sqrt(np.sum(self._v**2))
+        v = self._v
+        return np.sqrt(v.dot(v))
+
+    def angle(self, in_rad: bool = True) -> float:
+        """Return the angle of this quaternion, in requested unit"""
+        angle = m.acos(self._v[0]) * 2
+        if in_rad:
+            return angle
+        return angle / m.pi * 180
 
     @property
-    def degree(self):
-        """Returns the angle associated with this quaternion (in degree)"""
-        return m.acos(self._v[0]) * 360.0 / m.pi
+    @deprecation("Use .angle(in_rad=False) instead of .degree", "0.15.3", "0.16")
+    def degree(self) -> float:
+        """Returns the angle associated with this quaternion (in degrees)"""
+        return self.angle(in_rad=False)
 
     @property
-    def radian(self):
+    @deprecation("Use .angle(in_rad=True) instead of .degree", "0.15.3", "0.16")
+    def radian(self) -> float:
         """Returns the angle associated with this quaternion (in radians)"""
-        return m.acos(self._v[0]) * 2.0
+        return self.angle(in_rad=True)
 
-    angle = radian
+    def rotate(self, v) -> np.ndarray:
+        r""" Rotate a vector `v` by this quaternion
 
-    def rotate(self, v):
-        """Rotates 3-dimensional vector ``v`` with the associated quaternion"""
-        if len(v.shape) == 1:
-            q = self.copy()
-            q._v[0] = 1.0
-            q._v[1:] = v[:]
-            q = self * q * self.conj()
-            return q._v[1:]
-        # We have a matrix of vectors
-        # Instead of doing it per-vector, we do it in chunks
-        v1 = np.copy(self._v)
-        v2 = np.copy(self.conj()._v)
-        s = np.copy(v.shape)
-        # First "flatten"
-        v.shape = (-1, 3)
-        f = np.empty([4, v.shape[0]], v.dtype)
-        f[0, :] = v1[0] - v1[1] * v[:, 0] - v1[2] * v[:, 1] - v1[3] * v[:, 2]
-        f[1, :] = v1[0] * v[:, 0] + v1[1] + v1[2] * v[:, 2] - v1[3] * v[:, 1]
-        f[2, :] = v1[0] * v[:, 1] - v1[1] * v[:, 2] + v1[2] + v1[3] * v[:, 0]
-        f[3, :] = v1[0] * v[:, 2] + v1[1] * v[:, 1] - v1[2] * v[:, 0] + v1[3]
-        # Create actual rotated array
-        nv = np.empty(v.shape, v.dtype)
-        nv[:, 0] = f[0, :] * v2[1] + f[1, :] * v2[0] + f[2, :] * v2[3] - f[3, :] * v2[2]
-        nv[:, 1] = f[0, :] * v2[2] - f[1, :] * v2[3] + f[2, :] * v2[0] + f[3, :] * v2[1]
-        nv[:, 2] = f[0, :] * v2[3] + f[1, :] * v2[2] - f[2, :] * v2[1] + f[3, :] * v2[0]
-        del f
-        # re-create shape
-        nv.shape = s
-        return nv
+        This rotation method uses the *fast* method which can be expressed as:
+
+        .. math::
+
+           \mathbf v' = \mathbf q \mathbf v \mathbf q ^*
+
+        But using a faster approach (more numerically stable), we can use
+        this relation:
+
+        .. math::
+
+           \mathbf t  = 2\mathbf q \cross \mathbf v
+           \\
+           \mathbf v' = \mathbf v + q_w \mathbf t + \mathbf q \cross \mathbf t
+
+        """
+        qw = self._v[0]
+        q = self._v[1:]
+
+        t = 2 * np.cross(q, v)
+        vp = v + qw * t + np.cross(q, t)
+        return vp
 
     def __eq__(self, other):
         """Returns whether two Quaternions are equal"""
@@ -100,41 +165,42 @@ class Quaternion:
 
     def __add__(self, other):
         """Returns the added quantity"""
-        q = self.copy()
         if isinstance(other, Quaternion):
-            q._v += other._v
+            q = self.__class__(self._v + other._v)
         else:
-            q._v += other
+            q = self.__class__(self._v + other)
         return q
 
     def __sub__(self, other):
         """Returns the subtracted quantity"""
-        q = self.copy()
         if isinstance(other, Quaternion):
-            q._v -= other._v
+            q = self.__class__(self._v - other._v)
         else:
-            q._v -= other
+            q = self.__class__(self._v - other)
         return q
 
     def __mul__(self, other):
-        """Multiplies with another instance or scalar"""
-        q = self.copy()
+        """Multiplies with another instance or scalar
+
+        Two quaternions multiplied together will result in the Hamilton product.
+        """
         if isinstance(other, Quaternion):
-            v1 = np.copy(self._v)
-            v2 = other._v
-            q._v[0] = v1[0] * v2[0] - v1[1] * v2[1] - v1[2] * v2[2] - v1[3] * v2[3]
-            q._v[1] = v1[0] * v2[1] + v1[1] * v2[0] + v1[2] * v2[3] - v1[3] * v2[2]
-            q._v[2] = v1[0] * v2[2] - v1[1] * v2[3] + v1[2] * v2[0] + v1[3] * v2[1]
-            q._v[3] = v1[0] * v2[3] + v1[1] * v2[2] - v1[2] * v2[1] + v1[3] * v2[0]
+            v = np.empty([4], np.float64)
+            q1 = self._v
+            q2 = other._v
+            v[0] = q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3]
+            v[1] = q1[0] * q2[1] + q1[1] * q2[0] + q1[2] * q2[3] - q1[3] * q2[2]
+            v[2] = q1[0] * q2[2] - q1[1] * q2[3] + q1[2] * q2[0] + q1[3] * q2[1]
+            v[3] = q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1] + q1[3] * q2[0]
         else:
-            q._v *= other
-        return q
+            v = self._v * other
+        return self.__class__(v)
 
     def __div__(self, other):
         """Divides with a scalar"""
         if isinstance(other, Quaternion):
-            raise ValueError(
-                "Do not know how to divide a quaternion " + "with a quaternion."
+            raise NotImplementedError(
+                "Do not know how to divide a quaternion with a quaternion."
             )
         return self * (1.0 / other)
 
@@ -160,12 +226,12 @@ class Quaternion:
     def __imul__(self, other):
         """In-place multiplication"""
         if isinstance(other, Quaternion):
-            v1 = np.copy(self._v)
-            v2 = other._v
-            self._v[0] = v1[0] * v2[0] - v1[1] * v2[1] - v1[2] * v2[2] - v1[3] * v2[3]
-            self._v[1] = v1[0] * v2[1] + v1[1] * v2[0] + v1[2] * v2[3] - v1[3] * v2[2]
-            self._v[2] = v1[0] * v2[2] - v1[1] * v2[3] + v1[2] * v2[0] + v1[3] * v2[1]
-            self._v[3] = v1[0] * v2[3] + v1[1] * v2[2] - v1[2] * v2[1] + v1[3] * v2[0]
+            q1 = np.copy(self._v)
+            q2 = other._v
+            self._v[0] = q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3]
+            self._v[1] = q1[0] * q2[1] + q1[1] * q2[0] + q1[2] * q2[3] - q1[3] * q2[2]
+            self._v[2] = q1[0] * q2[2] - q1[1] * q2[3] + q1[2] * q2[0] + q1[3] * q2[1]
+            self._v[3] = q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1] + q1[3] * q2[0]
         else:
             self._v *= other
         return self
@@ -173,8 +239,8 @@ class Quaternion:
     def __idiv__(self, other):
         """In-place division"""
         if isinstance(other, Quaternion):
-            raise ValueError(
-                "Do not know how to divide a quaternion " + "with a quaternion."
+            raise NotImplementedError(
+                "Do not know how to divide a quaternion with a quaternion."
             )
         # use imul
         self._v /= other
