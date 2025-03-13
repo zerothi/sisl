@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=76b122c3"></script>
+      <script src="../../_static/documentation_options.js?v=61e959ee"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -37,6 +37,8 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -150,76 +152,136 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">Quaternion</span></span><a class="headerlink" href="#sisl.Quaternion" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Quaternion object to enable easy rotational quantities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – For 1 argument, it is the length 4 vector describing the quaternion.
+For 2 arguments, it is the angle, and vector.</p></li>
+<li><p><strong>rad</strong> – when passing two arguments, for angle and vector, the <em class="xref py py-obj">rad</em> value
+decides which unit <a class="reference internal" href="#sisl.Quaternion.angle" title="sisl.Quaternion.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a> is in, for <code class="docutils literal notranslate"><span class="pre">rad=True</span></code> it is in radians.
+Otherwise it will be in degrees.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Construct a quaternion with angle 45°, all 3 are equivalent:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q3</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">45</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you have the full quaternion complex number, one can also
+instantiate it directly without having to consider angles:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.conj" title="sisl.Quaternion.conj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conj</span></code></a>()</p></td>
-<td><p>Returns the conjugate of it-self</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.angle" title="sisl.Quaternion.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a>([in_rad])</p></td>
+<td><p>Return the angle of this quaternion, in requested unit</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.copy" title="sisl.Quaternion.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
-<td><p>Return deepcopy of itself</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.conj" title="sisl.Quaternion.conj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conj</span></code></a>()</p></td>
+<td><p>Returns the conjugate of the quaternion</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.norm" title="sisl.Quaternion.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.copy" title="sisl.Quaternion.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
+<td><p>Return a copy of itself</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.norm" title="sisl.Quaternion.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a>()</p></td>
 <td><p>Returns the norm of this quaternion</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.rotate" title="sisl.Quaternion.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(v)</p></td>
-<td><p>Rotates 3-dimensional vector <code class="docutils literal notranslate"><span class="pre">v</span></code> with the associated quaternion</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.rotate" title="sisl.Quaternion.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(v)</p></td>
+<td><p>Rotate a vector <em class="xref py py-obj">v</em> by this quaternion</p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.angle" title="sisl.Quaternion.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a></p></td>
-<td><p>Returns the angle associated with this quaternion (in radians)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.degree" title="sisl.Quaternion.degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree</span></code></a></p></td>
+<td><p>Returns the angle associated with this quaternion (in degrees)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.degree" title="sisl.Quaternion.degree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degree</span></code></a></p></td>
-<td><p>Returns the angle associated with this quaternion (in degree)</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.radian" title="sisl.Quaternion.radian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radian</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.radian" title="sisl.Quaternion.radian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radian</span></code></a></p></td>
 <td><p>Returns the angle associated with this quaternion (in radians)</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.Quaternion.angle">
+<span class="sig-name descname"><span class="pre">angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.angle" title="Link to this definition"></a></dt>
+<dd><p>Return the angle of this quaternion, in requested unit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>in_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.Quaternion.conj">
 <span class="sig-name descname"><span class="pre">conj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.conj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.conj" title="Link to this definition"></a></dt>
-<dd><p>Returns the conjugate of it-self</p>
+<dd><p>Returns the conjugate of the quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#sisl.Quaternion" title="sisl.Quaternion"><em>Quaternion</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Quaternion.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.copy" title="Link to this definition"></a></dt>
-<dd><p>Return deepcopy of itself</p>
+<dd><p>Return a copy of itself</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#sisl.Quaternion" title="sisl.Quaternion"><em>Quaternion</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Quaternion.norm">
 <span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.norm" title="Link to this definition"></a></dt>
 <dd><p>Returns the norm of this quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Quaternion.rotate">
 <span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.rotate" title="Link to this definition"></a></dt>
-<dd><p>Rotates 3-dimensional vector <code class="docutils literal notranslate"><span class="pre">v</span></code> with the associated quaternion</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="sisl.Quaternion.angle">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#sisl.Quaternion.angle" title="Link to this definition"></a></dt>
-<dd><p>Returns the angle associated with this quaternion (in radians)</p>
+<dd><p>Rotate a vector <em class="xref py py-obj">v</em> by this quaternion</p>
+<p>This rotation method uses the <em>fast</em> method which can be expressed as:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf v' = \mathbf q \mathbf v \mathbf q ^*\]</div>
+<p>But using a faster approach (more numerically stable), we can use
+this relation:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf t  = 2\mathbf q \cross \mathbf v
+\\
+\mathbf v' = \mathbf v + q_w \mathbf t + \mathbf q \cross \mathbf t\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Quaternion.degree">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degree</span></span><a class="headerlink" href="#sisl.Quaternion.degree" title="Link to this definition"></a></dt>
-<dd><p>Returns the angle associated with this quaternion (in degree)</p>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">degree</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Quaternion.degree" title="Link to this definition"></a></dt>
+<dd><p>Returns the angle associated with this quaternion (in degrees)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Quaternion.radian">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">radian</span></span><a class="headerlink" href="#sisl.Quaternion.radian" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">radian</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Quaternion.radian" title="Link to this definition"></a></dt>
 <dd><p>Returns the angle associated with this quaternion (in radians)</p>
 </dd></dl>
 

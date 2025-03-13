@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=76b122c3"></script>
+      <script src="../../_static/documentation_options.js?v=61e959ee"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -2247,7 +2247,7 @@ atoms will be reversed</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.rotate">
-<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.rotate" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.rotate" title="Link to this definition"></a></dt>
 <dd><p>Rotate geometry around vector and return a new geometry</p>
 <p>Per default will the entire geometry be rotated, such that everything
 is aligned as before rotation.</p>
@@ -2262,8 +2262,8 @@ argument to use radians.</p></li>
 <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> will rotate around the <span class="math notranslate nohighlight">\(yz\)</span> plane.
 If a str it refers to the Cartesian direction (xyz), or the
 lattice vectors (abc). Providing several is the combined direction.</p></li>
-<li><p><strong>origin</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference internal" href="sisl.typing.Coord.html#sisl.typing.Coord" title="sisl.typing.Coord"><em>Coord</em></a><em>]</em><em>]</em>) – the origin of rotation. Anything but <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> is equivalent
-to a <em class="xref py py-obj">geometry.translate(-origin).rotate(…).translate(origin)</em>.
+<li><p><strong>origin</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference internal" href="sisl.typing.Coord.html#sisl.typing.Coord" title="sisl.typing.Coord"><em>Coord</em></a><em>]</em>) – the origin of rotation. Anything but <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> is equivalent
+to a <code class="docutils literal notranslate"><span class="pre">geometry.translate(-origin).rotate(...).translate(origin)</span></code>.
 If this is an <em class="xref py py-obj">int</em> it corresponds to the atomic index.</p></li>
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – only rotate the given atomic indices, if not specified, all
 atoms will be rotated.</p></li>
@@ -2408,14 +2408,14 @@ scaling factor.</p></li>
 <dt class="sig sig-object py" id="sisl.Geometry.sort">
 <span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.sort" title="Link to this definition"></a></dt>
 <dd><p>Sort atoms in a nested fashion according to various criteria</p>
-<p>There are many ways to sort a <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a>.
-- by Cartesian coordinates, <em class="xref py py-obj">axes</em>/<em class="xref py py-obj">axis</em>
-- by lattice vectors, <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code>
-- by user defined vectors, <em class="xref py py-obj">vector</em>
-- by grouping atoms, <em class="xref py py-obj">group</em>
-- by a user defined function, <em class="xref py py-obj">func</em>
-- by a user defined function using internal sorting algorithm, <em class="xref py py-obj">func_sort</em></p>
+<p>There are many ways to sort a <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a>:</p>
 <ul class="simple">
+<li><p>by Cartesian coordinates, <em class="xref py py-obj">axes</em>/<em class="xref py py-obj">axis</em></p></li>
+<li><p>by lattice vectors, <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code></p></li>
+<li><p>by user defined vectors, <em class="xref py py-obj">vector</em></p></li>
+<li><p>by grouping atoms, <em class="xref py py-obj">group</em></p></li>
+<li><p>by a user defined function, <em class="xref py py-obj">func</em></p></li>
+<li><p>by a user defined function using internal sorting algorithm, <em class="xref py py-obj">func_sort</em></p></li>
 <li><p>a combination of the above in arbitrary order</p></li>
 </ul>
 <p>Additionally one may sort ascending or descending.</p>
@@ -2424,10 +2424,13 @@ scaling factor.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsIndex</span></code>, <em>optional</em>) – only perform sorting algorithm for subset of atoms. This is <em>NOT</em> a positional dependent
-argument. All sorting algorithms will _only_ be performed on these atoms.
+argument. All sorting algorithms will <em>only</em> be performed on these atoms.
 Default, all atoms will be sorted.</p></li>
 <li><p><strong>ret_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – return a list of list for the groups of atoms that have been sorted.</p></li>
-<li><p><strong>axes</strong> (<em>axis /</em>) – sort coordinates according to Cartesian coordinates, if a tuple of
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – sort coordinates according to Cartesian coordinates, if a tuple of
+ints is passed it will be equivalent to <code class="docutils literal notranslate"><span class="pre">sort(axes=axes)</span> <span class="pre">==</span> <span class="pre">sort(axis0=axes[0],</span> <span class="pre">axis1=axes[1])</span></code>.
+This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
+<li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – sort coordinates according to Cartesian coordinates, if a tuple of
 ints is passed it will be equivalent to <code class="docutils literal notranslate"><span class="pre">sort(axes=axes)</span> <span class="pre">==</span> <span class="pre">sort(axis0=axes[0],</span> <span class="pre">axis1=axes[1])</span></code>.
 This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
 <li><p><strong>lattice</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – sort coordinates according to lattice vectors, if a tuple of
@@ -2439,7 +2442,7 @@ This behaves differently than <a class="reference external" href="https://numpy.
 <li><p><strong>vector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Coord</span></code>, <em>optional</em>) – sort along a user defined vector, similar to <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code> but with a user defined
 direction. Note that <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code> sorting and <em class="xref py py-obj">vector</em> sorting are <em>only</em> equivalent
 when the lattice vector is orthogonal to the other lattice vectors.</p></li>
-<li><p><strong>group</strong> (<code class="docutils literal notranslate"><span class="pre">{'Z',</span> <span class="pre">'symbol',</span> <span class="pre">'tag',</span> <span class="pre">'species'}</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">(str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>, <em>optional</em>) – group together a set of atoms by various means.
+<li><p><strong>group</strong> (<code class="docutils literal notranslate"><span class="pre">{'Z',</span> <span class="pre">'symbol',</span> <span class="pre">'tag',</span> <span class="pre">'species'}</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">(list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">list)</span></code>, <em>optional</em>) – group together a set of atoms by various means.
 <em class="xref py py-obj">group</em> may be one of the listed strings.
 For <code class="docutils literal notranslate"><span class="pre">'Z'</span></code> atoms will be grouped in atomic number
 For <code class="docutils literal notranslate"><span class="pre">'symbol'</span></code> atoms will be grouped by their atomic symbol.
@@ -2562,7 +2565,7 @@ In such a case the following sortings are equal.</p>
 </pre></div>
 </div>
 <p>Integer specification has no influence on the order of operations.
-It is _always_ the keyword argument order that determines the operation.</p>
+It is <em>always</em> the keyword argument order that determines the operation.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">geom</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">axis2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -2571,7 +2574,7 @@ It is _always_ the keyword argument order that determines the operation.</p>
 </pre></div>
 </div>
 <p>One may group several elements together on an equal footing (<code class="docutils literal notranslate"><span class="pre">None</span></code> means all non-mentioned elements)
-The order of the groups are important (the first two are _not_ equal, the last three _are_ equal)</p>
+The order of the groups are important (the first two are <em>not</em> equal, the last three <em>are</em> equal)</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">),</span> <span class="n">axes</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># C will be sorted along z</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">axes1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># all along y, then C sorted along z</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="c1"># C, [B, N]</span>
@@ -2584,6 +2587,12 @@ The order of the groups are important (the first two are _not_ equal, the last t
 sort first according to mass, then for all with the same mass, sort according to atomic
 tag:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">group0</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="n">group1</span><span class="o">=</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>One can also manually specify to only sort sub-groups via atomic indices, the
+following will keep <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2]</span></code> and <code class="docutils literal notranslate"><span class="pre">[3,</span> <span class="pre">4,</span> <span class="pre">5]</span></code> in their respective relative
+position, but each block of atoms will be sorted along the 2nd lattice vector:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="n">axes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>A too high <em class="xref py py-obj">atol</em> may have unexpected side-effects. This is because of the way

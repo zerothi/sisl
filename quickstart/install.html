@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl</title>
+  <title>Detailed instructions &mdash; sisl</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=76b122c3"></script>
+      <script src="../_static/documentation_options.js?v=61e959ee"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -40,7 +40,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Citing sisl" href="../cite.html" />
+    <link rel="next" title="Creating common geometries" href="intro_tutorials/01_geometry.html" />
     <link rel="prev" title="Package overview" href="overview.html" /> 
 </head>
 
@@ -67,13 +67,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Quickstart</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="index.html#installation">Installation</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html#quickstart-tutorials">Quickstart tutorials</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="intro_tutorials/01_geometry.html">Creating common geometries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro_tutorials/02_geometry_orbitals.html">Defining orbitals</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro_tutorials/03_geometry_sile.html">Reading/writing geometries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="overview.html">Package overview</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Package overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#installation">Installation</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Detailed instructions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#required-dependencies">Required dependencies</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#testing-your-installation">Testing your installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#compile-time-options">Compile time options</a></li>
@@ -81,6 +77,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#tutorials">Tutorials</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
@@ -124,7 +121,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Quickstart</a></li>
-      <li class="breadcrumb-item active">Installation</li>
+      <li class="breadcrumb-item active">Detailed instructions</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/quickstart/install.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -134,8 +131,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="installation">
-<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+  <section id="detailed-instructions">
+<span id="install"></span><h1>Detailed instructions<a class="headerlink" href="#detailed-instructions" title="Link to this heading"></a></h1>
 <p>sisl is easy to install using any of your preferred methods.</p>
 <section id="required-dependencies">
 <h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Link to this heading"></a></h2>
@@ -188,11 +185,11 @@ conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> <
 <input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">dev|pip</label><div class="tab-content docutils">
 <p>This is equivalent to a development installation which requires a C and fortran compiler
 as well as some other packages:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>setuptools_scm<span class="w"> </span><span class="s2">&quot;scikit-build-core[pyproject]&quot;</span><span class="w"> </span>Cython
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/zerothi/sisl.git<span class="w"> </span>--prefix<span class="w"> </span>&lt;prefix&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/zerothi/sisl.git
 </pre></div>
 </div>
 <p>The remaining dependencies should automatically be installed.</p>
+<p>Consider whether the <em>editable</em> install is more appropriate for your workflow.</p>
 </div>
 <input class="tab-input" id="tab-set--0-input--4" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--4">dev|conda</label><div class="tab-content docutils">
 <p>Using conda as development environment can be done, but may be a bit more cumbersome
@@ -205,11 +202,13 @@ conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> <
 conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>cython<span class="w"> </span>scipy<span class="w"> </span>netcdf4<span class="w"> </span>cftime<span class="w"> </span>plotly<span class="w"> </span>matplotlib
 </pre></div>
 </div>
-<p>subsequent installations of sisl should follow <code class="code docutils literal notranslate"><span class="pre">dev|pip</span></code> tab</p>
+<p>subsequent installations of sisl should follow <code class="code docutils literal notranslate"><span class="pre">dev|pip</span></code> tab.</p>
+<p>Consider whether the <em>editable</em> install is more appropriate for your workflow.</p>
 </div>
 <input class="tab-input" id="tab-set--0-input--5" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--5">editable|pip</label><div class="tab-content docutils">
-<p>Editable installs are currently not fully supported by <code class="code docutils literal notranslate"><span class="pre">scikit-build-core</span></code> and
-is considered experimental. One <em>may</em> get it to work by doing:</p>
+<p>Editable installs allows one to easily use pure Python code changes
+without having to reinstall all the time. Highly recommended for developers, has the
+same requirements as noted in the <em class="xref py py-obj">dev|*</em> tabs.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git+https://github.com/zerothi/sisl.git
 <span class="nb">cd</span><span class="w"> </span>sisl
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
@@ -225,13 +224,11 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 to get sisl up and running on Windows would be greatly appreciated.
 Please help us out by opening an <a class="reference external" href="https://github.com/zerothi/sisl/issues">issue</a>.</p>
 </div>
-<p>To install <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
-the compilers used. Typically one may do</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="o">=</span>&lt;prefix&gt;
-</pre></div>
-</div>
-<p>but sometimes <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> does not intercept the flags in the build process.
-Since 3.12 <code class="docutils literal notranslate"><span class="pre">distutils</span></code> has been deprecated and one needs to pass explicit linker flags to the CMake environment.</p>
+<p>The installation process should be equivalent to the other OS’s. However,
+one will likely be required to adapt the C and Fortran compiler for
+the Windows platform.
+These needs to be passed through the CMake environment (see
+<a class="reference internal" href="#install-compile-options"><span class="std std-ref">Compile time options</span></a>).</p>
 </section>
 </section>
 <section id="testing-your-installation">
@@ -254,7 +251,7 @@ and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS
 </div>
 </section>
 <section id="compile-time-options">
-<h2>Compile time options<a class="headerlink" href="#compile-time-options" title="Link to this heading"></a></h2>
+<span id="install-compile-options"></span><h2>Compile time options<a class="headerlink" href="#compile-time-options" title="Link to this heading"></a></h2>
 <p>By default sisl enables everything that is possible, i.e. the compilation flags
 listed here are primarily intended for debugging, performance analysis/regressions
 and should typically not be touched.</p>
@@ -343,7 +340,7 @@ are copied upon fortran routine calls.</p></td>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="overview.html" class="btn btn-neutral float-left" title="Package overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../cite.html" class="btn btn-neutral float-right" title="Citing sisl" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="intro_tutorials/01_geometry.html" class="btn btn-neutral float-right" title="Creating common geometries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

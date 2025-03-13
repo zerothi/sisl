@@ -1,16 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from __future__ import annotations
-
-from sisl import *
+import sisl as si
 
 # Generate square lattice with nearest neighbor couplings
-Hydrogen = Atom(1, R=1.0)
-square = Geometry([[0.5, 0.5, 0]], Hydrogen, lattice=Lattice([1, 1, 10], [3, 3, 1]))
+Hydrogen = si.Atom(1, R=1.0)
+square = si.Geometry(
+    [[0.5, 0.5, 0]], Hydrogen, lattice=si.Lattice([1, 1, 10], [3, 3, 1])
+)
 
 # Generate Hamiltonian
-H = Hamiltonian(square)
+H = si.Hamiltonian(square)
 
 # Show the initial state of the Hamiltonian
 print(H)
@@ -26,10 +26,10 @@ for ias, idxs in square.iter_block():
 print(H)
 
 # Create band-structure for the supercell.
-band = BandStructure(H, [[0.0, 0.0], [0.5, 0.0], [0.5, 0.5], [0.0, 0.0]], 300)
+band = si.BandStructure(H, [[0.0, 0.0], [0.5, 0.0], [0.5, 0.5], [0.0, 0.0]], 300)
 
 # Calculate eigenvalues of the band-structure
-eigs = band.eigh()
+eigs = band.apply.ndarray.eigh()
 
 # Plot them
 import matplotlib.pyplot as plt

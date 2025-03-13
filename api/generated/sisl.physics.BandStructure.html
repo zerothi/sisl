@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=76b122c3"></script>
+      <script src="../../_static/documentation_options.js?v=61e959ee"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -668,22 +668,22 @@ lists accordingly.</p></li>
 <li><p><strong>H</strong> (<a class="reference internal" href="sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian" title="sisl.physics.Hamiltonian"><em>Hamiltonian</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – The Hamiltonian to use for the calculations. If <em class="xref py py-obj">None</em>, the parent of the
 Brillouin zone will be used, which is typically what you want!</p></li>
 <li><p><strong>extra_vars</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – <p>Additional variables to calculate for each eigenstate, apart from their energy.
-Each item of the list should be a dictionary with the following keys:</p>
+Each item of the list should be a dictionary with the following keys:
+* ‘name’, str: The name of the variable.
+* ‘getter’, callable: A function that gets 3 arguments: eigenstate, plot and</p>
 <blockquote>
-<div><ul>
-<li><p>’name’, str: The name of the variable.</p></li>
-<li><p>’getter’, callable: A function that gets 3 arguments: eigenstate, plot and</p></li>
-</ul>
-<p>spin index, and returns the values of the variable in a numpy array. This
+<div><p>spin index, and returns the values of the variable in a numpy array. This
 function will be called for each eigenstate object separately. That is, once
-for each (k-point, spin) combination.
-- ‘coords’, tuple of str: The names of the  dimensions of the returned array.
-The number of coordinates should match the number of dimensions.
-- ‘coords_values’, dict: If this variable introduces a new coordinate, you should
+for each (k-point, spin) combination.</p>
+</div></blockquote>
+<ul>
+<li><p>’coords’, tuple of str: The names of the  dimensions of the returned array.
+The number of coordinates should match the number of dimensions.</p></li>
+<li><p>’coords_values’, dict: If this variable introduces a new coordinate, you should
 pass the values for that coordinate here. If the coordinates were already defined
 by another variable, they will already have values. If you are unsure that the
-coordinates are new, just pass the values for them, they will get overwritten.</p>
-</div></blockquote>
+coordinates are new, just pass the values for them, they will get overwritten.</p></li>
+</ul>
 <p>Each item can also be a string indicating the name of a known variable: ‘norm2’, ‘spin_moment’, ‘ipr’.</p>
 </p></li>
 <li><p><strong>Erange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The energy range to plot.
@@ -737,22 +737,22 @@ If None, the default colorscale is used for each backend.</p></li>
 <li><p><strong>H</strong> (<a class="reference internal" href="sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian" title="sisl.physics.Hamiltonian"><em>Hamiltonian</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – The Hamiltonian to use for the calculations. If <em class="xref py py-obj">None</em>, the parent of the
 Brillouin zone will be used, which is typically what you want!</p></li>
 <li><p><strong>extra_vars</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – <p>Additional variables to calculate for each eigenstate, apart from their energy.
-Each item of the list should be a dictionary with the following keys:</p>
+Each item of the list should be a dictionary with the following keys:
+* ‘name’, str: The name of the variable.
+* ‘getter’, callable: A function that gets 3 arguments: eigenstate, plot and</p>
 <blockquote>
-<div><ul>
-<li><p>’name’, str: The name of the variable.</p></li>
-<li><p>’getter’, callable: A function that gets 3 arguments: eigenstate, plot and</p></li>
-</ul>
-<p>spin index, and returns the values of the variable in a numpy array. This
+<div><p>spin index, and returns the values of the variable in a numpy array. This
 function will be called for each eigenstate object separately. That is, once
-for each (k-point, spin) combination.
-- ‘coords’, tuple of str: The names of the  dimensions of the returned array.
-The number of coordinates should match the number of dimensions.
-- ‘coords_values’, dict: If this variable introduces a new coordinate, you should
+for each (k-point, spin) combination.</p>
+</div></blockquote>
+<ul>
+<li><p>’coords’, tuple of str: The names of the  dimensions of the returned array.
+The number of coordinates should match the number of dimensions.</p></li>
+<li><p>’coords_values’, dict: If this variable introduces a new coordinate, you should
 pass the values for that coordinate here. If the coordinates were already defined
 by another variable, they will already have values. If you are unsure that the
-coordinates are new, just pass the values for them, they will get overwritten.</p>
-</div></blockquote>
+coordinates are new, just pass the values for them, they will get overwritten.</p></li>
+</ul>
 <p>Each item can also be a string indicating the name of a known variable: ‘norm2’, ‘spin_moment’, ‘ipr’.</p>
 </p></li>
 <li><p><strong>Erange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The energy range to plot.

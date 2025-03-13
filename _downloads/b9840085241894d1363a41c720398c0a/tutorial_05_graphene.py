@@ -1,14 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from __future__ import annotations
+import sisl as si
 
-from sisl import *
-
-graphene = geom.graphene()
+graphene = si.geom.graphene()
 
 # Generate Hamiltonian
-H = Hamiltonian(graphene)
+H = si.Hamiltonian(graphene)
 
 # Show the initial state of the Hamiltonian
 print(H)
@@ -24,10 +22,12 @@ H[1, 0, (0, 1)] = 2.7
 print(H)
 
 # Create band-structure for the supercell.
-band = BandStructure(H, [[0.0, 0.0], [2.0 / 3, 1.0 / 3], [0.5, 0.5], [0.0, 0.0]], 300)
+band = si.BandStructure(
+    H, [[0.0, 0.0], [2.0 / 3, 1.0 / 3], [0.5, 0.5], [0.0, 0.0]], 300
+)
 
 # Calculate eigenvalues of the band-structure
-eigs = band.eigh()
+eigs = band.apply.ndarray.eigh()
 
 # Plot them
 import matplotlib.pyplot as plt
