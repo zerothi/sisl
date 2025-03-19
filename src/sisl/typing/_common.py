@@ -12,18 +12,27 @@ import scipy.sparse as sps
 # and use a string literal forward reference to it in subsequent types
 # https://mypy.readthedocs.io/en/latest/common_issues.html#import-cycles
 if TYPE_CHECKING:
-    from sisl import Geometry, Lattice
+    from sisl import Geometry, Lattice, SparseAtom, SparseCSR, SparseOrbital
 
 __all__ = [
     "Coord",
     "CoordOrScalar",
     "FuncType",
+    "OrSequence",
     "KPoint",
     "SeqFloat",
     "SeqOrScalarFloat",
     "SparseMatrix",
     "SparseMatrixExt",
+    "SparseMatrixGeometry",
 ]
+
+
+class OrSequence:
+    __slots__ = ()
+
+    def __getitem__(self, parameter):
+        return Union[Sequence[parameter], parameter]
 
 
 SeqFloat = Sequence[float]
@@ -49,3 +58,5 @@ SparseMatrix = Union[
     SparseMatrixExt,
     "SparseCSR",
 ]
+
+SparseMatrixGeometry = Union["SparseAtom", "SparseOrbital"]

@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 import warnings
-from typing import Literal
+from collections.abc import Sequence
+from typing import Literal, Optional, Union
 
 import numpy as np
 from scipy.sparse import SparseEfficiencyWarning, csr_matrix
@@ -12,12 +13,20 @@ from scipy.sparse import SparseEfficiencyWarning, csr_matrix
 import sisl._array as _a
 import sisl.linalg as lin
 from sisl import Geometry
-from sisl._core.sparse import issparse
-from sisl._core.sparse_geometry import SparseOrbital
+from sisl._core.sparse import SparseCSR, issparse
+from sisl._core.sparse_geometry import SparseOrbital, _SparseGeometry
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, warn
-from sisl.typing import AtomsIndex, GaugeType, KPoint
+from sisl.typing import (
+    AtomsIndex,
+    GaugeType,
+    KPoint,
+    OrSequence,
+    SparseMatrix,
+    SparseMatrixExt,
+    SparseMatrixPhysical,
+)
 
 from ._matrix_ddk import (
     matrix_ddk,
@@ -174,7 +183,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self.reset(dim, dtype, nnzpr)
         self._reset()
 
-    def _reset(self):
+    def _reset(self) -> None:
         r"""Reset object according to the options, please refer to `SparseOrbital.reset` for details"""
         # Update the shape
         self._csr._shape = self.shape[:-1] + self._csr._D.shape[-1:]
@@ -197,25 +206,25 @@ class SparseOrbitalBZ(SparseOrbital):
         return {"orthogonal": self.orthogonal}
 
     @property
-    def orthogonal(self):
+    def orthogonal(self) -> bool:
         r"""True if the object is using an orthogonal basis"""
         return self._orthogonal
 
     @property
-    def non_orthogonal(self):
+    def non_orthogonal(self) -> bool:
         r"""True if the object is using a non-orthogonal basis"""
         return not self._orthogonal
 
-    def __len__(self):
+    def __len__(self) -> int:
         r"""Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals)"""
         return self.no
 
-    def __str__(self):
+    def __str__(self) -> str:
         r"""Representation of the model"""
         s = f"{self.__class__.__name__}{{dim: {self.dim}, non-zero: {self.nnz}, orthogonal: {self.orthogonal}\n "
         return s + str(self.geometry).replace("\n", "\n ") + "\n}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         g = self.geometry
         return f"<{self.__module__}.{self.__class__.__name__} na={g.na}, no={g.no}, nsc={g.nsc}, dim={self.dim}, nnz={self.nnz}>"
 
@@ -228,22 +237,28 @@ class SparseOrbitalBZ(SparseOrbital):
         return self
 
     @classmethod
-    def fromsp(cls, geometry: Geometry, P, S=None, **kwargs):
+    def fromsp(
+        cls,
+        geometry: Geometry,
+        P: Union[OrSequence[SparseMatrix], SparseMatrixPhysical],
+        S: Optional[SparseMatrix] = None,
+        **kwargs,
+    ) -> Self:
         r"""Create a sparse model from a preset `Geometry` and a list of sparse matrices
 
         The passed sparse matrices are in one of `scipy.sparse` formats.
 
         Parameters
         ----------
-        geometry : Geometry
+        geometry :
            geometry to describe the new sparse geometry
-        P : list of scipy.sparse or scipy.sparse
+        P :
            the new sparse matrices that are to be populated in the sparse
            matrix
-        S : scipy.sparse, optional
+        S :
            if provided this refers to the overlap matrix and will force the
            returned sparse matrix to be non-orthogonal
-        **kwargs : optional
+        **kwargs :
            any arguments that are directly passed to the ``__init__`` method
            of the class.
 
@@ -253,19 +268,73 @@ class SparseOrbitalBZ(SparseOrbital):
              a new sparse matrix that holds the passed geometry and the elements of `P` and optionally being non-orthogonal if `S` is not none
         """
         # Ensure list of csr format (to get dimensions)
-        if issparse(P):
+        if issparse(P) or isinstance(P, (SparseCSR, _SparseGeometry)):
             P = [P]
-        if isinstance(P, tuple):
-            P = list(P)
+
+        # The logic is that we first have to find out whether
+        # we should construct an orthogonal resulting matrix.
+        # In this case, if the last argument is a SparseGeometry, and it is
+        # non-orthogonal, then we will force it to be non-orthogonal.
+        # But we cannot convert
+        #   [SparseGeometry(orthogonal=False),
+        #    SparseGeometry(orthogonal=False)]
+        # to a sparse matrix, because then two of the fields will be
+        # the overlap. Perhaps later we should remove all but the last
+        # overlap component?
+        orthogonal = []
+        for p in P:
+            try:
+                orthogonal.append(p.orthogonal)
+            except AttributeError:
+                orthogonal.append(True)
+
+        # Check that all but the last sparse matrices are orthogonal
+        if not all(orthogonal[:-1]):
+            raise ValueError(
+                f"{cls.__name__}.fromsp can create a non-orthogonal "
+                "matrix if the last item is non-orthogonal."
+            )
+
+        # Correct input flag if the last sparse matrix is non-orthogonal
+        if not orthogonal[-1]:
+            if not kwargs.get("orthogonal", True):
+                warn(
+                    f"{cls.__name__}.fromsp will override your orthogonal argument "
+                    "because the last matrix is non-orthogonal!"
+                )
+            kwargs["orthogonal"] = False
+
+        # Extract all SparseCSR matrices (or csr_matrix)
+        def extract_csr(P):
+            try:
+                return P._csr
+            except AttributeError:
+                return P
+
+        P = list(map(extract_csr, P))
 
         # Number of dimensions, before S!
-        dim = len(P)
-        if not S is None:
+        def get_3rddim(P):
+            if isinstance(P, SparseCSR):
+                return P.shape[2]
+            return 1
+
+        dim = sum(map(get_3rddim, P))
+
+        if S is None:
+            if not kwargs.get("orthogonal", True):
+                dim -= 1
+        else:
             P.append(S)
+            if isinstance(S, SparseCSR):
+                if S.shape[2] != 1:
+                    raise ValueError(
+                        f"{cls.__name__}.fromsp requires S to only have 1 dimension when passing a SparseCSR"
+                    )
             kwargs["orthogonal"] = False
 
         p = cls(geometry, dim, P[0].dtype, 1, **kwargs)
-        p._csr = p._csr.fromsp(*P, dtype=kwargs.get("dtype"))
+        p._csr = p._csr.fromsp(P, dtype=kwargs.get("dtype"))
 
         if p._size != P[0].shape[0]:
             raise ValueError(
@@ -718,7 +787,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
-    ):
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         r"""Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)
 
         Setup the system and overlap matrix with respect to
@@ -744,7 +813,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
-    ):
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         r"""Returns the eigenvalues of the physical quantity
 
         Setup the system and overlap matrix with respect to
@@ -767,7 +836,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
-    ):
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         r"""Calculates a subset of eigenvalues of the physical quantity using sparse matrices
 
         Setup the quantity and overlap matrix with respect to
@@ -900,7 +969,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         super().__init__(geometry, self.spin.size(dtype), dtype, nnzpr, **kwargs)
         self._reset()
 
-    def _reset(self):
+    def _reset(self) -> None:
         r"""Reset object according to the options, please refer to `SparseOrbital.reset` for details"""
         super()._reset()
 
@@ -1010,7 +1079,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return {"spin": self.spin.kind, "orthogonal": self.orthogonal}
 
     @property
-    def spin(self):
+    def spin(self) -> Spin:
         r"""Associated spin class"""
         return self._spin
 
@@ -1266,7 +1335,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return super().create_construct(R, params)
 
-    def __len__(self):
+    def __len__(self) -> int:
         r"""Returns number of rows in the basis (accounts for the non-collinear cases)"""
         if self.spin.is_diagonal:
             return self.no
@@ -1274,7 +1343,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         # The spinors depends on NC/SOC/Nambu/Polarized
         return self.no * self.spin.spinor
 
-    def __str__(self):
+    def __str__(self) -> str:
         r"""Representation of the model"""
         s = (
             self.__class__.__name__
@@ -1284,7 +1353,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         s += str(self.geometry).replace("\n", "\n ")
         return s + "\n}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         g = self.geometry
         spin = {
             Spin.UNPOLARIZED: "unpolarized",
@@ -1684,7 +1753,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
-    ):
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         r"""Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)
 
         Setup the system and overlap matrix with respect to
@@ -1722,7 +1791,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
-    ):
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         r"""Returns the eigenvalues of the physical quantity
 
         Setup the system and overlap matrix with respect to
@@ -1757,7 +1826,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         eigvals_only: bool = True,
         **kwargs,
-    ):
+    ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
         r"""Calculates a subset of eigenvalues of the physical quantity using sparse matrices
 
         Setup the quantity and overlap matrix with respect to
@@ -1805,7 +1874,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
     )
     def transpose(
         self, *, conjugate: bool = False, spin: bool = True, sort: bool = True
-    ):
+    ) -> Self:
         r"""A transpose copy of this object with options for spin-box and conjugations
 
         Notes
@@ -1943,7 +2012,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
-    def trs(self):
+    def trs(self) -> Self:
         r"""Return a matrix with applied time-reversal operator
 
         For a Hamiltonian to obey time reversal symmetry, it must hold this
@@ -2030,7 +2099,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
-    def transform(self, matrix=None, dtype=None, spin=None, orthogonal=None):
+    def transform(self, matrix=None, dtype=None, spin=None, orthogonal=None) -> Self:
         r"""Transform the matrix by either a matrix or new spin configuration
 
         1. General transformation:
