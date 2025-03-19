@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import warnings
-from collections.abc import Sequence
 from typing import Literal, Optional, Union
 
 import numpy as np
@@ -24,7 +23,6 @@ from sisl.typing import (
     KPoint,
     OrSequence,
     SparseMatrix,
-    SparseMatrixExt,
     SparseMatrixPhysical,
 )
 
