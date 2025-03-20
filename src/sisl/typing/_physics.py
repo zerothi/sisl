@@ -3,10 +3,15 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Callable, Literal, Union
+from typing import TYPE_CHECKING, Callable, Literal, Union
 
 import numpy as np
 import numpy.typing as npt
+
+from ._common import SparseMatrixGeometry
+
+if TYPE_CHECKING:
+    from sisl.physics import SparseOrbitalBZ, SparseOrbitalBZSpin
 
 __all__ = [
     "GaugeType",
@@ -19,6 +24,7 @@ __all__ = [
     "DistributionFunc",
     "DistributionStr",
     "DistributionType",
+    "SparseMatrixPhysical",
 ]
 
 GaugeType = Literal["lattice", "atomic"]
@@ -42,3 +48,7 @@ DistributionStr = Literal[
     "heaviside",
 ]
 DistributionType = Union[DistributionStr, DistributionFunc]
+
+SparseMatrixPhysical = Union[
+    SparseMatrixGeometry, "SparseOrbitalBZ", "SparseOrbitalBZSpin"
+]

@@ -6,7 +6,7 @@ from __future__ import annotations
 import warnings
 from collections import namedtuple
 from numbers import Integral
-from typing import Optional
+from typing import Optional, Tuple
 
 import numpy as np
 from numpy import (
@@ -71,16 +71,16 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         self.reset(dim, dtype, nnzpr)
 
     @property
-    def geometry(self):
+    def geometry(self) -> Geometry:
         """Associated geometry"""
         return self._geometry
 
     @property
-    def _size(self):
+    def _size(self) -> int:
         """The size of the sparse object"""
         return self.geometry.na
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Number of rows in the basis"""
         return self._size
 
@@ -90,7 +90,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
     def reset(
         self, dim: Optional[int] = None, dtype=np.float64, nnzpr: Optional[int] = None
-    ):
+    ) -> None:
         """The sparsity pattern has all elements removed and everything is reset.
 
         The object will be the same as if it had been
@@ -130,17 +130,17 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # Denote that one *must* specify all details of the elements
         self._def_dim = -1
 
-    def empty(self, keep_nnz: bool = False):
+    def empty(self, keep_nnz: bool = False) -> None:
         """See :meth:`~sparse.SparseCSR.empty` for details"""
         self._csr.empty(keep_nnz)
 
     @property
-    def dim(self):
+    def dim(self) -> int:
         """Number of components per element"""
         return self._csr.shape[-1]
 
     @property
-    def shape(self):
+    def shape(self) -> Tuple[int]:
         """Shape of sparse matrix"""
         return self._csr.shape
 
@@ -155,7 +155,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         return self._csr.dkind
 
     @property
-    def nnz(self):
+    def nnz(self) -> int:
         """Number of non-zero elements"""
         return self._csr.nnz
 
@@ -356,12 +356,12 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             exclude = self.geometry._sanitize_atoms(exclude)
         return self._csr.edges(atoms, exclude)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Representation of the sparse model"""
         s = f"{self.__class__.__name__}{{dim: {self.dim}, non-zero: {self.nnz}, kind={self.dkind}\n "
         return s + str(self.geometry).replace("\n", "\n ") + "\n}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self.__module__}.{self.__class__.__name__} shape={self._csr.shape[:-1]}, dim={self.dim}, nnz={self.nnz}, kind={self.dkind}>"
 
     def __getattr__(self, attr):
@@ -473,7 +473,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         self.geometry.set_nsc(*args, **kwargs)
 
-    def transpose(self, sort: bool = True):
+    def transpose(self, sort: bool = True) -> Self:
         """Create the transposed sparse geometry by interchanging supercell indices
 
         Sparse geometries are (typically) relying on symmetry in the supercell picture.
@@ -583,14 +583,14 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         return T
 
-    def spalign(self, other):
+    def spalign(self, other) -> None:
         """See :meth:`~sisl.sparse.SparseCSR.align` for details"""
         if isinstance(other, SparseCSR):
             self._csr.align(other)
         else:
             self._csr.align(other._csr)
 
-    def eliminate_zeros(self, *args, **kwargs):
+    def eliminate_zeros(self, *args, **kwargs) -> None:
         """Removes all zero elements from the sparse matrix
 
         This is an *in-place* operation.
@@ -757,7 +757,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         eta.close()
 
     @property
-    def finalized(self):
+    def finalized(self) -> bool:
         """Whether the contained data is finalized and non-used elements have been removed"""
         return self._csr.finalized
 
@@ -770,7 +770,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         *args,
         sym: bool = True,
         **kwargs,
-    ):
+    ) -> Self:
         """Untiles a sparse model into a minimum segment, reverse of `tile`
 
         Parameters
@@ -994,7 +994,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
     def unrepeat(
         self, reps: int, axis: int, segment: int = 0, *args, sym: bool = True, **kwargs
-    ):
+    ) -> Self:
         """Unrepeats the sparse model into different parts (retaining couplings)
 
         Please see `untile` for details, the algorithm and arguments are the same however,
@@ -1003,7 +1003,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         atoms = np.arange(self.geometry.na).reshape(-1, reps).T.ravel()
         return self.sub(atoms).untile(reps, axis, segment, *args, sym=sym, **kwargs)
 
-    def finalize(self, *args, **kwargs):
+    def finalize(self, *args, **kwargs) -> None:
         """Finalizes the model
 
         Finalizes the model so that all non-used elements are removed. I.e. this simply reduces the memory requirement for the sparse matrix.
@@ -1040,7 +1040,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         return self._csr.spsame(other._csr)
 
     @classmethod
-    def fromsp(cls, geometry: Geometry, P, **kwargs):
+    def fromsp(cls, geometry: Geometry, P, **kwargs) -> Self:
         r"""Create a sparse model from a preset `Geometry` and a list of sparse matrices
 
         The passed sparse matrices are in one of `scipy.sparse` formats.
@@ -1068,7 +1068,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             P = list(P)
 
         p = cls(geometry, len(P), P[0].dtype, 1, **kwargs)
-        p._csr = p._csr.fromsp(*P, dtype=kwargs.get("dtype"))
+        p._csr = p._csr.fromsp(P, dtype=kwargs.get("dtype"))
 
         if p._size != P[0].shape[0]:
             raise ValueError(
@@ -1186,7 +1186,7 @@ class SparseAtom(_SparseGeometry):
         self._csr[key] = val
 
     @property
-    def _size(self):
+    def _size(self) -> int:
         return self.geometry.na
 
     def nonzero(self, atoms: AtomsIndex = None, only_cols: bool = False):
@@ -1243,7 +1243,7 @@ class SparseAtom(_SparseGeometry):
 
     def untile(
         self, reps: int, axis: int, segment: int = 0, *args, sym: bool = True, **kwargs
-    ):
+    ) -> Self:
         """Untiles the sparse model into different parts (retaining couplings)
 
         Recreates a new sparse object with only the cutted
@@ -1403,7 +1403,7 @@ class SparseOrbital(_SparseGeometry):
         self._csr[key] = val
 
     @property
-    def _size(self):
+    def _size(self) -> int:
         return self.geometry.no
 
     def edges(
@@ -1665,7 +1665,7 @@ class SparseOrbital(_SparseGeometry):
 
     def untile(
         self, reps: int, axis: int, segment: int = 0, *args, sym: bool = True, **kwargs
-    ):
+    ) -> Self:
         """Untiles the sparse model into different parts (retaining couplings)
 
         Recreates a new sparse object with only the cutted
@@ -1955,7 +1955,7 @@ class SparseOrbital(_SparseGeometry):
     )
     def prepend(
         self, other, axis: int, atol: float = 0.005, scale: SeqOrScalarFloat = 1
-    ):
+    ) -> Self:
         r"""See `append` for details
 
         This is currently equivalent to:
@@ -1973,7 +1973,7 @@ class SparseOrbital(_SparseGeometry):
     )
     def append(
         self, other, axis: int, atol: float = 0.005, scale: SeqOrScalarFloat = 1
-    ):
+    ) -> Self:
         r"""Append `other` along `axis` to construct a new connected sparse matrix
 
         This method tries to append two sparse geometry objects together by
@@ -2325,7 +2325,7 @@ class SparseOrbital(_SparseGeometry):
         other_atoms: AtomsIndex = None,
         atol: float = 0.005,
         scale: SeqOrScalarFloat = 1.0,
-    ):
+    ) -> Self:
         r"""Replace `atoms` in `self` with `other_atoms` in `other` and retain couplings between them
 
         This method replaces a subset of atoms in `self` with

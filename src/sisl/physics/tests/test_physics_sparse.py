@@ -8,8 +8,9 @@ import sys
 
 import numpy as np
 import pytest
+import scipy.sparse as sps
 
-from sisl import Atom, SislWarning, Spin, geom
+from sisl import Atom, SislWarning, SparseCSR, Spin, geom
 from sisl.physics.sparse import SparseOrbitalBZ, SparseOrbitalBZSpin
 
 pytestmark = [pytest.mark.physics, pytest.mark.sparse]
@@ -790,3 +791,75 @@ def test_sparseorbital_spin_dtypes(dtype, spin):
 
     M = SparseOrbitalBZSpin(gr, spin=Spin(spin), dtype=dtype)
     assert M.dtype == dtype
+
+
+def test_sparseorbital_fromsp_csr_matrix():
+    gr = geom.graphene()
+    no, no_s = gr.no, gr.no_s
+    s1 = sps.csr_matrix((no, no_s))
+
+    M = SparseOrbitalBZ.fromsp(gr, s1)
+    assert M.shape == (no, no_s, 1)
+    assert M.nnz == 0
+
+    M = SparseOrbitalBZ.fromsp(gr, [s1, s1], orthogonal=False)
+    assert M.shape == (no, no_s, 2)
+
+    M = SparseOrbitalBZ.fromsp(gr, [s1, s1], S=s1, orthogonal=False)
+    assert M.shape == (no, no_s, 3)
+
+
+def test_sparseorbital_fromsp_sparsecsr():
+    gr = geom.graphene()
+    no, no_s = gr.no, gr.no_s
+    s1 = SparseCSR((no, no_s, 2))
+
+    M = SparseOrbitalBZ.fromsp(gr, s1)
+    assert M.shape == (no, no_s, 2)
+    assert M.nnz == 0
+
+    M = SparseOrbitalBZ.fromsp(gr, [s1, s1])
+    assert M.shape == (no, no_s, 4)
+
+    M = SparseOrbitalBZ.fromsp(gr, [s1, s1], orthogonal=False)
+    assert M.shape == (no, no_s, 4)
+
+
+def test_sparseorbital_fromsp_sparsecsr_overlap_error():
+    gr = geom.graphene()
+    no, no_s = gr.no, gr.no_s
+    s1 = SparseCSR((no, no_s, 2))
+    with pytest.raises(ValueError):
+        SparseOrbitalBZ.fromsp(gr, s1, S=s1)
+
+
+def test_sparseorbital_fromsp_combined():
+    gr = geom.graphene()
+    no, no_s = gr.no, gr.no_s
+    s1 = SparseCSR((no, no_s, 2))
+    s2 = sps.csr_matrix((no, no_s))
+
+    M = SparseOrbitalBZ.fromsp(gr, [s1, s2])
+    assert M.shape == (no, no_s, 3)
+    assert M.nnz == 0
+
+    M = SparseOrbitalBZ.fromsp(gr, s1, S=s2)
+    assert M.shape == (no, no_s, 3)
+
+    M = SparseOrbitalBZ.fromsp(gr, [s1, s2], S=s2)
+    assert M.shape == (no, no_s, 4)
+
+
+def test_sparseorbital_fromsp_orthogonal():
+    gr = geom.graphene()
+    no, no_s = gr.no, gr.no_s
+    s1 = SparseCSR((no, no_s, 2))
+    s2 = sps.csr_matrix((no, no_s))
+
+    M = SparseOrbitalBZ.fromsp(gr, [s1, s2], orthogonal=False)
+    assert M.shape == (no, no_s, 3)
+    assert M.nnz == 0
+    assert not M.orthogonal
+
+    M1 = SparseOrbitalBZ.fromsp(gr, M, orthogonal=True)
+    assert not M1.orthogonal
