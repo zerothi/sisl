@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Literal, Sequence, Union
+from typing import Literal, Sequence, Tuple, Union
 
 import numpy as np
 from numpy import abs as _abs
@@ -28,7 +28,7 @@ from sisl.linalg.base import _compute_lwork
 from sisl.messages import deprecate_argument, deprecation, warn
 from sisl.physics.bloch import Bloch
 from sisl.physics.brillouinzone import MonkhorstPack
-from sisl.typing import KPoint
+from sisl.typing import KPoint, SparseMatrixPhysical
 from sisl.utils.mathematics import fnorm
 
 __all__ = ["SelfEnergy"]
@@ -51,12 +51,12 @@ class SelfEnergy:
         r"""Self-energy class for constructing a self-energy."""
         pass
 
-    def __len__(self):
+    def __len__(self) -> int:
         r"""Dimension of the self-energy"""
         raise NotImplementedError
 
     @staticmethod
-    def se2broadening(SE):
+    def se2broadening(SE) -> np.ndarray:
         r"""Calculate the broadening matrix from the self-energy
 
         .. math::
@@ -73,10 +73,10 @@ class SelfEnergy:
         """Class specific setup routine"""
         pass
 
-    def self_energy(self, *args, **kwargs):
+    def self_energy(self, *args, **kwargs) -> np.ndarray:
         raise NotImplementedError
 
-    def broadening_matrix(self, *args, **kwargs):
+    def broadening_matrix(self, *args, **kwargs) -> np.ndarray:
         r"""Calculate the broadening matrix by first calculating the self-energy
 
         Any arguments that is passed to this method is directly passed to `self_energy`.
@@ -129,41 +129,69 @@ class WideBandSE(SelfEnergy):
 
     Parameters
     ----------
-    spgeom : SparseGeometry or int
+    spgeom :
        for a `SparseGeometry` only the length will be queried.
     eta :
        the imaginary part (:math:`\eta`) of the self-energy
     """
 
-    def __init__(self, spgeom, eta: float):
+    def __init__(self, spgeom: Union[SparseMatrixPhysical, int], eta: float = 1e-4):
+        self.spgeom = spgeom
         if isinstance(spgeom, _SparseGeometry):
             self._N = len(spgeom)
         else:
             self._N = spgeom
         self.eta = eta
 
-    def __len__(self):
+    def __len__(self) -> int:
         r"""Dimension of the self-energy"""
         return self._N
 
-    def self_energy(self, *args, **kwargs):
+    def self_energy(
+        self,
+        E: Optional[complex] = None,
+        k: KPoint = (0, 0, 0),
+        dtype: np.dtype = np.complex128,
+        **kwargs,
+    ) -> np.ndarray:
         r"""Return a dense matrix with the self-energy
+
+        .. math:
+            \mathbf G(E) = -i \pi \eta \mathbf S_{\mathbf k}
+
+
+        Since :math:`\mathbf S` is part of the equation, it depends
+        on whether the passed sparse matrix has a non-orthogonal basis set.
 
         Parameters
         ----------
-        eta : float, optional
-            locally override the `eta` value for the object
+        E :
+            locally override the `eta` value for the object, will only use the complex
+            part of the passed energy
+        k :
+            only used if the passed `spgeom` upon initialization is a sparse matrix.
+            In which case it will use the overlap matrix to return something
+            that is similar to the atomic structure.
+            Otherwise, not used.
+        dtype :
+            the returned data-type.
         """
-        # note the sign (-)
-        eta = -kwargs.get("eta", self.eta)
-        return np.diag(np.repeat(1j * eta, self._N))
+        if E is None:
+            E = complex(0, self.eta)
+        else:
+            E = complex(0, E.imag)
 
-    def broadening_matrix(self, E: complex = 0.0, *args, **kwargs):
-        # note the sign (+)
-        eta = kwargs.get("eta", self.eta)
-        return np.diag(np.repeat(np.complex128(2 * eta), self._N))
+        broad = dtype(-1j * np.pi * E.imag)
+        try:
+            if not self.spgeom.orthogonal:
+                S = self.spgeom.Sk(k=k, dtype=dtype, format="array")
+                return S * broad
+            raise AttributeError
+        except AttributeError:
+            return np.diag(np.repeat(broad, self._N))
 
-    broadening_matrix.__doc__ = SelfEnergy.broadening_matrix.__doc__
+    # allow also to use green for self-energy, in this case they are the same
+    green = self_energy
 
 
 @set_module("sisl.physics")
@@ -172,17 +200,17 @@ class SemiInfinite(SelfEnergy):
 
     Parameters
     ----------
-    spgeom : SparseGeometry
+    spgeom :
        any sparse geometry matrix which may return matrices
-    infinite : str
+    infinite :
        axis specification for the semi-infinite direction (`+A`/`-A`/`+B`/`-B`/`+C`/`-C`)
-    eta : float, optional
+    eta :
        the default imaginary part (:math:`\eta`) of the self-energy calculation
     """
 
     def __init__(
         self,
-        spgeom,
+        spgeom: SparseMatrixPhysical,
         infinite: Literal["+A", "-A", "+B", "-B", "+C", "-C"],
         eta: float = 1e-4,
     ):
@@ -221,7 +249,7 @@ class SemiInfinite(SelfEnergy):
         # Finalize the setup by calling the class specific routine
         self._setup(spgeom)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """String representation of SemiInfinite"""
         return "{0}{{direction: {1}{2}}}".format(
             self.__class__.__name__,
@@ -238,7 +266,7 @@ class RecursiveSI(SemiInfinite):
         """Overload attributes from the hosting object"""
         return getattr(self.spgeom0, attr)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Representation of the RecursiveSI model"""
         direction = {-1: "-", 1: "+"}
         axis = {0: "A", 1: "B", 2: "C"}
@@ -249,7 +277,7 @@ class RecursiveSI(SemiInfinite):
             str(self.spgeom0).replace("\n", "\n "),
         )
 
-    def _setup(self, spgeom):
+    def _setup(self, spgeom) -> None:
         """Setup the Lopez-Sancho internals for easy axes"""
 
         # Create spgeom0 and spgeom1
@@ -300,7 +328,7 @@ class RecursiveSI(SemiInfinite):
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep_shape=True)
 
-    def __len__(self):
+    def __len__(self) -> int:
         r"""Dimension of the self-energy"""
         return len(self.spgeom0)
 
@@ -311,10 +339,10 @@ class RecursiveSI(SemiInfinite):
         self,
         E: complex,
         k: KPoint = (0, 0, 0),
-        dtype=None,
+        dtype: np.dtype = np.complex128,
         atol: float = 1e-14,
         **kwargs,
-    ):
+    ) -> np.ndarray:
         r"""Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).
 
         Parameters
@@ -324,8 +352,8 @@ class RecursiveSI(SemiInfinite):
         k :
           k-point at which the Green function should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
-        dtype : numpy.dtype
-          the resulting data type
+        dtype :
+          the resulting data type.
         atol :
           convergence criteria for the recursion
         **kwargs : dict, optional
@@ -339,8 +367,6 @@ class RecursiveSI(SemiInfinite):
         # Get k-point
         k = _a.asarrayd(k)
 
-        if dtype is None:
-            dtype = complex128
         if E.imag == 0.0:
             E = E.real + 1j * self.eta
         E = dtype(E)
@@ -428,11 +454,11 @@ class RecursiveSI(SemiInfinite):
         self,
         E: complex,
         k: KPoint = (0, 0, 0),
-        dtype=None,
+        dtype: np.dtype = np.complex128,
         atol: float = 1e-14,
         bulk: bool = False,
         **kwargs,
-    ):
+    ) -> np.ndarray:
         r"""Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
 
         Parameters
@@ -442,7 +468,7 @@ class RecursiveSI(SemiInfinite):
         k :
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
-        dtype : numpy.dtype
+        dtype :
           the resulting data type
         atol :
           convergence criteria for the recursion
@@ -460,8 +486,6 @@ class RecursiveSI(SemiInfinite):
         # Get k-point
         k = _a.asarrayd(k)
 
-        if dtype is None:
-            dtype = complex128
         if E.imag == 0.0:
             E = E.real + 1j * self.eta
         E = dtype(E)
@@ -547,11 +571,11 @@ class RecursiveSI(SemiInfinite):
         self,
         E: complex,
         k: KPoint = (0, 0, 0),
-        dtype=None,
+        dtype: np.dtype = np.complex128,
         atol: float = 1e-14,
         bulk: bool = False,
         **kwargs,
-    ):
+    ) -> Tuple[np.ndarray, np.ndarray]:
         r"""Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
 
         Note calculating the LR self-energies simultaneously requires that their chemical potentials are the same.
@@ -564,8 +588,8 @@ class RecursiveSI(SemiInfinite):
         k :
           k-point at which the self-energy should be evaluated.
           the k-point should be in units of the reciprocal lattice vectors.
-        dtype : numpy.dtype, optional
-          the resulting data type, default to ``np.complex128``
+        dtype :
+          the resulting data type.
         atol :
           convergence criteria for the recursion
         bulk :
@@ -583,12 +607,10 @@ class RecursiveSI(SemiInfinite):
         """
         if E.imag == 0.0:
             E = E.real + 1j * self.eta
+        E = dtype(E)
 
         # Get k-point
         k = _a.asarrayd(k)
-
-        if dtype is None:
-            dtype = complex128
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
@@ -686,21 +708,21 @@ class RealSpaceSE(SelfEnergy):
 
     Parameters
     ----------
-    parent : SparseOrbitalBZ
+    parent :
         a physical object from which to calculate the real-space self-energy.
         The parent object *must* have only 3 supercells along the direction where
         self-energies are used.
     semi_axis :
         semi-infinite direction (where self-energies are used and thus *exact* precision)
-    k_axes : array_like of int
+    k_axes :
         the axes where k-points are desired. 1 or 2 values are required and the `semi_axis`
         cannot be one of them
-    unfold : (3,) of int
+    unfold :
         number of times the `parent` structure is tiled along each direction
         The resulting Green function/self-energy ordering is always tiled along
         the semi-infinite direction first, and then the other directions in order.
-    eta : float, optional
-        imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)
+    eta :
+        imaginary part (:math:`\eta`) in the self-energy calculations
     dk : float, optional
         fineness of the default integration grid, specified in units of Ang, default to 1000 which
         translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.
@@ -735,10 +757,11 @@ class RealSpaceSE(SelfEnergy):
 
     def __init__(
         self,
-        parent,
+        parent: SparseMatrixPhysical,
         semi_axis: int,
         k_axes: Union[int, Sequence[int]],
-        unfold=(1, 1, 1),
+        unfold: Sequence[int] = (1, 1, 1),
+        eta: float = 1e-4,
         **options,
     ):
         """Initialize real-space self-energy calculator"""
@@ -777,17 +800,17 @@ class RealSpaceSE(SelfEnergy):
             # whether TRS is used (G + G.T) * 0.5
             "trs": True,
             # imaginary part used in the Green function calculation (unless an imaginary energy is passed)
-            "eta": 1e-4,
+            "eta": eta,
             # The BrillouinZone used for integration
             "bz": None,
         }
         self.setup(**options)
 
-    def __len__(self):
+    def __len__(self) -> int:
         r"""Dimension of the self-energy"""
         return len(self.parent) * np.prod(self._unfold)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """String representation of RealSpaceSE"""
         d = {"class": self.__class__.__name__}
         for i in range(3):
@@ -804,7 +827,7 @@ class RealSpaceSE(SelfEnergy):
             "{parent}\n}}"
         ).format(**d)
 
-    def set_options(self, **options):
+    def set_options(self, **options) -> None:
         r"""Update options in the real-space self-energy
 
         After updating options one should re-call `setup` for consistency.
@@ -924,11 +947,11 @@ class RealSpaceSE(SelfEnergy):
         "0.15",
         "0.16",
     )
-    def initialize(self):
+    def initialize(self) -> None:
         """See setup"""
         self.setup()
 
-    def setup(self, **options):
+    def setup(self, **options) -> None:
         r"""Setup the internal data-arrays used for efficient calculation of the real-space quantities
 
         This method should first be called *after* all options has been specified.
@@ -994,9 +1017,9 @@ class RealSpaceSE(SelfEnergy):
         k: KPoint = (0, 0, 0),
         bulk: bool = False,
         coupling: bool = False,
-        dtype=None,
+        dtype: np.dtype = np.complex128,
         **kwargs,
-    ):
+    ) -> np.ndarray:
         r"""Calculate the real-space self-energy
 
         The real space self-energy is calculated via:
@@ -1018,15 +1041,14 @@ class RealSpaceSE(SelfEnergy):
         coupling :
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
-        dtype : numpy.dtype, optional
-          the resulting data type, default to ``np.complex128``
+        dtype :
+          the resulting data type.
         **kwargs : dict, optional
            arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
-        if dtype is None:
-            dtype = complex128
         if E.imag == 0:
             E = E.real + 1j * self._options["eta"]
+        E = dtype(E)
 
         # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
@@ -1080,11 +1102,11 @@ class RealSpaceSE(SelfEnergy):
         self,
         E: complex,
         k: KPoint = (0, 0, 0),
-        dtype=None,
+        dtype: np.dtype = np.complex128,
         *,
         apply_kwargs=None,
         **kwargs,
-    ):
+    ) -> np.ndarray:
         r"""Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -1099,14 +1121,19 @@ class RealSpaceSE(SelfEnergy):
         k :
            only viable for 3D bulk systems with real-space Green functions along 2 directions.
            I.e. this would correspond to a circular real-space Green function
-        dtype : numpy.dtype, optional
-          the resulting data type, default to ``np.complex128``
+        dtype :
+          the resulting data type.
         apply_kwargs : dict, optional
            keyword arguments passed directly to ``bz.apply.renew(**apply_kwargs)``.
         **kwargs : dict, optional
            arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
         opt = self._options
+
+        # Now we are to calculate the real-space self-energy
+        if E.imag == 0:
+            E = E.real + 1j * opt["eta"]
+        E = dtype(E)
 
         # Retrieve integration k-grid
         bz = opt["bz"]
@@ -1116,14 +1143,8 @@ class RealSpaceSE(SelfEnergy):
         except Exception:
             trs = opt["trs"]
 
-        if dtype is None:
-            dtype = complex128
         if apply_kwargs is None:
             apply_kwargs = {}
-
-        # Now we are to calculate the real-space self-energy
-        if E.imag == 0:
-            E = E.real + 1j * opt["eta"]
 
         # Used axes
         s_ax = self._semi_axis
@@ -1316,7 +1337,7 @@ class RealSpaceSE(SelfEnergy):
             return (G + G.T) * 0.5
         return G
 
-    def clear(self):
+    def clear(self) -> None:
         """Clears the internal arrays created in `setup`"""
         del self._calc
 
@@ -1335,12 +1356,12 @@ class RealSpaceSI(SelfEnergy):
 
     Parameters
     ----------
-    semi : SemiInfinite
+    semi :
         physical object which contains the semi-infinite direction, it is from
         this object we calculate the self-energy to be put into the surface.
         a physical object from which to calculate the real-space self-energy.
         `semi` and `surface` must have parallel lattice vectors.
-    surface : SparseOrbitalBZ
+    surface :
         parent object containing the surface of system. `semi` is attached into this
         object via the overlapping regions, the atoms that overlap `semi` and `surface`
         are determined in the `setup` routine.
@@ -1348,11 +1369,11 @@ class RealSpaceSI(SelfEnergy):
     k_axes :
         axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
         along the `semi` semi-infinite direction.
-    unfold : (3,) of int
+    unfold :
         number of times the `surface` structure is tiled along each direction
         Since this is a surface there will maximally be 2 unfolds being non-unity.
-    eta : float, optional
-        imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)
+    eta :
+        imaginary part (:math:`\eta`) in the self-energy calculations.
     dk : float, optional
         fineness of the default integration grid, specified in units of Ang, default to 1000 which
         translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.
@@ -1393,10 +1414,11 @@ class RealSpaceSI(SelfEnergy):
 
     def __init__(
         self,
-        semi,
-        surface,
+        semi: SemiInfinite,
+        surface: SparseMatrixPhysical,
         k_axes: Union[int, Sequence[int]],
-        unfold=(1, 1, 1),
+        unfold: Sequence[int] = (1, 1, 1),
+        eta: float = 1e-4,
         **options,
     ):
         """Initialize real-space self-energy calculator"""
@@ -1495,17 +1517,17 @@ class RealSpaceSI(SelfEnergy):
             # whether TRS is used (G + G.T) * 0.5
             "trs": True,
             # imaginary part used in the Green function calculation (unless an imaginary energy is passed)
-            "eta": 1e-4,
+            "eta": eta,
             # The BrillouinZone used for integration
             "bz": None,
         }
         self.setup(**options)
 
-    def __len__(self):
+    def __len__(self) -> int:
         r"""Dimension of the self-energy"""
         return len(self.surface) * np.prod(self._unfold)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """String representation of RealSpaceSI"""
         d = {"class": self.__class__.__name__}
         for i in range(3):
@@ -1525,7 +1547,7 @@ class RealSpaceSI(SelfEnergy):
             "surface:\n  {surface}\n}}"
         ).format(**d)
 
-    def set_options(self, **options):
+    def set_options(self, **options) -> None:
         r"""Update options in the real-space self-energy
 
         After updating options one should re-call `setup` for consistency.
@@ -1694,11 +1716,11 @@ class RealSpaceSI(SelfEnergy):
         "0.15",
         "0.16",
     )
-    def initialize(self):
+    def initialize(self) -> None:
         """See setup"""
         self.setup()
 
-    def setup(self, **options):
+    def setup(self, **options) -> None:
         r"""Initialize the internal data-arrays used for efficient calculation of the real-space quantities
 
         This method should first be called *after* all options has been specified.
@@ -1755,9 +1777,9 @@ class RealSpaceSI(SelfEnergy):
         k: KPoint = (0, 0, 0),
         bulk: bool = False,
         coupling: bool = False,
-        dtype=None,
+        dtype: np.dtype = np.complex128,
         **kwargs,
-    ):
+    ) -> np.ndarray:
         r"""Calculate real-space surface self-energy
 
         The real space self-energy is calculated via:
@@ -1779,15 +1801,14 @@ class RealSpaceSI(SelfEnergy):
         coupling :
            if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)
            are returned
-        dtype : numpy.dtype, optional
-          the resulting data type, default to ``np.complex128``
+        dtype :
+          the resulting data type.
         **kwargs : dict, optional
            arguments passed directly to the ``self.surface.Pk`` method (not ``self.surface.Sk``), for instance ``spin``
         """
-        if dtype is None:
-            dtype = complex128
         if E.imag == 0:
             E = E.real + 1j * self._options["eta"]
+        E = dtype(E)
 
         # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
@@ -1837,7 +1858,9 @@ class RealSpaceSI(SelfEnergy):
             - self._calc["P0"](k, dtype=dtype, **kwargs)
         ).toarray() - inv(G, True)
 
-    def green(self, E: complex, k: KPoint = (0, 0, 0), dtype=None, **kwargs):
+    def green(
+        self, E: complex, k: KPoint = (0, 0, 0), dtype=np.complex128, **kwargs
+    ) -> np.ndarray:
         r"""Calculate the real-space Green function
 
         The real space Green function is calculated via:
@@ -1852,12 +1875,17 @@ class RealSpaceSI(SelfEnergy):
         k :
            only viable for 3D bulk systems with real-space Green functions along 2 directions.
            I.e. this would correspond to a circular real-space Green function
-        dtype : numpy.dtype, optional
-          the resulting data type, default to ``np.complex128``
+        dtype :
+          the resulting data type.
         **kwargs : dict, optional
            arguments passed directly to the ``self.surface.Pk`` method (not ``self.surface.Sk``), for instance ``spin``
         """
         opt = self._options
+
+        # Now we are to calculate the real-space self-energy
+        if E.imag == 0:
+            E = E.real + 1j * opt["eta"]
+        E = dtype(E)
 
         # Retrieve integration k-grid
         bz = opt["bz"]
@@ -1866,13 +1894,6 @@ class RealSpaceSI(SelfEnergy):
             trs = bz._trs >= 0
         except Exception:
             trs = opt["trs"]
-
-        if dtype is None:
-            dtype = complex128
-
-        # Now we are to calculate the real-space self-energy
-        if E.imag == 0:
-            E = E.real + 1j * opt["eta"]
 
         # Used k-axes
         k_ax = self._k_axes
@@ -1984,6 +2005,6 @@ class RealSpaceSI(SelfEnergy):
             return (G + G.T) * 0.5
         return G
 
-    def clear(self):
+    def clear(self) -> None:
         """Clears the internal arrays created in `setup`"""
         del self._calc

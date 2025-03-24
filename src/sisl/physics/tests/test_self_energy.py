@@ -187,14 +187,13 @@ def test_sancho_green(setup):
 
 def test_wideband_1(setup):
     SE = WideBandSE(10, 1e-2)
-    assert SE.self_energy().shape == (10, 10)
-    assert np.allclose(np.diag(SE.self_energy()), -1j * 1e-2)
-    assert np.allclose(np.diag(SE.self_energy(eta=1)), -1j * 1.0)
-    assert np.allclose(np.diag(SE.broadening_matrix(eta=1)), 2.0)
+    se = SE.self_energy()
+    assert se.shape == (10, 10)
+    assert np.allclose(np.diag(se), -1j * np.pi * 1e-2)
+    assert np.allclose(np.diag(SE.self_energy(1j)), -1j * np.pi * 1.0)
+    assert np.allclose(np.diag(SE.broadening_matrix(1j)), np.pi * 2.0)
     # ensure our custom function works!
-    assert np.allclose(
-        SE.broadening_matrix(eta=1), SE.se2broadening(SE.self_energy(eta=1))
-    )
+    assert np.allclose(SE.broadening_matrix(1j), SE.se2broadening(SE.self_energy(1j)))
 
 
 @pytest.mark.parametrize("k_axes", [0, 1])
