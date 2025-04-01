@@ -500,6 +500,7 @@ class BandsData(XarrayData):
             bands_data = xr.Dataset(
                 {name: _add_jump(bands_data[name]) for name in bands_data},
                 coords=coords,
+                attrs=bands_data.attrs,
             )
 
         # Add the spin class of the data
