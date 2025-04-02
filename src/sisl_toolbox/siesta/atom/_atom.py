@@ -803,7 +803,7 @@ class AtomInput:
         return fig, axs
 
 
-def atom_plot_cli(subp=None):
+def atom_plot_cli(subp=None, parser_kwargs={}):
     """Run plotting command for the output of atom"""
 
     is_sub = not subp is None
@@ -812,11 +812,11 @@ def atom_plot_cli(subp=None):
     if is_sub:
         global _script
         _script = f"{_script} atom-plot"
-        p = subp.add_parser("atom-plot", description=title, help=title)
+        p = subp.add_parser("atom-plot", description=title, help=title, **parser_kwargs)
     else:
         import argparse
 
-        p = argparse.ArgumentParser(title)
+        p = argparse.ArgumentParser(title, **parser_kwargs)
 
     p.add_argument(
         "--plot",

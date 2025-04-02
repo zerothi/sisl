@@ -45,6 +45,7 @@ from sisl._indices import (
     list_index_le,
 )
 from sisl._internal import set_module
+from sisl._lib._argparse import SislHelpFormatter
 from sisl._math_small import cross3, is_ascending, xyz_to_spherical_cos_phi
 from sisl._namedindex import NamedIndex
 from sisl.messages import SislError, deprecate_argument, deprecation, info, warn
@@ -4783,7 +4784,7 @@ lattice vector.
 
     p = argparse.ArgumentParser(
         exe,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        formatter_class=SislHelpFormatter,
         description=description,
     )
 

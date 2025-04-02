@@ -344,16 +344,16 @@ def solve_poisson(
     return grid
 
 
-def fftpoisson_fix_cli(subp=None):
+def fftpoisson_fix_cli(subp=None, parser_kwargs={}):
     is_sub = not subp is None
 
     title = "FFT Poisson corrections for TranSiesta calculations for arbitrary number of electrodes."
     if is_sub:
         global _script
         _script = f"{_script} ts-fft"
-        p = subp.add_parser("ts-fft", description=title, help=title)
+        p = subp.add_parser("ts-fft", description=title, help=title, **parser_kwargs)
     else:
-        p = argp.ArgumentParser(title)
+        p = argp.ArgumentParser(title, **parser_kwargs)
 
     tuning = p.add_argument_group(
         "tuning", "Tuning fine details of the Poisson calculation."
