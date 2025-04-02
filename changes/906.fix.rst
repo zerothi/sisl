@@ -1,0 +1,1 @@
+Fix fatbands plots when there is a jump in the band structure.

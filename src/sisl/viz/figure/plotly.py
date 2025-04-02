@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import itertools
 from collections.abc import Sequence
+from numbers import Number
 from typing import Optional
 
 import numpy as np
@@ -542,54 +543,83 @@ class PlotlyFigure(Figure):
         col=None,
         **kwargs,
     ):
-        chunk_x = x
-        chunk_y = y
+        def _sanitize_prop(prop, start, end):
+            if isinstance(prop, (Number, str)) or prop is None:
+                return prop
+            else:
+                return prop[start:end]
 
-        width = line.get("width")
-        if width is None:
-            width = 1
-        chunk_spacing = width / 2
+        x = np.asarray(x)
+        y = np.asarray(y)
 
-        if dependent_axis is None:
-            # We draw the area line using the perpendicular direction to the line, because we don't know which
-            # direction should we draw it in.
-            normal = np.array([-np.gradient(y), np.gradient(x)]).T
-            norms = normal / np.linalg.norm(normal, axis=1).reshape(-1, 1)
+        nan_indices = [*np.where(np.isnan(y))[0], len(y)]
+        chunk_start = 0
+        for chunk_end in nan_indices:
+            chunk_x = x[chunk_start:chunk_end]
+            chunk_y = y[chunk_start:chunk_end]
 
-            x = [
-                *(chunk_x + norms[:, 0] * chunk_spacing),
-                *reversed(chunk_x - norms[:, 0] * chunk_spacing),
-            ]
-            y = [
-                *(chunk_y + norms[:, 1] * chunk_spacing),
-                *reversed(chunk_y - norms[:, 1] * chunk_spacing),
-            ]
-        elif dependent_axis == "y":
-            x = [*chunk_x, *reversed(chunk_x)]
-            y = [*(chunk_y + chunk_spacing), *reversed(chunk_y - chunk_spacing)]
-        elif dependent_axis == "x":
-            x = [*(chunk_x + chunk_spacing), *reversed(chunk_x - chunk_spacing)]
-            y = [*chunk_y, *reversed(chunk_y)]
-        else:
-            raise ValueError(f"Invalid dependent axis: {dependent_axis}")
+            width = _sanitize_prop(line.get("width"), chunk_start, chunk_end)
+            if width is None:
+                width = 1
+            chunk_spacing = width / 2
 
-        self.add_trace(
-            {
-                "type": "scatter",
-                "mode": "lines",
-                "x": x,
-                "y": y,
-                "line": {"width": 0, "color": line.get("color")},
-                "name": name,
-                "legendgroup": name,
-                "showlegend": kwargs.pop("showlegend", None),
-                "fill": "toself",
-                "opacity": line.get("opacity"),
-                "meta": kwargs.pop("meta", {}),
-            },
-            row=row,
-            col=col,
-        )
+            if dependent_axis is None:
+                # We draw the area line using the perpendicular direction to the line, because we don't know which
+                # direction should we draw it in.
+                normal = np.array([-np.gradient(y), np.gradient(x)]).T
+                norms = normal / np.linalg.norm(normal, axis=1).reshape(-1, 1)
+
+                trace_x = [
+                    *(chunk_x + norms[:, 0] * chunk_spacing),
+                    *reversed(chunk_x - norms[:, 0] * chunk_spacing),
+                ]
+                trace_y = [
+                    *(chunk_y + norms[:, 1] * chunk_spacing),
+                    *reversed(chunk_y - norms[:, 1] * chunk_spacing),
+                ]
+            elif dependent_axis == "y":
+                trace_x = [*chunk_x, *reversed(chunk_x)]
+                trace_y = [
+                    *(chunk_y + chunk_spacing),
+                    *reversed(chunk_y - chunk_spacing),
+                ]
+            elif dependent_axis == "x":
+                trace_x = [
+                    *(chunk_x + chunk_spacing),
+                    *reversed(chunk_x - chunk_spacing),
+                ]
+                trace_y = [*chunk_y, *reversed(chunk_y)]
+            else:
+                raise ValueError(f"Invalid dependent axis: {dependent_axis}")
+
+            self.add_trace(
+                {
+                    "type": "scatter",
+                    "mode": "lines",
+                    "x": trace_x,
+                    "y": trace_y,
+                    "line": {
+                        "width": 0,
+                        "color": _sanitize_prop(
+                            line.get("color"), chunk_start, chunk_end
+                        ),
+                    },
+                    "name": name,
+                    "legendgroup": name,
+                    "showlegend": (
+                        kwargs.pop("showlegend", None) if chunk_start == 0 else False
+                    ),
+                    "fill": "toself",
+                    "opacity": _sanitize_prop(
+                        line.get("opacity"), chunk_start, chunk_end
+                    ),
+                    "meta": kwargs.pop("meta", {}),
+                },
+                row=row,
+                col=col,
+            )
+
+            chunk_start = chunk_end + 1
 
     def draw_scatter(self, x, y, name=None, marker={}, **kwargs):
         marker = {k: v for k, v in marker.items() if k != "dash"}
