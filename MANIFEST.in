@@ -1,11 +1,8 @@
 include MANIFEST.in
 include LICENSE
-include CHANGELOG.md
 include README.md
 
-include setup.py
 include pyproject.toml
-include setup.cfg
 exclude DEPLOY.md
 
 prune .git
@@ -24,6 +21,7 @@ prune docs/build
 prune docs/**/generated
 graft src
 include src/sisl/_version.py
+include src/sisl/_debug_info.py
 include data
 
 prune __pycache__
