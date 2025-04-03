@@ -14,6 +14,8 @@ import sys
 from collections.abc import Callable
 from pathlib import Path
 
+from sisl._lib._argparse import SislHelpFormatter
+
 
 class SToolBoxCLI:
     """Run the CLI `stoolbox`"""
@@ -47,7 +49,9 @@ class SToolBoxCLI:
         # Create command-line
         cmd = Path(sys.argv[0])
         p = argparse.ArgumentParser(
-            f"{cmd.name}", description="Specific toolboxes to aid sisl users"
+            f"{cmd.name}",
+            description="Specific toolboxes to aid sisl users",
+            formatter_class=SislHelpFormatter,
         )
 
         info = {
@@ -64,7 +68,7 @@ class SToolBoxCLI:
         subp = p.add_subparsers(**info)
 
         for cmd in self._cmds:
-            cmd(subp)
+            cmd(subp, parser_kwargs=dict(formatter_class=p.formatter_class))
 
         args = p.parse_args(argv)
         args.runner(args)

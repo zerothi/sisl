@@ -9,6 +9,8 @@ Easy conversion of data from different formats to other formats.
 """
 import argparse
 
+from sisl._lib._argparse import SislHelpFormatter
+
 __all__ = ["sisl_cmd"]
 
 
@@ -99,7 +101,7 @@ changing ways. It handles files dependent on type AND content.
 
     p = argparse.ArgumentParser(
         exe,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        formatter_class=SislHelpFormatter,
         description=description,
         conflict_handler="resolve",
     )
