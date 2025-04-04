@@ -239,7 +239,7 @@ class SparseOrbitalBZ(SparseOrbital):
         cls,
         geometry: Geometry,
         P: Union[OrSequence[SparseMatrix], SparseMatrixPhysical],
-        S: Optional[SparseMatrix] = None,
+        S: Optional[Union[SparseMatrix, SparseMatrixPhysical]] = None,
         **kwargs,
     ) -> Self:
         r"""Create a sparse model from a preset `Geometry` and a list of sparse matrices
@@ -252,18 +252,48 @@ class SparseOrbitalBZ(SparseOrbital):
            geometry to describe the new sparse geometry
         P :
            the new sparse matrices that are to be populated in the sparse
-           matrix
+           matrix.
+           If `P` contains a `sisl` sparse matrix with an overlap matrix,
+           that part of the matrix will be omitted.
+           Use `S` for included the overlap.
         S :
            if provided this refers to the overlap matrix and will force the
-           returned sparse matrix to be non-orthogonal
+           returned sparse matrix to be non-orthogonal.
+           If the passed matrix is a non-orthogonal `sisl` matrix object
+           (e.g. a `Hamiltonian`), then it will take the overlap part of the
+           object and pass that along. See examples for details.
         **kwargs :
-           any arguments that are directly passed to the ``__init__`` method
+           any arguments that are directly passed to the `__init__` method
            of the class.
 
         Returns
         -------
         SparseGeometry
              a new sparse matrix that holds the passed geometry and the elements of `P` and optionally being non-orthogonal if `S` is not none
+
+        Examples
+        --------
+
+        Merging two Hamiltonians, for instance a spin-up/down Hamiltonian
+        >>> H1 = si.Hamiltonian(...)
+        >>> H2 = si.Hamiltonian(...)
+        >>> H = H1.fromsp([H1, H2])
+
+        Adding an overlap from another matrix.
+        ``H``, will now only contain the ``H1`` data *and* the overlap
+        matrix from ``H2`` (the Hamiltonian values in ``H2`` will be
+        neglected)
+        >>> H1 = si.Hamiltonian(..., orthogonal=True)
+        >>> H2 = si.Hamiltonian(..., orthogonal=False)
+        >>> H = H1.fromsp(H1, S=H2)
+
+        If one wishes to construct a merged Hamiltonian with
+        the overlap parts in the final matrix, then it should be added
+        explicitly.
+        >>> H1 = si.Hamiltonian(..., orthogonal=False)
+        >>> s = H1.shape
+        >>> assert H1.fromsp([H1, H1]).shape == (s[0], s[1], s[2] * 2 - 2)
+        >>> assert H1.fromsp([H1, H1], S=H1).shape == (s[0], s[1], s[2] * 2 - 1)
         """
         # Ensure list of csr format (to get dimensions)
         if issparse(P) or isinstance(P, (SparseCSR, _SparseGeometry)):
@@ -286,30 +316,16 @@ class SparseOrbitalBZ(SparseOrbital):
             except AttributeError:
                 orthogonal.append(True)
 
-        # Check that all but the last sparse matrices are orthogonal
-        if not all(orthogonal[:-1]):
-            raise ValueError(
-                f"{cls.__name__}.fromsp can create a non-orthogonal "
-                "matrix if the last item is non-orthogonal."
-            )
-
-        # Correct input flag if the last sparse matrix is non-orthogonal
-        if not orthogonal[-1]:
-            if not kwargs.get("orthogonal", True):
-                warn(
-                    f"{cls.__name__}.fromsp will override your orthogonal argument "
-                    "because the last matrix is non-orthogonal!"
-                )
-            kwargs["orthogonal"] = False
-
         # Extract all SparseCSR matrices (or csr_matrix)
-        def extract_csr(P):
+        def extract_csr(P, orthogonal: bool = True):
             try:
-                return P._csr
+                P = P._csr
+                if not orthogonal:
+                    return P.copy(dims=range(P.dim - 1))
             except AttributeError:
                 return P
 
-        P = list(map(extract_csr, P))
+        P = list(map(extract_csr, P, orthogonal))
 
         # Number of dimensions, before S!
         def get_3rddim(P):
@@ -323,7 +339,16 @@ class SparseOrbitalBZ(SparseOrbital):
             if not kwargs.get("orthogonal", True):
                 dim -= 1
         else:
+            # Figure out how to handle S
+            if isinstance(S, SparseOrbitalBZ):
+                # This is something that *could* hold the overlap.
+                if not S.orthogonal:
+                    # Extract the overlap matrix
+                    S = S.tocsr(S.S_idx)
+
+            S = extract_csr(S)
             P.append(S)
+
             if isinstance(S, SparseCSR):
                 if S.shape[2] != 1:
                     raise ValueError(

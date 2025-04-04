@@ -861,5 +861,12 @@ def test_sparseorbital_fromsp_orthogonal():
     assert M.nnz == 0
     assert not M.orthogonal
 
-    M1 = SparseOrbitalBZ.fromsp(gr, M, orthogonal=True)
+    M1 = SparseOrbitalBZ.fromsp(gr, M)
+    assert M1.shape == (no, no_s, 2)
+    assert M1.orthogonal
+
+    # we only extract the matrix elements (not overlap)
+    # and then add the overlap part explicitly
+    M1 = SparseOrbitalBZ.fromsp(gr, M, S=M)
+    assert M1.shape == (no, no_s, 3)
     assert not M1.orthogonal

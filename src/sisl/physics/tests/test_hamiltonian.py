@@ -2222,3 +2222,26 @@ def test_wavefunction_eta():
     grid = Grid(0.1, dtype=np.complex128, lattice=Lattice([2, 2, 2], origin=[-1] * 3))
     grid.fill(0.0)
     ES.sub(0).wavefunction(grid, eta=True)
+
+
+def test_hamiltonian_fromsp_overlap():
+    G = Geometry([[1] * 3, [2] * 3], Atom(6), lattice=[4, 4, 4])
+    H = Hamiltonian(G, spin=Spin("nc"), orthogonal=False)
+    R, param = [0.1, 1.5], [[0.0, 0.0, 0.1, -0.1, 1], [1.0, 1.0, 0.1, -0.1, 0.1]]
+    H.construct([R, param])
+
+    # original shape
+    shape = list(H.shape)
+
+    # Try and merge into something new
+    H1 = H.fromsp(H.geometry, [H, H])
+    assert not H.orthogonal
+    assert H1.orthogonal
+    shape[-1] = H.shape[-1] * 2 - 2
+    assert H1.shape == tuple(shape)
+
+    H1 = H.fromsp(H.geometry, [H, H], S=H)
+    assert not H.orthogonal
+    assert not H1.orthogonal
+    shape[-1] = H.shape[-1] * 2 - 1
+    assert H1.shape == tuple(shape)

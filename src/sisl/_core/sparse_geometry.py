@@ -1040,7 +1040,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         return self._csr.spsame(other._csr)
 
     @classmethod
-    def fromsp(cls, geometry: Geometry, P, **kwargs) -> Self:
+    def fromsp(cls, geometry: Geometry, P: OrSequence[SparseMatrix], **kwargs) -> Self:
         r"""Create a sparse model from a preset `Geometry` and a list of sparse matrices
 
         The passed sparse matrices are in one of `scipy.sparse` formats.
@@ -1049,11 +1049,11 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         ----------
         geometry :
            geometry to describe the new sparse geometry
-        P : list of scipy.sparse or scipy.sparse
+        P :
            the new sparse matrices that are to be populated in the sparse
            matrix
         **kwargs :
-           any arguments that are directly passed to the ``__init__`` method
+           any arguments that are directly passed to the `__init__` method
            of the class.
 
         Returns
