@@ -112,7 +112,11 @@ cmake.version = ">=3.20"
 
 # source configuration
 sdist.reproducible = true
-sdist.include = ["src/sisl/_version.py", "*/CMakeLists.txt"]
+sdist.include = [
+    "src/sisl/_version.py",
+    "src/sisl/_debug_info.py",
+    "*/CMakeLists.txt"
+]
 
 wheel.expand-macos-universal-tags = true
 
