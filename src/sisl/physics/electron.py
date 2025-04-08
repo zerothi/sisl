@@ -363,7 +363,7 @@ def PDOS(E, eig, state, S=None, distribution: DistributionType = "gaussian", spi
     "atol",
     "argument tol has been deprecated in favor of atol, please update your code.",
     "0.15",
-    "0.16",
+    "0.17",
 )
 def COP(
     E, eig, state, M, distribution: DistributionType = "gaussian", atol: float = 1e-10
@@ -509,7 +509,7 @@ def COP(
     "projection",
     "argument project has been deprecated in favor of projection",
     "0.15",
-    "0.16",
+    "0.17",
 )
 def spin_moment(
     state,
@@ -1777,7 +1777,7 @@ class _electron_State:
         "projection",
         "argument sum has been deprecated in favor of projection",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def norm2(
         self,
@@ -1811,7 +1811,7 @@ class _electron_State:
         "projection",
         "argument project has been deprecated in favor of projection",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def spin_moment(self, projection="diagonal"):
         r"""Calculate spin moment from the states

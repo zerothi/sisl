@@ -56,7 +56,7 @@ class stdoutSileORCA(SileORCA):
     @deprecation(
         "stdoutSileORCA.completed is deprecated in favor of stdoutSileORCA.info.completed",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def completed(self):
         """True if the full file has been read and "ORCA TERMINATED NORMALLY" was found."""
@@ -66,7 +66,7 @@ class stdoutSileORCA(SileORCA):
     @deprecation(
         "stdoutSileORCA.na is deprecated in favor of stdoutSileORCA.info.na",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def na(self):
         """Number of atoms"""
@@ -76,7 +76,7 @@ class stdoutSileORCA(SileORCA):
     @deprecation(
         "stdoutSileORCA.no is deprecated in favor of stdoutSileORCA.info.no",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def no(self):
         """Number of orbitals (basis functions)"""
@@ -378,7 +378,7 @@ class stdoutSileORCA(SileORCA):
 
 
 outputSileORCA = deprecation(
-    "outputSileORCA has been deprecated in favor of stdoutSileOrca.", "0.15", "0.16"
+    "outputSileORCA has been deprecated in favor of stdoutSileOrca.", "0.15", "0.17"
 )(stdoutSileORCA)
 
 add_sile("output", stdoutSileORCA, gzip=True, case=False)

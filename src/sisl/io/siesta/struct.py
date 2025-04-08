@@ -70,14 +70,14 @@ class structSileSiesta(SileSiesta):
         "species_as_Z",
         "use species_as_Z= instead of species_Z=",
         "0.15",
-        "0.16",
+        "0.17",
     )
     @deprecate_argument(
         "species_as_Z",
         None,
         "species_as_Z= is deprecated, please pass an Atoms object with the basis information as atoms=",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def read_geometry(
         self, atoms: Optional[Atoms, Geometry] = None, species_as_Z: bool = False

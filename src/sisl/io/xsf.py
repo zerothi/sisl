@@ -100,7 +100,7 @@ class xsfSile(Sile):
             self._write(f"ANIMSTEPS {self._geometry_max}\n")
 
     @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def write_lattice(self, lattice: Lattice, fmt: str = ".8f"):
         """Writes the supercell to the contained file
 
@@ -346,7 +346,7 @@ class xsfSile(Sile):
         return ret
 
     @SileBinder(postprocess=postprocess_tuple(list))
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def read_geometry(
         self, lattice: Optional[Lattice] = None, atoms=None, ret_data: bool = False
     ) -> Geometry:

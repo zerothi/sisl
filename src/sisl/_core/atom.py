@@ -1304,7 +1304,7 @@ class Atom(
         return vals
 
     @deprecation(
-        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.16"
+        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.17"
     )
     def toSphere(self, center=None):
         """Return a sphere with the maximum orbital radius equal
@@ -1521,7 +1521,7 @@ class Atoms:
         return self._atom
 
     @property
-    @deprecation("nspecie is deprecated, use nspecies instead.", "0.15", "0.16")
+    @deprecation("nspecie is deprecated, use nspecies instead.", "0.15", "0.17")
     def nspecie(self):
         """Number of different species"""
         return len(self._atom)
@@ -1537,7 +1537,7 @@ class Atoms:
         return self._species
 
     @property
-    @deprecation("specie is deprecated, use species instead.", "0.15", "0.16")
+    @deprecation("specie is deprecated, use species instead.", "0.15", "0.17")
     def specie(self):
         """List of atomic species"""
         return self._species
@@ -1623,7 +1623,7 @@ class Atoms:
         raise KeyError("Could not find `atom` in the list of atoms.")
 
     specie_index = deprecation(
-        "specie_index is deprecated, use species_index instead.", "0.15", "0.16"
+        "specie_index is deprecated, use species_index instead.", "0.15", "0.17"
     )(species_index)
 
     def group_atom_data(self, data, axis=0):
@@ -1658,7 +1658,7 @@ class Atoms:
         "inplace",
         "argument in_place has been deprecated in favor of inplace, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def reorder(self, inplace: bool = False):
         """Reorders the atoms and species index so that they are ascending (starting with a species that exists)
@@ -1733,7 +1733,7 @@ class Atoms:
         "inplace",
         "argument in_place has been deprecated in favor of inplace, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def reduce(self, inplace: bool = False):
         """Returns a new `Atoms` object by removing non-used atoms"""

@@ -254,7 +254,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         return geom
 
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def write_lattice(self, lattice):
         """Creates the NetCDF file and writes the supercell information"""
         sile_raise_write(self)

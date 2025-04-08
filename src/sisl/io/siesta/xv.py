@@ -88,21 +88,21 @@ class xvSileSiesta(SileSiesta):
         "ret_velocity",
         "use ret_velocity= instead of velocity=",
         "0.15",
-        "0.16",
+        "0.17",
     )
     @deprecate_argument(
         "species_Z",
         "species_as_Z",
         "species_ arguments (species_Z and species_as_Z) are deprecated in favor of atoms=",
         "0.15",
-        "0.16",
+        "0.17",
     )
     @deprecate_argument(
         "species_as_Z",
         None,
         "species_as_Z= is deprecated, please pass an Atoms object with the basis information as atoms=",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def read_geometry(
         self,

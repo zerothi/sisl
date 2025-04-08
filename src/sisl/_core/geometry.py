@@ -180,7 +180,7 @@ class Geometry(
         "lattice",
         "argument sc has been deprecated in favor of lattice, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def __init__(
         self,
@@ -1253,7 +1253,7 @@ class Geometry(
         "atol",
         "argument eps has been deprecated in favor of atol",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def overlap(
         self,
@@ -3297,7 +3297,7 @@ class Geometry(
         "atol",
         "argument tol has been deprecated in favor of atol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def equal(self, other: GeometryLike, R: bool = True, atol: float = 1e-4) -> bool:
         """Whether two geometries are the same (optional not check of the orbital radius)
@@ -3380,7 +3380,7 @@ class Geometry(
         "atol",
         "argument tol has been deprecated in favor of atol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def distance(
         self,
@@ -3557,7 +3557,7 @@ class Geometry(
         "atol",
         "argument tol has been deprecated in favor of atol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def within_inf(
         self,

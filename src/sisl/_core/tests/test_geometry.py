@@ -407,14 +407,6 @@ class TestGeometry:
         assert np.allclose([1, 1, 1], lattice.nsc)
         assert len(lattice.sc_off) == np.prod(lattice.nsc)
 
-    def test_rotate_deprecate(self, setup):
-        rot1 = setup.g.rotate(180, "xz", what="xyz")
-        with pytest.warns(SislDeprecation) as warns:
-            rot2 = setup.g.rotate(180, [1, 0, 1], only="xyz")
-        assert len(warns) == 1
-        assert np.allclose(rot1.cell, rot2.cell)
-        assert np.allclose(rot1.xyz, rot2.xyz)
-
     def test_rotation1(self, setup):
         rot = setup.g.rotate(180, [0, 0, 1], what="xyz+abc")
         rot.lattice.cell[2, 2] *= -1

@@ -166,7 +166,7 @@ class EllipticalCylinder(PureShape):
         "rtol",
         "argument tol has been deprecated in favor of rtol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def within_index(self, other, rtol: float = 1.0e-8):
         r"""Return indices of the points that are within the shape
@@ -190,7 +190,7 @@ class EllipticalCylinder(PureShape):
         return indices_in_cylinder(tmp, 1.0 + rtol, 1.0 + rtol)
 
     @deprecation(
-        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.16"
+        "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.17"
     )
     def toSphere(self):
         """Convert to a sphere"""
@@ -205,7 +205,7 @@ class EllipticalCylinder(PureShape):
         return Sphere(r, self.center.copy())
 
     @deprecation(
-        "toCuboid is deprecated, use shape.to.Cuboid(...) instead.", "0.15", "0.16"
+        "toCuboid is deprecated, use shape.to.Cuboid(...) instead.", "0.15", "0.17"
     )
     def toCuboid(self):
         """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""

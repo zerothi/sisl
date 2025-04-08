@@ -116,13 +116,13 @@ class Quaternion:
         return angle / m.pi * 180
 
     @property
-    @deprecation("Use .angle(in_rad=False) instead of .degree", "0.15.3", "0.16")
+    @deprecation("Use .angle(in_rad=False) instead of .degree", "0.15.3", "0.17")
     def degree(self) -> float:
         """Returns the angle associated with this quaternion (in degrees)"""
         return self.angle(in_rad=False)
 
     @property
-    @deprecation("Use .angle(in_rad=True) instead of .degree", "0.15.3", "0.16")
+    @deprecation("Use .angle(in_rad=True) instead of .degree", "0.15.3", "0.17")
     def radian(self) -> float:
         """Returns the angle associated with this quaternion (in radians)"""
         return self.angle(in_rad=True)

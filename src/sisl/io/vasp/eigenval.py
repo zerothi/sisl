@@ -28,7 +28,7 @@ class eigenvalSileVASP(SileVASP):
         "ret_k",
         "use ret_k instead of k",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def read_data(self, ret_k: bool = False, units: UnitsVar = "eV"):
         r"""Read eigenvalues as calculated by VASP

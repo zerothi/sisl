@@ -44,7 +44,7 @@ class Plot(Workflow):
         deprecate(
             "f{self.__class__.__name__}.update_settings is deprecated. Please use update_inputs.",
             "0.15",
-            "0.16",
+            "0.17",
         )
         return self.update_inputs(*args, **kwargs)
 

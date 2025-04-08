@@ -133,8 +133,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     tool, with the execption that the command-line tool uses Fortran indexing numbers (1-based).
     """
 
-    _trans_type = "TBT"
-    _E2eV = Ry2eV
+    _trans_type: str = "TBT"
+    _E2eV: float = Ry2eV
 
     _k_avg = False
 
@@ -265,7 +265,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
     @missing_input_fdf([("TBT.T.All", "True")])
     def transmission(
-        self, elec_from: ElecType = 0, elec_to: ElecType = 1, kavg=True
+        self,
+        elec_from: ElecType = 0,
+        elec_to: ElecType = 1,
+        kavg: Union[int, bool] = True,
     ) -> ndarray:
         r"""Transmission from `elec_from` to `elec_to`.
 
@@ -286,7 +289,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the originating electrode
         elec_to:
            the absorbing electrode (different from `elec_from`)
-        kavg: bool, int, optional
+        kavg:
            whether the returned transmission is k-averaged, or an explicit (unweighed) k-point
            is returned
 
@@ -307,7 +310,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
     @missing_input_fdf([("TBT.T.Out", "True"), ("TBT.T.All", "True")])
     def reflection(
-        self, elec: ElecType = 0, kavg=True, from_single: bool = False
+        self,
+        elec: ElecType = 0,
+        kavg: Union[int, bool] = True,
+        from_single: bool = False,
     ) -> ndarray:
         r"""Reflection into electrode `elec`
 
@@ -331,7 +337,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         elec:
            the backscattered electrode
-        kavg: bool, int, optional
+        kavg:
            whether the returned reflection is k-averaged, or an explicit (unweighed) k-point
            is returned
         from_single:
@@ -364,7 +370,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
     @missing_input_fdf([("TBT.T.Eig", "<int>")])
     def transmission_eig(
-        self, elec_from: ElecType = 0, elec_to: ElecType = 1, kavg=True
+        self,
+        elec_from: ElecType = 0,
+        elec_to: ElecType = 1,
+        kavg: Union[int, bool] = True,
     ) -> ndarray:
         """Transmission eigenvalues from `elec_from` to `elec_to`.
 
@@ -374,7 +383,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the originating electrode
         elec_to:
            the absorbing electrode (different from `elec_from`)
-        kavg: bool, int, optional
+        kavg:
            whether the returned transmission eigenvalues are k-averaged, or an explicit (unweighed) k-point
            is returned
 
@@ -393,7 +402,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self._value_avg(f"{elec_to}.T.Eig", elec_from, kavg=kavg)
 
     @missing_input_fdf([("TBT.T.Bulk", "True")])
-    def transmission_bulk(self, elec: ElecType = 0, kavg=True) -> ndarray:
+    def transmission_bulk(
+        self, elec: ElecType = 0, kavg: Union[int, bool] = True
+    ) -> ndarray:
         """Bulk transmission for the `elec` electrode
 
         The bulk transmission is equivalent to creating a 2 terminal device with
@@ -403,7 +414,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         elec:
            the bulk electrode
-        kavg: bool, int, optional
+        kavg:
            whether the returned transmission are k-averaged, or an explicit (unweighed) k-point
            is returned
 
@@ -604,7 +615,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     def DOS(
         self,
         E: Optional[EType] = None,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         atoms=None,
         orbitals=None,
         sum: bool = True,
@@ -625,7 +636,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         E :
            optionally only return the DOS of atoms at a given energy point
-        kavg: bool, int, optional
+        kavg:
            whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
            is returned
         atoms : array_like of int or bool, optional
@@ -656,7 +667,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         self,
         elec: ElecType = 0,
         E: Optional[EType] = None,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         atoms=None,
         orbitals=None,
         sum: bool = True,
@@ -678,7 +689,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            electrode originating spectral function
         E :
            optionally only return the DOS of atoms at a given energy point
-        kavg: bool, int, optional
+        kavg:
            whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
            is returned
         atoms : array_like of int or bool, optional
@@ -712,7 +723,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         self,
         elec: ElecType = 0,
         E: Optional[EType] = None,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         sum: bool = True,
         norm: NormType = "none",
     ) -> ndarray:
@@ -737,7 +748,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            electrode where the bulk DOS is returned
         E :
            optionally only return the DOS of atoms at a given energy point
-        kavg: bool, int, optional
+        kavg:
            whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
            is returned
         sum :
@@ -766,7 +777,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             return self._value_E("DOS", elec, kavg=kavg, E=E) * fact
 
     def current(
-        self, elec_from: ElecType = 0, elec_to: ElecType = 1, kavg=True
+        self,
+        elec_from: ElecType = 0,
+        elec_to: ElecType = 1,
+        kavg: Union[int, bool] = True,
     ) -> float:
         r"""Current from `from` to `to` using the k-weights and energy spacings in the file.
 
@@ -783,7 +797,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the originating electrode
         elec_to: str, int, optional
            the absorbing electrode (different from `elec_from`)
-        kavg: bool, int, optional
+        kavg:
            whether the returned current is k-averaged, or an explicit (unweighed) k-point
            is returned
 
@@ -807,7 +821,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_to: ElecType,
         mu_to: float,
         kt_to: float,
-        kavg=True,
+        kavg: Union[int, bool] = True,
     ) -> float:
         r"""Current from `from` to `to` using the k-weights and energy spacings in the file.
 
@@ -833,7 +847,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the chemical potential of the electrode (in eV)
         kt_to:
            the electronic temperature of the electrode (in eV)
-        kavg: bool, int, optional
+        kavg:
            whether the returned current is k-averaged, or an explicit (unweighed) k-point
            is returned
 
@@ -879,7 +893,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_from: ElecType = 0,
         elec_to: ElecType = 1,
         classical: bool = False,
-        kavg=True,
+        kavg: Union[int, bool] = True,
     ) -> ndarray:
         r"""Shot-noise term `from` to `to` using the k-weights
 
@@ -907,7 +921,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the absorbing electrode (different from `elec_from`)
         classical:
            which shot-noise to calculate, default to non-classical
-        kavg: bool, int, optional
+        kavg:
            whether the returned shot-noise is k-averaged, or an explicit (unweighed) k-point
            is returned
 
@@ -955,7 +969,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return noise_const * sn
 
     def noise_power(
-        self, elec_from: ElecType = 0, elec_to: ElecType = 1, kavg=True
+        self,
+        elec_from: ElecType = 0,
+        elec_to: ElecType = 1,
+        kavg: Union[int, bool] = True,
     ) -> ndarray:
         r"""Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)
 
@@ -980,7 +997,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the originating electrode
         elec_to:
            the absorbing electrode (different from `elec_from`)
-        kavg: bool, int, optional
+        kavg:
            whether the returned noise-power is k-averaged, or an explicit (unweighed) k-point
            is returned
 
@@ -1045,13 +1062,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         "atol",
         "argument zero_T has been deprecated in favor of atol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def fano(
         self,
         elec_from: ElecType = 0,
         elec_to: ElecType = 1,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         atol: float = 1e-6,
     ) -> ndarray:
         r""" The Fano-factor for the calculation (requires calculated transmission eigenvalues)
@@ -1086,7 +1103,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the originating electrode
         elec_to:
            the absorbing electrode (different from `elec_from`)
-        kavg: bool, int, optional
+        kavg:
            whether the returned Fano factor is k-averaged, or an explicit (unweighed) k-point
            is returned. In any case the divisor will always be the k-averaged transmission.
         atol :
@@ -1136,7 +1153,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return fano
 
     def _sparse_data(
-        self, name, elec: Optional[ElecType], E: EType, kavg=True
+        self, name, elec: Optional[ElecType], E: EType, kavg: Union[int, bool] = True
     ) -> ndarray:
         """Internal routine for retrieving sparse data (orbital current, COOP)"""
         if elec is not None:
@@ -1257,7 +1274,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         name,
         elec: Optional[ElecType],
         E: EType,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
     ) -> csr_matrix:
@@ -1488,19 +1505,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return Da
 
-    @deprecate_argument(
-        "only",
-        "what",
-        "argument only has been deprecated in favor of what, please update your code.",
-        "0.14",
-        "0.16",
-    )
     @missing_input_fdf([("TBT.T.Orbital", "True"), ("TBT.Current.Orb", "True")])
     def orbital_transmission(
         self,
         E: EType,
         elec: ElecType = 0,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         what: str = "all",
         orbitals=None,
@@ -1542,7 +1552,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the orbital transmission corresponding to the energy.
         elec:
            the electrode of originating electrons
-        kavg: bool, int, optional
+        kavg:
            whether the returned orbital transmission is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -1598,19 +1608,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return J
 
-    @deprecate_argument(
-        "only",
-        "what",
-        "argument only has been deprecated in favor of what, please update your code.",
-        "0.14",
-        "0.16",
-    )
     @missing_input_fdf([("TBT.T.Orbital", "True"), ("TBT.Current.Orb", "True")])
     def orbital_current(
         self,
         elec: ElecType = 0,
         elec_other: ElecType = 1,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         what: str = "all",
         orbitals=None,
@@ -1632,7 +1635,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_other:
            this electrode determines the *other* chemical potential. As such the orbital currents
            does not reflect the current going from `elec` *to* `elec_other`!
-        kavg: bool, int, optional
+        kavg:
            whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -1713,18 +1716,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             / constant.h("eV s")
         )
 
-    @deprecate_argument(
-        "only",
-        "what",
-        "argument only has been deprecated in favor of what, please update your code.",
-        "0.14",
-        "0.16",
-    )
     def bond_transmission(
         self,
         E: EType,
         elec: ElecType = 0,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         what: str = "all",
         orbitals=None,
@@ -1745,7 +1741,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the bond transmission corresponding to the energy.
         elec :
            the electrode of originating electrons
-        kavg : bool, int, optional
+        kavg :
            whether the returned bond transmissions is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc : array_like, optional
@@ -1788,18 +1784,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.sparse_orbital_to_atom(Jij, uc=uc)
 
-    @deprecate_argument(
-        "only",
-        "what",
-        "argument only has been deprecated in favor of what, please update your code.",
-        "0.14",
-        "0.16",
-    )
     def bond_current(
         self,
         elec: ElecType = 0,
         elec_other: ElecType = 1,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         what: str = "all",
         orbitals=None,
@@ -1821,7 +1810,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_other:
            this electrode determines the *other* chemical potential. As such the orbital currents
            does not reflect the current going from `elec` *to* `elec_other`!
-        kavg : bool, int, optional
+        kavg :
            whether the returned bond current is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc : array_like, optional
@@ -1874,18 +1863,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.sparse_orbital_to_atom(Jij, uc=uc)
 
-    @deprecate_argument(
-        "only",
-        "what",
-        "argument only has been deprecated in favor of what, please update your code.",
-        "0.14",
-        "0.16",
-    )
     def vector_transmission(
         self,
         E: EType,
         elec: ElecType = 0,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         what="all",
         orbitals=None,
@@ -1906,7 +1888,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the vector transmission corresponding to the energy.
         elec:
            the electrode of originating electrons
-        kavg: bool, int, optional
+        kavg:
            whether the returned vector transmission is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -1951,18 +1933,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.sparse_atom_to_vector(Jab)
 
-    @deprecate_argument(
-        "only",
-        "what",
-        "argument only has been deprecated in favor of what, please update your code.",
-        "0.14",
-        "0.16",
-    )
     def vector_current(
         self,
         elec: ElecType = 0,
         elec_other: ElecType = 1,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         what: str = "all",
         orbitals=None,
@@ -1984,7 +1959,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec_other:
            this electrode determines the *other* chemical potential. As such the vector currents
            does not reflect the current going from `elec` *to* `elec_other`!
-        kavg: bool, int, optional
+        kavg:
            whether the returned vector current is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2042,7 +2017,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         E: EType,
         elec: ElecType = 0,
         activity: bool = True,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
     ) -> ndarray:
@@ -2083,7 +2058,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the originating electrode
         activity:
            ``True`` to return the activity, see explanation above
-        kavg: bool, int, optional
+        kavg:
            whether the returned atomic transmissions are k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2119,7 +2094,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec: ElecType = 0,
         elec_other: ElecType = 1,
         activity: bool = True,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
     ) -> ndarray:
@@ -2160,7 +2135,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            does not reflect the current going from `elec` *to* `elec_other`!
         activity:
            ``True`` to return the activity current, see explanation above
-        kavg: bool, int, optional
+        kavg:
            whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2203,7 +2178,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     def density_matrix(
         self,
         E: EType,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
         geometry: Optional[Geometry] = None,
@@ -2226,7 +2201,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         E :
            the density matrix corresponding to the energy.
-        kavg: bool, int, optional
+        kavg:
            whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2261,7 +2236,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         self,
         elec: ElecType,
         E: EType,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
         geometry: Optional[Geometry] = None,
@@ -2286,7 +2261,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the electrode of originating electrons
         E :
            the density matrix corresponding to the energy.
-        kavg: bool, int, optional
+        kavg:
            whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2326,7 +2301,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return DM
 
     @missing_input_fdf([("TBT.COOP.Gf", "True")])
-    def orbital_COOP(self, E: EType, kavg=True, isc=None, orbitals=None) -> csr_matrix:
+    def orbital_COOP(
+        self, E: EType, kavg: Union[int, bool] = True, isc=None, orbitals=None
+    ) -> csr_matrix:
         r""" Orbital COOP analysis of the Green function
 
         This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
@@ -2358,7 +2335,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         E:
            the COOP corresponding to the energy.
-        kavg: bool, int, optional
+        kavg:
            whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2391,7 +2368,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
     @missing_input_fdf([("TBT.COOP.A", "True")])
     def orbital_ACOOP(
-        self, E: EType, elec: ElecType = 0, kavg=True, isc=None, orbitals=None
+        self,
+        E: EType,
+        elec: ElecType = 0,
+        kavg: Union[int, bool] = True,
+        isc=None,
+        orbitals=None,
     ) -> csr_matrix:
         r""" Orbital COOP analysis of the spectral function
 
@@ -2425,7 +2407,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the COOP values corresponding to the energy.
         elec:
            the electrode of the spectral function
-        kavg: bool, int, optional
+        kavg:
            whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2457,7 +2439,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self._sparse_matrix("COOP", elec, E, kavg, isc, orbitals) * eV2Ry
 
     def atom_COOP(
-        self, E: EType, kavg=True, isc=None, orbitals=None, uc: bool = False
+        self,
+        E: EType,
+        kavg: Union[int, bool] = True,
+        isc=None,
+        orbitals=None,
+        uc: bool = False,
     ) -> csr_matrix:
         r"""Atomic COOP curve of the Green function
 
@@ -2470,7 +2457,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         E:
            the atomic COOP corresponding to the energy.
-        kavg: bool, int, optional
+        kavg:
            whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2502,7 +2489,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         self,
         E: EType,
         elec: ElecType = 0,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
         uc: bool = False,
@@ -2522,7 +2509,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the atomic COOP corresponding to the energy.
         elec:
            the electrode of the spectral function
-        kavg: bool, int, optional
+        kavg:
            whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2552,7 +2539,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self.sparse_orbital_to_atom(COOP, uc)
 
     @missing_input_fdf([("TBT.COHP.Gf", "True")])
-    def orbital_COHP(self, E: EType, kavg=True, isc=None, orbitals=None) -> csr_matrix:
+    def orbital_COHP(
+        self, E: EType, kavg: Union[int, bool] = True, isc=None, orbitals=None
+    ) -> csr_matrix:
         r"""Orbital resolved COHP analysis of the Green function
 
         This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
@@ -2569,7 +2558,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         E:
            the COHP corresponding to the energy.
-        kavg: bool, int, optional
+        kavg:
            whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2599,7 +2588,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
     @missing_input_fdf([("TBT.COHP.A", "True")])
     def orbital_ACOHP(
-        self, E: EType, elec: ElecType = 0, kavg=True, isc=None, orbitals=None
+        self,
+        E: EType,
+        elec: ElecType = 0,
+        kavg: Union[int, bool] = True,
+        isc=None,
+        orbitals=None,
     ) -> csr_matrix:
         r"""Orbital resolved COHP analysis of the spectral function
 
@@ -2619,7 +2613,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the COHP corresponding to the energy.
         elec:
            the electrode of the spectral function
-        kavg: bool, int, optional
+        kavg:
            whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2643,7 +2637,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return self._sparse_matrix("COHP", elec, E, kavg, isc, orbitals)
 
     def atom_COHP(
-        self, E: EType, kavg=True, isc=None, orbitals=None, uc: bool = False
+        self,
+        E: EType,
+        kavg: Union[int, bool] = True,
+        isc=None,
+        orbitals=None,
+        uc: bool = False,
     ) -> csr_matrix:
         r"""Atomic COHP curve of the Green function
 
@@ -2656,7 +2655,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ----------
         E:
            the atomic COHP corresponding to the energy.
-        kavg: bool, int, optional
+        kavg:
            whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional
@@ -2688,7 +2687,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         self,
         E: EType,
         elec: ElecType = 0,
-        kavg=True,
+        kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
         uc: bool = False,
@@ -2701,7 +2700,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the atomic COHP corresponding to the energy.
         elec:
            the electrode of the spectral function
-        kavg: bool, int, optional
+        kavg:
            whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
            is returned
         isc: array_like, optional

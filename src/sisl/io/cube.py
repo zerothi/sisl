@@ -29,7 +29,7 @@ class cubeSile(Sile):
     """
 
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def write_lattice(
         self,
         lattice: Lattice,

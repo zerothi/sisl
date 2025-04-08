@@ -136,14 +136,14 @@ class Ellipsoid(PureShape):
     @deprecation(
         "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def toEllipsoid(self):
         """Return an ellipsoid that encompass this shape (a copy)"""
         return self.copy()
 
     @deprecation(
-        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.16"
+        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.17"
     )
     def toSphere(self):
         """Return a sphere with a radius equal to the largest radial vector"""
@@ -151,7 +151,7 @@ class Ellipsoid(PureShape):
         return Sphere(r, self.center)
 
     @deprecation(
-        "toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15", "0.16"
+        "toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15", "0.17"
     )
     def toCuboid(self):
         """Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors"""
@@ -164,7 +164,7 @@ class Ellipsoid(PureShape):
         "rtol",
         "argument tol has been deprecated in favor of rtol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def within_index(self, other, rtol: float = 1.0e-8):
         r"""Return indices of the points that are within the shape
@@ -282,7 +282,7 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
         return self.__class__(self.radius + radius, self.center)
 
     @deprecation(
-        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.16"
+        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.17"
     )
     def toSphere(self):
         """Return a copy of it-self"""
@@ -291,7 +291,7 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
     @deprecation(
         "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def toEllipsoid(self):
         """Convert this sphere into an ellipsoid"""

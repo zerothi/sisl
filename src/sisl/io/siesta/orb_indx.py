@@ -59,7 +59,7 @@ class orbindxSileSiesta(SileSiesta):
         "atoms",
         "use atoms instead of basis",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def read_basis(self, atoms: Optional[Union[Atoms, Geometry]] = None) -> Atoms:
         """Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file

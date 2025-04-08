@@ -275,7 +275,7 @@ coefficients retained in this object
         "atol",
         "argument eps has been deprecated in favor of atol",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def degenerate(self, atol: float):
         """Find degenerate coefficients with a specified precision
@@ -507,7 +507,7 @@ state coefficients
         "projection",
         "argument sum has been deprecated in favor of projection",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def norm2(
         self,
@@ -677,7 +677,7 @@ state coefficients
         "projection",
         "argument diag has been deprecated in favor of projection",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def inner(
         self,
@@ -1569,7 +1569,7 @@ coefficients assigned to each state
         "atol",
         "argument eps has been deprecated in favor of atol",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def degenerate(self, atol: float):
         """Find degenerate coefficients with a specified precision

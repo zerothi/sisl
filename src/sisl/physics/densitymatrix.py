@@ -679,7 +679,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         "atol",
         "argument tol has been deprecated in favor of atol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def density(
         self,

@@ -219,7 +219,7 @@ class onlysSileSiesta(SileBinSiesta):
         "atoms",
         "use atoms=geometry.atoms instead of geometry=",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def read_geometry(self, atoms: Optional[Union[Atoms, Geometry]] = None):
         """Returns Geometry object from a TranSiesta file"""
@@ -2145,7 +2145,7 @@ class wfsxSileSiesta(SileBinSiesta):
         "atol",
         "use atol instead of ktol",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def read_eigenstate(
         self, k=(0, 0, 0), spin: int = 0, atol: float = 1e-4

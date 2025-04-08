@@ -1893,7 +1893,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         "conjugate",
         "hermitian argument has changed to conjugate, please update " "your code",
         "0.15.3",
-        "0.16",
+        "0.17",
     )
     def transpose(
         self, *, conjugate: bool = False, spin: bool = True, sort: bool = True

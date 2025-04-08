@@ -1951,7 +1951,7 @@ class SparseOrbital(_SparseGeometry):
         "atol",
         "argument eps has been deprecated in favor of atol.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def prepend(
         self, other, axis: int, atol: float = 0.005, scale: SeqOrScalarFloat = 1
@@ -1969,7 +1969,7 @@ class SparseOrbital(_SparseGeometry):
         "atol",
         "argument eps has been deprecated in favor of atol.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def append(
         self, other, axis: int, atol: float = 0.005, scale: SeqOrScalarFloat = 1
@@ -2316,7 +2316,7 @@ class SparseOrbital(_SparseGeometry):
         "atol",
         "argument eps has been deprecated in favor of atol",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def replace(
         self,

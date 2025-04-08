@@ -60,7 +60,7 @@ class AtomFracSite(AtomCategory):
 
     __slots__ = ("_cell", "_icell", "_length", "_atol", "_offset", "_foffset")
 
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def __init__(
         self, lattice, atol=1.0e-5, offset=(0.0, 0.0, 0.0), foffset=(0.0, 0.0, 0.0)
     ):

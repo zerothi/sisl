@@ -206,7 +206,7 @@ class stdoutSileSiesta(SileSiesta):
     @deprecation(
         "stdoutSileSiesta.completed is deprecated in favor of stdoutSileSiesta.info.completed",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def completed(self):
         """True if the full file has been read and "Job completed" was found."""
@@ -1761,7 +1761,7 @@ class stdoutSileSiesta(SileSiesta):
 
 
 outSileSiesta = deprecation(
-    "outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15", "0.16"
+    "outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15", "0.17"
 )(stdoutSileSiesta)
 
 add_sile("siesta.out", stdoutSileSiesta, case=False, gzip=True)

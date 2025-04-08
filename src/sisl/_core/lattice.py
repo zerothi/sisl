@@ -263,7 +263,7 @@ class Lattice(
     @deprecation(
         "toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def toCuboid(self, *args, **kwargs):
         """A cuboid with vectors as this unit-cell and center with respect to its origin
@@ -529,14 +529,14 @@ class Lattice(
         "axes",
         "argument axis has been deprecated in favor of axes, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     @deprecate_argument(
         "tol",
         "atol",
         "argument tol has been deprecated in favor of atol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def fit(self, xyz, axes: CellAxes = (0, 1, 2), atol: float = 0.05) -> Lattice:
         """Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions
@@ -964,7 +964,7 @@ class Lattice(
         "rtol",
         "argument tol has been deprecated in favor of rtol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def is_orthogonal(self, rtol: float = 0.001) -> bool:
         """
@@ -995,7 +995,7 @@ class Lattice(
         "atol",
         "argument tol has been deprecated in favor of atol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def is_cartesian(self, atol: float = 0.001) -> bool:
         """
@@ -1077,7 +1077,7 @@ class Lattice(
         "atol",
         "argument tol has been deprecated in favor of atol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def equal(self, other, atol: float = 1e-4) -> bool:
         """Check whether two lattices are equivalent
@@ -1333,7 +1333,7 @@ class SuperCell(Lattice):
         deprecate(
             f"{self.__class__.__name__} is deprecated; please use 'Lattice' class instead",
             "0.15",
-            "0.16",
+            "0.17",
         )
         super().__init__(*args, **kwargs)
 
@@ -1352,7 +1352,7 @@ class LatticeChild:
         deprecate(
             f"{self.__class__.__name__}.sc is deprecated; please use 'lattice' instead",
             "0.15",
-            "0.16",
+            "0.17",
         )
         return self.lattice
 
@@ -1376,7 +1376,7 @@ class LatticeChild:
         self.lattice = Lattice.new(lattice)
 
     set_supercell = deprecation(
-        "set_sc is deprecated; please use set_lattice instead", "0.15", "0.16"
+        "set_sc is deprecated; please use set_lattice instead", "0.15", "0.17"
     )(set_lattice)
 
     @property

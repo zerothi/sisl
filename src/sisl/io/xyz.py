@@ -154,7 +154,7 @@ class xyzSile(Sile):
 
     @SileBinder(skip_func=_r_geometry_skip)
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def read_geometry(self, atoms=None, lattice: Optional[Lattice] = None) -> Geometry:
         """Returns Geometry object from the XYZ file
 

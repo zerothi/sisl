@@ -101,16 +101,6 @@ class _ncSileTBtrans(SileCDFTBtrans):
         return self.read_geometry()
 
     @property
-    def geom(self):
-        """Same as `geometry`, but deprecated"""
-        deprecate(
-            f"{self.__class__.__name__}.geom is deprecated, please use '.geometry'."
-            "0.14",
-            "0.16",
-        )
-        return self.geometry
-
-    @property
     @lru_cache(maxsize=1)
     def cell(self) -> np.ndarray:
         """Unit cell in file"""

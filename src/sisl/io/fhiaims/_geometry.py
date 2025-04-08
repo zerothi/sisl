@@ -23,7 +23,7 @@ class inSileFHIaims(SileFHIaims):
     """FHI-aims ``geometry.in`` file object"""
 
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def write_lattice(self, lattice: Lattice, fmt: str = ".8f"):
         """Writes the supercell to the contained file
 
@@ -106,14 +106,14 @@ class inSileFHIaims(SileFHIaims):
         "ret_velocity",
         "use ret_velocity= instead of veloticy=",
         "0.15",
-        "0.16",
+        "0.17",
     )
     @deprecate_argument(
         "moment",
         "ret_moment",
         "use ret_moment= instead of moment=",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def read_geometry(
         self, ret_velocity: bool = False, ret_moment: bool = False

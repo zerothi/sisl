@@ -401,7 +401,7 @@ class BrillouinZone:
         "axes",
         "argument 'periodic' has been deprecated in favor of 'axes', please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def volume(
         self, ret_dim: bool = False, axes: Optional[CellAxes] = None
@@ -1269,7 +1269,7 @@ class BandStructure(BrillouinZone):
         "names",
         "argument 'name' has been deprecated in favor of 'names', please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def __init__(self, parent, *args, **kwargs):
         # points, divisions, names=None):

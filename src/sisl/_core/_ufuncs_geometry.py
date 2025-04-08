@@ -1099,13 +1099,6 @@ def remove(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
 
 
 @register_sisl_dispatch(Geometry, module="sisl")
-@deprecate_argument(
-    "only",
-    "what",
-    "argument only has been deprecated in favor of what, please update your code.",
-    "0.14",
-    "0.16",
-)
 def rotate(
     geometry: Geometry,
     angle: float,
@@ -1603,7 +1596,7 @@ def add(
     "scale_basis",
     "argument scale_atoms has been deprecated in favor of scale_basis, please update your code.",
     "0.15",
-    "0.16",
+    "0.17",
 )
 def scale(
     geometry: Geometry,

@@ -333,7 +333,7 @@ class RecursiveSI(SemiInfinite):
         return len(self.spgeom0)
 
     @deprecate_argument(
-        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.16"
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.17"
     )
     def green(
         self,
@@ -448,7 +448,7 @@ class RecursiveSI(SemiInfinite):
         )
 
     @deprecate_argument(
-        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.16"
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.17"
     )
     def self_energy(
         self,
@@ -565,7 +565,7 @@ class RecursiveSI(SemiInfinite):
         )
 
     @deprecate_argument(
-        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.16"
+        "eps", "atol", "eps argument is deprecated in favor of atol", "0.15", "0.17"
     )
     def self_energy_lr(
         self,
@@ -945,7 +945,7 @@ class RealSpaceSE(SelfEnergy):
     @deprecation(
         "RealSpaceSE.initialize is deprecated in favor of RealSpaceSE.setup, please update code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def initialize(self) -> None:
         """See setup"""
@@ -1714,7 +1714,7 @@ class RealSpaceSI(SelfEnergy):
     @deprecation(
         "RealSpaceSI.initialize is deprecated in favor of RealSpaceSI.setup, please update code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def initialize(self) -> None:
         """See setup"""

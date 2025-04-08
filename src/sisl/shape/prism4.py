@@ -139,7 +139,7 @@ class Cuboid(PureShape):
     @deprecation(
         "toEllipsoid is deprecated, use shape.to['ellipsoid'](...) instead.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def toEllipsoid(self):
         """Return an ellipsoid that encompass this cuboid"""
@@ -149,7 +149,7 @@ class Cuboid(PureShape):
         return Ellipsoid(self._v / 2 * 3**0.5, self.center.copy())
 
     @deprecation(
-        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.16"
+        "toSphere is deprecated, use shape.to['sphere'](...) instead.", "0.15", "0.17"
     )
     def toSphere(self):
         """Return a sphere that encompass this cuboid"""
@@ -158,7 +158,7 @@ class Cuboid(PureShape):
         return Sphere(self.edge_length.max() / 2 * 3**0.5, self.center.copy())
 
     @deprecation(
-        "toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15", "0.16"
+        "toCuboid is deprecated, use shape.to['cuboid'](...) instead.", "0.15", "0.17"
     )
     def toCuboid(self):
         """Return a copy of itself"""
@@ -169,7 +169,7 @@ class Cuboid(PureShape):
         "rtol",
         "argument tol has been deprecated in favor of rtol, please update your code.",
         "0.15",
-        "0.16",
+        "0.17",
     )
     def within_index(self, other, rtol: float = 1.0e-8):
         """Return indices of the `other` object which are contained in the shape

@@ -18,7 +18,7 @@ class moldenSile(Sile):
     """Molden file object"""
 
     @sile_fh_open()
-    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.16")
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def write_lattice(self, lattice):
         """Writes the supercell to the contained file"""
         # Check that we can write to the file
