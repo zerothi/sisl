@@ -22,15 +22,17 @@ The release cycle should be performed like this:
 
 3. Create release notes and changelogs:
 
-   1. Create the release-notes:
-
-      Also append the changelog.
+   1. Create the release-notes for the documentation:
 
       ```shell
       towncrier build --version 0.14.1 --yes
       ```
 
       This will create a file here: `docs/release/0.14.1-notes.rst`.
+
+      Amend to `docs/release.rst` something like this:
+
+         0.14.1 <release/0.14.1-notes.rst>
 
    2. Create simpler release notes (for Github):
 
@@ -39,12 +41,6 @@ The release cycle should be performed like this:
       python tools/changelog.py --format rst $GH_TOKEN v0.14.0..v0.14.1 >> docs/release/0.14.1-notes.rst
       python tools/changelog.py --format md $GH_TOKEN v0.14.0..v0.14.1 > changelog.md
       ```
-
-3. Amend release notes:
-
-   Amend to `docs/release.rst` something like this:
-
-      0.14.1 <release/0.14.1-notes.rst>
 
 4. Commit changes.
 
@@ -75,7 +71,7 @@ The release cycle should be performed like this:
    sisl-feedstock is used. To update it, follow these steps:
 
    1. branch off https://github.com/conda-forge/sisl-feedstock
-   2. Edit recipe/meta.yaml by updating version and sha256
+   2. Edit `recipe/meta.yaml` by updating version and sha256
    3. Propose merge-request.
    4. Check CI succeeds.
    5. Accept merge and the new version will be uploaded.
@@ -85,11 +81,11 @@ The release cycle should be performed like this:
    Until web assembly (wasm) wheels are supported by PyPi, they
    are managed directly in the pyodide repository. The update steps
    are very similar to conda, except all packages are managed
-   in a single repository. The meta.yaml is at packages/sisl/meta.yaml.
+   in a single repository. The meta.yaml is at `packages/sisl/meta.yaml`.
    Follow these steps:
 
    1. branch off https://github.com/pyodide/pyodide
-   2. Edit packages/sisl/meta.yaml by updating version, source url and sha256
+   2. Edit `packages/sisl/meta.yaml` by updating version, source url and sha256
    3. Propose merge-request.
    4. Check CI succeeds. If it doesn't you can test locally by following
       instructions [here](https://pyodide.org/en/stable/development/new-packages.html#building-a-python-package-in-tree)
