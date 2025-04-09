@@ -1,0 +1,354 @@
+sisl 0.16.0 Release Notes
+*************************
+
+New features
+============
+
+- Enable `...` in MD-slices of siesta output siles
+
+  Allowed `read_scf(imd=...)` to ease the understanding
+  of *everything*. Partly resolves #835.
+
+  (:pull:`835`)
+
+
+- Added Nambu spin configuration
+
+  Allowed `sisl` to operate with the Nambu spin-configuration.
+  This spin-configuration is made for spin-orbit +
+  super-conductivity.
+
+  Nearly all functionality that is available for SOC is also
+  availiable for BdG (Nambu) spin configuration.
+
+  This goes in line with the recent additions to the Siesta
+  code with superconductivity.
+
+  (:pull:`896`)
+
+
+- Added atom borders in `sisl.viz` plots
+
+  The possibility to add and modify borders of plotted
+  atoms has been added. In geometry plots, ``atoms_style``
+  now accepts the keys ``border_color`` and ``border_width``.
+  By default now atoms are plotted with a black border.
+
+  (:pull:`897`)
+
+
+- Enabled implicit conversion of unknown objects
+
+  Now users can automatically convert unknown objects
+  and use them directly in `sisl` methods that are
+  implemented for various methods.
+
+  E.g.
+
+  .. code::
+
+     import ase
+     import sisl
+
+     gr = sisl.geom.graphene()
+     sisl_rotated = sisl.rotate(gr, ...)
+
+     gr = ase.Atoms(...)
+     atoms_rotated = sisl.rotate(gr, ...)
+
+     gr = ase.Atoms(...)
+     sisl_rotated = sisl.rotate(gr, ..., ret_sisl=True)
+
+  will all work, the first and last will return a `Geometry`, while
+  the middle one will return an `ase.Atoms` object.
+
+  To forcefully return the `sisl` object, use the latter form with ``ret_sisl``.
+
+  (:pull:`898`)
+
+
+- Enabled `...` for `atoms=` arguments
+
+  Makes selecting all atoms slightly more intuitive if wanted.
+
+
+
+Changes and improvements
+========================
+
+- Enabled `astype` for sparse matrices
+
+  This enables changing the data-type of sparse matrices
+  in a consistent manner without having to use the `transform`
+  which would be impossible in the real->complex conversion.
+
+  (:pull:`865`)
+
+
+- Enabled `hsxSileSiesta.write_hamiltonian`
+
+  Finally we can write Hamiltonians from `sisl` in the ``HSX``
+  file format.
+
+  For further details see: `https://gitlab.com/siesta-project/siesta/-/issues/183`__
+
+  (:pull:`884`)
+
+
+- Use `towncrier`
+
+  We change the release notes to be constructed by `towncrier`.
+
+  This will make pull requests less prone to conflicts
+  due to the merge of the `CHANGELOG.md` file.
+  That file is now deprecated, see `changes/README.rst` for details.
+
+  (:pull:`893`)
+
+
+- Changed ``hermitian => conjugate``
+
+  Now one should use ``H.transpose(conjugate=True, ...)``
+  instead. The Hermitian argument did not make sense, since
+  the transpose was implicit of the function name.
+
+  It is now also more obvious how ``conjugate=..., spin=...``
+  works together.
+
+  Also, all arguments to this method are forced keywords.
+
+  A ``len(H) == H.no * 4`` for Nambu spin configuration.
+
+  The diagonalization of the Hamiltonian will return
+  an eigenvalue symmetric spectrum (about E=0).
+  Hence this one will be dependent on the shift of the
+  spectrum.
+
+  (:pull:`896`)
+
+
+- Enabled creating Hamiltonian matrices from other Hamiltonians
+
+  Previously, `Hamiltonian.fromsp` would only parse `scipy.sparse.csr_matrix`
+  objects. This was limiting the functionality.
+
+  Now, all sparse matrices can be converted through any `fromsp` matrices.
+  When the passed object is a SparseGeometry it will decide whether
+  it is orthogonal or not. Otherwise, a user can manually specify
+  the `orthogonal` argument.
+
+  The method will automatically remove any overlap parts (if passed
+  as the matrix), and will automatically extract the overlap parts
+  if a matrix has been passed in ``S=``.
+
+  (:pull:`904`)
+
+
+- Added ADOS extraction of TBtrans PDOS data in `sisl.viz`
+
+  Now plotting the ADOS from TBtrans output files can
+  intrinsically be handled by `sisl.viz`.
+
+
+- Added `read_brillouinzone` to multiple Siesta files
+
+  This will allow reading `BrillouinZone` objects from
+  intrinsic Siesta output files.
+
+
+- All `E` arguments for tbtSile cannot be indices
+
+  Prior versions of sisl allowed one to use indices
+  instead of `E` arguments. However, this led to
+  confusion when dealing with ``E=0.0``. E.g.
+  ``E=0`` and ``E=0.0`` could behave differently.
+
+  Now, everything is handled via energies.
+  For looping those, its better to do:
+
+  .. code::
+
+     tbt = tbt...Sile(...)
+     iE = tbt.Eindex(0.84)
+     E = tbt.E[iE] # will get you the closest energy point to 0.84
+
+     # or for looping:
+     for E in tbt.E:
+         ... do something
+
+
+
+
+- Clarified gauge arguments
+
+  Now the gauge names are `lattice` vs. `atomic` which should
+  clarify a bit more with respect to the older values: `cell`
+  and `atom`. The older values will still be respected.
+  A `comply_gauge` method should be used for external projects
+  if required.
+
+
+- Enabled easier submodule access
+
+  Allows::
+
+      import sisl
+      sisl.geom
+
+  and basically all variants. Using this mechanism the imports
+  are lazily done.
+
+  So now `import sisl.geom` is generally not required!
+
+
+- Performance improvements for k-point creation of matrices
+
+  The internal Cython code was restructured for much better
+  performance.
+  This yields a significant performance improvement for DFT
+  matrices (many couplings) but a very minor perf. hit
+  for small TB matrices (few couplings + few rows).
+
+
+- Quaternions now default to use radians for input
+
+  This follows the general mathematical notation
+  in cos/sin/tan geometrical routines.
+
+
+- Removed `dtype` argument from `Spin` class
+
+  The data-type is now contained in the parent structure.
+  This removes a duplicate definition that was hard to maintain
+  in the code. It should be of minor importance as most would
+  define the `Spin` class without passing the `dtype` argument.
+
+
+- Removed possibility of doing Hk of integer datatypes
+
+  It increased compilation times significantly, with little gain.
+  Use float32/64 or complex64/128.
+
+
+- `WideBandSE.self_energy` changed its behavior of ``eta``
+
+  Now, the first argument is the *energy*, from which only
+  the imaginary value will be used.
+  Also, the energy will be scaled with `np.pi` to get the
+  *correct* integration.
+
+  Additionally, when the WideBandSE object is instantiated with
+  a sparsematrix, it will use the overlap matrix to account
+  for this.
+
+
+
+Bugfixes
+========
+
+- `hamiltonianSile` wrote wrong overlap and supercell connections
+
+  Fixes and speeds up the writing of the overlap and supercell
+  connections of the `hamiltonianSile`. This file type is largely
+  not used, and likely shouldn't be used, but might be useful for
+  educational purposes.
+
+  Also allowed the file format to handle skewed lattices with 6
+  input parameters from the cell block.
+
+  (:pull:`887`)
+
+
+- Non-collinear transposing was buggy
+
+  The code for transposing + conjugating (adjoint operator)
+  was wrong for non-collinear matrices.
+  This is now finally fixed, and checked for.
+
+  Fixed documentation in ``trs`` method for matrices.
+
+  Fixed overlap conjugation for transpose when complex
+  numbers are used.
+
+  (:pull:`896`)
+
+
+- Fix fatbands plots when there is a jump in the band structure.
+
+  (:pull:`906`)
+
+
+- Fixed `orbitals=slice(x, None)` arguments
+
+  It now correctly uses `geometry.no` instead of `geometry.na`.
+
+  Likely nobody used `slice` arguments anyway.
+
+
+- Now ``geometry.to(ase.Atoms)`` will work
+
+  The dispatch method expected it to be ``geometry.to[ase.Atoms]()``
+  which is counter-intuitive as all the other dispatchers does
+  not require this. The `__getitem__` method will still work
+  as that will get you the method by witch the dispatch
+  will happen.
+
+
+- `projection` arguments for all functions has been streamlined
+
+  The `projection` argument has gotten a major overhaul.
+  Now the projections are generalized and streamlined across
+  the code base using a common `comply_projection` method
+  that decides on what it should convert to.
+
+  All old values are still allowed, but newer ones will be preferred:
+
+  Here are all the allowed (new) projection options:
+
+  - `matrix` matrix product, `ij` components
+  - `trace` return sum of the `ii` components
+  - `diagonal` return the `ii` components
+  - `hadamard` elementwise `ij` components (not equivalent to `matrix`!)
+  - `hadamard:atoms` elementwise `ij` components, but summed for each atom
+
+
+- fixed future deprecation for ast.Num
+
+
+
+Contributors
+============
+
+A total of 3 people contributed to this release. People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Pol Febrer Calabozo
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 8 pull requests were merged for this release.
+
+* :pull:`862`
+* :pull:`870`
+* :pull:`871`
+* :pull:`884`
+* :pull:`893`
+* :pull:`896`
+* :pull:`907`
+* :pull:`908`
+
+Maintenance pull requests merged
+--------------------------------
+
+* :pull:`866`
+* :pull:`867`
+* :pull:`872`
+* :pull:`876`
+* :pull:`880`
+* :pull:`881`
+* :pull:`895`
+* :pull:`899`
+* :pull:`903`

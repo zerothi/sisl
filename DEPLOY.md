@@ -16,7 +16,7 @@ below sequence.
 
 The release cycle should be performed like this:
 
-1. Update released versions in `CHANGELOG.md` and `CITATION.cff`
+1. Update released versions in `CITATION.cff`
 
 2. Insert correct dates in `CITATION.cff` (for Zenodo)
 

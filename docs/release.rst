@@ -25,12 +25,10 @@ In any case the following list of release notes may be used to check changes
 between versions.
 
 
-.. Ensure to add new entries here, in correct order:
-
-   0.15.3 <release/0.15.0-notes.rst>
-
 .. toctree::
    :maxdepth: 2
+
+   0.16.0 <release/0.16.0-notes.rst>
 
 
 
