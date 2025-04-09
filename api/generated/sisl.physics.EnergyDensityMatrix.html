@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=61e959ee"></script>
+      <script src="../../_static/documentation_options.js?v=fa32bbbb"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -666,6 +666,9 @@ coupling from <em class="xref py py-obj">self</em>, while <code class="docutils 
 in <em class="xref py py-obj">other</em>.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -699,7 +702,7 @@ in <em class="xref py py-obj">other</em>.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
 <li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>scale</strong> (<em>SeqOrScalarFloat</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1213,10 +1216,13 @@ the given k-point and calculate the eigenvalues.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
-<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
+<li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference internal" href="sisl.typing.GaugeType.html#sisl.typing.GaugeType" title="sisl.typing.GaugeType"><em>GaugeType</em></a>)</p></li>
 <li><p><strong>eigvals_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Union</em>[np.ndarray, <em>Tuple</em>[np.ndarray, np.ndarray]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1233,10 +1239,13 @@ the given k-point and calculate the eigenvalues.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
-<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
+<li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference internal" href="sisl.typing.GaugeType.html#sisl.typing.GaugeType" title="sisl.typing.GaugeType"><em>GaugeType</em></a>)</p></li>
 <li><p><strong>eigvals_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Union</em>[np.ndarray, <em>Tuple</em>[np.ndarray, np.ndarray]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1256,10 +1265,13 @@ Defaults to the <em class="xref py py-obj">n</em> smallest magnitude eigevalues.
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p></li>
 <li><p><strong>**kwargs</strong> – arguments passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html#scipy.sparse.linalg.eigsh" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.linalg.eigsh</span></code></a>.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
-<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
+<li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference internal" href="sisl.typing.GaugeType.html#sisl.typing.GaugeType" title="sisl.typing.GaugeType"><em>GaugeType</em></a>)</p></li>
 <li><p><strong>eigvals_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Union</em>[np.ndarray, <em>Tuple</em>[np.ndarray, np.ndarray]]</p>
 </dd>
 </dl>
 <div class="admonition-notes admonition">
@@ -1282,6 +1294,11 @@ is adviced!</p>
 </dd>
 </dl>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1291,6 +1308,9 @@ is adviced!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>keep_nnz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1305,6 +1325,11 @@ is adviced!</p>
 <p>Adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
 internal data-representation.</p>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1315,12 +1340,18 @@ internal data-representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geometry</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code>) – geometry to describe the new sparse geometry</p></li>
-<li><p><strong>P</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse</span></code>) – the new sparse matrices that are to be populated in the sparse
-matrix</p></li>
-<li><p><strong>S</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse</span></code>, <em>optional</em>) – if provided this refers to the overlap matrix and will force the
-returned sparse matrix to be non-orthogonal</p></li>
-<li><p><strong>**kwargs</strong> (<em>optional</em>) – any arguments that are directly passed to the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method
+<li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – geometry to describe the new sparse geometry</p></li>
+<li><p><strong>P</strong> (<em>Union</em><em>[</em><em>OrSequence</em><em>[</em><a class="reference internal" href="sisl.typing.SparseMatrix.html#sisl.typing.SparseMatrix" title="sisl.typing.SparseMatrix"><em>SparseMatrix</em></a><em>]</em><em>, </em><a class="reference internal" href="sisl.typing.SparseMatrixPhysical.html#sisl.typing.SparseMatrixPhysical" title="sisl.typing.SparseMatrixPhysical"><em>SparseMatrixPhysical</em></a><em>]</em>) – the new sparse matrices that are to be populated in the sparse
+matrix.
+If <em class="xref py py-obj">P</em> contains a <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> sparse matrix with an overlap matrix,
+that part of the matrix will be omitted.
+Use <a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.S" title="sisl.physics.EnergyDensityMatrix.S"><code class="xref py py-obj docutils literal notranslate"><span class="pre">S</span></code></a> for included the overlap.</p></li>
+<li><p><strong>S</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.SparseMatrix.html#sisl.typing.SparseMatrix" title="sisl.typing.SparseMatrix"><em>SparseMatrix</em></a><em>, </em><a class="reference internal" href="sisl.typing.SparseMatrixPhysical.html#sisl.typing.SparseMatrixPhysical" title="sisl.typing.SparseMatrixPhysical"><em>SparseMatrixPhysical</em></a><em>]</em><em>]</em>) – if provided this refers to the overlap matrix and will force the
+returned sparse matrix to be non-orthogonal.
+If the passed matrix is a non-orthogonal <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> matrix object
+(e.g. a <a class="reference internal" href="sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian" title="sisl.physics.Hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hamiltonian</span></code></a>), then it will take the overlap part of the
+object and pass that along. See examples for details.</p></li>
+<li><p><strong>**kwargs</strong> – any arguments that are directly passed to the <code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code> method
 of the class.</p></li>
 </ul>
 </dd>
@@ -1331,6 +1362,25 @@ of the class.</p></li>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SparseGeometry</span></code></p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Merging two Hamiltonians, for instance a spin-up/down Hamiltonian
+&gt;&gt;&gt; H1 = si.Hamiltonian(…)
+&gt;&gt;&gt; H2 = si.Hamiltonian(…)
+&gt;&gt;&gt; H = H1.fromsp([H1, H2])</p>
+<p>Adding an overlap from another matrix.
+<code class="docutils literal notranslate"><span class="pre">H</span></code>, will now only contain the <code class="docutils literal notranslate"><span class="pre">H1</span></code> data <em>and</em> the overlap
+matrix from <code class="docutils literal notranslate"><span class="pre">H2</span></code> (the Hamiltonian values in <code class="docutils literal notranslate"><span class="pre">H2</span></code> will be
+neglected)
+&gt;&gt;&gt; H1 = si.Hamiltonian(…, orthogonal=True)
+&gt;&gt;&gt; H2 = si.Hamiltonian(…, orthogonal=False)
+&gt;&gt;&gt; H = H1.fromsp(H1, S=H2)</p>
+<p>If one wishes to construct a merged Hamiltonian with
+the overlap parts in the final matrix, then it should be added
+explicitly.
+&gt;&gt;&gt; H1 = si.Hamiltonian(…, orthogonal=False)
+&gt;&gt;&gt; s = H1.shape
+&gt;&gt;&gt; assert H1.fromsp([H1, H1]).shape == (s[0], s[1], s[2] * 2 - 2)
+&gt;&gt;&gt; assert H1.fromsp([H1, H1], S=H1).shape == (s[0], s[1], s[2] * 2 - 1)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1514,8 +1564,11 @@ the atom and l and m are the quantum numbers of the orbital.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
 <li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>scale</strong> (<em>SeqOrScalarFloat</em>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1696,6 +1749,9 @@ coupling from <em class="xref py py-obj">self</em>, while <code class="docutils 
 in <em class="xref py py-obj">other</em>.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1757,6 +1813,9 @@ elements per matrix element.</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the datatype of the sparse elements</p></li>
 <li><p><strong>nnzpr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – number of non-zero elements per row</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1826,6 +1885,11 @@ the two first spin-components get shifted individually.</p></li>
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.spalign">
 <span class="sig-name descname"><span class="pre">spalign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.spalign" title="Link to this definition"></a></dt>
 <dd><p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">align</span></code> for details</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2148,6 +2212,9 @@ final dimension of the matrix.</p>
 <li><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – flag to control if the new matrix includes overlaps. Defaults to the input type.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -2194,6 +2261,9 @@ then only imaginary values will change sign.</p></li>
 if this is true, default</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -2215,6 +2285,11 @@ equality:</p>
 <p>This method will be obsoleted at some point when <a class="extlink-issue reference external" href="https://github.com/zerothi/sisl/issues/816">GH816</a> is
 completed.</p>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Self</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2231,6 +2306,9 @@ this is the opposite of <a class="reference internal" href="#sisl.physics.Energy
 <li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
 <li><p><strong>sym</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2255,6 +2333,9 @@ False should generally only be used for debugging precision of the matrix elemen
 or if one wishes to check the warnings.</p></li>
 <li><p><strong>**kwargs</strong> – keyword arguments passed directly to <em class="xref py py-obj">Geometry.untile</em></p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
 </dd>
 </dl>
 <div class="admonition-notes admonition">
@@ -2287,6 +2368,9 @@ it will halve the coupling and use the same coupling to the left, which is clear
 <li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
 <li><p><strong>sym</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Self</em></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2331,7 +2415,7 @@ it will halve the coupling and use the same coupling to the left, which is clear
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.dim">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.dim" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.dim" title="Link to this definition"></a></dt>
 <dd><p>Number of components per element</p>
 </dd></dl>
 
@@ -2349,31 +2433,31 @@ it will halve the coupling and use the same coupling to the left, which is clear
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.finalized">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">finalized</span></span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.finalized" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">finalized</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.finalized" title="Link to this definition"></a></dt>
 <dd><p>Whether the contained data is finalized and non-used elements have been removed</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.geometry">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geometry</span></span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.geometry" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><span class="pre">Geometry</span></a></em><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.geometry" title="Link to this definition"></a></dt>
 <dd><p>Associated geometry</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.nnz">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nnz</span></span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.nnz" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nnz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.nnz" title="Link to this definition"></a></dt>
 <dd><p>Number of non-zero elements</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.non_orthogonal">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_orthogonal</span></span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.non_orthogonal" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_orthogonal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.non_orthogonal" title="Link to this definition"></a></dt>
 <dd><p>True if the object is using a non-orthogonal basis</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.orthogonal">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orthogonal</span></span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.orthogonal" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orthogonal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.orthogonal" title="Link to this definition"></a></dt>
 <dd><p>True if the object is using an orthogonal basis</p>
 </dd></dl>
 
@@ -2385,13 +2469,13 @@ it will halve the coupling and use the same coupling to the left, which is clear
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.shape" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.shape" title="Link to this definition"></a></dt>
 <dd><p>Shape of sparse matrix</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.spin">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spin</span></span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.spin" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin" title="sisl.physics.Spin"><span class="pre">Spin</span></a></em><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.spin" title="Link to this definition"></a></dt>
 <dd><p>Associated spin class</p>
 </dd></dl>
 

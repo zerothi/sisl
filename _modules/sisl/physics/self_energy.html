@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=61e959ee"></script>
+      <script src="../../../_static/documentation_options.js?v=fa32bbbb"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,7 +120,7 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">abs</span> <span class="k">as</span> <span class="n">_abs</span>
@@ -145,7 +145,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.bloch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Bloch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.brillouinzone</span><span class="w"> </span><span class="kn">import</span> <span class="n">MonkhorstPack</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KPoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KPoint</span><span class="p">,</span> <span class="n">SparseMatrixPhysical</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.mathematics</span><span class="w"> </span><span class="kn">import</span> <span class="n">fnorm</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SelfEnergy&quot;</span><span class="p">]</span>
@@ -168,14 +168,14 @@
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Self-energy class for constructing a self-energy.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="SelfEnergy.se2broadening">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.se2broadening">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">se2broadening</span><span class="p">(</span><span class="n">SE</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">se2broadening</span><span class="p">(</span><span class="n">SE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the broadening matrix from the self-energy</span>
 
 <span class="sd">        .. math::</span>
@@ -195,13 +195,13 @@
 
 <div class="viewcode-block" id="SelfEnergy.self_energy">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.self_energy">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="SelfEnergy.broadening_matrix">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.broadening_matrix">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the broadening matrix by first calculating the self-energy</span>
 
 <span class="sd">        Any arguments that is passed to this method is directly passed to `self_energy`.</span>
@@ -255,47 +255,72 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    spgeom : SparseGeometry or int</span>
+<span class="sd">    spgeom :</span>
 <span class="sd">       for a `SparseGeometry` only the length will be queried.</span>
 <span class="sd">    eta :</span>
 <span class="sd">       the imaginary part (:math:`\eta`) of the self-energy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">,</span> <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SparseMatrixPhysical</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spgeom</span> <span class="o">=</span> <span class="n">spgeom</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spgeom</span><span class="p">,</span> <span class="n">_SparseGeometry</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spgeom</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">spgeom</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
 
 <div class="viewcode-block" id="WideBandSE.self_energy">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.WideBandSE.html#sisl.physics.WideBandSE.self_energy">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">complex</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a dense matrix with the self-energy</span>
+
+<span class="sd">        .. math:</span>
+<span class="sd">            \mathbf G(E) = -i \pi \eta \mathbf S_{\mathbf k}</span>
+
+
+<span class="sd">        Since :math:`\mathbf S` is part of the equation, it depends</span>
+<span class="sd">        on whether the passed sparse matrix has a non-orthogonal basis set.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        eta : float, optional</span>
-<span class="sd">            locally override the `eta` value for the object</span>
+<span class="sd">        E :</span>
+<span class="sd">            locally override the `eta` value for the object, will only use the complex</span>
+<span class="sd">            part of the passed energy</span>
+<span class="sd">        k :</span>
+<span class="sd">            only used if the passed `spgeom` upon initialization is a sparse matrix.</span>
+<span class="sd">            In which case it will use the overlap matrix to return something</span>
+<span class="sd">            that is similar to the atomic structure.</span>
+<span class="sd">            Otherwise, not used.</span>
+<span class="sd">        dtype :</span>
+<span class="sd">            the returned data-type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># note the sign (-)</span>
-        <span class="n">eta</span> <span class="o">=</span> <span class="o">-</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;eta&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">eta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">))</span></div>
+        <span class="k">if</span> <span class="n">E</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+
+        <span class="n">broad</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+                <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">S</span> <span class="o">*</span> <span class="n">broad</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">broad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="WideBandSE.broadening_matrix">
-<a class="viewcode-back" href="../../../api/generated/sisl.physics.WideBandSE.html#sisl.physics.WideBandSE.broadening_matrix">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># note the sign (+)</span>
-        <span class="n">eta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;eta&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">eta</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">))</span></div>
-
-
-    <span class="n">broadening_matrix</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="o">.</span><span class="n">broadening_matrix</span><span class="o">.</span><span class="vm">__doc__</span>
+    <span class="c1"># allow also to use green for self-energy, in this case they are the same</span>
+    <span class="n">green</span> <span class="o">=</span> <span class="n">self_energy</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
@@ -304,17 +329,17 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    spgeom : SparseGeometry</span>
+<span class="sd">    spgeom :</span>
 <span class="sd">       any sparse geometry matrix which may return matrices</span>
-<span class="sd">    infinite : str</span>
+<span class="sd">    infinite :</span>
 <span class="sd">       axis specification for the semi-infinite direction (`+A`/`-A`/`+B`/`-B`/`+C`/`-C`)</span>
-<span class="sd">    eta : float, optional</span>
+<span class="sd">    eta :</span>
 <span class="sd">       the default imaginary part (:math:`\eta`) of the self-energy calculation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">spgeom</span><span class="p">,</span>
+        <span class="n">spgeom</span><span class="p">:</span> <span class="n">SparseMatrixPhysical</span><span class="p">,</span>
         <span class="n">infinite</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;+A&quot;</span><span class="p">,</span> <span class="s2">&quot;-A&quot;</span><span class="p">,</span> <span class="s2">&quot;+B&quot;</span><span class="p">,</span> <span class="s2">&quot;-B&quot;</span><span class="p">,</span> <span class="s2">&quot;+C&quot;</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">],</span>
         <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
     <span class="p">):</span>
@@ -353,7 +378,7 @@
         <span class="c1"># Finalize the setup by calling the class specific routine</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">spgeom</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of SemiInfinite&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">{{direction: </span><span class="si">{1}{2}</span><span class="s2">}}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
@@ -370,7 +395,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Overload attributes from the hosting object&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Representation of the RecursiveSI model&quot;&quot;&quot;</span>
         <span class="n">direction</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;+&quot;</span><span class="p">}</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">}</span>
@@ -381,7 +406,7 @@
             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the Lopez-Sancho internals for easy axes&quot;&quot;&quot;</span>
 
         <span class="c1"># Create spgeom0 and spgeom1</span>
@@ -432,23 +457,23 @@
         <span class="c1"># Delete all values in columns, but keep them to retain the supercell information</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">delete_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RecursiveSI.green">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI.green">[docs]</a>
     <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;eps&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">,</span> <span class="s2">&quot;eps argument is deprecated in favor of atol&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span>
+        <span class="s2">&quot;eps&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">,</span> <span class="s2">&quot;eps argument is deprecated in favor of atol&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">green</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-14</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).</span>
 
 <span class="sd">        Parameters</span>
@@ -458,8 +483,8 @@
 <span class="sd">        k :</span>
 <span class="sd">          k-point at which the Green function should be evaluated.</span>
 <span class="sd">          the k-point should be in units of the reciprocal lattice vectors.</span>
-<span class="sd">        dtype : numpy.dtype</span>
-<span class="sd">          the resulting data type</span>
+<span class="sd">        dtype :</span>
+<span class="sd">          the resulting data type.</span>
 <span class="sd">        atol :</span>
 <span class="sd">          convergence criteria for the recursion</span>
 <span class="sd">        **kwargs : dict, optional</span>
@@ -473,8 +498,6 @@
         <span class="c1"># Get k-point</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">complex128</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span>
         <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
@@ -559,17 +582,17 @@
 <div class="viewcode-block" id="RecursiveSI.self_energy">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI.self_energy">[docs]</a>
     <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;eps&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">,</span> <span class="s2">&quot;eps argument is deprecated in favor of atol&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span>
+        <span class="s2">&quot;eps&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">,</span> <span class="s2">&quot;eps argument is deprecated in favor of atol&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-14</span><span class="p">,</span>
         <span class="n">bulk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).</span>
 
 <span class="sd">        Parameters</span>
@@ -579,7 +602,7 @@
 <span class="sd">        k :</span>
 <span class="sd">          k-point at which the self-energy should be evaluated.</span>
 <span class="sd">          the k-point should be in units of the reciprocal lattice vectors.</span>
-<span class="sd">        dtype : numpy.dtype</span>
+<span class="sd">        dtype :</span>
 <span class="sd">          the resulting data type</span>
 <span class="sd">        atol :</span>
 <span class="sd">          convergence criteria for the recursion</span>
@@ -597,8 +620,6 @@
         <span class="c1"># Get k-point</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">complex128</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span>
         <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
@@ -681,17 +702,17 @@
 <div class="viewcode-block" id="RecursiveSI.self_energy_lr">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI.self_energy_lr">[docs]</a>
     <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;eps&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">,</span> <span class="s2">&quot;eps argument is deprecated in favor of atol&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span>
+        <span class="s2">&quot;eps&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">,</span> <span class="s2">&quot;eps argument is deprecated in favor of atol&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">self_energy_lr</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-14</span><span class="p">,</span>
         <span class="n">bulk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).</span>
 
 <span class="sd">        Note calculating the LR self-energies simultaneously requires that their chemical potentials are the same.</span>
@@ -704,8 +725,8 @@
 <span class="sd">        k :</span>
 <span class="sd">          k-point at which the self-energy should be evaluated.</span>
 <span class="sd">          the k-point should be in units of the reciprocal lattice vectors.</span>
-<span class="sd">        dtype : numpy.dtype, optional</span>
-<span class="sd">          the resulting data type, default to ``np.complex128``</span>
+<span class="sd">        dtype :</span>
+<span class="sd">          the resulting data type.</span>
 <span class="sd">        atol :</span>
 <span class="sd">          convergence criteria for the recursion</span>
 <span class="sd">        bulk :</span>
@@ -723,12 +744,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Get k-point</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">complex128</span>
 
         <span class="n">sp0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span>
         <span class="n">sp1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span>
@@ -827,21 +846,21 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    parent : SparseOrbitalBZ</span>
+<span class="sd">    parent :</span>
 <span class="sd">        a physical object from which to calculate the real-space self-energy.</span>
 <span class="sd">        The parent object *must* have only 3 supercells along the direction where</span>
 <span class="sd">        self-energies are used.</span>
 <span class="sd">    semi_axis :</span>
 <span class="sd">        semi-infinite direction (where self-energies are used and thus *exact* precision)</span>
-<span class="sd">    k_axes : array_like of int</span>
+<span class="sd">    k_axes :</span>
 <span class="sd">        the axes where k-points are desired. 1 or 2 values are required and the `semi_axis`</span>
 <span class="sd">        cannot be one of them</span>
-<span class="sd">    unfold : (3,) of int</span>
+<span class="sd">    unfold :</span>
 <span class="sd">        number of times the `parent` structure is tiled along each direction</span>
 <span class="sd">        The resulting Green function/self-energy ordering is always tiled along</span>
 <span class="sd">        the semi-infinite direction first, and then the other directions in order.</span>
-<span class="sd">    eta : float, optional</span>
-<span class="sd">        imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)</span>
+<span class="sd">    eta :</span>
+<span class="sd">        imaginary part (:math:`\eta`) in the self-energy calculations</span>
 <span class="sd">    dk : float, optional</span>
 <span class="sd">        fineness of the default integration grid, specified in units of Ang, default to 1000 which</span>
 <span class="sd">        translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.</span>
@@ -876,10 +895,11 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">parent</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">:</span> <span class="n">SparseMatrixPhysical</span><span class="p">,</span>
         <span class="n">semi_axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">k_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-        <span class="n">unfold</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">unfold</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
         <span class="o">**</span><span class="n">options</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize real-space self-energy calculator&quot;&quot;&quot;</span>
@@ -918,17 +938,17 @@
             <span class="c1"># whether TRS is used (G + G.T) * 0.5</span>
             <span class="s2">&quot;trs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="c1"># imaginary part used in the Green function calculation (unless an imaginary energy is passed)</span>
-            <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span>
+            <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="n">eta</span><span class="p">,</span>
             <span class="c1"># The BrillouinZone used for integration</span>
             <span class="s2">&quot;bz&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of RealSpaceSE&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
@@ -947,7 +967,7 @@
 
 <div class="viewcode-block" id="RealSpaceSE.set_options">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.set_options">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update options in the real-space self-energy</span>
 
 <span class="sd">        After updating options one should re-call `setup` for consistency.</span>
@@ -1074,16 +1094,16 @@
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;RealSpaceSE.initialize is deprecated in favor of RealSpaceSE.setup, please update code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;See setup&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="RealSpaceSE.setup">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.setup">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Setup the internal data-arrays used for efficient calculation of the real-space quantities</span>
 
 <span class="sd">        This method should first be called *after* all options has been specified.</span>
@@ -1152,9 +1172,9 @@
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">bulk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">coupling</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the real-space self-energy</span>
 
 <span class="sd">        The real space self-energy is calculated via:</span>
@@ -1176,15 +1196,14 @@
 <span class="sd">        coupling :</span>
 <span class="sd">           if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)</span>
 <span class="sd">           are returned</span>
-<span class="sd">        dtype : numpy.dtype, optional</span>
-<span class="sd">          the resulting data type, default to ``np.complex128``</span>
+<span class="sd">        dtype :</span>
+<span class="sd">          the resulting data type.</span>
 <span class="sd">        **kwargs : dict, optional</span>
 <span class="sd">           arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">complex128</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Calculate the real-space Green function</span>
         <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -1241,11 +1260,11 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">apply_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the real-space Green function</span>
 
 <span class="sd">        The real space Green function is calculated via:</span>
@@ -1260,14 +1279,19 @@
 <span class="sd">        k :</span>
 <span class="sd">           only viable for 3D bulk systems with real-space Green functions along 2 directions.</span>
 <span class="sd">           I.e. this would correspond to a circular real-space Green function</span>
-<span class="sd">        dtype : numpy.dtype, optional</span>
-<span class="sd">          the resulting data type, default to ``np.complex128``</span>
+<span class="sd">        dtype :</span>
+<span class="sd">          the resulting data type.</span>
 <span class="sd">        apply_kwargs : dict, optional</span>
 <span class="sd">           keyword arguments passed directly to ``bz.apply.renew(**apply_kwargs)``.</span>
 <span class="sd">        **kwargs : dict, optional</span>
 <span class="sd">           arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
+
+        <span class="c1"># Now we are to calculate the real-space self-energy</span>
+        <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Retrieve integration k-grid</span>
         <span class="n">bz</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;bz&quot;</span><span class="p">]</span>
@@ -1277,14 +1301,8 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">trs</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;trs&quot;</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">complex128</span>
         <span class="k">if</span> <span class="n">apply_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">apply_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="c1"># Now we are to calculate the real-space self-energy</span>
-        <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
 
         <span class="c1"># Used axes</span>
         <span class="n">s_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_semi_axis</span>
@@ -1480,7 +1498,7 @@
 
 <div class="viewcode-block" id="RealSpaceSE.clear">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.clear">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the internal arrays created in `setup`&quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span></div>
 
@@ -1500,12 +1518,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    semi : SemiInfinite</span>
+<span class="sd">    semi :</span>
 <span class="sd">        physical object which contains the semi-infinite direction, it is from</span>
 <span class="sd">        this object we calculate the self-energy to be put into the surface.</span>
 <span class="sd">        a physical object from which to calculate the real-space self-energy.</span>
 <span class="sd">        `semi` and `surface` must have parallel lattice vectors.</span>
-<span class="sd">    surface : SparseOrbitalBZ</span>
+<span class="sd">    surface :</span>
 <span class="sd">        parent object containing the surface of system. `semi` is attached into this</span>
 <span class="sd">        object via the overlapping regions, the atoms that overlap `semi` and `surface`</span>
 <span class="sd">        are determined in the `setup` routine.</span>
@@ -1513,11 +1531,11 @@
 <span class="sd">    k_axes :</span>
 <span class="sd">        axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction</span>
 <span class="sd">        along the `semi` semi-infinite direction.</span>
-<span class="sd">    unfold : (3,) of int</span>
+<span class="sd">    unfold :</span>
 <span class="sd">        number of times the `surface` structure is tiled along each direction</span>
 <span class="sd">        Since this is a surface there will maximally be 2 unfolds being non-unity.</span>
-<span class="sd">    eta : float, optional</span>
-<span class="sd">        imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)</span>
+<span class="sd">    eta :</span>
+<span class="sd">        imaginary part (:math:`\eta`) in the self-energy calculations.</span>
 <span class="sd">    dk : float, optional</span>
 <span class="sd">        fineness of the default integration grid, specified in units of Ang, default to 1000 which</span>
 <span class="sd">        translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.</span>
@@ -1558,10 +1576,11 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">semi</span><span class="p">,</span>
-        <span class="n">surface</span><span class="p">,</span>
+        <span class="n">semi</span><span class="p">:</span> <span class="n">SemiInfinite</span><span class="p">,</span>
+        <span class="n">surface</span><span class="p">:</span> <span class="n">SparseMatrixPhysical</span><span class="p">,</span>
         <span class="n">k_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-        <span class="n">unfold</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">unfold</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
         <span class="o">**</span><span class="n">options</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize real-space self-energy calculator&quot;&quot;&quot;</span>
@@ -1660,17 +1679,17 @@
             <span class="c1"># whether TRS is used (G + G.T) * 0.5</span>
             <span class="s2">&quot;trs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="c1"># imaginary part used in the Green function calculation (unless an imaginary energy is passed)</span>
-            <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span>
+            <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="n">eta</span><span class="p">,</span>
             <span class="c1"># The BrillouinZone used for integration</span>
             <span class="s2">&quot;bz&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of RealSpaceSI&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
@@ -1692,7 +1711,7 @@
 
 <div class="viewcode-block" id="RealSpaceSI.set_options">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.set_options">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update options in the real-space self-energy</span>
 
 <span class="sd">        After updating options one should re-call `setup` for consistency.</span>
@@ -1868,16 +1887,16 @@
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;RealSpaceSI.initialize is deprecated in favor of RealSpaceSI.setup, please update code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;See setup&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="RealSpaceSI.setup">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.setup">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Initialize the internal data-arrays used for efficient calculation of the real-space quantities</span>
 
 <span class="sd">        This method should first be called *after* all options has been specified.</span>
@@ -1937,9 +1956,9 @@
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">bulk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">coupling</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate real-space surface self-energy</span>
 
 <span class="sd">        The real space self-energy is calculated via:</span>
@@ -1961,15 +1980,14 @@
 <span class="sd">        coupling :</span>
 <span class="sd">           if True, only the self-energy terms located on the coupling geometry (`coupling_geometry`)</span>
 <span class="sd">           are returned</span>
-<span class="sd">        dtype : numpy.dtype, optional</span>
-<span class="sd">          the resulting data type, default to ``np.complex128``</span>
+<span class="sd">        dtype :</span>
+<span class="sd">          the resulting data type.</span>
 <span class="sd">        **kwargs : dict, optional</span>
 <span class="sd">           arguments passed directly to the ``self.surface.Pk`` method (not ``self.surface.Sk``), for instance ``spin``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">complex128</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Calculate the real-space Green function</span>
         <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -2022,7 +2040,9 @@
 
 <div class="viewcode-block" id="RealSpaceSI.green">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.green">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">green</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">green</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the real-space Green function</span>
 
 <span class="sd">        The real space Green function is calculated via:</span>
@@ -2037,12 +2057,17 @@
 <span class="sd">        k :</span>
 <span class="sd">           only viable for 3D bulk systems with real-space Green functions along 2 directions.</span>
 <span class="sd">           I.e. this would correspond to a circular real-space Green function</span>
-<span class="sd">        dtype : numpy.dtype, optional</span>
-<span class="sd">          the resulting data type, default to ``np.complex128``</span>
+<span class="sd">        dtype :</span>
+<span class="sd">          the resulting data type.</span>
 <span class="sd">        **kwargs : dict, optional</span>
 <span class="sd">           arguments passed directly to the ``self.surface.Pk`` method (not ``self.surface.Sk``), for instance ``spin``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
+
+        <span class="c1"># Now we are to calculate the real-space self-energy</span>
+        <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Retrieve integration k-grid</span>
         <span class="n">bz</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;bz&quot;</span><span class="p">]</span>
@@ -2051,13 +2076,6 @@
             <span class="n">trs</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">_trs</span> <span class="o">&gt;=</span> <span class="mi">0</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">trs</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;trs&quot;</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">complex128</span>
-
-        <span class="c1"># Now we are to calculate the real-space self-energy</span>
-        <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
 
         <span class="c1"># Used k-axes</span>
         <span class="n">k_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k_axes</span>
@@ -2172,7 +2190,7 @@
 
 <div class="viewcode-block" id="RealSpaceSI.clear">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.clear">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the internal arrays created in `setup`&quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span></div>
 

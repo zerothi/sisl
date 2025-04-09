@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=61e959ee"></script>
+      <script src="../../../_static/documentation_options.js?v=fa32bbbb"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -162,6 +162,7 @@
     <span class="n">list_index_le</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._lib._argparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SislHelpFormatter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._math_small</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross3</span><span class="p">,</span> <span class="n">is_ascending</span><span class="p">,</span> <span class="n">xyz_to_spherical_cos_phi</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._namedindex</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedIndex</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
@@ -299,7 +300,7 @@
         <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument sc has been deprecated in favor of lattice, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1425,7 +1426,7 @@
         <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument eps has been deprecated in favor of atol&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">overlap</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -3565,7 +3566,7 @@
         <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">GeometryLike</span><span class="p">,</span> <span class="n">R</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether two geometries are the same (optional not check of the orbital radius)</span>
@@ -3654,7 +3655,7 @@
         <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">distance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -3834,7 +3835,7 @@
         <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument tol has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">within_inf</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -5062,7 +5063,7 @@
 
     <span class="n">p</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
         <span class="n">exe</span><span class="p">,</span>
-        <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">RawDescriptionHelpFormatter</span><span class="p">,</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">SislHelpFormatter</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
     <span class="p">)</span>
 

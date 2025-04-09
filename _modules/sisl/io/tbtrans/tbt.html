@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=61e959ee"></script>
+      <script src="../../../../_static/documentation_options.js?v=fa32bbbb"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -250,8 +250,8 @@
 <span class="sd">    tool, with the execption that the command-line tool uses Fortran indexing numbers (1-based).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_trans_type</span> <span class="o">=</span> <span class="s2">&quot;TBT&quot;</span>
-    <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span>
+    <span class="n">_trans_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TBT&quot;</span>
+    <span class="n">_E2eV</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Ry2eV</span>
 
     <span class="n">_k_avg</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -387,7 +387,10 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.All&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">transmission</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transmission from `elec_from` to `elec_to`.</span>
 
@@ -408,7 +411,7 @@
 <span class="sd">           the originating electrode</span>
 <span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned transmission is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 
@@ -432,7 +435,10 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.reflection">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Out&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.T.All&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">reflection</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">from_single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">from_single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reflection into electrode `elec`</span>
 
@@ -456,7 +462,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        elec:</span>
 <span class="sd">           the backscattered electrode</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned reflection is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        from_single:</span>
@@ -492,7 +498,10 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_eig">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Eig&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;int&gt;&quot;</span><span class="p">)])</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">transmission_eig</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transmission eigenvalues from `elec_from` to `elec_to`.</span>
 
@@ -502,7 +511,7 @@
 <span class="sd">           the originating electrode</span>
 <span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned transmission eigenvalues are k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 
@@ -524,7 +533,9 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.transmission_bulk">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_bulk">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Bulk&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">transmission_bulk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transmission_bulk</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Bulk transmission for the `elec` electrode</span>
 
 <span class="sd">        The bulk transmission is equivalent to creating a 2 terminal device with</span>
@@ -534,7 +545,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        elec:</span>
 <span class="sd">           the bulk electrode</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned transmission are k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 
@@ -741,7 +752,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">DOS</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -762,7 +773,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        E :</span>
 <span class="sd">           optionally only return the DOS of atoms at a given energy point</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned DOS is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        atoms : array_like of int or bool, optional</span>
@@ -796,7 +807,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -818,7 +829,7 @@
 <span class="sd">           electrode originating spectral function</span>
 <span class="sd">        E :</span>
 <span class="sd">           optionally only return the DOS of atoms at a given energy point</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned DOS is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        atoms : array_like of int or bool, optional</span>
@@ -855,7 +866,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="nb">sum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">norm</span><span class="p">:</span> <span class="n">NormType</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -880,7 +891,7 @@
 <span class="sd">           electrode where the bulk DOS is returned</span>
 <span class="sd">        E :</span>
 <span class="sd">           optionally only return the DOS of atoms at a given energy point</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned DOS is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        sum :</span>
@@ -912,7 +923,10 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.current">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.current">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Current from `from` to `to` using the k-weights and energy spacings in the file.</span>
 
@@ -929,7 +943,7 @@
 <span class="sd">           the originating electrode</span>
 <span class="sd">        elec_to: str, int, optional</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned current is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 
@@ -956,7 +970,7 @@
         <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span><span class="p">,</span>
         <span class="n">mu_to</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">kt_to</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Current from `from` to `to` using the k-weights and energy spacings in the file.</span>
 
@@ -982,7 +996,7 @@
 <span class="sd">           the chemical potential of the electrode (in eV)</span>
 <span class="sd">        kt_to:</span>
 <span class="sd">           the electronic temperature of the electrode (in eV)</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned current is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 
@@ -1031,7 +1045,7 @@
         <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">classical</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shot-noise term `from` to `to` using the k-weights</span>
 
@@ -1059,7 +1073,7 @@
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
 <span class="sd">        classical:</span>
 <span class="sd">           which shot-noise to calculate, default to non-classical</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned shot-noise is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 
@@ -1110,7 +1124,10 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.noise_power">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.noise_power">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">noise_power</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)</span>
 
@@ -1135,7 +1152,7 @@
 <span class="sd">           the originating electrode</span>
 <span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned noise-power is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 
@@ -1203,13 +1220,13 @@
         <span class="s2">&quot;atol&quot;</span><span class="p">,</span>
         <span class="s2">&quot;argument zero_T has been deprecated in favor of atol, please update your code.&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">fano</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec_from</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">elec_to</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; The Fano-factor for the calculation (requires calculated transmission eigenvalues)</span>
@@ -1244,7 +1261,7 @@
 <span class="sd">           the originating electrode</span>
 <span class="sd">        elec_to:</span>
 <span class="sd">           the absorbing electrode (different from `elec_from`)</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned Fano factor is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned. In any case the divisor will always be the k-averaged transmission.</span>
 <span class="sd">        atol :</span>
@@ -1295,7 +1312,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_sparse_data</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ElecType</span><span class="p">],</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ElecType</span><span class="p">],</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal routine for retrieving sparse data (orbital current, COOP)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">elec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1416,7 +1433,7 @@
         <span class="n">name</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ElecType</span><span class="p">],</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
@@ -1661,19 +1678,12 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_transmission">[docs]</a>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;only&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;what&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">orbital_transmission</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1715,7 +1725,7 @@
 <span class="sd">           the orbital transmission corresponding to the energy.</span>
 <span class="sd">        elec:</span>
 <span class="sd">           the electrode of originating electrons</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned orbital transmission is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -1774,19 +1784,12 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_current">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_current">[docs]</a>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;only&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;what&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.T.Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TBT.Current.Orb&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">orbital_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">elec_other</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1808,7 +1811,7 @@
 <span class="sd">        elec_other:</span>
 <span class="sd">           this electrode determines the *other* chemical potential. As such the orbital currents</span>
 <span class="sd">           does not reflect the current going from `elec` *to* `elec_other`!</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -1892,18 +1895,11 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.bond_transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_transmission">[docs]</a>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;only&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;what&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bond_transmission</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1924,7 +1920,7 @@
 <span class="sd">           the bond transmission corresponding to the energy.</span>
 <span class="sd">        elec :</span>
 <span class="sd">           the electrode of originating electrons</span>
-<span class="sd">        kavg : bool, int, optional</span>
+<span class="sd">        kavg :</span>
 <span class="sd">           whether the returned bond transmissions is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc : array_like, optional</span>
@@ -1970,18 +1966,11 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.bond_current">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_current">[docs]</a>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;only&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;what&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bond_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">elec_other</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2003,7 +1992,7 @@
 <span class="sd">        elec_other:</span>
 <span class="sd">           this electrode determines the *other* chemical potential. As such the orbital currents</span>
 <span class="sd">           does not reflect the current going from `elec` *to* `elec_other`!</span>
-<span class="sd">        kavg : bool, int, optional</span>
+<span class="sd">        kavg :</span>
 <span class="sd">           whether the returned bond current is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc : array_like, optional</span>
@@ -2059,18 +2048,11 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.vector_transmission">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_transmission">[docs]</a>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;only&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;what&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">vector_transmission</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2091,7 +2073,7 @@
 <span class="sd">           the vector transmission corresponding to the energy.</span>
 <span class="sd">        elec:</span>
 <span class="sd">           the electrode of originating electrons</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned vector transmission is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2139,18 +2121,11 @@
 
 <div class="viewcode-block" id="tbtncSileTBtrans.vector_current">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_current">[docs]</a>
-    <span class="nd">@deprecate_argument</span><span class="p">(</span>
-        <span class="s2">&quot;only&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;what&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.14&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">vector_current</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">elec_other</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">what</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2172,7 +2147,7 @@
 <span class="sd">        elec_other:</span>
 <span class="sd">           this electrode determines the *other* chemical potential. As such the vector currents</span>
 <span class="sd">           does not reflect the current going from `elec` *to* `elec_other`!</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned vector current is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2233,7 +2208,7 @@
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">activity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -2274,7 +2249,7 @@
 <span class="sd">           the originating electrode</span>
 <span class="sd">        activity:</span>
 <span class="sd">           ``True`` to return the activity, see explanation above</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned atomic transmissions are k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2313,7 +2288,7 @@
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">elec_other</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">activity</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -2354,7 +2329,7 @@
 <span class="sd">           does not reflect the current going from `elec` *to* `elec_other`!</span>
 <span class="sd">        activity:</span>
 <span class="sd">           ``True`` to return the activity current, see explanation above</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2400,7 +2375,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">density_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2423,7 +2398,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        E :</span>
 <span class="sd">           the density matrix corresponding to the energy.</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2461,7 +2436,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2486,7 +2461,7 @@
 <span class="sd">           the electrode of originating electrons</span>
 <span class="sd">        E :</span>
 <span class="sd">           the density matrix corresponding to the energy.</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2529,7 +2504,9 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_COOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COOP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COOP.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">orbital_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orbital_COOP</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the Green function</span>
 
 <span class="sd">        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.</span>
@@ -2561,7 +2538,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        E:</span>
 <span class="sd">           the COOP corresponding to the energy.</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned COOP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2597,7 +2574,12 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOOP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COOP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">orbital_ACOOP</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the spectral function</span>
 
@@ -2631,7 +2613,7 @@
 <span class="sd">           the COOP values corresponding to the energy.</span>
 <span class="sd">        elec:</span>
 <span class="sd">           the electrode of the spectral function</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned COOP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2666,7 +2648,12 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.atom_COOP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COOP">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">atom_COOP</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atomic COOP curve of the Green function</span>
 
@@ -2679,7 +2666,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        E:</span>
 <span class="sd">           the atomic COOP corresponding to the energy.</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned COOP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2714,7 +2701,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2734,7 +2721,7 @@
 <span class="sd">           the atomic COOP corresponding to the energy.</span>
 <span class="sd">        elec:</span>
 <span class="sd">           the electrode of the spectral function</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned COOP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2767,7 +2754,9 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.orbital_COHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COHP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COHP.Gf&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">orbital_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orbital_COHP</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Orbital resolved COHP analysis of the Green function</span>
 
 <span class="sd">        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.</span>
@@ -2784,7 +2773,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        E:</span>
 <span class="sd">           the COHP corresponding to the energy.</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned COHP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2817,7 +2806,12 @@
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOHP">[docs]</a>
     <span class="nd">@missing_input_fdf</span><span class="p">([(</span><span class="s2">&quot;TBT.COHP.A&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">)])</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">orbital_ACOHP</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Orbital resolved COHP analysis of the spectral function</span>
 
@@ -2837,7 +2831,7 @@
 <span class="sd">           the COHP corresponding to the energy.</span>
 <span class="sd">        elec:</span>
 <span class="sd">           the electrode of the spectral function</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned COHP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2864,7 +2858,12 @@
 <div class="viewcode-block" id="tbtncSileTBtrans.atom_COHP">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COHP">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">atom_COHP</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atomic COHP curve of the Green function</span>
 
@@ -2877,7 +2876,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        E:</span>
 <span class="sd">           the atomic COHP corresponding to the energy.</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned COHP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>
@@ -2912,7 +2911,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">EType</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">:</span> <span class="n">ElecType</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kavg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">uc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2925,7 +2924,7 @@
 <span class="sd">           the atomic COHP corresponding to the energy.</span>
 <span class="sd">        elec:</span>
 <span class="sd">           the electrode of the spectral function</span>
-<span class="sd">        kavg: bool, int, optional</span>
+<span class="sd">        kavg:</span>
 <span class="sd">           whether the returned COHP is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
 <span class="sd">        isc: array_like, optional</span>

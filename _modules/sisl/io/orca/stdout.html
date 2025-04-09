@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=61e959ee"></script>
+      <script src="../../../../_static/documentation_options.js?v=fa32bbbb"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -175,7 +175,7 @@
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;stdoutSileORCA.completed is deprecated in favor of stdoutSileORCA.info.completed&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the full file has been read and &quot;ORCA TERMINATED NORMALLY&quot; was found.&quot;&quot;&quot;</span>
@@ -186,7 +186,7 @@
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;stdoutSileORCA.na is deprecated in favor of stdoutSileORCA.info.na&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">na</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of atoms&quot;&quot;&quot;</span>
@@ -196,7 +196,7 @@
     <span class="nd">@deprecation</span><span class="p">(</span>
         <span class="s2">&quot;stdoutSileORCA.no is deprecated in favor of stdoutSileORCA.info.no&quot;</span><span class="p">,</span>
         <span class="s2">&quot;0.15&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;0.16&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.17&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">no</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of orbitals (basis functions)&quot;&quot;&quot;</span>
@@ -510,7 +510,7 @@
 
 
 <span class="n">outputSileORCA</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span>
-    <span class="s2">&quot;outputSileORCA has been deprecated in favor of stdoutSileOrca.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16&quot;</span>
+    <span class="s2">&quot;outputSileORCA has been deprecated in favor of stdoutSileOrca.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span>
 <span class="p">)(</span><span class="n">stdoutSileORCA</span><span class="p">)</span>
 
 <span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="n">stdoutSileORCA</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

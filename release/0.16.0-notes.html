@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl 0.16.0 Release Notes &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=fa32bbbb"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=7800a641"></script>
+      <script src="../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../changelog/index.html" />
+    <link rel="prev" title="Release Notes" href="../release.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../release.html">Release Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">0.16.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-features">New features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changes-and-improvements">Changes and improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bugfixes">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#contributors">Contributors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-requests-merged">Pull requests merged</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#maintenance-pull-requests-merged">Maintenance pull requests merged</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../release.html#changelogs">Changelogs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../release.html">Release Notes</a></li>
+      <li class="breadcrumb-item active">sisl 0.16.0 Release Notes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/release/0.16.0-notes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sisl-0-16-0-release-notes">
+<h1>sisl 0.16.0 Release Notes<a class="headerlink" href="#sisl-0-16-0-release-notes" title="Link to this heading"></a></h1>
+<section id="new-features">
+<h2>New features<a class="headerlink" href="#new-features" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Enable <em class="xref py py-obj"></em> in MD-slices of siesta output siles</p>
+<p>Allowed <em class="xref py py-obj">read_scf(imd=…)</em> to ease the understanding
+of <em>everything</em>. Partly resolves #835.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/835">PR835</a>)</p>
+</li>
+<li><p>Added Nambu spin configuration</p>
+<p>Allowed <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> to operate with the Nambu spin-configuration.
+This spin-configuration is made for spin-orbit +
+super-conductivity.</p>
+<p>Nearly all functionality that is available for SOC is also
+availiable for BdG (Nambu) spin configuration.</p>
+<p>This goes in line with the recent additions to the Siesta
+code with superconductivity.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/896">PR896</a>)</p>
+</li>
+<li><p>Added atom borders in <a class="reference internal" href="../api/viz/index.html#module-sisl.viz" title="sisl.viz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code></a> plots</p>
+<p>The possibility to add and modify borders of plotted
+atoms has been added. In geometry plots, <code class="docutils literal notranslate"><span class="pre">atoms_style</span></code>
+now accepts the keys <code class="docutils literal notranslate"><span class="pre">border_color</span></code> and <code class="docutils literal notranslate"><span class="pre">border_width</span></code>.
+By default now atoms are plotted with a black border.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/897">PR897</a>)</p>
+</li>
+<li><p>Enabled implicit conversion of unknown objects</p>
+<p>Now users can automatically convert unknown objects
+and use them directly in <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> methods that are
+implemented for various methods.</p>
+<p>E.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ase</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+
+<span class="n">gr</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="n">sisl_rotated</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+<span class="n">gr</span> <span class="o">=</span> <span class="n">ase</span><span class="o">.</span><span class="n">Atoms</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">atoms_rotated</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+<span class="n">gr</span> <span class="o">=</span> <span class="n">ase</span><span class="o">.</span><span class="n">Atoms</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">sisl_rotated</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">ret_sisl</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will all work, the first and last will return a <em class="xref py py-obj">Geometry</em>, while
+the middle one will return an <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object.</p>
+<p>To forcefully return the <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> object, use the latter form with <code class="docutils literal notranslate"><span class="pre">ret_sisl</span></code>.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/898">PR898</a>)</p>
+</li>
+<li><p>Enabled <em class="xref py py-obj"></em> for <em class="xref py py-obj">atoms=</em> arguments</p>
+<p>Makes selecting all atoms slightly more intuitive if wanted.</p>
+</li>
+</ul>
+</section>
+<section id="changes-and-improvements">
+<h2>Changes and improvements<a class="headerlink" href="#changes-and-improvements" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Enabled <em class="xref py py-obj">astype</em> for sparse matrices</p>
+<p>This enables changing the data-type of sparse matrices
+in a consistent manner without having to use the <em class="xref py py-obj">transform</em>
+which would be impossible in the real-&gt;complex conversion.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/865">PR865</a>)</p>
+</li>
+<li><p>Enabled <em class="xref py py-obj">hsxSileSiesta.write_hamiltonian</em></p>
+<p>Finally we can write Hamiltonians from <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> in the <code class="docutils literal notranslate"><span class="pre">HSX</span></code>
+file format.</p>
+<p>For further details see: <a href="#id1"><span class="problematic" id="id2">`https://gitlab.com/siesta-project/siesta/-/issues/183`__</span></a></p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/884">PR884</a>)</p>
+</li>
+<li><p>Use <em class="xref py py-obj">towncrier</em></p>
+<p>We change the release notes to be constructed by <em class="xref py py-obj">towncrier</em>.</p>
+<p>This will make pull requests less prone to conflicts
+due to the merge of the <em class="xref py py-obj">CHANGELOG.md</em> file.
+That file is now deprecated, see <em class="xref py py-obj">changes/README.rst</em> for details.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/893">PR893</a>)</p>
+</li>
+<li><p>Changed <code class="docutils literal notranslate"><span class="pre">hermitian</span> <span class="pre">=&gt;</span> <span class="pre">conjugate</span></code></p>
+<p>Now one should use <code class="docutils literal notranslate"><span class="pre">H.transpose(conjugate=True,</span> <span class="pre">...)</span></code>
+instead. The Hermitian argument did not make sense, since
+the transpose was implicit of the function name.</p>
+<p>It is now also more obvious how <code class="docutils literal notranslate"><span class="pre">conjugate=...,</span> <span class="pre">spin=...</span></code>
+works together.</p>
+<p>Also, all arguments to this method are forced keywords.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">len(H)</span> <span class="pre">==</span> <span class="pre">H.no</span> <span class="pre">*</span> <span class="pre">4</span></code> for Nambu spin configuration.</p>
+<p>The diagonalization of the Hamiltonian will return
+an eigenvalue symmetric spectrum (about E=0).
+Hence this one will be dependent on the shift of the
+spectrum.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/896">PR896</a>)</p>
+</li>
+<li><p>Enabled creating Hamiltonian matrices from other Hamiltonians</p>
+<p>Previously, <em class="xref py py-obj">Hamiltonian.fromsp</em> would only parse <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>
+objects. This was limiting the functionality.</p>
+<p>Now, all sparse matrices can be converted through any <em class="xref py py-obj">fromsp</em> matrices.
+When the passed object is a SparseGeometry it will decide whether
+it is orthogonal or not. Otherwise, a user can manually specify
+the <em class="xref py py-obj">orthogonal</em> argument.</p>
+<p>The method will automatically remove any overlap parts (if passed
+as the matrix), and will automatically extract the overlap parts
+if a matrix has been passed in <code class="docutils literal notranslate"><span class="pre">S=</span></code>.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/904">PR904</a>)</p>
+</li>
+<li><p>Added ADOS extraction of TBtrans PDOS data in <a class="reference internal" href="../api/viz/index.html#module-sisl.viz" title="sisl.viz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code></a></p>
+<p>Now plotting the ADOS from TBtrans output files can
+intrinsically be handled by <a class="reference internal" href="../api/viz/index.html#module-sisl.viz" title="sisl.viz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code></a>.</p>
+</li>
+<li><p>Added <em class="xref py py-obj">read_brillouinzone</em> to multiple Siesta files</p>
+<p>This will allow reading <em class="xref py py-obj">BrillouinZone</em> objects from
+intrinsic Siesta output files.</p>
+</li>
+<li><p>All <em class="xref py py-obj">E</em> arguments for tbtSile cannot be indices</p>
+<p>Prior versions of sisl allowed one to use indices
+instead of <em class="xref py py-obj">E</em> arguments. However, this led to
+confusion when dealing with <code class="docutils literal notranslate"><span class="pre">E=0.0</span></code>. E.g.
+<code class="docutils literal notranslate"><span class="pre">E=0</span></code> and <code class="docutils literal notranslate"><span class="pre">E=0.0</span></code> could behave differently.</p>
+<p>Now, everything is handled via energies.
+For looping those, its better to do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbt</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">...</span><span class="n">Sile</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">iE</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">Eindex</span><span class="p">(</span><span class="mf">0.84</span><span class="p">)</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">E</span><span class="p">[</span><span class="n">iE</span><span class="p">]</span> <span class="c1"># will get you the closest energy point to 0.84</span>
+
+<span class="c1"># or for looping:</span>
+<span class="k">for</span> <span class="n">E</span> <span class="ow">in</span> <span class="n">tbt</span><span class="o">.</span><span class="n">E</span><span class="p">:</span>
+    <span class="o">...</span> <span class="n">do</span> <span class="n">something</span>
+</pre></div>
+</div>
+</li>
+<li><p>Clarified gauge arguments</p>
+<p>Now the gauge names are <em class="xref py py-obj">lattice</em> vs. <em class="xref py py-obj">atomic</em> which should
+clarify a bit more with respect to the older values: <em class="xref py py-obj">cell</em>
+and <em class="xref py py-obj">atom</em>. The older values will still be respected.
+A <em class="xref py py-obj">comply_gauge</em> method should be used for external projects
+if required.</p>
+</li>
+<li><p>Enabled easier submodule access</p>
+<p>Allows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="n">sisl</span><span class="o">.</span><span class="n">geom</span>
+</pre></div>
+</div>
+<p>and basically all variants. Using this mechanism the imports
+are lazily done.</p>
+<p>So now <em class="xref py py-obj">import sisl.geom</em> is generally not required!</p>
+</li>
+<li><p>Performance improvements for k-point creation of matrices</p>
+<p>The internal Cython code was restructured for much better
+performance.
+This yields a significant performance improvement for DFT
+matrices (many couplings) but a very minor perf. hit
+for small TB matrices (few couplings + few rows).</p>
+</li>
+<li><p>Quaternions now default to use radians for input</p>
+<p>This follows the general mathematical notation
+in cos/sin/tan geometrical routines.</p>
+</li>
+<li><p>Removed <em class="xref py py-obj">dtype</em> argument from <em class="xref py py-obj">Spin</em> class</p>
+<p>The data-type is now contained in the parent structure.
+This removes a duplicate definition that was hard to maintain
+in the code. It should be of minor importance as most would
+define the <em class="xref py py-obj">Spin</em> class without passing the <em class="xref py py-obj">dtype</em> argument.</p>
+</li>
+<li><p>Removed possibility of doing Hk of integer datatypes</p>
+<p>It increased compilation times significantly, with little gain.
+Use float32/64 or complex64/128.</p>
+</li>
+<li><p><em class="xref py py-obj">WideBandSE.self_energy</em> changed its behavior of <code class="docutils literal notranslate"><span class="pre">eta</span></code></p>
+<p>Now, the first argument is the <em>energy</em>, from which only
+the imaginary value will be used.
+Also, the energy will be scaled with <em class="xref py py-obj">np.pi</em> to get the
+<em>correct</em> integration.</p>
+<p>Additionally, when the WideBandSE object is instantiated with
+a sparsematrix, it will use the overlap matrix to account
+for this.</p>
+</li>
+</ul>
+</section>
+<section id="bugfixes">
+<h2>Bugfixes<a class="headerlink" href="#bugfixes" title="Link to this heading"></a></h2>
+<ul>
+<li><p><em class="xref py py-obj">hamiltonianSile</em> wrote wrong overlap and supercell connections</p>
+<p>Fixes and speeds up the writing of the overlap and supercell
+connections of the <em class="xref py py-obj">hamiltonianSile</em>. This file type is largely
+not used, and likely shouldn’t be used, but might be useful for
+educational purposes.</p>
+<p>Also allowed the file format to handle skewed lattices with 6
+input parameters from the cell block.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/887">PR887</a>)</p>
+</li>
+<li><p>Non-collinear transposing was buggy</p>
+<p>The code for transposing + conjugating (adjoint operator)
+was wrong for non-collinear matrices.
+This is now finally fixed, and checked for.</p>
+<p>Fixed documentation in <code class="docutils literal notranslate"><span class="pre">trs</span></code> method for matrices.</p>
+<p>Fixed overlap conjugation for transpose when complex
+numbers are used.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/896">PR896</a>)</p>
+</li>
+<li><p>Fix fatbands plots when there is a jump in the band structure.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/906">PR906</a>)</p>
+</li>
+<li><p>Fixed <em class="xref py py-obj">orbitals=slice(x, None)</em> arguments</p>
+<p>It now correctly uses <em class="xref py py-obj">geometry.no</em> instead of <em class="xref py py-obj">geometry.na</em>.</p>
+<p>Likely nobody used <em class="xref py py-obj">slice</em> arguments anyway.</p>
+</li>
+<li><p>Now <code class="docutils literal notranslate"><span class="pre">geometry.to(ase.Atoms)</span></code> will work</p>
+<p>The dispatch method expected it to be <code class="docutils literal notranslate"><span class="pre">geometry.to[ase.Atoms]()</span></code>
+which is counter-intuitive as all the other dispatchers does
+not require this. The <em class="xref py py-obj">__getitem__</em> method will still work
+as that will get you the method by witch the dispatch
+will happen.</p>
+</li>
+<li><p><em class="xref py py-obj">projection</em> arguments for all functions has been streamlined</p>
+<p>The <em class="xref py py-obj">projection</em> argument has gotten a major overhaul.
+Now the projections are generalized and streamlined across
+the code base using a common <em class="xref py py-obj">comply_projection</em> method
+that decides on what it should convert to.</p>
+<p>All old values are still allowed, but newer ones will be preferred:</p>
+<p>Here are all the allowed (new) projection options:</p>
+<ul class="simple">
+<li><p><em class="xref py py-obj">matrix</em> matrix product, <em class="xref py py-obj">ij</em> components</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/trace.html#module-trace" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace</span></code></a> return sum of the <em class="xref py py-obj">ii</em> components</p></li>
+<li><p><em class="xref py py-obj">diagonal</em> return the <em class="xref py py-obj">ii</em> components</p></li>
+<li><p><em class="xref py py-obj">hadamard</em> elementwise <em class="xref py py-obj">ij</em> components (not equivalent to <em class="xref py py-obj">matrix</em>!)</p></li>
+<li><p><em class="xref py py-obj">hadamard:atoms</em> elementwise <em class="xref py py-obj">ij</em> components, but summed for each atom</p></li>
+</ul>
+</li>
+<li><p>fixed future deprecation for ast.Num</p></li>
+</ul>
+</section>
+<section id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
+<p>A total of 3 people contributed to this release. People with a “+” by their
+names contributed a patch for the first time.</p>
+<ul class="simple">
+<li><p>Nick Papior</p></li>
+<li><p>Pol Febrer Calabozo</p></li>
+<li><p>Thomas Frederiksen</p></li>
+</ul>
+</section>
+<section id="pull-requests-merged">
+<h2>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Link to this heading"></a></h2>
+<p>A total of 8 pull requests were merged for this release.</p>
+<ul class="simple">
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/862">PR862</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/870">PR870</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/871">PR871</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/884">PR884</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/893">PR893</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/896">PR896</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/907">PR907</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/908">PR908</a></p></li>
+</ul>
+<section id="maintenance-pull-requests-merged">
+<h3>Maintenance pull requests merged<a class="headerlink" href="#maintenance-pull-requests-merged" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/866">PR866</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/867">PR867</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/872">PR872</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/876">PR876</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/880">PR880</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/881">PR881</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/895">PR895</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/899">PR899</a></p></li>
+<li><p><a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/903">PR903</a></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../release.html" class="btn btn-neutral float-left" title="Release Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../changelog/index.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

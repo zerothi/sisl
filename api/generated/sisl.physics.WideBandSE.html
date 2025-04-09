@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=61e959ee"></script>
+      <script src="../../_static/documentation_options.js?v=fa32bbbb"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -160,7 +160,7 @@ with all of them being equal to the <em class="xref py py-obj">eta</em> value.</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>spgeom</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SparseGeometry</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – for a <em class="xref py py-obj">SparseGeometry</em> only the length will be queried.</p></li>
+<li><p><strong>spgeom</strong> – for a <em class="xref py py-obj">SparseGeometry</em> only the length will be queried.</p></li>
 <li><p><strong>eta</strong> – the imaginary part (<span class="math notranslate nohighlight">\(\eta\)</span>) of the self-energy</p></li>
 </ul>
 </dd>
@@ -168,20 +168,23 @@ with all of them being equal to the <em class="xref py py-obj">eta</em> value.</
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.WideBandSE.broadening_matrix" title="sisl.physics.WideBandSE.broadening_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broadening_matrix</span></code></a>([E])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.WideBandSE.broadening_matrix" title="sisl.physics.WideBandSE.broadening_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broadening_matrix</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Calculate the broadening matrix by first calculating the self-energy</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.WideBandSE.se2broadening" title="sisl.physics.WideBandSE.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a>(SE)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.WideBandSE.green" title="sisl.physics.WideBandSE.green"><code class="xref py py-obj docutils literal notranslate"><span class="pre">green</span></code></a>([E, k, dtype])</p></td>
+<td><p>Return a dense matrix with the self-energy</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.WideBandSE.se2broadening" title="sisl.physics.WideBandSE.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a>(SE)</p></td>
 <td><p>Calculate the broadening matrix from the self-energy</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.WideBandSE.self_energy" title="sisl.physics.WideBandSE.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.WideBandSE.self_energy" title="sisl.physics.WideBandSE.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>([E, k, dtype])</p></td>
 <td><p>Return a dense matrix with the self-energy</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.WideBandSE.broadening_matrix">
-<span class="sig-name descname"><span class="pre">broadening_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#WideBandSE.broadening_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.WideBandSE.broadening_matrix" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">broadening_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.WideBandSE.broadening_matrix" title="Link to this definition"></a></dt>
 <dd><p>Calculate the broadening matrix by first calculating the self-energy</p>
 <p>Any arguments that is passed to this method is directly passed to <a class="reference internal" href="#sisl.physics.WideBandSE.self_energy" title="sisl.physics.WideBandSE.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>.</p>
 <p>See <a class="reference internal" href="#sisl.physics.WideBandSE.self_energy" title="sisl.physics.WideBandSE.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a> for details.</p>
@@ -216,8 +219,32 @@ calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p
 </dl>
 </div>
 <dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.WideBandSE.green">
+<span class="sig-name descname"><span class="pre">green</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">np.complex128</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.WideBandSE.green" title="Link to this definition"></a></dt>
+<dd><p>Return a dense matrix with the self-energy</p>
+<p>Since <span class="math notranslate nohighlight">\(\mathbf S\)</span> is part of the equation, it depends
+on whether the passed sparse matrix has a non-orthogonal basis set.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a><em>]</em>) – locally override the <em class="xref py py-obj">eta</em> value for the object, will only use the complex
+part of the passed energy</p></li>
+<li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>) – only used if the passed <em class="xref py py-obj">spgeom</em> upon initialization is a sparse matrix.
+In which case it will use the overlap matrix to return something
+that is similar to the atomic structure.
+Otherwise, not used.</p></li>
+<li><p><strong>dtype</strong> (<em>np.dtype</em>) – the returned data-type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -232,16 +259,32 @@ calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>SE</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">matrix</span></code>) – self-energy matrix</p>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.WideBandSE.self_energy">
-<span class="sig-name descname"><span class="pre">self_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#WideBandSE.self_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.WideBandSE.self_energy" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">self_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">np.complex128</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#WideBandSE.self_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.WideBandSE.self_energy" title="Link to this definition"></a></dt>
 <dd><p>Return a dense matrix with the self-energy</p>
+<p>Since <span class="math notranslate nohighlight">\(\mathbf S\)</span> is part of the equation, it depends
+on whether the passed sparse matrix has a non-orthogonal basis set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – locally override the <em class="xref py py-obj">eta</em> value for the object</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a><em>]</em>) – locally override the <em class="xref py py-obj">eta</em> value for the object, will only use the complex
+part of the passed energy</p></li>
+<li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>) – only used if the passed <em class="xref py py-obj">spgeom</em> upon initialization is a sparse matrix.
+In which case it will use the overlap matrix to return something
+that is similar to the atomic structure.
+Otherwise, not used.</p></li>
+<li><p><strong>dtype</strong> (<em>np.dtype</em>) – the returned data-type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
