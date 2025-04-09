@@ -11,7 +11,7 @@
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
 [![Python versions](https://img.shields.io/pypi/pyversions/sisl.svg)](https://pypi.org/project/sisl/)
 
-Copyright sisl developers 2024
+Copyright sisl developers 2025
 Copyright Nick R. Papior 2015
 
 sisl is an *open-source easy-to-use density functional theory API framework* to post-analyse density functional theory codes output
