@@ -16,9 +16,9 @@ below sequence.
 
 The release cycle should be performed like this:
 
-1. Update released versions in `CITATION.cff`
+1. Update released versions in `CITATION.cff` and `pyproject.toml`.
 
-2. Insert correct dates in `CITATION.cff` (for Zenodo)
+2. Insert correct dates in `CITATION.cff` (for Zenodo).
 
 3. Create release notes and changelogs:
 
