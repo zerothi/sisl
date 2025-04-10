@@ -1,3 +1,6 @@
+
+Released on {{ versiondata.date }}.
+
 {% for section, _ in sections.items() %}
 {% set underline = underlines[0] %}{% if section and sections[section] %}{{ section }}
 {{ underline * section|length }}{% set underline = underlines[1] %}

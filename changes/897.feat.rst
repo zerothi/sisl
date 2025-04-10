@@ -1,6 +1,0 @@
-Added atom borders in `sisl.viz` plots
-
-The possibility to add and modify borders of plotted
-atoms has been added. In geometry plots, ``atoms_style``
-now accepts the keys ``border_color`` and ``border_width``.
-By default now atoms are plotted with a black border.

@@ -1,5 +1,0 @@
-Enabled `astype` for sparse matrices
-
-This enables changing the data-type of sparse matrices
-in a consistent manner without having to use the `transform`
-which would be impossible in the real->complex conversion.

@@ -1,7 +1,0 @@
-Use `towncrier`
-
-We change the release notes to be constructed by `towncrier`.
-
-This will make pull requests less prone to conflicts
-due to the merge of the `CHANGELOG.md` file.
-That file is now deprecated, see `changes/README.rst` for details.

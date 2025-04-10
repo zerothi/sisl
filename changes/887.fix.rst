@@ -1,9 +1,0 @@
-`hamiltonianSile` wrote wrong overlap and supercell connections
-
-Fixes and speeds up the writing of the overlap and supercell
-connections of the `hamiltonianSile`. This file type is largely
-not used, and likely shouldn't be used, but might be useful for
-educational purposes.
-
-Also allowed the file format to handle skewed lattices with 6
-input parameters from the cell block.
