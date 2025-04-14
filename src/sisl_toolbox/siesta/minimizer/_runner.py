@@ -207,7 +207,7 @@ class CommandRunner(PathRunner):
         abs_cmd = path_abs(cmd, self.path)
         if abs_cmd.is_file():
             self.cmd = [abs_cmd]
-            if not os.access(self.cmd, os.X_OK):
+            if not os.access(abs_cmd, os.X_OK):
                 raise ValueError(
                     f"{self.__class__.__name__} shell script {self.cmd.relative_to(self.path.cwd())} not executable"
                 )

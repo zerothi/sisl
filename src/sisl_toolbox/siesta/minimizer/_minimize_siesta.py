@@ -15,7 +15,13 @@ from sisl.utils import PropertyDict
 from ._minimize import *
 from ._runner import AndRunner
 
-__all__ = ["MinimizeSiesta", "LocalMinimizeSiesta", "DualAnnealingMinimizeSiesta"]
+__all__ = [
+    "MinimizeSiesta",
+    "LocalMinimizeSiesta",
+    "DualAnnealingMinimizeSiesta",
+    "BADSMinimizeSiesta",
+    "ParticleSwarmsMinimizeSiesta",
+]
 
 
 _log = logging.getLogger(__name__)
@@ -221,4 +227,12 @@ class LocalMinimizeSiesta(LocalMinimize, MinimizeSiesta):
 
 @set_module("sisl_toolbox.siesta.minimizer")
 class DualAnnealingMinimizeSiesta(DualAnnealingMinimize, MinimizeSiesta):
+    pass
+
+
+class BADSMinimizeSiesta(BADSMinimize, MinimizeSiesta):
+    pass
+
+
+class ParticleSwarmsMinimizeSiesta(ParticleSwarmsMinimize, MinimizeSiesta):
     pass
