@@ -34,7 +34,7 @@ class Parameter:
         self.attrs = attrs
 
     def __getattr__(self, key):
-        if key in self.attrs:
+        if key != "attrs" and key in self.attrs:
             return self.attrs[key]
         raise AttributeError(f"could not find attribute {key}")
 

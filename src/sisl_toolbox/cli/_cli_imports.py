@@ -9,4 +9,5 @@ __all__ = []
 
 
 import sisl_toolbox.siesta.atom  # noqa: F401
+import sisl_toolbox.siesta.minimizer.basis_optimization  # noqa: F401
 import sisl_toolbox.transiesta.poisson  # noqa: F401
