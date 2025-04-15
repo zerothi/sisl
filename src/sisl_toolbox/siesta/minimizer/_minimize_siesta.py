@@ -230,9 +230,11 @@ class DualAnnealingMinimizeSiesta(DualAnnealingMinimize, MinimizeSiesta):
     pass
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class BADSMinimizeSiesta(BADSMinimize, MinimizeSiesta):
     pass
 
 
+@set_module("sisl_toolbox.siesta.minimizer")
 class ParticleSwarmsMinimizeSiesta(ParticleSwarmsMinimize, MinimizeSiesta):
     pass
