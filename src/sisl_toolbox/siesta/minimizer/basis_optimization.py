@@ -1,7 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import argparse
 import logging
 import subprocess
 from pathlib import Path
@@ -11,7 +10,6 @@ import numpy as np
 import yaml as yaml_module
 
 import sisl
-from sisl._lib._argparse import get_argparse_parser
 from sisl.messages import warn
 from sisl_toolbox.siesta.minimizer import (
     AtomBasis,
@@ -23,7 +21,12 @@ from sisl_toolbox.siesta.minimizer import (
     SiestaRunner,
 )
 from sisl_toolbox.siesta.minimizer._minimize import _log
-from sisl_toolbox.siesta.minimizer._yaml_reader import read_yaml
+
+__all__ = [
+    "RhoReuseSiestaRunner",
+    "write_basis_to_yaml",
+    "optimize_basis",
+]
 
 
 class RhoReuseSiestaRunner(SiestaRunner):
