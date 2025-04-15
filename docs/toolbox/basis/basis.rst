@@ -31,10 +31,10 @@ message from the CLI. Here we will just mention some important things that could
 
 **Basis enthalpy:** The quantity that is minimized is the basis enthalpy. This is :math:`H = E + pV`
 with :math:`E` being the energy of the system, :math:`V` the volume of the basis and :math:`p` a "pressure" that
-is defined in the fdf file with the `BasisPressure` table. This "pressure" penalizes bigger
+is defined in the fdf file with the ```BasisPressure`` table. This "pressure" penalizes bigger
 basis, which result in more expensive calculations. It is the responsibility of the user to
-set this value. As a rule of thumb, we recommend to set it to `0.02 GPa` for the first two
-rows of the periodic table and `0.2 GPa` for the rest.
+set this value. As a rule of thumb, we recommend to set it to ``0.02 GPa`` for the first two
+rows of the periodic table and ``0.2 GPa`` for the rest.
 
 **The SIESTA command:** There is a ``--siesta-cmd`` option to specify the way of executing SIESTA. By default, it
 is simply calling the ``siesta`` command, but you could set it for example to ``mpirun -n 4 siesta``
@@ -69,7 +69,7 @@ not installed by default. You can install it using pip:
 and the same would apply for other optimizers that you may want to use.
 
 **Output:** The output that appears on the terminal is left to the particular optimizer.
-However, sisl generates `.dat` files which contain information about each SIESTA execution.
+However, sisl generates ``.dat`` files which contain information about each SIESTA execution.
 These files contain one column for each variable being optimized and one column for the
 metric to minimize.
 
