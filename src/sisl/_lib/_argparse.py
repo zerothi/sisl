@@ -5,7 +5,7 @@
 import argparse
 import inspect
 import typing
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Literal, Optional, Union
 
 from sisl._lib._docscrape import FunctionDoc
 
@@ -20,6 +20,11 @@ except ImportError:
 def is_optional(field):
     """Check whether the annotation for a parameter is an Optional type."""
     return typing.get_origin(field) is Union and type(None) in typing.get_args(field)
+
+
+def is_literal(field):
+    """Check whether the annotation for a parameter is a Literal type."""
+    return typing.get_origin(field) is Literal
 
 
 def get_optional_arg(field):
@@ -41,6 +46,14 @@ def get_optional_arg(field):
             return arg
 
     raise ValueError("No non-None type found in Union")
+
+
+def get_literal_args(field):
+    """Get the values of a literal.
+
+    E.g.: Literal[1, 2, 3] -> (1, 2, 3)
+    """
+    return typing.get_args(field)
 
 
 class NotPassedArg:
@@ -149,10 +162,11 @@ def get_argparse_parser(
 
     # Initialize parser
     title = "".join(fdoc["Summary"])
+    parser_help = "\n".join(fdoc["Extended Summary"])
     if is_sub:
         p = subp.add_parser(
             name or func.__name__.replace("_", "-"),
-            description=title,
+            description=parser_help,
             help=title,
             **parser_kwargs,
         )
@@ -183,10 +197,16 @@ def get_argparse_parser(
         if is_optional(annotation):
             annotation = get_optional_arg(annotation)
 
+        choices = None
+        if is_literal(annotation):
+            choices = get_literal_args(annotation)
+            annotation = type(choices[0])
+
         group.add_argument(
             *arg_names,
             type=annotation,
             default=NotPassedArg(param.default),
+            choices=choices,
             action=argparse.BooleanOptionalAction if annotation is bool else None,
             required=param.default is inspect._empty,
             help="\n".join(parameters_help.get(param.name, [])),

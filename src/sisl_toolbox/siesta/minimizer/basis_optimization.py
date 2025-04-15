@@ -5,7 +5,7 @@ import argparse
 import logging
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Literal, Optional, Tuple, Union
 
 import numpy as np
 import yaml as yaml_module
@@ -725,8 +725,8 @@ def optimize_basis(
     siesta_cmd: str = "siesta",
     out: str = "basisoptim.dat",
     out_fmt: str = "20.17e",
-    logging_level: str = "notset",  # Literal["critical", "notset", "info", "debug"]
-    optimizer: str = "bads",
+    logging_level: Literal["critical", "notset", "info", "debug"] = "notset",
+    optimizer: Literal["bads", "swarms", "local"] = "bads",
     optimizer_kwargs: dict = {},
 ):
     """Optimizes a basis set for a given geometry.
@@ -765,11 +765,11 @@ def optimize_basis(
 
     Parameters
     ----------
-    geometry : str
+    geometry :
         Path to the geometry file for which we want to generate the basis configuration.
         This fdf file might include other parameters to use when running SIESTA. It can't be
         named RUN.fdf, though.
-    size : str, optional
+    size :
         Specification of basis size. "XZ(P)" where X is the number of zetas
         and P is whether to polarize or not.
 
@@ -777,47 +777,48 @@ def optimize_basis(
 
         It can also be "fdf" or "basis" to use the basis size as read from the `initial_basis` argument.
         This forces the `initial_basis` argument to be equal to the `size` argument.
-    optimize_pol : bool, optional
+    optimize_pol :
         If the basis contains polarization orbitals, whether they should be
         explicitly optimized or not. If not, the default polarization orbitals
         will be requested.
-    variable_delta : float, optional
+    variable_delta :
         Delta that specifies the step size in changes to the optimized variables.
         It is used differently depending on the optimizer.
-    basis_spec : dict, optional
+    basis_spec :
         An already built basis specification dictionary. If provided, it will be used
         instead of created from the previous arguments.
 
         You can use ``write_yaml`` to generate a template, and then tailor it to your needs.
-    start : str, optional
+    start :
         At which step to start optimizing. Previous steps will be read from previous runs.
         Can be "z{x}" or "pol" where x is the zeta shell number.
-    stop : str, optional
+    stop :
         At which step to stop optimizing. Can be "z{x}" or "pol" where x is the zeta shell number.
         The optimization is stopped AFTER optimizing this step.
-    tol_fun : float, optional
+    tol_fun :
         Tolerance for the optimization function value. If the function value changes less than this
         value after some iterations, the optimization is stopped.
-    tol_stall_iters : int, optional
+    tol_stall_iters :
         Number of iterations that the function value must not change more than tol_fun to consider
         the optimization ended. Note that one iteration in BADS consists of multiple function evaluations.
-    siesta_cmd : str, optional
+    siesta_cmd :
         Shell command to run siesta.
-    out : str, optional
+    out :
         Path to the file where to write the points evaluated by the optimizer. For each step, a file
         will be generated prefixed with the step name: "{step}_{out}.
-    out_fmt : str, optional
+    out_fmt :
         Format string to use when writing the points evaluated by the optimizer.
-    logging_level : str, optional
-        Logging level to use. Can be "critical", "notset", "info" or "debug".
-    optimizer : str, optional
+    logging_level :
+        Logging level to use.
+    optimizer :
         Which optimizer to use. Can be:
+
             - "bads": Uses pybads to run the Bayesian Adaptive Direct Search (BADS) algorithm
              for optimization. When benchmarking algorithms, BADS has proven to be the best at finding the
              global minimum, this is why it is the default.
             - "swarms": Uses pyswarms to run a Particle Swarms optimization.
             - "local": Uses the scipy.optimize.minimize function.
-    optimizer_kwargs : dict, optional
+    optimizer_kwargs :
         Keyword arguments to pass to the optimizer.
     """
 
@@ -1015,156 +1016,3 @@ def optimize_basis(
 
         if optim_iter.get("stop", False):
             break
-
-
-def basis_cli(subp=None, parser_kwargs={}):
-    """Argparse CLI for the basis optimization utilities."""
-
-    # Create main parser
-    title = "Basis optimization utilities"
-    is_sub = not subp is None
-    if is_sub:
-        p = subp.add_parser("basis", description=title, help=title, **parser_kwargs)
-    else:
-        p = argparse.ArgumentParser(title, description=title, **parser_kwargs)
-
-    # If the main parser is executed, just print the help
-    p.set_defaults(runner=lambda args: p.print_help())
-
-    # Add the subparsers for the commands
-    subp = p.add_subparsers(title="Commands")
-
-    get_argparse_parser(
-        optimize_basis, name="optim", subp=subp, parser_kwargs=parser_kwargs
-    )
-    get_argparse_parser(
-        write_basis_to_yaml, name="build", subp=subp, parser_kwargs=parser_kwargs
-    )
-
-
-# Import object holding all the CLI
-from sisl_toolbox.cli import register_toolbox_cli
-
-register_toolbox_cli(basis_cli)
-
-# def get_typer_app():
-#     """Returns a typer app to use as a CLI for basis optimization."""
-#     import typer
-
-#     def yaml_dict(d: str):
-
-#         if isinstance(d, dict):
-#             return d
-
-#         return yaml_module.safe_load(d)
-
-#     # Helper function to annotate a function with the help from the docstring.
-#     # In this way, typer can display the help on the command line.
-#     def _annotate_func(func):
-#         import inspect
-#         from copy import copy
-
-#         from typing_extensions import Annotated
-
-#         params_help = {}
-
-#         in_parameters = False
-#         read_key = None
-#         arg_content = ""
-
-#         for line in func.__doc__.split("\n"):
-#             if "Parameters" in line:
-#                 in_parameters = True
-#                 space = line.find("Parameters")
-#                 continue
-
-#             if in_parameters:
-#                 if len(line) < space + 1:
-#                     continue
-#                 if len(line) > 1 and line[0] != " ":
-#                     break
-
-#                 if line[space] not in (" ", "-"):
-#                     if read_key is not None:
-#                         params_help[read_key] = arg_content
-
-#                     read_key = line.split(":")[0].strip()
-#                     arg_content = ""
-#                 else:
-#                     if arg_content == "":
-#                         arg_content = line.strip().capitalize()
-#                     else:
-#                         arg_content += " " + line.strip()
-
-#             if line.startswith("------"):
-#                 break
-
-#         if read_key is not None:
-#             params_help[read_key] = arg_content
-
-#         @functools.wraps(func)
-#         def wrapper(*args, config: str = "", **kwargs):
-#             return func(*args, **kwargs)
-
-#         def config_callback(ctx, param, param_value):
-
-#             if param_value != "":
-#                 with open(param_value, "r") as f:
-#                     yaml_config = yaml_module.safe_load(f)
-
-#                 ctx.default_map = ctx.default_map or {}
-#                 ctx.default_map.update(yaml_config)
-
-#         sig = inspect.signature(func)
-
-#         new_parameters = []
-#         for param in sig.parameters.values():
-
-#             parser = None
-#             if param.annotation == dict:
-#                 parser = yaml_dict
-
-#             typer_arg_cls = (
-#                 typer.Argument
-#                 if param.default == inspect.Parameter.empty
-#                 else typer.Option
-#             )
-#             new_parameters.append(
-#                 param.replace(
-#                     annotation=Annotated[
-#                         param.annotation,
-#                         typer_arg_cls(help=params_help.get(param.name), parser=parser),
-#                     ]
-#                 )
-#             )
-
-#         new_parameters.append(
-#             inspect.Parameter(
-#                 "config",
-#                 default="",
-#                 kind=inspect.Parameter.KEYWORD_ONLY,
-#                 annotation=Annotated[
-#                     str,
-#                     typer.Option(
-#                         "--config",
-#                         "-c",
-#                         help="YAML file to load the configuration from.",
-#                         is_eager=True,
-#                         callback=config_callback,
-#                     ),
-#                 ],
-#             )
-#         )
-
-#         wrapper.__signature__ = sig.replace(parameters=new_parameters)
-#         wrapper.__doc__ = func.__doc__[: func.__doc__.find("Parameters\n")]
-
-#         return wrapper
-
-#     # Create the app.
-#     app = typer.Typer(name="Basis optimization utilities", rich_markup_mode="markdown")
-
-#     app.command("write-yaml")(_annotate_func(write_basis_to_yaml))
-#     app.command("optimize")(_annotate_func(optimize_basis))
-
-#     return app

@@ -103,3 +103,4 @@ from ._minimize import *
 from ._minimize_siesta import *
 from ._runner import *
 from ._variable import *
+from .basis_optimization import *
