@@ -731,7 +731,13 @@ def optimize_basis(
 ):
     """Optimizes a basis set for a given geometry.
 
-    The optimization follows the below sequence:
+    The optimization minimizes basis enthalpy. The formula for
+    basis enthalpy is `H = E + pV`, where E is the total energy,
+    V is the volume of the basis and p is a "pressure" parameter).
+    The pressure must be set by the user in the fdf file through
+    the `BasisPressure` input.
+
+    The procedure follows this sequence:
 
     - First it optimizes the cutoff radii for the first zeta shell.
 
@@ -767,8 +773,12 @@ def optimize_basis(
     ----------
     geometry :
         Path to the geometry file for which we want to generate the basis configuration.
-        This fdf file might include other parameters to use when running SIESTA. It can't be
-        named RUN.fdf, though.
+        This fdf file might include other parameters to use when running SIESTA.
+        A sensible parameter to include in this fdf file is `BasisPressure`, which
+        controls how much a big basis is penalized in the basis enthalpy metric
+        (the higher the value, the more penalized).
+
+        This file can't be named RUN.fdf.
     size :
         Specification of basis size. "XZ(P)" where X is the number of zetas
         and P is whether to polarize or not.
