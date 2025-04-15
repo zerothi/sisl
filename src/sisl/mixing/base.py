@@ -134,7 +134,7 @@ class BaseWeightMixer(BaseMixer):
 
         Parameters
         ----------
-        weight : float
+        weight :
            the new weight for this mixer, it must be bigger than 0
         """
         assert weight > 0, "Weight must be larger than 0"
@@ -392,9 +392,10 @@ class History:
 
         if isinstance(index, Integral):
             index = [index]
-        else:
-            index = list(index)
-        # We need to ensure we delete in the correct order
-        index.sort(reverse=True)
+
+        # Reverse sort so we can delete without breaking the
+        # order of the elements
+        index = sorted(index, reverse=True)
+
         for i in index:
             del self._hist[i]

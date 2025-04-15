@@ -59,7 +59,8 @@ class DIISMixer(BaseHistoryWeightMixer):
        how many history steps it will use in the estimation of the
        new functional
     metric : callable, optional
-       the metric used for the two values, defaults to ``lambda a, b: a.ravel().conj().dot(b.ravel).real``
+       the metric used for the two values, defaults to:
+       ``lambda a, b: a.ravel().conj().dot(b.ravel()).real``
     """
 
     __slots__ = ("_metric",)
@@ -101,9 +102,10 @@ class DIISMixer(BaseHistoryWeightMixer):
             B[i, i] = metric(ei, ei)
             for j in range(i + 1, n_h):
                 ej = hist[j][-1]
-
                 B[i, j] = metric(ei, ej)
                 B[j, i] = B[i, j]
+
+        # fill the rest of the matrix
         B[:, n_h] = 1.0
         B[n_h, :] = 1.0
         B[n_h, n_h] = 0.0
@@ -119,12 +121,13 @@ class DIISMixer(BaseHistoryWeightMixer):
 
         try:
             # Apparently we cannot use assume_a='sym'
-            # Is this because sym also implies positive definitiness?
+            # Is this because sym also implies positive definiteness?
             # However, these are matrices of order ~30, so we don't care
             c = solve_destroy(B, RHS, assume_a="sym")
             return c[:-1], -c[-1]
         except np.linalg.LinAlgError as e:
-            # We have a LinalgError
+            # We have a LinalgError, this will take the last entry and
+            # do a linear mixing.
             return _a.arrayd([1.0]), last_metric
 
     def coefficients(self) -> npt.NDArray[np.float64]:
@@ -137,7 +140,7 @@ class DIISMixer(BaseHistoryWeightMixer):
 
         Parameters
         ----------
-        coefficients : numpy.ndarray
+        coefficients :
            coefficients used for extrapolation
         """
 
@@ -190,6 +193,7 @@ class AdaptiveDIISMixer(DIISMixer):
 
     def adjust_weight(
         self,
+        c: npt.NDArray[np.float64],
         lagrange: Any,
         offset: Union[float, int] = 13,
         spread: Union[float, int] = 7,
@@ -207,7 +211,7 @@ class AdaptiveDIISMixer(DIISMixer):
     def coefficients(self) -> npt.NDArray[np.float64]:
         r"""Calculate coefficients and adjust weights according to a Lagrange multiplier"""
         c, lagrange = self.solve_lagrange()
-        self.adjust_weight(lagrange)
+        self.adjust_weight(c, lagrange)
         return c
 
 
