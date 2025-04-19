@@ -14,7 +14,7 @@ import sisl.linalg as lin
 from sisl import Geometry
 from sisl._core.sparse import SparseCSR, issparse
 from sisl._core.sparse_geometry import SparseOrbital, _SparseGeometry
-from sisl._help import dtype_complex_to_real, dtype_real_to_complex
+from sisl._help import dtype_complex_to_float, dtype_float_to_complex
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, warn
 from sisl.typing import (
@@ -50,19 +50,60 @@ __all__ = ["SparseOrbitalBZ", "SparseOrbitalBZSpin"]
 warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
 
 
-def _get_spin(M, spin, what: Literal["trace", "box", "vector"] = "box"):
+def _get_spin(
+    M,
+    spin: Spin,
+    what: Literal["trace", "box", "vector", "vector:upper", "vector:lower"] = "box",
+):
+    r"""Calculate the spin-components of the given matrix from sisl.
+
+    When the `spin` is a Nambu configuration it will only return
+    for the electron part (since the hole part is :math:`-M^*`.
+
+    Parameters
+    ----------
+    M :
+        a matrix containing spin-components in the last dimension.
+        Typically this is the ``csr._D`` array
+    spin :
+        the spin data-type that defines what is stored in `M`
+    what :
+        request a particular return value.
+
+        trace:
+            returns the density (the trace).
+            Always returns float dtype.
+        vector:
+            calculate the x, y, z components of the spin.
+            Always returns float dtype.
+            Optionally request upper/lower part of the spin-box contributions.
+            E.g. spin-:math:`x` is calculated as :math:`\uparrow\downarrow +
+            \downarrow\uparrow`. For ``vector:upper`` it will only take
+            :math:`\uparrow\downarrow`.
+            The sum of ``vector:upper`` and ``vector:lower`` will be equivalent
+            to ``vector``.
+        box:
+            convert the spin into a uniform 2x2 matrix of complex values
+            to enable a coherent data form of the spinvalues.
+            Always returns complex dtype.
+    """
     if what == "trace":
-        if spin.spinor == 2:
+        if spin.spinor >= 2:
             # we have both up+down
-            # TODO fix spin-orbit with complex values
             return M[..., 0] + M[..., 1]
+
+        # Fall-back, not nambu, nor NC/SOC, only 1 component.
         return M[..., 0]
 
     if what == "vector":
-        m = np.empty(M.shape[:-1] + (3,), dtype=dtype_complex_to_real(M.dtype))
+        # Calculate the vector of the spin (excluding the "density")
+        shape = M.shape[:-1] + (3,)
+        m = np.empty(shape, dtype=dtype_complex_to_float(M.dtype))
+
         if spin.is_unpolarized:
             # no spin-density
             m[...] = 0.0
+
         else:
             # Same for all spin-configurations
             m[..., 2] = (M[..., 0] - M[..., 1]).real
@@ -79,7 +120,7 @@ def _get_spin(M, spin, what: Literal["trace", "box", "vector"] = "box"):
                     m[..., 0] = 2 * M[..., 2]
                     m[..., 1] = -2 * M[..., 3]
             else:
-                # spin-orbit
+                # spin-orbit + nambu
                 if np.iscomplexobj(M):
                     tmp = M[..., 2].conj() + M[..., 3]
                     m[..., 0] = tmp.real
@@ -89,10 +130,50 @@ def _get_spin(M, spin, what: Literal["trace", "box", "vector"] = "box"):
                     m[..., 1] = -M[..., 3] + M[..., 7]
         return m
 
+    if what.startswith("vector:"):
+        _, ul = what.split(":")
+        upper = True
+        if ul == "upper":
+            upper = True
+        elif ul == "lower":
+            upper = False
+        else:
+            raise ValueError("Could not determine what")
+
+        if spin < Spin("soc"):
+            return _get_spin(M, spin, what="vector") * 0.5
+
+        # Calculate the vector of the spin (excluding the "density")
+        shape = M.shape[:-1] + (3,)
+        m = np.empty(shape, dtype=dtype_complex_to_float(M.dtype))
+
+        # Only half so the sum equals `vector`
+        m[..., 2] = (M[..., 0] - M[..., 1]).real * 0.5
+
+        # spin-orbit + nambu
+        if np.iscomplexobj(M):
+            if upper:
+                tmp = M[..., 2].conj()
+            else:
+                tmp = M[..., 3]
+            m[..., 0] = tmp.real
+            m[..., 1] = tmp.imag
+        else:
+            if upper:
+                m[..., 0] = M[..., 2]
+                m[..., 1] = -M[..., 3]
+            else:
+                m[..., 0] = M[..., 6]
+                m[..., 1] = M[..., 7]
+        return m
+
     if what == "box":
-        m = np.empty(M.shape[:-1] + (2, 2), dtype=dtype_real_to_complex(M.dtype))
+        shape = M.shape[:-1] + (2, 2)
+        m = np.empty(shape, dtype=dtype_float_to_complex(M.dtype))
+
         if spin.is_unpolarized:
             # no spin-density
+            # TODO: should we divide by 2?
             m[...] = 0.0
             m[..., 0, 0] = M[..., 0]
             m[..., 1, 1] = M[..., 0]
@@ -100,6 +181,7 @@ def _get_spin(M, spin, what: Literal["trace", "box", "vector"] = "box"):
             m[...] = 0.0
             m[..., 0, 0] = M[..., 0]
             m[..., 1, 1] = M[..., 1]
+
         elif spin.is_noncolinear:
             if np.iscomplexobj(M):
                 m[..., 0, 0] = M[..., 0]
@@ -111,6 +193,7 @@ def _get_spin(M, spin, what: Literal["trace", "box", "vector"] = "box"):
                 m[..., 1, 1] = M[..., 1]
                 m[..., 0, 1] = M[..., 2] + 1j * M[..., 3]
                 m[..., 1, 0] = m[..., 0, 1].conj()
+
         else:
             if np.iscomplexobj(M):
                 m[..., 0, 0] = M[..., 0]
@@ -1156,7 +1239,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # This portion of code splits the construct into doing Hermitian
             # assignments. This probably needs rigorous testing.
 
-            dtype_cplx = dtype_real_to_complex(self.dtype)
+            dtype_cplx = dtype_float_to_complex(self.dtype)
 
             is_complex = self.dkind == "c"
             if self.spin.is_nambu:

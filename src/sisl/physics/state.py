@@ -14,7 +14,7 @@ from numpy import bool_, einsum, exp, ndarray
 
 import sisl._array as _a
 from sisl._core import Geometry
-from sisl._help import dtype_real_to_complex
+from sisl._help import dtype_float_to_complex
 from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
 from sisl.messages import deprecate_argument, warn
@@ -1086,7 +1086,7 @@ state coefficients
     #     if norm.dtype in [np.complex64, np.complex128]:
     #         dtype = norm.dtype
     #     else:
-    #         dtype = dtype_complex_to_real(self.dtype)
+    #         dtype = dtype_complex_to_float(self.dtype)
 
     #     # TODO check datatype if norm is complex but state is real
     #     c = np.empty(n, dtype=dtype)
@@ -1262,7 +1262,7 @@ coefficients assigned to each state
         # Figure out arguments
         opt = {
             "k": self.info.get("k", np.zeros(3)),
-            "dtype": dtype_real_to_complex(self.dtype),
+            "dtype": dtype_float_to_complex(self.dtype),
         }
 
         axes_d_all = "xyz"

@@ -1,0 +1,4 @@
+Allowed complex data-types in DensityMatrix methods
+
+In particular `spin_align`, `spin_rotate` and `mulliken`
+are now fixed for any data-type.

@@ -31,10 +31,11 @@ __all__ = ["DensityMatrix"]
 
 
 class _densitymatrix(SparseOrbitalBZSpin):
-    def spin_rotate(self, angles: SeqFloat, rad: bool = False):
-        r"""Rotates spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axis, respectively.
 
-        The angles are with respect to each spin-boxes initial angle.
+    def spin_rotate(self, angles: SeqFloat, rad: bool = False):
+        r"""Rotate spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axes, respectively.
+
+        The angles are with respect to each spin-box initial angle.
         One should use `spin_align` to fix all angles along a specific direction.
 
         Notes
@@ -43,13 +44,15 @@ class _densitymatrix(SparseOrbitalBZSpin):
         The returned matrix will be in non-collinear spin-configuration in case
         the angles does not reflect a pure flip of spin in the :math:`z`-axis.
 
+        The data-type of the returned matrix, may have changed.
+
         Parameters
         ----------
-        angles : (3,)
-           angle to rotate spin boxes around the Cartesian directions
+        angles :
+           angles to rotate spin boxes around the Cartesian directions
            :math:`x`, :math:`y` and :math:`z`, respectively (Euler angles).
-        rad : bool, optional
-           Determines the unit of `angles`, for true it is in radians
+        rad :
+           Determines the unit of `angles`, for true it is in radians.
 
         See Also
         --------
@@ -60,9 +63,11 @@ class _densitymatrix(SparseOrbitalBZSpin):
         object
              a new object with rotated spins
         """
-        angles = _a.asarrayd(angles)
+        angles = _a.arrayd(angles)
         if not rad:
             angles = angles / 180 * np.pi
+        # reduce to minimal angles
+        angles %= 2 * np.pi
 
         # Helper routines
         def cos_sin(a):
@@ -103,61 +108,14 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 f"{self.__class__.__name__}.spin_rotate got wrong number of angles (expected 3, got {len(angles)}"
             )
 
-        if self.spin.is_noncolinear:
-            A = np.empty([len(self._csr._D), 3], dtype=self.dtype)
+        spin = self.spin
 
-            D = self._csr._D
-            Q = (D[:, 0] + D[:, 1]) * 0.5
-            A[:, 0] = 2 * D[:, 2]
-            A[:, 1] = -2 * D[:, 3]
-            A[:, 2] = D[:, 0] - D[:, 1]
+        if spin.is_unpolarized:
+            raise ValueError(
+                f"{self.__class__.__name__}.spin_rotate requires a matrix with some spin configuration, not an unpolarized matrix."
+            )
 
-            A = R.dot(A.T).T * 0.5
-
-            out = self.copy()
-            D = out._csr._D
-            D[:, 0] = Q + A[:, 2]
-            D[:, 1] = Q - A[:, 2]
-            D[:, 2] = A[:, 0]
-            D[:, 3] = -A[:, 1]
-
-        elif self.spin.is_spinorbit:
-            # Since this spin-matrix has all 8 components we will take
-            # each half and align individually.
-            # I believe this should retain most of the physics in its
-            # intrinsic form and thus be a bit more accurate than
-            # later re-creating the matrix by some scaling factor.
-            A = np.empty([len(self._csr._D), 2, 3], dtype=self.dtype)
-
-            D = self._csr._D
-            Q = (D[:, 0] + D[:, 1]) * 0.5
-
-            # we align each part individually
-            # this *should* give us the same magnitude...
-            A[:, :, 2] = (D[:, 0] - D[:, 1]).reshape(-1, 1)
-            A[:, 0, 0] = 2 * D[:, 2]
-            A[:, 1, 0] = 2 * D[:, 6]
-            A[:, 0, 1] = -2 * D[:, 3]
-            A[:, 1, 1] = 2 * D[:, 7]
-
-            A = R.dot(A.reshape(-1, 3).T).T.reshape(-1, 2, 3) * 0.5
-
-            # create output matrix
-            out = self.copy()
-            D = out._csr._D
-
-            D[:, 0] = Q + A[:, :, 2].sum(1) * 0.5
-            D[:, 1] = Q - A[:, :, 2].sum(1) * 0.5
-            D[:, 2] = A[:, 0, 0]
-            D[:, 3] = -A[:, 0, 1]
-            # 4 and 5 are diagonal imaginary part (un-changed)
-            # Since we copy, we don't need to do anything
-            # D[:, 4] =
-            # D[:, 5] =
-            D[:, 6] = A[:, 1, 0]
-            D[:, 7] = A[:, 1, 1]
-
-        elif self.spin.is_polarized:
+        elif spin.is_polarized:
 
             # figure out if this is only rotating 180 for x or y
             if is_pol_noop:
@@ -165,34 +123,59 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
             elif is_pol_flip:
                 # flip spin
-                out = self.copy()
-                out._csr._D[:, [0, 1]] = out._csr._D[:, [1, 0]]
+                out = self.transform(matrix=[[0, 1], [1, 0]])
 
             else:
-                spin = Spin("nc")
-                out = self.__class__(
-                    self.geometry,
-                    dtype=self.dtype,
-                    spin=spin,
-                    orthogonal=self.orthogonal,
-                )
-                out._csr.ptr[:] = self._csr.ptr[:]
-                out._csr.ncol[:] = self._csr.ncol[:]
-                out._csr.col = self._csr.col.copy()
-                out._csr._nnz = self._csr._nnz
+                # We are not sure what the user really wants.
+                # So we'll just do a non-colinear thing.
+                # A user may change this subsequently.
+                out = self.transform(spin=Spin("nc")).spin_rotate(angles, rad=True)
 
-                if self.orthogonal:
-                    out._csr._D = np.zeros([len(self._csr._D), 4], dtype=self.dtype)
-                    out._csr._D[:, [0, 1]] = self._csr._D[:, :]
-                else:
-                    out._csr._D = np.zeros([len(self._csr._D), 5], dtype=self.dtype)
-                    out._csr._D[:, [0, 1, 4]] = self._csr._D[:, :]
-                out = out.spin_rotate(angles, rad=True)
+        elif spin.is_noncolinear:
+            D = self._csr._D
+            Q = _get_spin(D, spin, what="trace") * 0.5
+            A = _get_spin(D, spin, what="vector")
+
+            A = A.dot(R.T * 0.5)
+
+            # A.dtype is always float in this case
+            out = self.astype(dtype=A.dtype)
+            D = out._csr._D
+            D[:, 0] = Q + A[:, 2]
+            D[:, 1] = Q - A[:, 2]
+            D[:, 2] = A[:, 0]
+            D[:, 3] = -A[:, 1]
+
+        elif spin.is_spinorbit or self.spin.is_nambu:
+            # Since this spin-matrix has all 8 components we will take
+            # each half and align individually.
+            # I believe this should retain most of the physics in its
+            # intrinsic form and thus be a bit more accurate than
+            # later re-creating the matrix by some scaling factor.
+            D = self._csr._D
+            Q = _get_spin(D, spin, what="trace") * 0.5
+            Au = _get_spin(D, spin, what="vector:upper")
+            Al = _get_spin(D, spin, what="vector:lower")
+
+            Au = Au.dot(R.T)
+            Al = Al.dot(R.T)
+
+            # Al|Au.dtype is always float in this case
+            out = self.astype(dtype=Au.dtype)
+            D = out._csr._D
+            # Since the z-component is origin from a diff
+            # we have to align the z such that it halves the
+            # actual charge (Q * 2)
+            Au[:, 2] = (Au[:, 2] + Al[:, 2]) / 2
+            D[:, 0] = Q + Au[:, 2]
+            D[:, 1] = Q - Au[:, 2]
+            D[:, 2] = Au[:, 0]
+            D[:, 3] = -Au[:, 1]
+            D[:, 6] = Al[:, 0]
+            D[:, 7] = Al[:, 1]
 
         else:
-            raise ValueError(
-                f"{self.__class__.__name__}.spin_rotate requires a matrix with some spin configuration, not an unpolarized matrix."
-            )
+            raise NotImplementedError("Unknown spin configuration")
 
         return out
 
@@ -202,11 +185,14 @@ class _densitymatrix(SparseOrbitalBZSpin):
         In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned
         matrix will be a non-collinear spin configuration.
 
+        This is equivalent to rotate each spin-population to point along `vec` but
+        while keeping its magnitude.
+
         Parameters
         ----------
-        vec : (3,)
+        vec :
            vector to align the spin boxes against
-        atoms : AtomsIndex, optional
+        atoms :
            only perform alignment for matrix elements on atoms.
            If multiple atoms are specified, the off-diagonal elements between the
            atoms will also be aligned.
@@ -216,12 +202,19 @@ class _densitymatrix(SparseOrbitalBZSpin):
         --------
         spin_rotate : rotate spin-boxes by a fixed amount (does not align spins)
 
+        Notes
+        -----
+        The returned data-type of the matrix may have changed, depending
+        on options. To retain the *old* datatype, do something like this:
+
+        >>> DM = DM.spin_align(...).astype(dtype=DM.dtype)
+
         Returns
         -------
         object
             a new object with aligned spins
         """
-        vec = _a.asarrayd(vec)
+        vec: np.ndarray = _a.asarrayd(vec)
         # normalize vector
         vec = vec / (vec @ vec) ** 0.5
 
@@ -240,102 +233,71 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 np.logical_and(np.isin(rows, orbs), np.isin(cols % self.no, orbs))
             ]
 
-        if self.spin.is_noncolinear:
-            A = np.empty([len(self._csr._D), 3], dtype=self.dtype)
+        spin = self.spin
 
+        if spin.is_noncolinear:
             D = self._csr._D
-            Q = (D[idx, 0] + D[idx, 1]) * 0.5
-            A[idx, 0] = 2 * D[idx, 2]
-            A[idx, 1] = -2 * D[idx, 3]
-            A[idx, 2] = D[idx, 0] - D[idx, 1]
+            Q = _get_spin(D, spin, what="trace").real * 0.5
+            A = _get_spin(D, spin, what="vector")
 
             # align with vector
             # add factor 1/2 here (instead when unwrapping)
-            A[idx] = (
-                0.5
-                * vec.reshape(1, 3)
-                * (np.sum(A[idx] ** 2, axis=1).reshape(-1, 1)) ** 0.5
-            )
+            A[idx] = 0.5 * vec * (np.sum(A[idx] ** 2, axis=1).reshape(-1, 1) ** 0.5)
 
-            out = self.copy()
+            # This ensures that we populate it correctly.
+            out = self.astype(dtype=A.dtype)
             D = out._csr._D
             D[idx, 0] = Q + A[idx, 2]
             D[idx, 1] = Q - A[idx, 2]
             D[idx, 2] = A[idx, 0]
             D[idx, 3] = -A[idx, 1]
 
-        elif self.spin.is_spinorbit:
+        elif spin.is_spinorbit or self.spin.is_nambu:
             # Since this spin-matrix has all 8 components we will take
             # each half and align individually.
             # I believe this should retain most of the physics in its
             # intrinsic form and thus be a bit more accurate than
             # later re-creating the matrix by some scaling factor.
-            A = np.empty([len(self._csr._D), 2, 3], dtype=self.dtype)
-
             D = self._csr._D
-            # we align each part individually
-            # this *should* give us the same magnitude...
-            Q = (D[idx, 0] + D[idx, 1]) * 0.5
-            A[idx, :, 2] = (D[idx, 0] - D[idx, 1]).reshape(-1, 1)
-            A[idx, 0, 0] = 2 * D[idx, 2]
-            A[idx, 0, 1] = -2 * D[idx, 3]
-            A[idx, 1, 0] = 2 * D[idx, 6]
-            A[idx, 1, 1] = 2 * D[idx, 7]
+            Q = _get_spin(D, spin, what="trace").real * 0.5
+            Au = _get_spin(D, spin, what="vector:upper")
+            Al = _get_spin(D, spin, what="vector:lower")
 
             # align with vector
-            # add factor 1/2 here (instead when unwrapping)
-            A[idx, :, :] = (
-                0.5
-                * vec.reshape(1, 1, 3)
-                * (np.sum(A[idx] ** 2, axis=2).reshape(-1, 2, 1)) ** 0.5
-            )
+            Au[idx] = vec * (np.sum(Au[idx] ** 2, axis=1).reshape(-1, 1) ** 0.5)
+            Al[idx] = vec * (np.sum(Al[idx] ** 2, axis=1).reshape(-1, 1) ** 0.5)
 
-            out = self.copy()
+            # Al|Au.dtype is always float in this case
+            out = self.astype(dtype=Au.dtype)
             D = out._csr._D
-            D[idx, 0] = Q + A[idx, :, 2].sum(1) * 0.5
-            D[idx, 1] = Q - A[idx, :, 2].sum(1) * 0.5
-            D[idx, 2] = A[idx, 0, 0]
-            D[idx, 3] = -A[idx, 0, 1]
-            # 4 and 5 are diagonal imaginary part (un-changed)
-            # Since we copy, we don't need to do anything
-            # D[idx, 4] =
-            # D[idx, 5] =
-            D[idx, 6] = A[idx, 1, 0]
-            D[idx, 7] = A[idx, 1, 1]
+            # Since the z-component is origin from a diff
+            # we have to align the z such that it halves the
+            # actual charge (Q * 2)
+            Au[:, 2] = (Au[:, 2] + Al[:, 2]) / 2
 
-        elif self.spin.is_polarized:
+            D[:, 0] = Q + Au[:, 2]
+            D[:, 1] = Q - Au[:, 2]
+            D[:, 2] = Au[:, 0]
+            D[:, 3] = -Au[:, 1]
+            D[:, 6] = Al[:, 0]
+            D[:, 7] = Al[:, 1]
+
+        elif spin.is_polarized:
             if vec[:2] @ vec[:2] > 1e-6:
-                spin = Spin("nc")
-                out = self.__class__(
-                    self.geometry,
-                    dtype=self.dtype,
-                    spin=spin,
-                    orthogonal=self.orthogonal,
-                )
-                out._csr.ptr[:] = self._csr.ptr[:]
-                out._csr.ncol[:] = self._csr.ncol[:]
-                out._csr.col = self._csr.col.copy()
-                out._csr._nnz = self._csr._nnz
-
-                if self.orthogonal:
-                    out._csr._D = np.zeros([len(self._csr._D), 4], dtype=self.dtype)
-                    out._csr._D[:, [0, 1]] = self._csr._D[:, :]
-                else:
-                    out._csr._D = np.zeros([len(self._csr._D), 5], dtype=self.dtype)
-                    out._csr._D[:, [0, 1, 4]] = self._csr._D[:, :]
+                out = self.transform(spin=Spin("nc"))
                 out = out.spin_align(vec, atoms)
 
             elif vec[2] < 0:
-                # flip spin
-                out = self.copy()
-                out._csr._D[idx, [0, 1]] = out._csr._D[idx, [1, 0]]
+                out = self.transform(matrix=[[0, 1], [1, 0]])
             else:
                 out = self.copy()
 
-        else:
+        elif spin.is_unpolarized:
             raise ValueError(
                 f"{self.__class__.__name__}.spin_align requires a matrix with some spin configuration, not an unpolarized matrix."
             )
+        else:
+            raise NotImplementedError("Unknown spin configuration")
 
         return out
 
@@ -380,67 +342,56 @@ class _densitymatrix(SparseOrbitalBZSpin):
         Returns
         -------
         numpy.ndarray
-            if `projection` does not contain matrix, otherwise ``[spin, no]``, for polarized spin is [T, Sz]
-            and for non-colinear spin is [T, Sx, Sy, Sz]
+            Contains Mulliken charges for each orbital/atom (depending on
+            `projection`).
+            The first dimension holds the spin-components, total charge for un-polarized,
+            (T, Sz) for polarized. (T, Sx, Sy, Sz) for all non-colinear cases.
         """
+        # Mulliken population, diagonal for orthogonal, otherwise multiply
+        # with overlap matrix
+        if self.orthogonal:
+            D = np.stack(
+                [self._csr.tocsr(i).diagonal() for i in range(self.shape[2])], axis=1
+            )
+        else:
+            D = self._csr.copy(range(self.shape[2] - 1))
+            D._D *= self._csr._D[:, -1].reshape(-1, 1)
+            D = np.sum(D, axis=1)
 
-        def _convert(M):
-            """Converts a non-colinear DM from [11, 22, Re(12), Im(12)] -> [T, Sx, Sy, Sz]"""
-            if M.shape[0] == 8:
-                # We need to calculate the corresponding values
-                M[2] = 0.5 * (M[2] + M[6])
-                M[3] = 0.5 * (M[3] - M[7])  # sign change again below
-                M = M[:4]
-            elif M.shape[0] == 2:
-                # necessary to not overwrite data
-                tmp = M[1].copy()
-                M[1] = M[0] - M[1]
-                M[0] += tmp
-            elif M.shape[0] == 1:
-                M = M[0]
-            if M.shape[0] == 4:
-                # catches both shape[0] in [4, 8]
-                m = np.empty_like(M)
-                m[0] = M[0] + M[1]
-                m[3] = M[0] - M[1]
-                m[1] = 2 * M[2]
-                m[2] = -2 * M[3]
-            else:
-                return M
-            return m
+        spin = self.spin
+        # The trace will return a complex (if complex)
+        Q = _get_spin(D, spin, what="trace").reshape(-1, 1).real
+        S = None
+
+        def convert(D):
+            return D
+
+        if spin.is_unpolarized:
+            D = Q
+
+            def convert(D):
+                return D[0]
+
+        elif spin.is_polarized:
+            S = _get_spin(D, spin, what="vector")
+            D = np.concatenate([Q, S[..., [2]]], axis=1)
+        else:
+            S = _get_spin(D, spin, what="vector")
+            D = np.concatenate([Q, S], axis=1)
+        del Q, S
 
         projection = projection.lower()
         if projection.startswith("orbital"):  # allows orbitals
-            # Orbital Mulliken population
-            if self.orthogonal:
-                D = np.array(
-                    [self._csr.tocsr(i).diagonal() for i in range(self.shape[2])]
-                )
-            else:
-                D = self._csr.copy(range(self.shape[2] - 1))
-                D._D *= self._csr._D[:, -1].reshape(-1, 1)
-                D = np.sum(D, axis=1).T
-
-            return _convert(D)
+            return convert(D.T)
 
         elif projection.startswith("atom"):  # allows atoms
-            # Atomic Mulliken population
-            if self.orthogonal:
-                D = np.array(
-                    [self._csr.tocsr(i).diagonal() for i in range(self.shape[2])]
-                )
-            else:
-                D = self._csr.copy(range(self.shape[2] - 1))
-                D._D *= self._csr._D[:, -1].reshape(-1, 1)
-                D = np.sum(D, axis=1).T
-
             # Now perform summation per atom
             geom = self.geometry
-            M = np.zeros([D.shape[0], geom.na], dtype=D.dtype)
-            np.add.at(M.T, geom.o2a(np.arange(geom.no)), D.T)
+            M = np.zeros([geom.na, D.shape[1]], dtype=D.dtype)
+            np.add.at(M, geom.o2a(np.arange(geom.no)), D)
             del D
 
-            return _convert(M)
+            return convert(M.T)
 
         raise ValueError(
             f"{self.__class__.__name__}.mulliken only allows projection [orbital, atom]"

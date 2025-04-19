@@ -313,6 +313,7 @@ class TestDensityMatrix:
         v = np.array([1, 2, 3])
         d = D.spin_align(v)
         d_mull = d.mulliken()
+        assert np.allclose(d_mull, d.astype(np.complex128).mulliken())
         assert d_mull.shape == (4, len(D))
 
         assert not np.allclose(D_mull[1], d_mull[3])
@@ -344,6 +345,7 @@ class TestDensityMatrix:
         v = np.array([1, 2, 3])
         d = D.spin_align(v)
         d_mull = d.mulliken()
+        assert np.allclose(d_mull, d.astype(np.complex128).mulliken())
         assert not np.allclose(D_mull, d_mull)
         assert np.allclose(D_mull[0], d_mull[0])
 
@@ -380,6 +382,7 @@ class TestDensityMatrix:
         v = np.array([1, 2, 3])
         d = D.spin_align(v, atoms=0)
         d_mull = d.mulliken()
+        assert np.allclose(d_mull, d.astype(np.complex128).mulliken())
         assert not np.allclose(D_mull, d_mull)
         assert np.allclose(D_mull[0], d_mull[0])
 
@@ -405,6 +408,7 @@ class TestDensityMatrix:
         D.construct([[0.1, bond + 0.01], [(1.0, 0.5), (0.1, 0.2)]])
 
         D_mull = D.mulliken()
+        assert np.allclose(D_mull, D.astype(np.complex128).mulliken())
         assert D_mull.shape == (2, len(D))
 
         d = D.spin_rotate([45, 60, 90], rad=False)
@@ -436,6 +440,7 @@ class TestDensityMatrix:
         D.construct([[0.1, bond + 0.01], [(1.0, 0), (0.1, 0.0)]])
 
         D_mull = D.mulliken()
+        assert np.allclose(D_mull, D.astype(np.complex128).mulliken())
         assert D_mull.shape == (2, len(D))
 
         # Euler (noop)
@@ -478,6 +483,7 @@ class TestDensityMatrix:
         )
 
         D_mull = D.mulliken()
+        assert np.allclose(D_mull, D.astype(np.complex128).mulliken())
         d = D.spin_rotate([45, 60, 90], rad=False)
 
         d_mull = d.mulliken()
@@ -515,6 +521,7 @@ class TestDensityMatrix:
             ]
         )
         D_mull = D.mulliken()
+        assert np.allclose(D_mull, D.astype(np.complex128).mulliken())
         d = D.spin_rotate([45, 60, 90], rad=False)
         d_mull = d.mulliken()
         assert not np.allclose(D_mull, d_mull)

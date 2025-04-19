@@ -18,7 +18,7 @@ from scipy.sparse import diags as sp_diags
 import sisl._array as _a
 from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from sisl._help import dtype_complex_to_real, wrap_filterwarnings
+from sisl._help import dtype_complex_to_float, wrap_filterwarnings
 from sisl._internal import set_module
 from sisl._lib._argparse import SislHelpFormatter
 from sisl.messages import deprecate_argument, deprecation
@@ -877,7 +877,7 @@ class Grid(
 
     def __abs__(self):
         r"""Take the absolute value of the grid :math:`|\mathrm{grid}|`"""
-        dtype = dtype_complex_to_real(self.dtype)
+        dtype = dtype_complex_to_float(self.dtype)
         a = self.copy()
         a.grid = np.absolute(self.grid).astype(dtype, copy=False)
         return a

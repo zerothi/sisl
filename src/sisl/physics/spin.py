@@ -121,6 +121,17 @@ class Spin:
             return f"{self.__class__.__name__}{{spin-orbit}}"
         return f"{self.__class__.__name__}{{nambu}}"
 
+    def __repr__(self) -> str:
+        if self.is_unpolarized:
+            return f"<{self.__class__.__name__} unpolarized>"
+        if self.is_polarized:
+            return f"<{self.__class__.__name__} polarized>"
+        if self.is_noncolinear:
+            return f"<{self.__class__.__name__} non-colinear>"
+        if self.is_spinorbit:
+            return f"<{self.__class__.__name__} spin-orbit>"
+        return f"<{self.__class__.__name__} nambu>"
+
     def copy(self):
         """Create a copy of the spin-object"""
         return Spin(self.kind)
