@@ -1,0 +1,6 @@
+Added and made CODATA-2022 values the default
+
+Now a wider range of CODATA values
+are available. One can switch between
+used version by using `SISL_CODATA=2018|2022`
+if needed.
