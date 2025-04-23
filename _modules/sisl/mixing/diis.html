@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=7de89ed4"></script>
+      <script src="../../../_static/documentation_options.js?v=eb17b54e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -176,7 +176,8 @@
 <span class="sd">       how many history steps it will use in the estimation of the</span>
 <span class="sd">       new functional</span>
 <span class="sd">    metric : callable, optional</span>
-<span class="sd">       the metric used for the two values, defaults to ``lambda a, b: a.ravel().conj().dot(b.ravel).real``</span>
+<span class="sd">       the metric used for the two values, defaults to:</span>
+<span class="sd">       ``lambda a, b: a.ravel().conj().dot(b.ravel()).real``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_metric&quot;</span><span class="p">,)</span>
@@ -220,9 +221,10 @@
             <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">ei</span><span class="p">,</span> <span class="n">ei</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_h</span><span class="p">):</span>
                 <span class="n">ej</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
                 <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">ei</span><span class="p">,</span> <span class="n">ej</span><span class="p">)</span>
                 <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+
+        <span class="c1"># fill the rest of the matrix</span>
         <span class="n">B</span><span class="p">[:,</span> <span class="n">n_h</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="n">B</span><span class="p">[</span><span class="n">n_h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="n">B</span><span class="p">[</span><span class="n">n_h</span><span class="p">,</span> <span class="n">n_h</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -238,12 +240,13 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Apparently we cannot use assume_a=&#39;sym&#39;</span>
-            <span class="c1"># Is this because sym also implies positive definitiness?</span>
+            <span class="c1"># Is this because sym also implies positive definiteness?</span>
             <span class="c1"># However, these are matrices of order ~30, so we don&#39;t care</span>
             <span class="n">c</span> <span class="o">=</span> <span class="n">solve_destroy</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">RHS</span><span class="p">,</span> <span class="n">assume_a</span><span class="o">=</span><span class="s2">&quot;sym&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">c</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">c</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="c1"># We have a LinalgError</span>
+            <span class="c1"># We have a LinalgError, this will take the last entry and</span>
+            <span class="c1"># do a linear mixing.</span>
             <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span> <span class="n">last_metric</span></div>
 
 
@@ -262,7 +265,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        coefficients : numpy.ndarray</span>
+<span class="sd">        coefficients :</span>
 <span class="sd">           coefficients used for extrapolation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -321,6 +324,7 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.adjust_weight">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">adjust_weight</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span>
         <span class="n">lagrange</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="n">offset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">13</span><span class="p">,</span>
         <span class="n">spread</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>
@@ -341,7 +345,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate coefficients and adjust weights according to a Lagrange multiplier&quot;&quot;&quot;</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">lagrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve_lagrange</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">adjust_weight</span><span class="p">(</span><span class="n">lagrange</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjust_weight</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">lagrange</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">c</span></div>
 
 

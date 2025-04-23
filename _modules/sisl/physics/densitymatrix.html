@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=7de89ed4"></script>
+      <script src="../../../_static/documentation_options.js?v=eb17b54e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -150,12 +150,13 @@
 <div class="viewcode-block" id="_densitymatrix">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.densitymatrix._densitymatrix.html#sisl.physics._densitymatrix">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">_densitymatrix</span><span class="p">(</span><span class="n">SparseOrbitalBZSpin</span><span class="p">):</span>
+
 <div class="viewcode-block" id="_densitymatrix.spin_rotate">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.densitymatrix._densitymatrix.html#sisl.physics._densitymatrix.spin_rotate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">spin_rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">SeqFloat</span><span class="p">,</span> <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rotates spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axis, respectively.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rotate spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axes, respectively.</span>
 
-<span class="sd">        The angles are with respect to each spin-boxes initial angle.</span>
+<span class="sd">        The angles are with respect to each spin-box initial angle.</span>
 <span class="sd">        One should use `spin_align` to fix all angles along a specific direction.</span>
 
 <span class="sd">        Notes</span>
@@ -164,13 +165,15 @@
 <span class="sd">        The returned matrix will be in non-collinear spin-configuration in case</span>
 <span class="sd">        the angles does not reflect a pure flip of spin in the :math:`z`-axis.</span>
 
+<span class="sd">        The data-type of the returned matrix, may have changed.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        angles : (3,)</span>
-<span class="sd">           angle to rotate spin boxes around the Cartesian directions</span>
+<span class="sd">        angles :</span>
+<span class="sd">           angles to rotate spin boxes around the Cartesian directions</span>
 <span class="sd">           :math:`x`, :math:`y` and :math:`z`, respectively (Euler angles).</span>
-<span class="sd">        rad : bool, optional</span>
-<span class="sd">           Determines the unit of `angles`, for true it is in radians</span>
+<span class="sd">        rad :</span>
+<span class="sd">           Determines the unit of `angles`, for true it is in radians.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -181,9 +184,11 @@
 <span class="sd">        object</span>
 <span class="sd">             a new object with rotated spins</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rad</span><span class="p">:</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="c1"># reduce to minimal angles</span>
+        <span class="n">angles</span> <span class="o">%=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
         <span class="c1"># Helper routines</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">cos_sin</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
@@ -224,61 +229,14 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.spin_rotate got wrong number of angles (expected 3, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span>
 
-            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
-            <span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.spin_rotate requires a matrix with some spin configuration, not an unpolarized matrix.&quot;</span>
+            <span class="p">)</span>
 
-            <span class="n">A</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="mf">0.5</span>
-
-            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">-</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_spinorbit</span><span class="p">:</span>
-            <span class="c1"># Since this spin-matrix has all 8 components we will take</span>
-            <span class="c1"># each half and align individually.</span>
-            <span class="c1"># I believe this should retain most of the physics in its</span>
-            <span class="c1"># intrinsic form and thus be a bit more accurate than</span>
-            <span class="c1"># later re-creating the matrix by some scaling factor.</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
-            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
-            <span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span>
-
-            <span class="c1"># we align each part individually</span>
-            <span class="c1"># this *should* give us the same magnitude...</span>
-            <span class="n">A</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span>
-
-            <span class="n">A</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
-
-            <span class="c1"># create output matrix</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
-
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">A</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">-</span> <span class="n">A</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="c1"># 4 and 5 are diagonal imaginary part (un-changed)</span>
-            <span class="c1"># Since we copy, we don&#39;t need to do anything</span>
-            <span class="c1"># D[:, 4] =</span>
-            <span class="c1"># D[:, 5] =</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">D</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
 
             <span class="c1"># figure out if this is only rotating 180 for x or y</span>
             <span class="k">if</span> <span class="n">is_pol_noop</span><span class="p">:</span>
@@ -286,34 +244,59 @@
 
             <span class="k">elif</span> <span class="n">is_pol_flip</span><span class="p">:</span>
                 <span class="c1"># flip spin</span>
-                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">spin</span> <span class="o">=</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">)</span>
-                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-                    <span class="n">spin</span><span class="o">=</span><span class="n">spin</span><span class="p">,</span>
-                    <span class="n">orthogonal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:]</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_nnz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_nnz</span>
+                <span class="c1"># We are not sure what the user really wants.</span>
+                <span class="c1"># So we&#39;ll just do a non-colinear thing.</span>
+                <span class="c1"># A user may change this subsequently.</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">spin_rotate</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:]</span>
-                <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">spin_rotate</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">)</span>
+
+            <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+
+            <span class="c1"># A.dtype is always float in this case</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">-</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_spinorbit</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
+            <span class="c1"># Since this spin-matrix has all 8 components we will take</span>
+            <span class="c1"># each half and align individually.</span>
+            <span class="c1"># I believe this should retain most of the physics in its</span>
+            <span class="c1"># intrinsic form and thus be a bit more accurate than</span>
+            <span class="c1"># later re-creating the matrix by some scaling factor.</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="n">Au</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector:upper&quot;</span><span class="p">)</span>
+            <span class="n">Al</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector:lower&quot;</span><span class="p">)</span>
+
+            <span class="n">Au</span> <span class="o">=</span> <span class="n">Au</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">Al</span> <span class="o">=</span> <span class="n">Al</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+            <span class="c1"># Al|Au.dtype is always float in this case</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">Au</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
+            <span class="c1"># Since the z-component is origin from a diff</span>
+            <span class="c1"># we have to align the z such that it halves the</span>
+            <span class="c1"># actual charge (Q * 2)</span>
+            <span class="n">Au</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">Au</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">Al</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">Au</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">-</span> <span class="n">Au</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">Au</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">Au</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">Al</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">Al</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.spin_rotate requires a matrix with some spin configuration, not an unpolarized matrix.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Unknown spin configuration&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">out</span></div>
 
@@ -326,11 +309,14 @@
 <span class="sd">        In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned</span>
 <span class="sd">        matrix will be a non-collinear spin configuration.</span>
 
+<span class="sd">        This is equivalent to rotate each spin-population to point along `vec` but</span>
+<span class="sd">        while keeping its magnitude.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        vec : (3,)</span>
+<span class="sd">        vec :</span>
 <span class="sd">           vector to align the spin boxes against</span>
-<span class="sd">        atoms : AtomsIndex, optional</span>
+<span class="sd">        atoms :</span>
 <span class="sd">           only perform alignment for matrix elements on atoms.</span>
 <span class="sd">           If multiple atoms are specified, the off-diagonal elements between the</span>
 <span class="sd">           atoms will also be aligned.</span>
@@ -340,12 +326,19 @@
 <span class="sd">        --------</span>
 <span class="sd">        spin_rotate : rotate spin-boxes by a fixed amount (does not align spins)</span>
 
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The returned data-type of the matrix may have changed, depending</span>
+<span class="sd">        on options. To retain the *old* datatype, do something like this:</span>
+
+<span class="sd">        &gt;&gt;&gt; DM = DM.spin_align(...).astype(dtype=DM.dtype)</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        object</span>
 <span class="sd">            a new object with aligned spins</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">vec</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="n">vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
         <span class="c1"># normalize vector</span>
         <span class="n">vec</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">/</span> <span class="p">(</span><span class="n">vec</span> <span class="o">@</span> <span class="n">vec</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
 
@@ -364,102 +357,71 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">orbs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">cols</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">orbs</span><span class="p">))</span>
             <span class="p">]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span>
 
+        <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
             <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
-            <span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">)</span>
 
             <span class="c1"># align with vector</span>
             <span class="c1"># add factor 1/2 here (instead when unwrapping)</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="mf">0.5</span>
-                <span class="o">*</span> <span class="n">vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-                <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
-            <span class="p">)</span>
+            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">vec</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span>
 
-            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># This ensures that we populate it correctly.</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
             <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
             <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
             <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_spinorbit</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_spinorbit</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>
             <span class="c1"># Since this spin-matrix has all 8 components we will take</span>
             <span class="c1"># each half and align individually.</span>
             <span class="c1"># I believe this should retain most of the physics in its</span>
             <span class="c1"># intrinsic form and thus be a bit more accurate than</span>
             <span class="c1"># later re-creating the matrix by some scaling factor.</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
             <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
-            <span class="c1"># we align each part individually</span>
-            <span class="c1"># this *should* give us the same magnitude...</span>
-            <span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="n">Au</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector:upper&quot;</span><span class="p">)</span>
+            <span class="n">Al</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector:lower&quot;</span><span class="p">)</span>
 
             <span class="c1"># align with vector</span>
-            <span class="c1"># add factor 1/2 here (instead when unwrapping)</span>
-            <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="mf">0.5</span>
-                <span class="o">*</span> <span class="n">vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-                <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
-            <span class="p">)</span>
+            <span class="n">Au</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Au</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">Al</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Al</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span>
 
-            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># Al|Au.dtype is always float in this case</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">Au</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span>
-            <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="c1"># 4 and 5 are diagonal imaginary part (un-changed)</span>
-            <span class="c1"># Since we copy, we don&#39;t need to do anything</span>
-            <span class="c1"># D[idx, 4] =</span>
-            <span class="c1"># D[idx, 5] =</span>
-            <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># Since the z-component is origin from a diff</span>
+            <span class="c1"># we have to align the z such that it halves the</span>
+            <span class="c1"># actual charge (Q * 2)</span>
+            <span class="n">Au</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">Au</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">Al</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">Au</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">-</span> <span class="n">Au</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">Au</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">Au</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">Al</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">D</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">Al</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">vec</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">@</span> <span class="n">vec</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">:</span>
-                <span class="n">spin</span> <span class="o">=</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">)</span>
-                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-                    <span class="n">spin</span><span class="o">=</span><span class="n">spin</span><span class="p">,</span>
-                    <span class="n">orthogonal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:]</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">[:]</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_nnz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_nnz</span>
-
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">),</span> <span class="mi">5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:]</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">))</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">spin_align</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="n">vec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># flip spin</span>
-                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.spin_align requires a matrix with some spin configuration, not an unpolarized matrix.&quot;</span>
             <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Unknown spin configuration&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">out</span></div>
 
@@ -507,67 +469,56 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        numpy.ndarray</span>
-<span class="sd">            if `projection` does not contain matrix, otherwise ``[spin, no]``, for polarized spin is [T, Sz]</span>
-<span class="sd">            and for non-colinear spin is [T, Sx, Sy, Sz]</span>
+<span class="sd">            Contains Mulliken charges for each orbital/atom (depending on</span>
+<span class="sd">            `projection`).</span>
+<span class="sd">            The first dimension holds the spin-components, total charge for un-polarized,</span>
+<span class="sd">            (T, Sz) for polarized. (T, Sx, Sy, Sz) for all non-colinear cases.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Mulliken population, diagonal for orthogonal, otherwise multiply</span>
+        <span class="c1"># with overlap matrix</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">_D</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">_convert</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Converts a non-colinear DM from [11, 22, Re(12), Im(12)] -&gt; [T, Sx, Sy, Sz]&quot;&quot;&quot;</span>
-            <span class="k">if</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
-                <span class="c1"># We need to calculate the corresponding values</span>
-                <span class="n">M</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
-                <span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">M</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>  <span class="c1"># sign change again below</span>
-                <span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="c1"># necessary to not overwrite data</span>
-                <span class="n">tmp</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tmp</span>
-            <span class="k">elif</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="c1"># catches both shape[0] in [4, 8]</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
-                <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">M</span>
-            <span class="k">return</span> <span class="n">m</span>
+        <span class="n">spin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span>
+        <span class="c1"># The trace will return a complex (if complex)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">D</span>
+
+        <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">Q</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">Q</span><span class="p">,</span> <span class="n">S</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">Q</span><span class="p">,</span> <span class="n">S</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">Q</span><span class="p">,</span> <span class="n">S</span>
 
         <span class="n">projection</span> <span class="o">=</span> <span class="n">projection</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">projection</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;orbital&quot;</span><span class="p">):</span>  <span class="c1"># allows orbitals</span>
-            <span class="c1"># Orbital Mulliken population</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-                <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="n">D</span><span class="o">.</span><span class="n">_D</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-
-            <span class="k">return</span> <span class="n">_convert</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">convert</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">projection</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">):</span>  <span class="c1"># allows atoms</span>
-            <span class="c1"># Atomic Mulliken population</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-                <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="n">D</span><span class="o">.</span><span class="n">_D</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-
             <span class="c1"># Now perform summation per atom</span>
             <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
-            <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">na</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">D</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">)),</span> <span class="n">D</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">geom</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">D</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">)),</span> <span class="n">D</span><span class="p">)</span>
             <span class="k">del</span> <span class="n">D</span>
 
-            <span class="k">return</span> <span class="n">_convert</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">convert</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.mulliken only allows projection [orbital, atom]&quot;</span>

@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=7de89ed4"></script>
+      <script src="../../_static/documentation_options.js?v=eb17b54e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -240,7 +240,7 @@
 <td><p>Aligns <em>all</em> spin along the vector <em class="xref py py-obj">vec</em></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.spin_rotate" title="sisl.physics.densitymatrix._densitymatrix.spin_rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_rotate</span></code></a>(angles[, rad])</p></td>
-<td><p>Rotates spin-boxes by fixed angles around the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> axis, respectively.</p></td>
+<td><p>Rotate spin-boxes by fixed angles around the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> axes, respectively.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.spsame" title="sisl.physics.densitymatrix._densitymatrix.spsame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spsame</span></code></a>(other)</p></td>
 <td><p>Compare two sparse objects and check whether they have the same entries.</p></td>
@@ -1181,8 +1181,10 @@ Can be atom-resolved, orbital-resolved or the
 charge matrix (off-diagonal elements)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>if <em class="xref py py-obj">projection</em> does not contain matrix, otherwise <code class="docutils literal notranslate"><span class="pre">[spin,</span> <span class="pre">no]</span></code>, for polarized spin is [T, Sz]
-and for non-colinear spin is [T, Sx, Sy, Sz]</p>
+<dd class="field-even"><p>Contains Mulliken charges for each orbital/atom (depending on
+<em class="xref py py-obj">projection</em>).
+The first dimension holds the spin-components, total charge for un-polarized,
+(T, Sz) for polarized. (T, Sx, Sy, Sz) for all non-colinear cases.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
@@ -1568,11 +1570,13 @@ that references the supercell will be deleted.</p>
 <dd><p>Aligns <em>all</em> spin along the vector <em class="xref py py-obj">vec</em></p>
 <p>In case the matrix is polarized and <em class="xref py py-obj">vec</em> is not aligned at the z-axis, the returned
 matrix will be a non-collinear spin configuration.</p>
+<p>This is equivalent to rotate each spin-population to point along <em class="xref py py-obj">vec</em> but
+while keeping its magnitude.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>vec</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span></code>) – vector to align the spin boxes against</p></li>
-<li><p><strong>atoms</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsIndex</span></code>, <em>optional</em>) – only perform alignment for matrix elements on atoms.
+<li><p><strong>vec</strong> (<em>SeqFloat</em>) – vector to align the spin boxes against</p></li>
+<li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – only perform alignment for matrix elements on atoms.
 If multiple atoms are specified, the off-diagonal elements between the
 atoms will also be aligned.
 To only align atomic on-site values, one would have to do a loop.</p></li>
@@ -1585,6 +1589,14 @@ To only align atomic on-site values, one would have to do a loop.</p></li>
 <dt><a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.spin_rotate" title="sisl.physics.densitymatrix._densitymatrix.spin_rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_rotate</span></code></a></dt><dd><p>rotate spin-boxes by a fixed amount (does not align spins)</p>
 </dd>
 </dl>
+</div>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>The returned data-type of the matrix may have changed, depending
+on options. To retain the <em>old</em> datatype, do something like this:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DM</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">spin_align</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1605,21 +1617,22 @@ To only align atomic on-site values, one would have to do a loop.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.densitymatrix._densitymatrix.spin_rotate">
 <span class="sig-name descname"><span class="pre">spin_rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/densitymatrix.html#_densitymatrix.spin_rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.spin_rotate" title="Link to this definition"></a></dt>
-<dd><p>Rotates spin-boxes by fixed angles around the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> axis, respectively.</p>
-<p>The angles are with respect to each spin-boxes initial angle.
+<dd><p>Rotate spin-boxes by fixed angles around the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> axes, respectively.</p>
+<p>The angles are with respect to each spin-box initial angle.
 One should use <a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.spin_align" title="sisl.physics.densitymatrix._densitymatrix.spin_align"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_align</span></code></a> to fix all angles along a specific direction.</p>
 <div class="admonition-notes admonition">
 <p class="admonition-title">Notes</p>
 <p>For a polarized matrix:
 The returned matrix will be in non-collinear spin-configuration in case
 the angles does not reflect a pure flip of spin in the <span class="math notranslate nohighlight">\(z\)</span>-axis.</p>
+<p>The data-type of the returned matrix, may have changed.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span></code>) – angle to rotate spin boxes around the Cartesian directions
+<li><p><strong>angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – angles to rotate spin boxes around the Cartesian directions
 <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span>, respectively (Euler angles).</p></li>
-<li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – Determines the unit of <em class="xref py py-obj">angles</em>, for true it is in radians</p></li>
+<li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Determines the unit of <em class="xref py py-obj">angles</em>, for true it is in radians.</p></li>
 </ul>
 </dd>
 </dl>

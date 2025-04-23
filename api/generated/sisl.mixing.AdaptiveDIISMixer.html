@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=7de89ed4"></script>
+      <script src="../../_static/documentation_options.js?v=eb17b54e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -163,7 +163,7 @@ will be close to the saddle point.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.AdaptiveDIISMixer.adjust_weight" title="sisl.mixing.AdaptiveDIISMixer.adjust_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust_weight</span></code></a>(lagrange[, offset, spread])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.AdaptiveDIISMixer.adjust_weight" title="sisl.mixing.AdaptiveDIISMixer.adjust_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adjust_weight</span></code></a>(c, lagrange[, offset, spread])</p></td>
 <td><p>Adjust the weight according to the Lagrange multiplier.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.AdaptiveDIISMixer.coefficients" title="sisl.mixing.AdaptiveDIISMixer.coefficients"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coefficients</span></code></a>()</p></td>
@@ -215,7 +215,7 @@ will be close to the saddle point.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.mixing.AdaptiveDIISMixer.adjust_weight">
-<span class="sig-name descname"><span class="pre">adjust_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lagrange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/diis.html#AdaptiveDIISMixer.adjust_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.AdaptiveDIISMixer.adjust_weight" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">adjust_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lagrange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/diis.html#AdaptiveDIISMixer.adjust_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.AdaptiveDIISMixer.adjust_weight" title="Link to this definition"></a></dt>
 <dd><p>Adjust the weight according to the Lagrange multiplier.</p>
 <p>Once close to convergence the Lagrange multiplier will be close to 0, otherwise it will go
 towards infinity.
@@ -224,9 +224,10 @@ suitable spread</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lagrange</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a>)</p></li>
-<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
-<li><p><strong>spread</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
+<li><p><strong>c</strong> (<em>npt.NDArray</em><em>[</em><em>np.float64</em><em>]</em>)</p></li>
+<li><p><strong>lagrange</strong> (<em>Any</em>)</p></li>
+<li><p><strong>offset</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>)</p></li>
+<li><p><strong>spread</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -252,7 +253,7 @@ suitable spread</p>
 <dd><p>Calculate a new variable <span class="math notranslate nohighlight">\(\mathbf f'\)</span> using history and input coefficients</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>coefficients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – coefficients used for extrapolation</p>
+<dd class="field-odd"><p><strong>coefficients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.2)"><em>ArrayLike</em></a>) – coefficients used for extrapolation</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a></p>
@@ -281,7 +282,7 @@ Otherwise the object will be directly attached to the mixer.</p>
 <dd><p>Set a new weight for this mixer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the new weight for this mixer, it must be bigger than 0</p>
+<dd class="field-odd"><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the new weight for this mixer, it must be bigger than 0</p>
 </dd>
 </dl>
 </dd></dl>

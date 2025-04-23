@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=7de89ed4"></script>
+      <script src="../../../_static/documentation_options.js?v=eb17b54e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -131,7 +131,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">issparse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core.sparse_geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseOrbital</span><span class="p">,</span> <span class="n">_SparseGeometry</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtype_complex_to_float</span><span class="p">,</span> <span class="n">dtype_float_to_complex</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -167,19 +167,60 @@
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SparseEfficiencyWarning</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_spin</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;box&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_spin</span><span class="p">(</span>
+    <span class="n">M</span><span class="p">,</span>
+    <span class="n">spin</span><span class="p">:</span> <span class="n">Spin</span><span class="p">,</span>
+    <span class="n">what</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">,</span> <span class="s2">&quot;vector:upper&quot;</span><span class="p">,</span> <span class="s2">&quot;vector:lower&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the spin-components of the given matrix from sisl.</span>
+
+<span class="sd">    When the `spin` is a Nambu configuration it will only return</span>
+<span class="sd">    for the electron part (since the hole part is :math:`-M^*`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    M :</span>
+<span class="sd">        a matrix containing spin-components in the last dimension.</span>
+<span class="sd">        Typically this is the ``csr._D`` array</span>
+<span class="sd">    spin :</span>
+<span class="sd">        the spin data-type that defines what is stored in `M`</span>
+<span class="sd">    what :</span>
+<span class="sd">        request a particular return value.</span>
+
+<span class="sd">        trace:</span>
+<span class="sd">            returns the density (the trace).</span>
+<span class="sd">            Always returns float dtype.</span>
+<span class="sd">        vector:</span>
+<span class="sd">            calculate the x, y, z components of the spin.</span>
+<span class="sd">            Always returns float dtype.</span>
+<span class="sd">            Optionally request upper/lower part of the spin-box contributions.</span>
+<span class="sd">            E.g. spin-:math:`x` is calculated as :math:`\uparrow\downarrow +</span>
+<span class="sd">            \downarrow\uparrow`. For ``vector:upper`` it will only take</span>
+<span class="sd">            :math:`\uparrow\downarrow`.</span>
+<span class="sd">            The sum of ``vector:upper`` and ``vector:lower`` will be equivalent</span>
+<span class="sd">            to ``vector``.</span>
+<span class="sd">        box:</span>
+<span class="sd">            convert the spin into a uniform 2x2 matrix of complex values</span>
+<span class="sd">            to enable a coherent data form of the spinvalues.</span>
+<span class="sd">            Always returns complex dtype.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;trace&quot;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">spinor</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">spinor</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="c1"># we have both up+down</span>
-            <span class="c1"># TODO fix spin-orbit with complex values</span>
             <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Fall-back, not nambu, nor NC/SOC, only 1 component.</span>
         <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="c1"># Calculate the vector of the spin (excluding the &quot;density&quot;)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span><span class="p">,)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_float</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+
         <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
             <span class="c1"># no spin-density</span>
             <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Same for all spin-configurations</span>
             <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">real</span>
@@ -196,7 +237,7 @@
                     <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
                     <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># spin-orbit</span>
+                <span class="c1"># spin-orbit + nambu</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
                     <span class="n">tmp</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">+</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
                     <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">real</span>
@@ -206,10 +247,50 @@
                     <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">m</span>
 
+    <span class="k">if</span> <span class="n">what</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;vector:&quot;</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ul</span> <span class="o">=</span> <span class="n">what</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">ul</span> <span class="o">==</span> <span class="s2">&quot;upper&quot;</span><span class="p">:</span>
+            <span class="n">upper</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">ul</span> <span class="o">==</span> <span class="s2">&quot;lower&quot;</span><span class="p">:</span>
+            <span class="n">upper</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not determine what&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">spin</span> <span class="o">&lt;</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;soc&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">_get_spin</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+        <span class="c1"># Calculate the vector of the spin (excluding the &quot;density&quot;)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span><span class="p">,)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_float</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+
+        <span class="c1"># Only half so the sum equals `vector`</span>
+        <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+        <span class="c1"># spin-orbit + nambu</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">upper</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+            <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">real</span>
+            <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">imag</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">upper</span><span class="p">:</span>
+                <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+                <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+                <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">m</span>
+
     <span class="k">if</span> <span class="n">what</span> <span class="o">==</span> <span class="s2">&quot;box&quot;</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_real_to_complex</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_float_to_complex</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+
         <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
             <span class="c1"># no spin-density</span>
+            <span class="c1"># TODO: should we divide by 2?</span>
             <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -217,6 +298,7 @@
             <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
         <span class="k">elif</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_noncolinear</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
                 <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -228,6 +310,7 @@
                 <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
                 <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
                 <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
                 <span class="n">m</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -1302,7 +1385,7 @@
             <span class="c1"># This portion of code splits the construct into doing Hermitian</span>
             <span class="c1"># assignments. This probably needs rigorous testing.</span>
 
-            <span class="n">dtype_cplx</span> <span class="o">=</span> <span class="n">dtype_real_to_complex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">dtype_cplx</span> <span class="o">=</span> <span class="n">dtype_float_to_complex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
             <span class="n">is_complex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkind</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_nambu</span><span class="p">:</span>

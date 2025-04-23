@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=7de89ed4"></script>
+      <script src="../../../_static/documentation_options.js?v=eb17b54e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -135,7 +135,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_a</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._dispatch_class</span><span class="w"> </span><span class="kn">import</span> <span class="n">_Dispatchs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._dispatcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">AbstractDispatch</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">,</span> <span class="n">TypeDispatcher</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">wrap_filterwarnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">dtype_complex_to_float</span><span class="p">,</span> <span class="n">wrap_filterwarnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._lib._argparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SislHelpFormatter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span>
@@ -1051,7 +1051,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Take the absolute value of the grid :math:`|\mathrm{grid}|`&quot;&quot;&quot;</span>
-        <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_complex_to_float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">a</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">a</span>
