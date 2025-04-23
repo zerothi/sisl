@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from sisl.unit.codata import read_codata
+
 """
 Library for converting units and creating numpy arrays
 with automatic unit conversion.
@@ -14,11 +16,12 @@ which means these unit conversions should be used for Siesta "stuff".
 from sisl._environ import get_environ_variable, register_environ_variable
 from sisl._internal import set_module
 
-from .base import UnitParser
+from .base import UnitParser, UnitTable
 from .base import unit_convert as u_convert
 from .base import unit_default as u_default
 from .base import unit_group as u_group
 from .base import unit_table
+from .codata import CODATA, read_codata
 
 __all__ = ["unit_group", "unit_convert", "unit_default", "units"]
 
@@ -26,75 +29,52 @@ __all__ = ["unit_group", "unit_convert", "unit_default", "units"]
 register_environ_variable(
     "SISL_UNIT_SIESTA",
     "codata2018",
-    "Choose default units used when parsing Siesta files. [codata2018, legacy]",
+    "Choose default units used when parsing Siesta files. [codata2018|2018, legacy]",
     process=str.lower,
 )
 
-
-unit_table_siesta_codata2018 = dict(
-    {key: dict(values) for key, values in unit_table.items()}
-)
-unit_table_siesta_legacy = dict(
-    {key: dict(values) for key, values in unit_table.items()}
-)
-
-unit_table_siesta_legacy["length"].update(
-    {
+unit_table_siesta_legacy = {
+    "length": {
         "Bohr": 0.529177e-10,
-    }
-)
-
-unit_table_siesta_legacy["time"].update(
-    {
-        "mins": 60.0,
-        "hours": 3600.0,
-        "days": 86400.0,
-    }
-)
-
-unit_table_siesta_legacy["energy"].update(
-    {
-        "meV": 1.60219e-22,
+    },
+    "energy": {
         "eV": 1.60219e-19,
-        "mRy": 2.17991e-21,
         "Ry": 2.17991e-18,
-        "mHa": 4.35982e-21,
         "Ha": 4.35982e-18,
         "Hartree": 4.35982e-18,
         "K": 1.38066e-23,
         "kJ/mol": 1.6606e-21,
         "Hz": 6.6262e-34,
-        "THz": 6.6262e-22,
         "cm-1": 1.986e-23,
+        "invcm": 1.986e-23,
         "cm**-1": 1.986e-23,
         "cm^-1": 1.986e-23,
-    }
-)
-
-unit_table_siesta_legacy["force"].update(
-    {
-        "eV/Ang": 1.60219e-9,
-        "eV/Bohr": 1.60219e-9 * 0.529177,
-        "Ry/Bohr": 4.11943e-8,
-        "Ry/Ang": 4.11943e-8 / 0.529177,
-    }
-)
-
+    },
+}
+# Correctly convert it!
+unit_table_siesta_legacy = UnitTable(CODATA, unit_table_siesta_legacy)
 
 # Check for the correct handlers
-_def_unit = get_environ_variable("SISL_UNIT_SIESTA")
-if _def_unit in ("codata2018", "codata"):
-    unit_table_siesta = unit_table_siesta_codata2018
-elif _def_unit in ("legacy", "original"):
+def_unit = get_environ_variable("SISL_UNIT_SIESTA")
+if def_unit in ("codata2018", "2018"):
+    if CODATA["year"] != "2018":
+        unit_table_siesta = UnitTable(read_codata("2018"))
+    else:
+        # Just copy, exactly equivalent!
+        unit_table_siesta = unit_table
+
+elif def_unit in ("legacy", "original"):
     unit_table_siesta = unit_table_siesta_legacy
 else:
     raise ValueError(
-        f"Could not understand SISL_UNIT_SIESTA={_def_unit}, expected one of [codata2018, legacy]"
+        f"Could not understand SISL_UNIT_SIESTA={def_unit}, expected one of [codata2018, 2018, legacy]"
     )
+
+del def_unit
 
 
 @set_module("sisl.unit.siesta")
-def unit_group(unit, tbl=unit_table_siesta):
+def unit_group(unit: str, tbl=unit_table_siesta):
     return u_group(unit, tbl)
 
 
