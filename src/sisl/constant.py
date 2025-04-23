@@ -18,9 +18,13 @@ The currently stored constants are (all are given in SI units):
    h
    hbar
    m_e
+   m_n
    m_p
    G0
    G
+   lambda_e
+   lambda_n
+   lambda_p
 
 All constants may be used like an ordinary float (which converts it to a float):
 
@@ -34,6 +38,10 @@ while one can just as easily convert the units (which ensures thay stay like ano
 >>> c('Ang/ps')
 2997924.58 Ang/ps
 """
+
+from numpy import pi
+
+from sisl.unit.codata import CODATA
 
 from ._internal import set_module
 from .unit.base import units
@@ -88,30 +96,42 @@ class PhysicalConstant(float):
         return super().__eq__(self, other)
 
 
-__all__ += ["q", "c", "h", "hbar", "m_e", "m_p", "G", "G0", "a0"]
+__all__ += ["q", "a0", "kB", "m_e", "m_n", "m_p", "h", "hbar", "c"]
 
 
-# These are CODATA-2018 values
+# These are CODATA values depending on the user-defined ENV-var SISL_CODATA
 #: Unit of charge [C]
-q = PhysicalConstant(1.602176634e-19, "C")
+q = PhysicalConstant(CODATA["atomic unit of charge"].value, "C")
 #: Bohr radius [m]
-a0 = PhysicalConstant(5.29177210903e-11, "m")
+a0 = PhysicalConstant(CODATA["Bohr radius"].value, "m")
 #: Boltzmann constant [J K^-1]
-kB = PhysicalConstant(1.380649e-23, "J/K")
+kB = PhysicalConstant(CODATA["Boltzmann constant"].value, "J/K")
 #: Electron mass [kg]
-m_e = PhysicalConstant(9.1093837015e-31, "kg")
-#: Planck constant [J Hz^-1]
-h = PhysicalConstant(6.62607015e-34, "J s")
-#: Reduced Planck constant [J Hz^-1]
-hbar = PhysicalConstant(1.0545718176461565e-34, "J s")
+m_e = PhysicalConstant(CODATA["electron mass"].value, "kg")
+#: Neutron mass [kg]
+m_n = PhysicalConstant(CODATA["neutron mass"].value, "kg")
 #: Proton mass [kg]
-m_p = PhysicalConstant(1.67262192369e-27, "kg")
+m_p = PhysicalConstant(CODATA["proton mass"].value, "kg")
+#: Planck constant [J Hz^-1]
+h = PhysicalConstant(CODATA["Planck constant"].value, "J s")
+#: Reduced Planck constant [J Hz^-1]
+hbar = PhysicalConstant(CODATA["Planck constant"].value / (2 * pi), "J s")
 #: Speed of light in vacuum [m s^-1]
-c = PhysicalConstant(299792458.0, "m/s")
+c = PhysicalConstant(CODATA["speed of light in vacuum"].value, "m/s")
+#: Number of atoms/molecules in one mol [mol^-1]
+NA = PhysicalConstant(CODATA["Avogadro constant"].value, "1/mol")
 
+
+__all__ += ["G0", "G", "lambda_e", "lambda_p", "lambda_n"]
 
 # Values not found in the CODATA table
 #: Conductance quantum [S], or [m^2/s^2]
 G0 = PhysicalConstant(2 * (q**2 / h), "m^2/s^2")
 #: Gravitational constant [m^3/kg/s^2]
-G = PhysicalConstant(6.6740831e-11, "m^3/kg/s^2")
+G = PhysicalConstant(CODATA["Newtonian constant of gravitation"].value, "m^3/kg/s^2")
+#: Compton wavelength of an electron [m]
+lambda_e = PhysicalConstant(h / (m_e * c), "m")
+#: Compton wavelength of a proton [m]
+lambda_p = PhysicalConstant(h / (m_p * c), "m")
+#: Compton wavelength of a neutron [m]
+lambda_n = PhysicalConstant(h / (m_n * c), "m")

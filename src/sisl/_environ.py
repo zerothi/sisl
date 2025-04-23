@@ -178,3 +178,10 @@ register_environ_variable(
     "The default DFT code for processing files, Siles will be compared with endswidth(<>).",
     process=lambda val: val.lower(),
 )
+
+register_environ_variable(
+    "SISL_CODATA",
+    "2022",
+    "The CODATA year of units and constants used by sisl.",
+    process=lambda val: val.lower(),
+)

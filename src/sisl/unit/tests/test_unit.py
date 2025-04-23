@@ -20,6 +20,12 @@ def test_group():
     assert unit_group("N") == "force"
 
 
+def test_unittable():
+    groups = units._table.groups()
+    assert "mass" in groups
+    assert "energy" in groups
+
+
 def test_unit_convert():
     assert approx(unit_convert("kg", "g")) == 1.0e3
     assert approx(unit_convert("eV", "J")) == 1.60217733e-19

@@ -4,7 +4,7 @@ Environment variables
 =====================
 
 sisl understands some environment variables that may be used to tweak, or change
-the default behaviour of sisl.
+the default behavior of sisl.
 
 Here we list the different options:
 
@@ -17,7 +17,7 @@ Here we list the different options:
    of performance. Especially in conjunction with the ``OMP_NUM_THREADS``
    flag for OpenMP in linear algebra libraries.
    Benchmark and see if it actually improves (certain combinations will
-   severly hurt performance, while others will greatly improve performance).
+   severely hurt performance, while others will greatly improve performance).
    This value together with ``OMP_NUM_THREADS`` and ``SISL_PAR_CHUNKSIZE``
    should be tuned for your case study.
 
@@ -106,7 +106,7 @@ Here we list the different options:
       git clone -b stripped --single-branch https://github.com/zerothi/sisl-files.git
       SISL_FILES_TESTS=$(pwd)/sisl-files pytest --pyargs sisl
 
-``SISL_CONFIGDIR = $HOME/.config/sisl``
+``SISL_CONFIGDIR = ~/.config/sisl``
    where certain configuration files should be stored.
 
    Currently not in use.
@@ -119,6 +119,9 @@ Here we list the different options:
    The value will be taken from the `logging` module,
    so it should be a variable in that module.
 
+``SISL_CODATA = 2010 | 2014 | 2018 | 2022``
+   default internal values used for units and constants.
+
 
 Code specific environment variables
 -----------------------------------
@@ -130,6 +133,8 @@ Siesta
    determine the default units for Siesta files.
 
    Since Siesta 5.0, the default units are updated to follow
-   the CODATA 2018 values. This means that quite a bit of
+   the CODATA 2018 values. Since Siesta 6.0 it will be 2022.
+   The change from 4 to 5 meant that quite a bit of
    results changed. This will force the internal variables
-   to be consistent with this.
+   to be consistent with these changes. Adapt to the same version used
+   by your Siesta version.

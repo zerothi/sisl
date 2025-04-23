@@ -3,9 +3,15 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import Optional, Union
+
 import pyparsing as pp
 
 from sisl._internal import set_module
+
+from .codata import CODATA
 
 __all__ = ["unit_group", "unit_convert", "unit_default", "units", "serialize_units_arg"]
 
@@ -14,70 +20,168 @@ __all__ = ["unit_group", "unit_convert", "unit_default", "units", "serialize_uni
 # Here we only add the conversions according to the
 # standard. Other programs may use their units as they
 # please with non-standard conversion factors.
-# This is the CODATA-2018 units
+# This is the CODATA following env: SISL_CODATA
 
-unit_table = {
-    "mass": {"DEFAULT": "amu", "kg": 1.0, "g": 0.001, "amu": 1.6605390666e-27},
-    "length": {
-        "DEFAULT": "Ang",
-        "m": 1.0,
-        "cm": 0.01,
-        "nm": 1e-09,
-        "Ang": 1e-10,
-        "pm": 1e-12,
-        "fm": 1e-15,
-        "Bohr": 5.29177210903e-11,
-    },
-    "time": {
-        "DEFAULT": "fs",
-        "s": 1.0,
-        "ns": 1e-09,
-        "ps": 1e-12,
-        "fs": 1e-15,
-        "min": 60.0,
-        "hour": 3600.0,
-        "day": 86400.0,
-        "atu": 2.4188843265857e-17,
-    },
-    "energy": {
-        "DEFAULT": "eV",
-        "J": 1.0,
-        "kJ": 1.0e3,
-        "erg": 1e-07,
-        "K": 1.380649e-23,
-        "eV": 1.602176634e-19,
-        "meV": 1.6021766339999998e-22,
-        "Ha": 4.3597447222071e-18,
-        "mHa": 4.3597447222071e-21,
-        "Ry": 2.1798723611035e-18,
-        "mRy": 2.1798723611035e-21,
-        "Hz": 6.62607015000000e-34,
-        "MHz": 6.62607015000000e-28,
-        "GHz": 6.62607015000000e-25,
-        "THz": 6.62607015000000e-22,
-        "invcm": 1.98644585714893e-23,
-        # these won't work when using the class
-        # at least for now
-        "cm**-1": 1.98644585714893e-23,
-        "cm^-1": 1.98644585714893e-23,
-    },
-    "force": {
-        "DEFAULT": "eV/Ang",
-        "N": 1.0,
-        "eV/Ang": 1.6021766339999998e-09,
-        "Ry/Bohr": 4.1193617491269446e-08,
-        "Ha/Bohr": 8.238723498254079e-08,
-    },
-}
+
+UnitTableT = Mapping[str, Mapping[str, Union[float, str]]]
 
 
 @set_module("sisl.unit")
-def unit_group(unit, tbl=unit_table):
+@dataclass
+class UnitTable:
+    codata: dict = field(hash=False)
+    table: dict = field(
+        repr=False, default_factory=dict, compare=False, hash=False
+    )  # initial table of units (of which the rest are built!)
+    processed_table: dict = field(
+        init=False, repr=False, default_factory=dict, compare=False, hash=True
+    )
+
+    def __post_init__(self):
+        """Create the full processed table of units based of table and `codata`"""
+
+        def add_value(dic, key, value):
+            if key not in dic:
+                if isinstance(value, str):
+                    value = self.codata[value].value
+                dic[key] = value
+
+        mass = dict(self.table.get("mass", {}))
+        mass["DEFAULT"] = "amu"
+        add_value(mass, "kg", 1.0)
+        assert abs(mass["kg"] - 1.0) < 1e-15, "Default unit of mass not obeyed!"
+        add_value(mass, "g", 1.0e-3)
+        add_value(mass, "amu", "atomic mass constant")
+        add_value(mass, "m_e", "electron mass")
+        add_value(mass, "m_n", "neutron mass")
+        add_value(mass, "m_p", "proton mass")
+        self.processed_table["mass"] = mass
+
+        length = dict(self.table.get("length", {}))
+        length["DEFAULT"] = "m"
+        add_value(length, "m", 1.0)
+        assert abs(length["m"] - 1.0) < 1e-15, "Default unit of length not obeyed!"
+        add_value(length, "cm", 0.01)
+        add_value(length, "km", 1e3)
+        add_value(length, "nm", 1.0e-9)
+        add_value(length, "Ang", 1.0e-10)
+        add_value(length, "pm", 1.0e-12)
+        add_value(length, "fm", 1.0e-15)
+        add_value(length, "Bohr", "Bohr radius")
+        self.processed_table["length"] = length
+
+        time = dict(self.table.get("time", {}))
+        time["DEFAULT"] = "fs"
+        add_value(time, "s", 1.0)
+        assert abs(time["s"] - 1.0) < 1e-15, "Default unit of time not obeyed!"
+        add_value(time, "ns", 1e-9)
+        add_value(time, "ps", 1e-12)
+        add_value(time, "fs", 1e-15)
+        add_value(time, "min", 60)
+        add_value(time, "hour", 3600)
+        add_value(time, "day", 3600 * 24)
+        add_value(time, "atu", "atomic unit of time")
+        self.processed_table["time"] = time
+
+        energy = dict(self.table.get("energy", {}))
+        energy["DEFAULT"] = "eV"
+        add_value(energy, "J", 1.0)
+        assert abs(energy["J"] - 1.0) < 1e-15, "Default unit of energy not obeyed!"
+        add_value(energy, "kJ", 1e3)
+        add_value(energy, "cal", 4.184)
+        add_value(energy, "kcal", 4184)
+        add_value(energy, "erg", 1e-7)
+        add_value(energy, "K", "kelvin-joule relationship")
+        add_value(energy, "Hz", "hertz-joule relationship")
+        add_value(energy, "MHz", energy["Hz"] * 1e6)
+        add_value(energy, "GHz", energy["Hz"] * 1e9)
+        add_value(energy, "THz", energy["Hz"] * 1e12)
+        value = CODATA["inverse meter-joule relationship"].value
+        add_value(energy, "cm**-1", value * 100)
+        add_value(energy, "cm^-1", energy["cm**-1"])
+        add_value(energy, "invcm", energy["cm**-1"])
+        add_value(energy, "eV", "electron volt")
+        add_value(energy, "Ha", "Hartree energy")
+        add_value(energy, "Ry", "Rydberg constant times hc in J")
+        for e in ("eV", "Ha", "Ry"):
+            add_value(energy, f"m{e}", energy[e] * 1e-3)
+        self.processed_table["energy"] = energy
+
+        force = dict(self.table.get("force", {}))
+        force["DEFAULT"] = "eV/Ang"
+        add_value(force, "N", 1.0)
+        assert abs(force["N"] - 1.0) < 1e-15, "Default unit of force not obeyed!"
+        add_value(force, "dyn", 1e5)
+        for e in ("eV", "Ry", "Ha"):
+            for m in ("Ang", "Bohr", "nm"):
+                add_value(force, f"{e}/{m}", energy[e] / length[m])
+                add_value(force, f"m{e}/{m}", energy[f"m{e}"] / length[m])
+        self.processed_table["force"] = force
+
+        velocity = dict(self.table.get("velocity", {}))
+        velocity["DEFAULT"] = "Ang/fs"
+        add_value(velocity, "m/s", 1.0)
+        assert (
+            abs(velocity["m/s"] - 1.0) < 1e-15
+        ), "Default unit of velocity not obeyed!"
+        add_value(velocity, "km/hour", length["km"] / time["hour"])
+        for m in ("Ang", "Bohr", "nm"):
+            for t in ("ns", "fs", "ps"):
+                add_value(velocity, f"{m}/{t}", length[m] / time[t])
+        self.processed_table["velocity"] = velocity
+
+    # The below is useful to ensure it is `dict` compatible
+    def get(self, key, default=None):
+        return self.processed_table.get(key, default)
+
+    def keys(self):
+        return self.processed_table.keys()
+
+    def items(self):
+        return self.processed_table.items()
+
+    def values(self):
+        return self.processed_table.values()
+
+    def __getitem__(self, key):
+        return self.processed_table[key]
+
+    def __contains__(self, key):
+        return key in self.processed_table
+
+    def __len__(self):
+        return len(self.processed_table)
+
+    def __iter__(self):
+        yield from self.processed_table
+
+    def groups(self) -> list[str]:
+        """Form the list of groups that is present in the current unit-specification"""
+        return list(self.keys())
+
+    def group(self, unit: str) -> str:
+        return unit_group(unit, tbl=self)
+
+    def default(self, group: str) -> str:
+        return unit_default(group, tbl=self)
+
+    def units(self, group: str) -> list[str]:
+        """Form the list of units within a certain unit-gruop"""
+        units = list(self[group].keys())
+        del units["DEFAULT"]
+        return units
+
+
+unit_table = UnitTable(CODATA)
+
+
+@set_module("sisl.unit")
+def unit_group(unit: str, tbl: UnitTableT = unit_table) -> str:
     """The group of units that `unit` belong to
 
     Parameters
     ----------
-    unit : str
+    unit :
       unit, e.g. kg, Ang, eV etc. returns the type of unit it is.
     tbl : dict, optional
         dictionary of units (default to the global table)
@@ -96,12 +200,12 @@ def unit_group(unit, tbl=unit_table):
 
 
 @set_module("sisl.unit")
-def unit_default(group, tbl=unit_table):
+def unit_default(group: str, tbl: UnitTableT = unit_table) -> str:
     """The default unit of the unit group `group`.
 
     Parameters
     ----------
-    group : str
+    group :
        look-up in the table for the default unit.
     tbl : dict, optional
         dictionary of units (default to the global table)
@@ -111,26 +215,31 @@ def unit_default(group, tbl=unit_table):
     >>> unit_default("energy")
     "eV"
     """
-    for k in tbl:
-        if group == k:
-            return tbl[k]["DEFAULT"]
+    grp = tbl.get(group, {})
+    if "DEFAULT" in grp:
+        return grp["DEFAULT"]
 
     raise ValueError("The unit-group does not exist!")
 
 
 @set_module("sisl.unit")
-def unit_convert(fr, to, opts=None, tbl=unit_table):
+def unit_convert(
+    fr: str,
+    to: str,
+    opts: Optional[Mapping[str, float]] = None,
+    tbl: UnitTableT = unit_table,
+) -> float:
     """Factor that takes `fr` to the units of `to`
 
     Parameters
     ----------
-    fr : str
+    fr :
         starting unit
-    to : str
+    to :
         ending unit
-    opts : dict, optional
+    opts :
         controls whether the unit conversion is in powers or fractional units
-    tbl : dict, optional
+    tbl :
         dictionary of units (default to the global table)
 
     Examples
@@ -191,23 +300,23 @@ class UnitParser:
 
     Parameters
     ----------
-    unit_table : dict
-       a table with the units parsable by the class
+    table :
+       a table with the units parseable by the class
     """
 
     __slots__ = ("_table", "_p_left", "_left", "_p_right", "_right")
 
-    def __init__(self, table):
+    def __init__(self, table: UnitTableT):
         self._table = table
 
-        def value(unit):
+        def value(unit: str):
             tbl = self._table
             for k in tbl:
                 if unit in tbl[k]:
                     return tbl[k][unit]
             raise ValueError(f"The unit conversion did not contain unit {unit}!")
 
-        def group(unit):
+        def group(unit: str):
             tbl = self._table
             for k in tbl:
                 if unit in tbl[k]:
@@ -216,7 +325,7 @@ class UnitParser:
                 f"The unit " "{unit!s}" " could not be located in the table."
             )
 
-        def default(group):
+        def default(group: str):
             tbl = self._table
             k = tbl.get(group, None)
             if k is None:
@@ -380,7 +489,7 @@ class UnitParser:
         self._right.clear()
         return conv_A / conv_B
 
-    def convert(self, *units):
+    def convert(self, *units) -> Union[float, Tuple[float]]:
         """Conversion factors between units
 
         If 1 unit is passed a conversion to the default  will be returned.
@@ -422,6 +531,10 @@ class UnitParser:
 
     def __call__(self, *units):
         return self.convert(*units)
+
+    def __getattr__(self, attr):
+        """Return any attributes from the table where data is fetched from"""
+        return getattr(self._table, attr)
 
 
 # Create base sisl unit conversion object
