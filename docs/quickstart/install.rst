@@ -64,37 +64,6 @@ using :code:`pip` or :code:`conda` methods:
       conda config --add channels conda-forge
       conda install -c conda-forge python sisl
 
-.. tab:: dev|pip
-
-   This is equivalent to a development installation which requires a C and fortran compiler
-   as well as some other packages:
-
-   .. code-block:: bash
-
-      python3 -m pip install git+https://github.com/zerothi/sisl.git
-
-   The remaining dependencies should automatically be installed.
-
-   Consider whether the *editable* install is more appropriate for your workflow.
-
-.. tab:: dev|conda
-
-   Using conda as development environment can be done, but may be a bit more cumbersome
-   to work with. To install sisl from sources one needs a conda environment with the following
-   content:
-
-   .. code-block:: bash
-
-      conda create -n sisl
-      conda activate sisl
-      conda config --add channels conda-forge
-      conda install -c conda-forge fortran-compiler c-compiler python scikit-build-core pyproject-metadata
-      conda install -c conda-forge cython scipy netcdf4 cftime plotly matplotlib
-
-   subsequent installations of sisl should follow :code:`dev|pip` tab.
-
-   Consider whether the *editable* install is more appropriate for your workflow.
-
 .. tab:: editable|pip
 
    Editable installs allows one to easily use pure Python code changes

@@ -33,7 +33,7 @@ Summary of development process
 Here is a short summary of how to do developments with `sisl`.
 
 
-1. If you are a first time contributor, you need to clone your repository
+1. If you are a first time contributor, you need to clone your forked repository
    and setup a few things.
 
    The procedure enables one to follow the upstream changes, while simultaneously
@@ -61,14 +61,20 @@ Here is a short summary of how to do developments with `sisl`.
         python -m pip install pre-commit
         pre-commit install
 
-     This will run specific checks before you commit things to the repo.
-     It ensures a consistency in the project.
+     This will run specific checks before you commit things to the repository.
+     It ensures consistency in the project.
 
 2. Installing the project in development mode.
 
    It is advised to install the project in *editable* mode for faster
    turn-around times.
-   Please follow :ref:`these instructions <installation-testing>`.
+
+   .. code:: bash
+
+      python -m pip install -e .
+
+   For further details, see
+   :ref:`the editable|pip instructions <installation-pip>`.
 
 3. Developing your contribution.
 
@@ -115,7 +121,7 @@ Here is a short summary of how to do developments with `sisl`.
 
    The maintainers of `sisl` will do their best to respond as fast as possible.
    But first ensure that the CI runs successfully, if not, maintainers will likely
-   wait untill it succeeds before taking any action.
+   wait until it succeeds before taking any action.
 
 
 Contribute external code
