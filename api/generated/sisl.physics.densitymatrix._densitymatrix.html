@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=eb17b54e"></script>
+      <script src="../../_static/documentation_options.js?v=8c675c27"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1070,24 +1070,30 @@ of the class.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Merging two Hamiltonians, for instance a spin-up/down Hamiltonian
-&gt;&gt;&gt; H1 = si.Hamiltonian(…)
-&gt;&gt;&gt; H2 = si.Hamiltonian(…)
-&gt;&gt;&gt; H = H1.fromsp([H1, H2])</p>
+<p>Merging two Hamiltonians, for instance a spin-up/down Hamiltonian</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H1</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H2</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">H1</span><span class="o">.</span><span class="n">fromsp</span><span class="p">([</span><span class="n">H1</span><span class="p">,</span> <span class="n">H2</span><span class="p">])</span>
+</pre></div>
+</div>
 <p>Adding an overlap from another matrix.
 <code class="docutils literal notranslate"><span class="pre">H</span></code>, will now only contain the <code class="docutils literal notranslate"><span class="pre">H1</span></code> data <em>and</em> the overlap
 matrix from <code class="docutils literal notranslate"><span class="pre">H2</span></code> (the Hamiltonian values in <code class="docutils literal notranslate"><span class="pre">H2</span></code> will be
-neglected)
-&gt;&gt;&gt; H1 = si.Hamiltonian(…, orthogonal=True)
-&gt;&gt;&gt; H2 = si.Hamiltonian(…, orthogonal=False)
-&gt;&gt;&gt; H = H1.fromsp(H1, S=H2)</p>
+neglected)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H1</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H2</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">H1</span><span class="o">.</span><span class="n">fromsp</span><span class="p">(</span><span class="n">H1</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="n">H2</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>If one wishes to construct a merged Hamiltonian with
 the overlap parts in the final matrix, then it should be added
-explicitly.
-&gt;&gt;&gt; H1 = si.Hamiltonian(…, orthogonal=False)
-&gt;&gt;&gt; s = H1.shape
-&gt;&gt;&gt; assert H1.fromsp([H1, H1]).shape == (s[0], s[1], s[2] * 2 - 2)
-&gt;&gt;&gt; assert H1.fromsp([H1, H1], S=H1).shape == (s[0], s[1], s[2] * 2 - 1)</p>
+explicitly.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H1</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">H1</span><span class="o">.</span><span class="n">shape</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">H1</span><span class="o">.</span><span class="n">fromsp</span><span class="p">([</span><span class="n">H1</span><span class="p">,</span> <span class="n">H1</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">H1</span><span class="o">.</span><span class="n">fromsp</span><span class="p">([</span><span class="n">H1</span><span class="p">,</span> <span class="n">H1</span><span class="p">],</span> <span class="n">S</span><span class="o">=</span><span class="n">H1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

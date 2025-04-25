@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=eb17b54e"></script>
+      <script src="../../../_static/documentation_options.js?v=8c675c27"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -477,6 +477,7 @@
 <span class="sd">        --------</span>
 
 <span class="sd">        Merging two Hamiltonians, for instance a spin-up/down Hamiltonian</span>
+
 <span class="sd">        &gt;&gt;&gt; H1 = si.Hamiltonian(...)</span>
 <span class="sd">        &gt;&gt;&gt; H2 = si.Hamiltonian(...)</span>
 <span class="sd">        &gt;&gt;&gt; H = H1.fromsp([H1, H2])</span>
@@ -485,6 +486,7 @@
 <span class="sd">        ``H``, will now only contain the ``H1`` data *and* the overlap</span>
 <span class="sd">        matrix from ``H2`` (the Hamiltonian values in ``H2`` will be</span>
 <span class="sd">        neglected)</span>
+
 <span class="sd">        &gt;&gt;&gt; H1 = si.Hamiltonian(..., orthogonal=True)</span>
 <span class="sd">        &gt;&gt;&gt; H2 = si.Hamiltonian(..., orthogonal=False)</span>
 <span class="sd">        &gt;&gt;&gt; H = H1.fromsp(H1, S=H2)</span>
@@ -492,6 +494,7 @@
 <span class="sd">        If one wishes to construct a merged Hamiltonian with</span>
 <span class="sd">        the overlap parts in the final matrix, then it should be added</span>
 <span class="sd">        explicitly.</span>
+
 <span class="sd">        &gt;&gt;&gt; H1 = si.Hamiltonian(..., orthogonal=False)</span>
 <span class="sd">        &gt;&gt;&gt; s = H1.shape</span>
 <span class="sd">        &gt;&gt;&gt; assert H1.fromsp([H1, H1]).shape == (s[0], s[1], s[2] * 2 - 2)</span>

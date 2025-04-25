@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=eb17b54e"></script>
+      <script src="../_static/documentation_options.js?v=8c675c27"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -182,30 +182,7 @@ conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> <
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">dev|pip</label><div class="tab-content docutils">
-<p>This is equivalent to a development installation which requires a C and fortran compiler
-as well as some other packages:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/zerothi/sisl.git
-</pre></div>
-</div>
-<p>The remaining dependencies should automatically be installed.</p>
-<p>Consider whether the <em>editable</em> install is more appropriate for your workflow.</p>
-</div>
-<input class="tab-input" id="tab-set--0-input--4" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--4">dev|conda</label><div class="tab-content docutils">
-<p>Using conda as development environment can be done, but may be a bit more cumbersome
-to work with. To install sisl from sources one needs a conda environment with the following
-content:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sisl
-conda<span class="w"> </span>activate<span class="w"> </span>sisl
-conda<span class="w"> </span>config<span class="w"> </span>--add<span class="w"> </span>channels<span class="w"> </span>conda-forge
-conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>fortran-compiler<span class="w"> </span>c-compiler<span class="w"> </span>python<span class="w"> </span>scikit-build-core<span class="w"> </span>pyproject-metadata
-conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>cython<span class="w"> </span>scipy<span class="w"> </span>netcdf4<span class="w"> </span>cftime<span class="w"> </span>plotly<span class="w"> </span>matplotlib
-</pre></div>
-</div>
-<p>subsequent installations of sisl should follow <code class="code docutils literal notranslate"><span class="pre">dev|pip</span></code> tab.</p>
-<p>Consider whether the <em>editable</em> install is more appropriate for your workflow.</p>
-</div>
-<input class="tab-input" id="tab-set--0-input--5" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--5">editable|pip</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">editable|pip</label><div class="tab-content docutils">
 <p>Editable installs allows one to easily use pure Python code changes
 without having to reinstall all the time. Highly recommended for developers, has the
 same requirements as noted in the <em class="xref py py-obj">dev|*</em> tabs.</p>

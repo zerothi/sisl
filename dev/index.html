@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=eb17b54e"></script>
+      <script src="../_static/documentation_options.js?v=8c675c27"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -144,7 +144,7 @@ of making a development workflow for <a class="reference internal" href="../inde
 <h2>Summary of development process<a class="headerlink" href="#summary-of-development-process" title="Link to this heading"></a></h2>
 <p>Here is a short summary of how to do developments with <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>.</p>
 <ol class="arabic">
-<li><p>If you are a first time contributor, you need to clone your repository
+<li><p>If you are a first time contributor, you need to clone your forked repository
 and setup a few things.</p>
 <p>The procedure enables one to follow the upstream changes, while simultaneously
 have a fork where one has write access.</p>
@@ -166,15 +166,19 @@ create your own copy of the code base.</p></li>
 pre-commit<span class="w"> </span>install
 </pre></div>
 </div>
-<p>This will run specific checks before you commit things to the repo.
-It ensures a consistency in the project.</p>
+<p>This will run specific checks before you commit things to the repository.
+It ensures consistency in the project.</p>
 </li>
 </ul>
 </li>
 <li><p>Installing the project in development mode.</p>
 <p>It is advised to install the project in <em>editable</em> mode for faster
-turn-around times.
-Please follow <a class="reference internal" href="../quickstart/install.html#installation-testing"><span class="std std-ref">these instructions</span></a>.</p>
+turn-around times.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<p>For further details, see
+<a class="reference internal" href="../quickstart/install.html#installation-pip"><span class="std std-ref">the editable|pip instructions</span></a>.</p>
 </li>
 <li><p>Developing your contribution.</p>
 <p>First start by ensuring you have the latest changes on the <code class="docutils literal notranslate"><span class="pre">main</span></code>
@@ -212,7 +216,7 @@ the <code class="docutils literal notranslate"><span class="pre">README.rst</spa
 <li><p>Review process.</p>
 <p>The maintainers of <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will do their best to respond as fast as possible.
 But first ensure that the CI runs successfully, if not, maintainers will likely
-wait untill it succeeds before taking any action.</p>
+wait until it succeeds before taking any action.</p>
 </li>
 </ol>
 </section>

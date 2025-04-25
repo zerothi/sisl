@@ -22,7 +22,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=eb17b54e"></script>
+      <script src="_static/documentation_options.js?v=8c675c27"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -126,7 +126,7 @@
   <section id="environment-variables">
 <span id="environment"></span><h1>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h1>
 <p>sisl understands some environment variables that may be used to tweak, or change
-the default behaviour of sisl.</p>
+the default behavior of sisl.</p>
 <p>Here we list the different options:</p>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">SISL_NUM_PROCS</span> <span class="pre">=</span> <span class="pre">1</span></code></dt><dd><p>Default the number of processors used in parallel calculations.
@@ -135,7 +135,7 @@ Currently only certain Brillouin zone operations has this enabled.</p>
 of performance. Especially in conjunction with the <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code>
 flag for OpenMP in linear algebra libraries.
 Benchmark and see if it actually improves (certain combinations will
-severly hurt performance, while others will greatly improve performance).
+severely hurt performance, while others will greatly improve performance).
 This value together with <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> and <code class="docutils literal notranslate"><span class="pre">SISL_PAR_CHUNKSIZE</span></code>
 should be tuned for your case study.</p>
 <p>It is <em>very</em> easy to encounter deadlocks when using parallel processing in
@@ -208,7 +208,7 @@ The default is a new folder in the currently executed directory.</p>
 </pre></div>
 </div>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">SISL_CONFIGDIR</span> <span class="pre">=</span> <span class="pre">$HOME/.config/sisl</span></code></dt><dd><p>where certain configuration files should be stored.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_CONFIGDIR</span> <span class="pre">=</span> <span class="pre">~/.config/sisl</span></code></dt><dd><p>where certain configuration files should be stored.</p>
 <p>Currently not in use.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">SISL_LOG_FILE</span></code></dt><dd><p>if provided <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will log to the provided file.</p>
@@ -216,6 +216,8 @@ The default is a new folder in the currently executed directory.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">SISL_LOG_LEVEL</span> <span class="pre">=</span> <span class="pre">&quot;info&quot;</span></code></dt><dd><p>the log-level used if writing to a log-file.
 The value will be taken from the <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logging</span></code></a> module,
 so it should be a variable in that module.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_CODATA</span> <span class="pre">=</span> <span class="pre">2010</span> <span class="pre">|</span> <span class="pre">2014</span> <span class="pre">|</span> <span class="pre">2018</span> <span class="pre">|</span> <span class="pre">2022</span></code></dt><dd><p>default internal values used for units and constants.</p>
 </dd>
 </dl>
 <section id="code-specific-environment-variables">
@@ -225,9 +227,11 @@ so it should be a variable in that module.</p>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">SISL_UNIT_SIESTA</span> <span class="pre">=</span> <span class="pre">codata2018</span> <span class="pre">|</span> <span class="pre">legacy</span></code></dt><dd><p>determine the default units for Siesta files.</p>
 <p>Since Siesta 5.0, the default units are updated to follow
-the CODATA 2018 values. This means that quite a bit of
+the CODATA 2018 values. Since Siesta 6.0 it will be 2022.
+The change from 4 to 5 meant that quite a bit of
 results changed. This will force the internal variables
-to be consistent with this.</p>
+to be consistent with these changes. Adapt to the same version used
+by your Siesta version.</p>
 </dd>
 </dl>
 </section>

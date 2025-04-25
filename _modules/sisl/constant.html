@@ -21,7 +21,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=eb17b54e"></script>
+      <script src="../../_static/documentation_options.js?v=8c675c27"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -135,9 +135,13 @@
 <span class="sd">   h</span>
 <span class="sd">   hbar</span>
 <span class="sd">   m_e</span>
+<span class="sd">   m_n</span>
 <span class="sd">   m_p</span>
 <span class="sd">   G0</span>
 <span class="sd">   G</span>
+<span class="sd">   lambda_e</span>
+<span class="sd">   lambda_n</span>
+<span class="sd">   lambda_p</span>
 
 <span class="sd">All constants may be used like an ordinary float (which converts it to a float):</span>
 
@@ -151,6 +155,10 @@
 <span class="sd">&gt;&gt;&gt; c(&#39;Ang/ps&#39;)</span>
 <span class="sd">2997924.58 Ang/ps</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.unit.codata</span><span class="w"> </span><span class="kn">import</span> <span class="n">CODATA</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.unit.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">units</span>
@@ -208,33 +216,45 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
 
-<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;hbar&quot;</span><span class="p">,</span> <span class="s2">&quot;m_e&quot;</span><span class="p">,</span> <span class="s2">&quot;m_p&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;G0&quot;</span><span class="p">,</span> <span class="s2">&quot;a0&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="s2">&quot;a0&quot;</span><span class="p">,</span> <span class="s2">&quot;kB&quot;</span><span class="p">,</span> <span class="s2">&quot;m_e&quot;</span><span class="p">,</span> <span class="s2">&quot;m_n&quot;</span><span class="p">,</span> <span class="s2">&quot;m_p&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;hbar&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]</span>
 
 
-<span class="c1"># These are CODATA-2018 values</span>
+<span class="c1"># These are CODATA values depending on the user-defined ENV-var SISL_CODATA</span>
 <span class="c1">#: Unit of charge [C]</span>
-<span class="n">q</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.602176634e-19</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;atomic unit of charge&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
 <span class="c1">#: Bohr radius [m]</span>
-<span class="n">a0</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">5.29177210903e-11</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+<span class="n">a0</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;Bohr radius&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
 <span class="c1">#: Boltzmann constant [J K^-1]</span>
-<span class="n">kB</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.380649e-23</span><span class="p">,</span> <span class="s2">&quot;J/K&quot;</span><span class="p">)</span>
+<span class="n">kB</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;Boltzmann constant&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;J/K&quot;</span><span class="p">)</span>
 <span class="c1">#: Electron mass [kg]</span>
-<span class="n">m_e</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">9.1093837015e-31</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
-<span class="c1">#: Planck constant [J Hz^-1]</span>
-<span class="n">h</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">6.62607015e-34</span><span class="p">,</span> <span class="s2">&quot;J s&quot;</span><span class="p">)</span>
-<span class="c1">#: Reduced Planck constant [J Hz^-1]</span>
-<span class="n">hbar</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.0545718176461565e-34</span><span class="p">,</span> <span class="s2">&quot;J s&quot;</span><span class="p">)</span>
+<span class="n">m_e</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;electron mass&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
+<span class="c1">#: Neutron mass [kg]</span>
+<span class="n">m_n</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;neutron mass&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
 <span class="c1">#: Proton mass [kg]</span>
-<span class="n">m_p</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.67262192369e-27</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
+<span class="n">m_p</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;proton mass&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
+<span class="c1">#: Planck constant [J Hz^-1]</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;Planck constant&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;J s&quot;</span><span class="p">)</span>
+<span class="c1">#: Reduced Planck constant [J Hz^-1]</span>
+<span class="n">hbar</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;Planck constant&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">),</span> <span class="s2">&quot;J s&quot;</span><span class="p">)</span>
 <span class="c1">#: Speed of light in vacuum [m s^-1]</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">299792458.0</span><span class="p">,</span> <span class="s2">&quot;m/s&quot;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;speed of light in vacuum&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;m/s&quot;</span><span class="p">)</span>
+<span class="c1">#: Number of atoms/molecules in one mol [mol^-1]</span>
+<span class="n">NA</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;Avogadro constant&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;1/mol&quot;</span><span class="p">)</span>
 
+
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;G0&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;lambda_e&quot;</span><span class="p">,</span> <span class="s2">&quot;lambda_p&quot;</span><span class="p">,</span> <span class="s2">&quot;lambda_n&quot;</span><span class="p">]</span>
 
 <span class="c1"># Values not found in the CODATA table</span>
 <span class="c1">#: Conductance quantum [S], or [m^2/s^2]</span>
 <span class="n">G0</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">h</span><span class="p">),</span> <span class="s2">&quot;m^2/s^2&quot;</span><span class="p">)</span>
 <span class="c1">#: Gravitational constant [m^3/kg/s^2]</span>
-<span class="n">G</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">6.6740831e-11</span><span class="p">,</span> <span class="s2">&quot;m^3/kg/s^2&quot;</span><span class="p">)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">CODATA</span><span class="p">[</span><span class="s2">&quot;Newtonian constant of gravitation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;m^3/kg/s^2&quot;</span><span class="p">)</span>
+<span class="c1">#: Compton wavelength of an electron [m]</span>
+<span class="n">lambda_e</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">h</span> <span class="o">/</span> <span class="p">(</span><span class="n">m_e</span> <span class="o">*</span> <span class="n">c</span><span class="p">),</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+<span class="c1">#: Compton wavelength of a proton [m]</span>
+<span class="n">lambda_p</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">h</span> <span class="o">/</span> <span class="p">(</span><span class="n">m_p</span> <span class="o">*</span> <span class="n">c</span><span class="p">),</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+<span class="c1">#: Compton wavelength of a neutron [m]</span>
+<span class="n">lambda_n</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="n">h</span> <span class="o">/</span> <span class="p">(</span><span class="n">m_n</span> <span class="o">*</span> <span class="n">c</span><span class="p">),</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
 </pre></div>
 
            </div>
