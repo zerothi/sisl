@@ -30,6 +30,15 @@ between versions.
 
    0.16.0 <release/0.16.0-notes.rst>
 
+..
+   Once we have two releases using towncrier, we'll only
+   have maxdepth of 2 for the latest entry, others
+   will just have maxdepth 1
+   .. toctree::
+   :maxdepth: 1
+
+   0.16.0 <release/0.16.0-notes.rst>
+
 
 
 Changelogs
@@ -39,6 +48,6 @@ The old format changelogs (for older release <=0.15.2) is contained
 here.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    changelog/index.rst

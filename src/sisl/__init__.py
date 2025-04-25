@@ -4,8 +4,6 @@
 # isort: skip_file
 from __future__ import annotations
 
-from sisl._debug_info import print_debug_info
-
 """
 sisl
 ====
