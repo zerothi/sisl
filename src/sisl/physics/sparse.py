@@ -358,6 +358,7 @@ class SparseOrbitalBZ(SparseOrbital):
         --------
 
         Merging two Hamiltonians, for instance a spin-up/down Hamiltonian
+
         >>> H1 = si.Hamiltonian(...)
         >>> H2 = si.Hamiltonian(...)
         >>> H = H1.fromsp([H1, H2])
@@ -366,6 +367,7 @@ class SparseOrbitalBZ(SparseOrbital):
         ``H``, will now only contain the ``H1`` data *and* the overlap
         matrix from ``H2`` (the Hamiltonian values in ``H2`` will be
         neglected)
+
         >>> H1 = si.Hamiltonian(..., orthogonal=True)
         >>> H2 = si.Hamiltonian(..., orthogonal=False)
         >>> H = H1.fromsp(H1, S=H2)
@@ -373,6 +375,7 @@ class SparseOrbitalBZ(SparseOrbital):
         If one wishes to construct a merged Hamiltonian with
         the overlap parts in the final matrix, then it should be added
         explicitly.
+
         >>> H1 = si.Hamiltonian(..., orthogonal=False)
         >>> s = H1.shape
         >>> assert H1.fromsp([H1, H1]).shape == (s[0], s[1], s[2] * 2 - 2)
