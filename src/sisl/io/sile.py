@@ -7,6 +7,8 @@ import gzip
 import inspect
 import logging
 import re
+import tempfile
+import zipfile
 from collections.abc import Callable
 from functools import wraps
 from io import TextIOBase
@@ -16,7 +18,7 @@ from os.path import basename, splitext
 from pathlib import Path
 from textwrap import dedent, indent
 from types import MethodType
-from typing import Any, Optional, Union
+from typing import Any, Literal, Optional, Union
 
 from sisl._environ import get_environ_variable
 from sisl._help import has_module
@@ -28,6 +30,7 @@ from . import _except_base, _except_objects
 from ._except_base import *
 from ._except_objects import *
 from ._help import *
+from ._zipfile import ZipPath
 
 # Public used objects
 __all__ = ["add_sile", "get_sile_class", "get_sile", "get_siles", "get_sile_rules"]
@@ -497,6 +500,33 @@ class BaseSile:
     def __init__(self, *args, **kwargs):
         """Just to pass away the args and kwargs"""
 
+    def _sanitize_filename(self, filename) -> Union[Path, ZipPath]:
+        """Sanitize the filename to be a ``Path`` or ``ZipPath`` object.
+
+        If the filename is a ``zipfile.Path``, a ``ZipPath`` or a path with
+        a .zip file in the middle of it, it will be converted to a ``ZipPath``.
+
+        Otherwise, it will be converted to a ``Path`` object.
+
+        Parameters
+        ----------
+        filename :
+            The filename to be sanitized.
+        """
+        if isinstance(filename, zipfile.Path):
+            filename = ZipPath.from_zipfile_path(filename)
+        elif not isinstance(filename, ZipPath):
+            filename = Path(filename)
+
+            # Try to convert to a ZipPath, which will only succeed if there
+            # is a .zip file in the middle of the path
+            try:
+                filename = ZipPath.from_path(filename, self._mode)
+            except FileNotFoundError:
+                pass
+
+        return filename
+
     @property
     def file(self):
         """File of the current `Sile`"""
@@ -586,12 +616,12 @@ class BaseSile:
         base = kwargs.get("base", None)
         if base is None:
             # Extract from filename
-            self._directory = Path(self._file).parent
+            self._directory = self._file.parent
         else:
             self._directory = base
         if not str(self._directory):
             self._directory = "."
-        self._directory = Path(self._directory).resolve()
+        self._directory = self._sanitize_filename(Path(str(self._directory)).resolve())
 
         self._setup(*args, **kwargs)
 
@@ -1097,8 +1127,8 @@ class Sile(Info, BaseSile):
 
     def __init__(self, filename, mode="r", *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._file = Path(filename)
         self._mode = mode
+        self._file = self._sanitize_filename(filename)
 
         comment = kwargs.pop("comment", None)
         if isinstance(comment, (list, tuple)):
@@ -1329,9 +1359,10 @@ class SileCDF(BaseSile):
     """
 
     def __init__(self, filename, mode="r", lvl=0, access=1, *args, **kwargs):
-        self._file = Path(filename)
         # Open mode
         self._mode = mode
+        # Get file
+        self._file = self._sanitize_filename(filename)
         # Save compression internally
         self._lvl = lvl
         # Initialize the _data dictionary for access == 1
@@ -1345,9 +1376,7 @@ class SileCDF(BaseSile):
 
             # The CDF file can easily open the file
         if kwargs.pop("_open", True):
-            self.__dict__["fh"] = netCDF4.Dataset(
-                str(self.file), self._mode, format="NETCDF4"
-            )
+            self.__enter__()
 
         # Must call setup-methods
         self._base_setup(*args, **kwargs)
@@ -1364,9 +1393,20 @@ class SileCDF(BaseSile):
         """Opens the output file and returns it self"""
         # We do the import here
         if "fh" not in self.__dict__:
-            self.__dict__["fh"] = netCDF4.Dataset(
-                str(self.file), self._mode, format="NETCDF4"
-            )
+            file = self.file
+
+            if isinstance(file, ZipPath):
+                self.__dict__["fh"] = netCDF4.Dataset(
+                    str(self.file),
+                    self._mode,
+                    format="NETCDF4",
+                    memory=file.open("rb").read(),
+                )
+            else:
+                self.__dict__["fh"] = netCDF4.Dataset(
+                    str(self.file), self._mode, format="NETCDF4"
+                )
+
         return self
 
     def __exit__(self, type, value, traceback):
@@ -1574,12 +1614,44 @@ class SileBin(BaseSile):
     """
 
     def __init__(self, filename, mode="r", *args, **kwargs):
-        self._file = Path(filename)
         # Open mode
         self._mode = mode.replace("b", "") + "b"
+        # Get file
+        self._file = self._sanitize_filename(filename)
+
+        self._is_inside_zip = isinstance(self.file, ZipPath)
+        self._temp_file_written = False
+        self._raw_file = self._file
 
         # Must call setup-methods
         self._base_setup(*args, **kwargs)
+
+    def __getattribute__(self, name):
+        # If the file is inside a zip fortran can't read directly from it.
+        # We therefore store the contents in a temporary file and set this
+        # as the file to be read from.
+        if (
+            name.startswith("read_")
+            and self._is_inside_zip
+            and not self._temp_file_written
+        ):
+            # Read the data from the filehandle
+            fh = self._file.open("rb")
+            data = fh.read()
+            fh.close()
+
+            # Write it in a temporary file
+            temp_file = tempfile.NamedTemporaryFile(mode="wb", delete=False)
+            temp_path = Path(temp_file.name)
+
+            with temp_file as fp:
+                fp.write(data)
+
+            # Set state to account for the fact that we have written the temp file.
+            self._file = temp_path
+            self._temp_file_written = True
+
+        return super().__getattribute__(name)
 
     def __enter__(self):
         """Opens the output file and returns it self"""
