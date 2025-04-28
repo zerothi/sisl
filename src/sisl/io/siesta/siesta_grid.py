@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import os.path as osp
 from numbers import Integral
+from typing import Optional
 
 import numpy as np
 
@@ -41,7 +42,7 @@ class gridncSileSiesta(SileCDFSiesta):
         return Lattice(cell)
 
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
-    def write_lattice(self, lattice):
+    def write_lattice(self, lattice: Lattice) -> None:
         """Write a supercell to the grid.nc file"""
         sile_raise_write(self)
 
@@ -54,7 +55,7 @@ class gridncSileSiesta(SileCDFSiesta):
         v.unit = "Bohr"
         v[:, :] = lattice.cell[:, :] / Bohr2Ang
 
-    def read_grid(self, index=0, name="gridfunc", *args, **kwargs) -> Grid:
+    def read_grid(self, index=0, name: str = "gridfunc", **kwargs) -> Grid:
         """Reads a grid in the current Siesta.grid.nc file
 
         Enables the reading and processing of the grids created by Siesta
@@ -66,7 +67,7 @@ class gridncSileSiesta(SileCDFSiesta):
            is passed it refers to the fraction per indexed component. I.e.
            ``[0.5, 0.5]`` will return sum of half the first two components.
            Default to the first component.
-        name : str, optional
+        name :
             the name for the grid-function (do not supply for standard Siesta output)
         geometry: Geometry, optional
             add the Geometry to the Grid
@@ -119,7 +120,9 @@ class gridncSileSiesta(SileCDFSiesta):
         nz = len(self._dimension("n3"))
 
         if name is None:
-            v = self._variable("gridfunc")
+            raise ValueError(
+                f"{self.__class__.__name__}.read_grid does not allow 'name=None'"
+            )
         else:
             v = self._variable(name)
 
@@ -149,9 +152,32 @@ class gridncSileSiesta(SileCDFSiesta):
         # looping direction, hence x,y,z == 0,1,2
         return grid.swapaxes(0, 2)
 
-    def write_grid(self, grid, spin=0, nspin=None, **kwargs):
-        """Write a grid to the grid.nc file"""
+    def write_grid(
+        self, grid: Grid, spin: int = 0, nspin: Optional[int] = None, **kwargs
+    ) -> None:
+        """Write a grid to the grid.nc file
+
+        Parameters
+        ----------
+        grid :
+            the grid to write to NetCDF file.
+        spin :
+            integer index for the spin component of the written grid function.
+        nspin :
+            size of the spin-dimension, each `spin` index requires a separate
+            `write_grid` call.
+        name : str
+            the name of the variable in the NetCDF file.
+            Defaults to ``gridfunc``.
+        info : str
+            Information written to the variable attribute ``info``.
+            Defaults to ``Grid function``.
+        unit : str
+            A unit specifier added to the attributes of the variable in the
+            NetCDF file.
+        """
         sile_raise_write(self)
+
         # Default to *index* variable
         spin = kwargs.get("index", spin)
 
@@ -164,11 +190,16 @@ class gridncSileSiesta(SileCDFSiesta):
         self._crt_dim(self, "n2", grid.shape[1])
         self._crt_dim(self, "n3", grid.shape[2])
 
-        if nspin is None:
-            v = self._crt_var(self, "gridfunc", grid.dtype, ("n3", "n2", "n1"))
-        else:
-            v = self._crt_var(self, "gridfunc", grid.dtype, ("spin", "n3", "n2", "n1"))
-        v.info = "Grid function"
+        name = kwargs.get("name", "gridfunc")
+
+        shape = ("n3", "n2", "n1")
+        if nspin is not None:
+            shape = ("spin",) + shape
+
+        v = self._crt_var(self, name, grid.dtype, shape)
+        v.info = kwargs.get("info", "Grid function")
+        if "unit" in kwargs:
+            v.unit = kwargs["unit"]
 
         if nspin is None:
             v[:, :, :] = np.swapaxes(grid.grid, 0, 2)
