@@ -130,6 +130,32 @@ class UnitTable:
                 add_value(velocity, f"{m}/{t}", length[m] / time[t])
         self.processed_table["velocity"] = velocity
 
+        pressure = dict(self.table.get("pressure", {}))
+        pressure["DEFAULT"] = "eV/Ang^3"
+        add_value(pressure, "Pa", 1.0)
+        assert abs(pressure["Pa"] - 1.0) < 1e-15, "Default unit of pressure not obeyed!"
+        add_value(pressure, "GPa", pressure["Pa"] * 1e9)
+        add_value(pressure, "atm", "standard atmosphere")
+        add_value(pressure, "bar", "standard-state pressure")
+        add_value(pressure, "kbar", pressure["bar"] * 1e3)
+        add_value(pressure, "Mbar", pressure["bar"] * 1e6)
+        add_value(pressure, "eV/Ang^3", energy["eV"] / length["Ang"] ** 3)
+        add_value(pressure, "Ry/Bohr^3", energy["Ry"] / length["Bohr"] ** 3)
+        add_value(pressure, "Ha/Bohr^3", energy["Ha"] / length["Bohr"] ** 3)
+        for unit in ("eV/Ang^3", "Ry/Bohr^3", "Ha/Bohr^3"):
+            add_value(pressure, unit.replace("^", "**"), pressure[unit])
+        self.processed_table["pressure"] = pressure
+
+        efield = dict(self.table.get("efield", {}))
+        efield["DEFAULT"] = "V/Ang"
+        add_value(efield, "V/m", 1.0)
+        assert abs(efield["V/m"] - 1.0) < 1e-15, "Default unit of efield not obeyed!"
+        add_value(efield, "V/cm", efield["V/m"] * 1e2)
+        add_value(efield, "V/nm", efield["V/m"] * 1e9)
+        add_value(efield, "V/Ang", efield["V/m"] * 1e10)
+        add_value(efield, "V/Bohr", 1 / length["Bohr"])
+        self.processed_table["efield"] = efield
+
     # The below is useful to ensure it is `dict` compatible
     def get(self, key, default=None):
         return self.processed_table.get(key, default)
