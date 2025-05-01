@@ -77,7 +77,6 @@ jobs:
         env:
           SISL_NUM_PROCS: ${{ steps.cpu-cores.outputs.count }}
           SISL_NODES_EXPORT_VIS: t
-          SISL_FILES_TESTS: ${{ github.workspace }}/files/tests
         run: |
           cd docs
           make html

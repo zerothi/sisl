@@ -53,9 +53,17 @@ import pybtex
 
 # Figure out if we can locate the tests:
 sisl_files_tests = sisl.get_environ_variable("SISL_FILES_TESTS")
+if not sisl_files_tests.is_dir():
+    print(f"SISL_FILES_TESTS (env failed): {sisl_files_tests}")
+    # Try and bypass by using the ../files/tests folder
+    sisl_files_tests = _root / "files" / "tests"
+
 print(f"SISL_FILES_TESTS: {sisl_files_tests}")
 print("  is directory: ", sisl_files_tests.is_dir())
 if sisl_files_tests.is_dir():
+    # Ensure it is set correctly
+    os.environ["SISL_FILES_TESTS"] = str(sisl_files_tests)
+
     print("  content:")
     for _child in sisl_files_tests.iterdir():
         print(f"    ./{_child.relative_to(sisl_files_tests)}")
