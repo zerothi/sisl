@@ -32,8 +32,23 @@ Summary of development process
 
 Here is a short summary of how to do developments with `sisl`.
 
+1. You may need to install some packages system-wide, in case you do not have these:
 
-1. If you are a first time contributor, you need to clone your forked repository
+   *  For any type of contribution, ``gfortran`` :
+
+      .. code:: bash
+
+         sudo apt-get install gfortran
+
+   *  And, in case you want to specifically contribute to the docs, `pandoc` (version between
+      2.9.2 and 4.0.0). For example:
+
+      .. code:: bash
+
+         wget https://github.com/jgm/pandoc/releases/download/3.2/pandoc-3.2-1-amd64.deb
+         sudo dpkg -i pandoc-3.2-1-amd64.deb
+
+2. If you are a first time contributor, you need to clone your forked repository
    and setup a few things.
 
    The procedure enables one to follow the upstream changes, while simultaneously
@@ -64,7 +79,7 @@ Here is a short summary of how to do developments with `sisl`.
      This will run specific checks before you commit things to the repository.
      It ensures consistency in the project.
 
-2. Installing the project in development mode.
+3. Installing the project in development mode.
 
    It is advised to install the project in *editable* mode for faster
    turn-around times.
@@ -76,7 +91,7 @@ Here is a short summary of how to do developments with `sisl`.
    For further details, see
    :ref:`the editable|pip instructions <installation-pip>`.
 
-3. Developing your contribution.
+4. Developing your contribution.
 
    First start by ensuring you have the latest changes on the ``main``
    branch.
@@ -100,7 +115,7 @@ Here is a short summary of how to do developments with `sisl`.
    Be sure to document your changes, and write sensible documentation
    for the API.
 
-4. To submit your contribution:
+5. To submit your contribution:
 
    * Push your changes back to your fork on GitHub:
 
@@ -117,7 +132,7 @@ Here is a short summary of how to do developments with `sisl`.
      Please add one in ``/changes/`` by following the instructions found in
      the ``README.rst`` there.
 
-5. Review process.
+6. Review process.
 
    The maintainers of `sisl` will do their best to respond as fast as possible.
    But first ensure that the CI runs successfully, if not, maintainers will likely
@@ -147,3 +162,44 @@ Contribute additional tests
 Additional test files should be added to `this repository <sisl-files_>`_.
 Please follow the guidelines there, or open up an issue at that repository
 for specific details.
+
+
+Contribute to the docs
+----------------------
+
+To contribute to the documentation one needs to install `pandoc` first (see point
+**1.** in **Summary of development process** above). Then follow these steps:
+
+1. Sitting inside the `sisl` tree, install the `sisl` documentation via:
+
+   .. code:: bash
+
+      pip install -e .[docs]
+
+2. Download tutorial files outside the `sisl` repository:
+
+   .. code:: bash
+
+      git submodule init
+      git submodule update
+
+3. **OPTIONAL** : If your are not contributing specifically to the notebooks,
+   you may consider deactivating their compilation by commenting out (or eliminating)
+   this line ``"nbsphinx",`` in ``sisl/docs/conf.py`` file. This will enormously speed up
+   building times (see below).
+
+4. Within the docs folder (``sisl/docs``) do:
+
+   .. code:: bash
+
+      make html
+
+   This will build the documentation in the ``sisl/docs/build/html`` folder. Open any
+   **.html** file sitting there in your browser to visualize the built docs.
+
+5. Now you can contribute to the documentation by modifying any **.rst** file (reStructuredText
+   , or reST) sitting in ``sisl/docs``. Then build again (``make html``) and check your changes
+   in the browser.
+
+6. Once happy with your changes, *push* them to your fork and create a PR following the
+   instructions **4.** and **5.** in **Summary of development process**.
