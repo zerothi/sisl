@@ -43,6 +43,11 @@ class ZipPath(zipfile.Path):
         if self._zip_abs_path not in self._open_files:
             self._open_files[self._zip_abs_path] = {}
 
+    @property
+    def suffix(self):
+        """Override the suffix property to ensure it returns a string"""
+        return Path(str(self)).suffix
+
     def with_suffix(self, *args, **kwargs):
         """Override the with_suffix method to ensure it returns a ZipPath"""
 

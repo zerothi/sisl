@@ -11,7 +11,7 @@ import tempfile
 import zipfile
 from collections.abc import Callable
 from functools import wraps
-from io import TextIOBase
+from io import IOBase
 from itertools import product
 from operator import contains
 from os.path import basename, splitext
@@ -426,7 +426,19 @@ def get_sile(file, *args, **kwargs):
     """
     cls = kwargs.pop("cls", None)
     sile = get_sile_class(file, *args, cls=cls, **kwargs)
-    return sile(Path(str_spec(str(file))[0]), *args, **kwargs)
+
+    # Get the file path with the potential {specification}
+    # removed from the end. However, if this is a zipfile
+    # path we need to preserve the original zipfile.
+    if isinstance(file, zipfile.Path):
+        internal_path = Path(str(file)).relative_to(file.root.filename)
+        clean_filename = str_spec(str(internal_path))[0]
+        file = ZipPath(file.root, clean_filename)
+    else:
+        clean_filename = str_spec(str(file))[0]
+        file = Path(clean_filename)
+
+    return sile(file, *args, **kwargs)
 
 
 @set_module("sisl.io")
@@ -496,6 +508,39 @@ def get_sile_rules(attrs=None, cls=None):
 @set_module("sisl.io")
 class BaseSile:
     """Base class for all sisl files"""
+
+    def __new__(cls, filename, *args, **kwargs):
+        # check whether filename is an actual str, or StringIO or some buffer
+        if not isinstance(filename, IOBase):
+            # this is just a regular sile opening
+            return super().__new__(cls)
+
+        return super().__new__(cls._buffer_cls)
+
+    def __init_subclass__(cls, buffer_cls=None):
+        if issubclass(cls, BaseBufferSile):
+            # return since it already inherits BufferSile
+            return
+
+        buffer_extension_cls = getattr(cls, "_buffer_extension_cls", None)
+
+        if buffer_extension_cls is None and buffer_cls is None:
+            cls._buffer_cls = None
+        else:
+            if buffer_cls is None:
+                buffer_cls = type(
+                    f"{cls.__name__}Buffer",
+                    (buffer_extension_cls, cls),
+                    # Ensure the module is the same
+                    {"__module__": cls.__module__},
+                )
+            elif not issubclass(buffer_cls, BaseBufferSile):
+                raise TypeError(
+                    f"The passed buffer_cls should inherit from sisl.io.BufferSile to "
+                    "ensure correct behaviour."
+                )
+
+            cls._buffer_cls = buffer_cls
 
     def __init__(self, *args, **kwargs):
         """Just to pass away the args and kwargs"""
@@ -621,7 +666,9 @@ class BaseSile:
             self._directory = base
         if not str(self._directory):
             self._directory = "."
-        self._directory = self._sanitize_filename(Path(str(self._directory)).resolve())
+
+        if isinstance(self._directory, (str, Path)):
+            self._directory = self._sanitize_filename(Path(self._directory).resolve())
 
         self._setup(*args, **kwargs)
 
@@ -745,8 +792,11 @@ def sile_fh_open(from_closed: bool = False, reset: Callable[[BaseSile], None] = 
     return _wrapper
 
 
+class BaseBufferSile: ...
+
+
 @set_module("sisl.io")
-class BufferSile:
+class BufferSile(BaseBufferSile):
     """Sile for handling `StringIO` and `TextIOBase` objects
 
     These are basically meant for users passing down the above objects
@@ -789,6 +839,98 @@ class BufferSile:
 
     def close(self):
         """Will not close the file since this is passed by the user"""
+
+
+@set_module("sisl.io")
+class BufferSileCDF(BaseBufferSile):
+
+    def __init__(self, filename, mode="r", *args, **kwargs):
+        # here, filename is actually a file-handle.
+        # However, to accommodate keyword arguments we *must* have the same name
+        filehandle = filename
+
+        try:
+            filename = Path(filehandle.name)
+        except AttributeError:
+            filename = Path("dummy")
+
+        if hasattr(filehandle, "mode") and filehandle.mode != mode:
+            raise ValueError(
+                f"The filehandle's mode ({filehandle.mode}) does not match the sile's mode ({mode})"
+            )
+
+        # Remove the b from the mode, as netCDF4 only accepts "r" or "w"
+        mode = mode.replace("b", "")
+
+        self._buffer = filehandle
+
+        # pass mode to the file to let it know what happened
+        # we can't use super here due to the coupling to the Sile class
+        super().__init__(filename, mode, *args, **kwargs)
+
+    def _open(self):
+
+        if "fh" not in self.__dict__:
+            self.__dict__["fh"] = netCDF4.Dataset(
+                str(self.file),
+                self._mode,
+                format="NETCDF4",
+                memory=self._buffer.read() if self._mode == "r" else 4,
+            )
+
+        return self
+
+
+@set_module("sisl.io")
+class BufferSileBin(BaseBufferSile):
+
+    def __init__(self, filename, mode="r", *args, **kwargs):
+        # here, filename is actually a file-handle.
+        # However, to accommodate keyword arguments we *must* have the same name
+        filehandle = filename
+
+        try:
+            filename = Path(filehandle.name)
+        except AttributeError:
+            # this is not optimal, it will be the current directory, but one should not be able
+            # to write to it
+            filename = Path("dummy")
+
+        if hasattr(filehandle, "mode") and filehandle.mode != mode:
+            raise ValueError(
+                f"The filehandle mode ({filehandle.mode}) does not match the sile's mode ({mode})"
+            )
+
+        mode = mode.replace("b", "")
+
+        self._buffer = filehandle
+        # self._fh_init_tell = filehandle.tell()
+
+        self._temp_file_written = False
+
+        # pass mode to the file to let it know what happened
+        # we can't use super here due to the coupling to the Sile class
+        super().__init__(filename, mode, *args, **kwargs)
+
+    def __getattribute__(self, name):
+        # If the file is inside a zip fortran can't read directly from it.
+        # We therefore store the contents in a temporary file and set this
+        # as the file to be read from.
+        if name.startswith("read_") and not self._temp_file_written:
+            data = self._buffer.read()
+
+            # Write it in a temporary file
+            temp_file = tempfile.NamedTemporaryFile(mode="wb", delete=False)
+            temp_path = Path(temp_file.name)
+
+            with temp_file as fp:
+                fp.write(data)
+
+            # Set state to account for the fact that we have written the temp file.
+            self._file = temp_path
+            self._temp_file_written = True
+
+        return super().__getattribute__(name)
 
 
 @set_module("sisl.io")
@@ -1097,33 +1239,7 @@ class Sile(Info, BaseSile):
     >>> class mySile(otherSislSile, buffer_cls=myBufferClass): ...
     """
 
-    def __new__(cls, filename, *args, **kwargs):
-        # check whether filename is an actual str, or StringIO or some buffer
-        if not isinstance(filename, TextIOBase):
-            # this is just a regular sile opening
-            return super().__new__(cls)
-
-        return super().__new__(cls._buffer_cls)
-
-    def __init_subclass__(cls, buffer_cls=None):
-        if issubclass(cls, BufferSile):
-            # return since it already inherits BufferSile
-            return
-
-        if buffer_cls is None:
-            buffer_cls = type(
-                f"{cls.__name__}Buffer",
-                (BufferSile, cls),
-                # Ensure the module is the same
-                {"__module__": cls.__module__},
-            )
-        elif not issubclass(buffer_cls, BufferSile):
-            raise TypeError(
-                f"The passed buffer_cls should inherit from sisl.io.BufferSile to "
-                "ensure correct behaviour."
-            )
-
-        cls._buffer_cls = buffer_cls
+    _buffer_extension_cls = BufferSile
 
     def __init__(self, filename, mode="r", *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1358,6 +1474,8 @@ class SileCDF(BaseSile):
     1) means stores certain variables in the object.
     """
 
+    _buffer_extension_cls = BufferSileCDF
+
     def __init__(self, filename, mode="r", lvl=0, access=1, *args, **kwargs):
         # Open mode
         self._mode = mode
@@ -1376,7 +1494,7 @@ class SileCDF(BaseSile):
 
             # The CDF file can easily open the file
         if kwargs.pop("_open", True):
-            self.__enter__()
+            self._open()
 
         # Must call setup-methods
         self._base_setup(*args, **kwargs)
@@ -1390,6 +1508,11 @@ class SileCDF(BaseSile):
         return {"zlib": self._lvl > 0, "complevel": self._lvl}
 
     def __enter__(self):
+        """Opens the output file and returns it self"""
+        self._open()
+        return self
+
+    def _open(self):
         """Opens the output file and returns it self"""
         # We do the import here
         if "fh" not in self.__dict__:
@@ -1612,6 +1735,8 @@ class SileBin(BaseSile):
     Opens a SileBin with `mode` (b).
     If `mode` is in read-mode (r).
     """
+
+    _buffer_extension_cls = BufferSileBin
 
     def __init__(self, filename, mode="r", *args, **kwargs):
         # Open mode
