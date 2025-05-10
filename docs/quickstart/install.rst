@@ -26,6 +26,12 @@ Optional dependencies:
 - `matplotlib`_
 - `plotly`_ (for advanced visualization)
 
+Dependencies for development:
+
+- ``C`` and ``fortran`` compilers
+- `cmake`_
+- `pandoc`_ (for contributions to the documentation)
+
 
 sisl implements certain methods in Cython which speeds up the execution.
 Cython is required if one wishes to re-generate the C-sources with a different

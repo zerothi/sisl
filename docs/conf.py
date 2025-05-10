@@ -214,6 +214,8 @@ rst_epilog = """
 .. _xarray: https://xarray.pydata.org/en/stable/index.html
 .. _workshop: https://github.com/zerothi/ts-tbt-sisl-tutorial
 .. _plotly: https://plotly.com/python/
+.. _pandoc: https://pandoc.org/
+.. _miniforge: https://github.com/conda-forge/miniforge
 
 .. DFT codes
 .. _atom: https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html

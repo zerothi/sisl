@@ -25,28 +25,34 @@ In the following of this document you will find information related to the speci
 of making a development workflow for `sisl`.
 
 
-
+.. _devSummary:
 Summary of development process
 ------------------------------
 
+You are free to choose your development environment, but we recommend using a conda virtual
+environment because things are very easy to set up. To create one, install `miniforge`_
+and then create a new python environment. E.g. to create an environment named ``sisl_dev``
+with the latest python version do:
+
+.. code:: bash
+
+   conda create -n sisl_dev python
+
+Then activate it doing:
+
+.. code:: bash
+
+   conda activate sisl_dev
 
 Here is a short summary of how to do developments with `sisl`.
 
-1. You may need to install some packages system-wide, in case you do not have these:
+1. Install the development dependencies. They can be found :ref:`here<install>`. If you are in a
+   conda environment, installing them is as simple as:
 
-   *  For any type of contribution, ``gfortran`` :
+   .. code:: bash
 
-      .. code:: bash
+      conda install -c conda-forge compilers cmake pandoc
 
-         sudo apt-get install gfortran
-
-   *  And, in case you want to specifically contribute to the docs, `pandoc` (version between
-      2.9.2 and 4.0.0). For example:
-
-      .. code:: bash
-
-         wget https://github.com/jgm/pandoc/releases/download/3.2/pandoc-3.2-1-amd64.deb
-         sudo dpkg -i pandoc-3.2-1-amd64.deb
 
 2. If you are a first time contributor, you need to clone your forked repository
    and setup a few things.
@@ -167,8 +173,8 @@ for specific details.
 Contribute to the docs
 ----------------------
 
-To contribute to the documentation one needs to install `pandoc` first (see point
-**1.** in **Summary of development process** above). Then follow these steps:
+To contribute to the documentation one needs to install `pandoc` first (see
+:ref:`Summary of development process<devSummary>`). Then follow these steps:
 
 1. Sitting inside the `sisl` tree, install the `sisl` documentation via:
 
@@ -195,11 +201,12 @@ To contribute to the documentation one needs to install `pandoc` first (see poin
       make html
 
    This will build the documentation in the ``sisl/docs/build/html`` folder. Open any
-   **.html** file sitting there in your browser to visualize the built docs.
+   **.html** file sitting there in your browser to visualize the built docs. Note that
+   `index.html` is the "home page" of the documentation.
 
-5. Now you can contribute to the documentation by modifying any **.rst** file (reStructuredText
-   , or reST) sitting in ``sisl/docs``. Then build again (``make html``) and check your changes
-   in the browser.
+5. The easiest thing that you can do now is to modify one of the **.rst** files
+   (reStructuredText, or reST) sitting in ``sisl/docs``. Then build again (``make html``)
+   and check your changes in the browser.
 
 6. Once happy with your changes, *push* them to your fork and create a PR following the
-   instructions **4.** and **5.** in **Summary of development process**.
+   instructions in :ref:`Summary of development process<devSummary>`.
