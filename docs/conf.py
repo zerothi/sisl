@@ -160,16 +160,11 @@ numpydoc_attributes_as_param_list = False
 templates_path = ["_templates"]
 from sisl_modules.github_links import GHFormat, GHLink
 
-
-def _link_constructor(type):
-    return GHLink(type), GHFormat(type)
-
-
 extlinks = {
     # If these are changed, please update pyproject.toml under towncrier section
-    "issue": _link_constructor("issues"),
-    "pull": _link_constructor("pull"),
-    "discussion": _link_constructor("discussions"),
+    "issue": (GHLink("issues"), GHFormat("issues")),
+    "pull": (GHLink("pull"), GHFormat("pull")),
+    "discussion": (GHLink("discussions"), GHFormat("discussions")),
     "doi": ("https://doi.org/%s", "%s"),
 }
 

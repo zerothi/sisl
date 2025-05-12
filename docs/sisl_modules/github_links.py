@@ -13,8 +13,7 @@ class GHFormat:
 
     def is_valid(self, number: str) -> bool:
         try:
-            int(number)
-            return True
+            return int(number) > 0
         except ValueError:
             return False
 
@@ -30,8 +29,11 @@ class GHFormat:
 
         return f"{prefix}{number}"
 
-    def __mod__(self, arg):
-        return self.format(arg)
+    def __eq__(self, other) -> bool:
+        return self._type == other._type
+
+    def __hash__(self) -> int:
+        return hash(self._type)
 
     def __setstate__(self, d):
         self.__init__(d["type"])
@@ -48,3 +50,6 @@ class GHLink(GHFormat):
             return f"{self.url}/{self._type}"  # no formatting, explicitly requesting no output
 
         return f"{self.url}/{self._type}/{number}"
+
+    def __hash__(self) -> int:
+        return hash((self.url, self._type))
