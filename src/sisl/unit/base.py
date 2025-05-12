@@ -58,7 +58,7 @@ class UnitTable:
         self.processed_table["mass"] = mass
 
         length = dict(self.table.get("length", {}))
-        length["DEFAULT"] = "m"
+        length["DEFAULT"] = "Ang"
         add_value(length, "m", 1.0)
         assert abs(length["m"] - 1.0) < 1e-15, "Default unit of length not obeyed!"
         add_value(length, "cm", 0.01)

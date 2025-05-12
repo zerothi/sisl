@@ -69,6 +69,7 @@ def test_class_unit_math_in_table():
 
 def test_default():
     assert unit_default("mass") == "amu"
+    assert unit_default("length") == "Ang"
     assert unit_default("time") == "fs"
     assert unit_default("energy") == "eV"
     assert unit_default("force") == "eV/Ang"
