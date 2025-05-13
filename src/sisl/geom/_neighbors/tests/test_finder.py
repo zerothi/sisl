@@ -12,10 +12,10 @@ from sisl import Geometry, Lattice
 from sisl.geom import NeighborFinder
 from sisl.geom._neighbors import (
     AtomNeighborList,
+    CoordNeighborList,
+    CoordsNeighborList,
     FullNeighborList,
     PartialNeighborList,
-    PointNeighborList,
-    PointsNeighborList,
     UniqueNeighborList,
 )
 
@@ -210,7 +210,7 @@ def test_unique_pairs(
 def test_close(neighfinder, pbc):
     neighs = neighfinder.find_close([0.3, 0, 0])
 
-    assert isinstance(neighs, PointsNeighborList)
+    assert isinstance(neighs, CoordsNeighborList)
 
     first_point_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
 
@@ -222,7 +222,7 @@ def test_close(neighfinder, pbc):
     ]
 
     for point_neighs, expected_point_neighs in zip(neighs, expected_neighs):
-        assert isinstance(point_neighs, PointNeighborList)
+        assert isinstance(point_neighs, CoordNeighborList)
         assert len(expected_point_neighs) == point_neighs.n_neighbors
         if point_neighs.n_neighbors > 0:
             assert np.all(point_neighs.i == expected_point_neighs[:, 0])
@@ -305,7 +305,7 @@ def test_R_too_big(pbc):
     neighfinder = NeighborFinder(geom, R=[0.6, 2.2], overlap=True)
 
     neighs = neighfinder.find_close([[0.5, 0, 0]])
-    assert isinstance(neighs, PointsNeighborList)
+    assert isinstance(neighs, CoordsNeighborList)
 
     expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
     if pbc:
@@ -313,7 +313,7 @@ def test_R_too_big(pbc):
     expected_neighs = [np.array(expected_neighs)]
 
     for point_neighs, expected_point_neighs in zip(neighs, expected_neighs):
-        assert isinstance(point_neighs, PointNeighborList)
+        assert isinstance(point_neighs, CoordNeighborList)
         assert len(expected_point_neighs) == point_neighs.n_neighbors
         if point_neighs.n_neighbors > 0:
             assert np.all(point_neighs.i == expected_point_neighs[:, 0])

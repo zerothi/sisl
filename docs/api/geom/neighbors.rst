@@ -26,8 +26,8 @@ as you want. You can ask for all neighbors or only the neighbors of atoms that y
    UniqueNeighborList
    PartialNeighborList
    AtomNeighborList
-   PointsNeighborList
-   PointNeighborList
+   CoordsNeighborList
+   CoordNeighborList
 
 
 Neighbor lists
@@ -39,21 +39,21 @@ neighbor list.
 
 The following table summarizes the properties of each type of neighbor list:
 
-+----------------------+--------------------+---------------------+-----------------------+
-| Class                | Neighbors for      | :math:`I < J`       |  Items                |
-+======================+====================+=====================+=======================+
-| `FullNeighborList`   | All atoms          | :fas:`circle-xmark` |  `AtomNeighborList`   |
-+----------------------+--------------------+---------------------+-----------------------+
-| `UniqueNeighborList` | All atoms          | :fas:`circle-check` |         N/A           |
-+----------------------+--------------------+---------------------+-----------------------+
-| `PartialNeighborList`| Selected atoms     | :fas:`circle-xmark` |   `AtomNeighborList`  |
-+----------------------+--------------------+---------------------+-----------------------+
-| `AtomNeighborList`   | One atom           | :fas:`circle-xmark` |         N/A           |
-+----------------------+--------------------+---------------------+-----------------------+
-| `PointsNeighborList` | Points in space    | :fas:`circle-xmark` |   `PointNeighborList` |
-+----------------------+--------------------+---------------------+-----------------------+
-| `PointNeighborList`  | One point in space | :fas:`circle-xmark` |         N/A           |
-+----------------------+--------------------+---------------------+-----------------------+
++----------------------+------------------------+---------------------+-----------------------+
+| Class                | Neighbors for          | :math:`I < J`       |  Items                |
++======================+========================+=====================+=======================+
+| `FullNeighborList`   | All atoms              | :fas:`circle-xmark` |  `AtomNeighborList`   |
++----------------------+------------------------+---------------------+-----------------------+
+| `UniqueNeighborList` | All atoms              | :fas:`circle-check` |         N/A           |
++----------------------+------------------------+---------------------+-----------------------+
+| `PartialNeighborList`| Selected atoms         | :fas:`circle-xmark` |   `AtomNeighborList`  |
++----------------------+------------------------+---------------------+-----------------------+
+| `AtomNeighborList`   | One atom               | :fas:`circle-xmark` |         N/A           |
++----------------------+------------------------+---------------------+-----------------------+
+| `CoordsNeighborList` | Coordinates n space    | :fas:`circle-xmark` |   `CoordNeighborList` |
++----------------------+------------------------+---------------------+-----------------------+
+| `CoordNeighborList`  | Coordinate in space    | :fas:`circle-xmark` |         N/A           |
++----------------------+------------------------+---------------------+-----------------------+
 
 Where:
 
