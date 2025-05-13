@@ -29,8 +29,8 @@ Optional dependencies:
 Dependencies for development:
 
 - ``C`` and ``fortran`` compilers
-- `cmake`_
-- `pandoc`_ (for contributions to the documentation)
+- `cmake`_ (3.21 or above)
+- `pandoc`_ (for locally building the documentation)
 
 
 sisl implements certain methods in Cython which speeds up the execution.
@@ -38,8 +38,8 @@ Cython is required if one wishes to re-generate the C-sources with a different
 Cython version. Note that this is not a necessary step and should typically only
 be considered by developers of Cython modules.
 
-.. _installation-pip:
 
+.. _installation-pip:
 
 Installation of the stable sisl releases can be done by following the common conventions
 using :code:`pip` or :code:`conda` methods:

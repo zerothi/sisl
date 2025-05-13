@@ -1,5 +1,5 @@
 
-.. _devindex:
+.. _dev.index:
 
 Contributing to sisl
 ====================
@@ -12,62 +12,71 @@ Please do remember that open-source projects benefits from interaction!
 
 There are many aspects of useful contributions:
 
-- Code maintenance and development
 - Creating tutorials and extending documentation
+- Code maintenance and development
 - Finding bugs or typos
 - Development of the website
 - Missing a useful feature
 
 We understand that people have different backgrounds, and thus different
-experience in coding. We try to engage as much as possible with ticket creators.
+experience in coding. We try to engage as much as possible with ticket creators, and
+guide.
 
 In the following of this document you will find information related to the specifics
 of making a development workflow for `sisl`.
 
 
-.. _devSummary:
+.. _dev.summary:
+
 Summary of development process
 ------------------------------
 
-You are free to choose your development environment, but we recommend using a conda virtual
-environment because things are very easy to set up. To create one, install `miniforge`_
-and then create a new python environment. E.g. to create an environment named ``sisl_dev``
-with the latest python version do:
+You are free to choose your development environment, but for new Python developers,
+we recommend using a ``conda`` environment because compilers are easier to set up.
+To create one, install `miniforge`_ and then create a new environment:
 
 .. code:: bash
 
-   conda create -n sisl_dev python
+   conda create -n sisl-dev -c conda-forge python compilers cmake pandoc
 
 Then activate it doing:
 
 .. code:: bash
 
-   conda activate sisl_dev
+   conda activate sisl-dev
 
 Here is a short summary of how to do developments with `sisl`.
 
-1. Install the development dependencies. They can be found :ref:`here<install>`. If you are in a
-   conda environment, installing them is as simple as:
+#. Install the development dependencies, see :ref:`here <install>`.
 
-   .. code:: bash
-
-      conda install -c conda-forge compilers cmake pandoc
+   Note, in particular if you want to build the documentation locally, then `pandoc`_
+   is required.
 
 
-2. If you are a first time contributor, you need to clone your forked repository
+#. If you are a first time contributor, you need to clone your forked repository
    and setup a few things.
 
    The procedure enables one to follow the upstream changes, while simultaneously
    have a fork where one has write access.
 
-   * Go to `github.com/zerothi/sisl <sisl-git_>`_ and click the "fork" button to
+   * Go to `github.com/zerothi/sisl <sisl-git_>`_ and click the :guilabel:`Fork` button to
      create your own copy of the code base.
 
    * Clone the fork to your local machine:
 
-     .. code:: bash
+     .. tab:: SSH
 
-        git clone https://github.com/<your-username>/sisl.git
+        .. code:: bash
+
+           git clone git@github.com:<your-username>/sisl.git
+
+     .. tab:: HTML
+
+        .. code:: bash
+
+           git clone https://github.com/<your-username>/sisl.git
+
+     And move to the folder ``cd sisl``.
 
    * Add the upstream repository:
 
@@ -85,7 +94,7 @@ Here is a short summary of how to do developments with `sisl`.
      This will run specific checks before you commit things to the repository.
      It ensures consistency in the project.
 
-3. Installing the project in development mode.
+#. Installing the project in development mode.
 
    It is advised to install the project in *editable* mode for faster
    turn-around times.
@@ -97,7 +106,7 @@ Here is a short summary of how to do developments with `sisl`.
    For further details, see
    :ref:`the editable|pip instructions <installation-pip>`.
 
-4. Developing your contribution.
+#. Developing your contribution.
 
    First start by ensuring you have the latest changes on the ``main``
    branch.
@@ -121,7 +130,8 @@ Here is a short summary of how to do developments with `sisl`.
    Be sure to document your changes, and write sensible documentation
    for the API.
 
-5. To submit your contribution:
+
+#. Submit your contribution:
 
    * Push your changes back to your fork on GitHub:
 
@@ -136,29 +146,30 @@ Here is a short summary of how to do developments with `sisl`.
 
    * Likely, your contribution will need a comment for the release notes.
      Please add one in ``/changes/`` by following the instructions found in
-     the ``README.rst`` there.
+     the ``/changes/README.rst``.
 
-6. Review process.
+#. Review process.
 
    The maintainers of `sisl` will do their best to respond as fast as possible.
    But first ensure that the CI runs successfully, if not, maintainers will likely
    wait until it succeeds before taking any action.
 
 
+
 Contribute external code
 ------------------------
 
 External toolbox codes may be contributed `here <issue_>`_, then press
-"Issue" and select *Contribute toolbox*.
+:guilabel:`Issue` and select :guilabel:`Contribute toolbox`.
 
 There are two cases of external contributions:
 
-1. If the code is directly integrable into sisl it will be merged into the sisl source.
+#. If the code is integrable into sisl it will be merged into the sisl source.
 
-2. If the code is showing how to use sisl to calculate some physical quantity but is not a general
+#. If the code is showing how to use sisl to calculate some physical quantity but is not a general
    implementation, it will be placed in toolbox directory.
 
-Either way, any contribution is very welcome.
+Either way, any contribution is very welcome!
 
 
 
@@ -173,40 +184,44 @@ for specific details.
 Contribute to the docs
 ----------------------
 
-To contribute to the documentation one needs to install `pandoc` first (see
-:ref:`Summary of development process<devSummary>`). Then follow these steps:
+To contribute to the documentation one needs to install `pandoc`_ first (see
+:ref:`dev.summary`). Then follow these steps:
 
-1. Sitting inside the `sisl` tree, install the `sisl` documentation via:
+#. Sitting inside the `sisl` tree, install the `sisl` documentation via:
 
    .. code:: bash
 
       pip install -e .[docs]
 
-2. Download tutorial files outside the `sisl` repository:
+#. Download tutorial files accompanying the `sisl` repository:
 
    .. code:: bash
 
       git submodule init
       git submodule update
 
-3. **OPTIONAL** : If your are not contributing specifically to the notebooks,
-   you may consider deactivating their compilation by commenting out (or eliminating)
-   this line ``"nbsphinx",`` in ``sisl/docs/conf.py`` file. This will enormously speed up
-   building times (see below).
+#. **OPTIONAL**
 
-4. Within the docs folder (``sisl/docs``) do:
+   If you are not contributing specifically to the notebooks,
+   you may consider deactivating their compilation by creating this environment
+   variable to drastically speed up build time:
 
    .. code:: bash
 
-      make html
+      export _SISL_DOC_SKIP=notebook
 
-   This will build the documentation in the ``sisl/docs/build/html`` folder. Open any
-   **.html** file sitting there in your browser to visualize the built docs. Note that
-   `index.html` is the "home page" of the documentation.
+#. Within the docs folder (``/docs``) do:
 
-5. The easiest thing that you can do now is to modify one of the **.rst** files
-   (reStructuredText, or reST) sitting in ``sisl/docs``. Then build again (``make html``)
+   .. code:: bash
+
+      make
+
+   This will build the documentation in the ``/docs/build/html`` folder. Open the
+   ``docs/build/html/index.html`` to visualize the built documentation.
+
+#. The easiest thing that you can do now is to modify one of the ``.rst`` files
+   (reStructuredText, or reST) sitting in ``/docs``. Then build again (``make``)
    and check your changes in the browser.
 
-6. Once happy with your changes, *push* them to your fork and create a PR following the
-   instructions in :ref:`Summary of development process<devSummary>`.
+#. Once happy with your changes, *push* them to your fork and create a PR following the
+   instructions under *To submit your contribution* in :ref:`dev.summary`.
