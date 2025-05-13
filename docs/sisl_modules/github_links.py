@@ -29,6 +29,10 @@ class GHFormat:
 
         return f"{prefix}{number}"
 
+    def __mod__(self, number: str) -> str:
+        """To enable *old-style* formatting."""
+        return self.format(number)
+
     def __eq__(self, other) -> bool:
         return self._type == other._type
 
