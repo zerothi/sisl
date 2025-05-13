@@ -17,8 +17,8 @@ __all__ = [
     "FullNeighborList",
     "PartialNeighborList",
     "AtomNeighborList",
-    "PointsNeighborList",
-    "PointNeighborList",
+    "CoordsNeighborList",
+    "CoordNeighborList",
 ]
 
 
@@ -262,7 +262,7 @@ class PartialNeighborList(AtomsNeighborList):
 
     You can get a partial neighbors list from the `find_neighbors` method of a
     `NeighborFinder` object if you pass the `atoms` argument. Then, you can
-    retreive the neighbors from it:
+    retrieve the neighbors from it:
 
     .. code-block:: python
 
@@ -296,8 +296,8 @@ class PartialNeighborList(AtomsNeighborList):
         The object returned by this list when iterating or indexing.
     """
 
-    #: The atoms for which the neighbors are stored.
     atoms: np.ndarray
+    """The atoms for which the neighbors are stored."""
 
     def __init__(
         self, geometry: Geometry, finder_results, atoms: np.ndarray, split_indices=None
@@ -344,10 +344,10 @@ class AtomNeighborList(Neighbors):
         The lists that, when iterated, return `AtomNeighborList` objects.
     """
 
-    #: The atom for which the neighbors are stored.
     atom: int
+    """The atom for which the neighbors are stored."""
 
-    def __init__(self, geometry, finder_results, atom: int):
+    def __init__(self, geometry: Geometry, finder_results, atom: int):
         self.atom = atom
         super().__init__(geometry, finder_results)
 
@@ -358,14 +358,14 @@ class AtomNeighborList(Neighbors):
 
 
 @set_module("sisl.geom")
-class PointsNeighborList(Neighbors):
-    """List of atoms that are close to a set of points in space.
+class CoordsNeighborList(Neighbors):
+    """List of atoms that are close to a set of coordinates in space.
 
     Examples
     --------
 
-    You can get a points neighbors list from the `find_close` method of a
-    `NeighborFinder` object. Then, you can retreive the neighbors from it:
+    You can get a coordinates neighbors list from the `find_close` method of a
+    `NeighborFinder` object. Then, you can retrieve the neighbors from it:
 
     .. code-block:: python
 
@@ -379,38 +379,36 @@ class PointsNeighborList(Neighbors):
         finder = sisl.geom.NeighborFinder(graphene, R=1.5)
 
         # Get the full neighbors list
-        points = [[0, 0, 0], [2, 0, 0]]
-        neighbors = finder.find_close(points)
+        coords = [[0, 0, 0], [2, 0, 0]]
+        neighbors = finder.find_close(coords)
 
-        # You can loop through points to get their neighbors
-        for point_neighs in neighbors:
+        # You can loop through coordinates to get their neighbors
+        for coord_neighs in neighbors:
             print()
-            print(f"NEIGHBORS OF POINT {point_neighs.point} ({point_neighs.n_neighbors} neighbors): ")
-            print("J", point_neighs.J)
-            print("ISC", point_neighs.isc)
+            print(f"NEIGHBORS OF COORDINATE {coord_neighs.xyz} ({coord_neighs.n_neighbors} neighbors): ")
+            print("J", coord_neighs.J)
+            print("ISC", coord_neighs.isc)
 
-        # Or get the neighbors of a particular point:
+        # Or get the neighbors of a particular coordinate:
         neighbors[0].J
 
     See Also
     --------
-    PointNeighborList
+    CoordNeighborList
         The object returned by this list when iterating or indexing.
 
     """
 
-    def __init__(
-        self, geometry, points: np.ndarray, finder_results, split_indices=None
-    ):
-        self.points = points
+    def __init__(self, geometry, xyzs: np.ndarray, finder_results, split_indices=None):
+        self.xyzs = np.atleast_2d(xyzs)
         super().__init__(geometry, finder_results, split_indices)
 
     @cached_property
     def n_neighbors(self) -> np.ndarray:
-        """Number of atoms that are close to each point"""
+        """Number of atoms that are close to each coordinate"""
 
         if self._split_indices is None:
-            n_neighbors = np.zeros(len(self.points), dtype=int)
+            n_neighbors = np.zeros(len(self.xyzs), dtype=int)
             index, counts = np.unique(self.I, return_counts=True)
             n_neighbors[index] = counts
             return n_neighbors
@@ -418,15 +416,15 @@ class PointsNeighborList(Neighbors):
             return np.diff(self._split_indices, prepend=0)
 
     def __getitem__(self, item):
-        """Returns the interactions of a given point."""
+        """Returns the interactions of a given coordinate."""
         if isinstance(item, Integral):
 
             start = 0 if item == 0 else self.split_indices[item - 1]
             end = self.split_indices[item]
 
-            return PointNeighborList(
+            return CoordNeighborList(
                 self.geometry,
-                self.points[item],
+                self.xyzs[item],
                 self._finder_results[start:end],
             )
         else:
@@ -434,26 +432,26 @@ class PointsNeighborList(Neighbors):
 
 
 @set_module("sisl.geom")
-class PointNeighborList(Neighbors):
-    """List of atoms that are close to a point in space.
+class CoordNeighborList(Neighbors):
+    """List of atoms that are close to a coordinate in space.
 
-    The usual way to get a `PointNeighborList` object is by iterating over a
-    `PointsNeighborList`. See its documentation for examples.
+    The usual way to get a `CoordNeighborList` object is by iterating over a
+    `CoordsNeighborList`. See its documentation for examples.
 
     See Also
     --------
-    PointsNeighborList
-        The list that, when iterated, returns `PointNeighborList` objects.
+    CoordsNeighborList
+        The list that, when iterated, returns `CoordNeighborList` objects.
     """
 
-    #: The point for which the neighbors are stored.
-    point: np.ndarray
+    xyz: np.ndarray
+    """The Cartesian coordinate for which the neighbors are stored."""
 
-    def __init__(self, geometry, point: np.ndarray, finder_results: np.ndarray):
-        self.point = point
+    def __init__(self, geometry: Geometry, xyz: np.ndarray, finder_results: np.ndarray):
+        self.xyz = xyz
         super().__init__(geometry, finder_results)
 
     @cached_property
     def n_neighbors(self) -> int:
-        """Number of neighbors of the point."""
+        """Number of neighbors of the coordinate."""
         return len(self._finder_results)

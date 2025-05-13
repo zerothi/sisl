@@ -15,9 +15,9 @@ from sisl.utils import size_to_elements
 
 from . import _operations
 from ._neighborlists import (
+    CoordsNeighborList,
     FullNeighborList,
     PartialNeighborList,
-    PointsNeighborList,
     UniqueNeighborList,
 )
 
@@ -111,7 +111,7 @@ class NeighborFinder:
 
     See Also
     --------
-    FullNeighborList, UniqueNeighborList, PartialNeighborList, PointsNeighborList:
+    FullNeighborList, UniqueNeighborList, PartialNeighborList, CoordsNeighborList:
         The neighbor lists returned by this class when neighbors are requested.
 
     """
@@ -649,7 +649,7 @@ class NeighborFinder:
     def find_close(
         self,
         xyz: Sequence,
-    ) -> PointsNeighborList:
+    ) -> CoordsNeighborList:
         """Find all atoms that are close to some coordinates in space.
 
         This routine only executes the action of finding neighbors,
@@ -703,6 +703,6 @@ class NeighborFinder:
                 neighbor_pairs, split_ind
             )
 
-        return PointsNeighborList(
+        return CoordsNeighborList(
             self.geometry, xyz, neighbor_pairs[: split_ind[-1]], split_indices=split_ind
         )
