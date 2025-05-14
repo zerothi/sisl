@@ -2757,7 +2757,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                         # the matrix is 0. Hence we just neglect that contribution.
                         j = latt.sc_index(sc)
                         r = r + Al[i] @ Bl[j]
-                    except:
+                    except Exception:
                         continue
 
                 res.append(r)
