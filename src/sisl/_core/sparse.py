@@ -52,7 +52,7 @@ from sisl._help import array_fill_repeat, isiterable
 from sisl._indices import indices, indices_only
 from sisl._internal import set_module
 from sisl.messages import SislError, warn
-from sisl.typing import OrSequence, SparseMatrix
+from sisl.typing import OrSequence, SeqOrScalarFloat, SeqOrScalarInt, SparseMatrix
 from sisl.utils.mathematics import intersect_and_diff_sets
 
 from ._sparse import sparse_dense
@@ -72,10 +72,10 @@ def _to_coo(csr, data: bool = True, rows=None):
     ----------
     csr: SparseCSR
         matrix to sanitize
-    data: bool
+    data:
         whether the data should also be returned sanitized
     rows:
-        only return for a subset of rowsj
+        only return for a subset of rows
 
     Returns
     -------
@@ -87,15 +87,20 @@ def _to_coo(csr, data: bool = True, rows=None):
     col = csr.col
     D = csr._D
 
-    if rows is None:
-        idx = array_arange(ptr[:-1], n=ncol, dtype=int32)
+    if csr.nnz == csr.ptr[-1] and rows is None:
+        cols = col.copy()
+        if data:
+            D = D.copy()
     else:
-        rows = csr._sanitize(rows).ravel()
-        ncol = ncol[rows]
-        idx = array_arange(ptr[rows], n=ncol, dtype=int32)
-    if data:
-        D = D[idx]
-    cols = col[idx]
+        if rows is None:
+            idx = array_arange(ptr[:-1], n=ncol, dtype=int32)
+        else:
+            rows = csr._sanitize(rows).ravel()
+            ncol = ncol[rows]
+            idx = array_arange(ptr[rows], n=ncol, dtype=int32)
+        if data:
+            D = D[idx]
+        cols = col[idx]
     idx = (ncol > 0).nonzero()[0]
     rows = repeat(idx.astype(int32, copy=False), ncol[idx])
 
@@ -173,7 +178,7 @@ class SparseCSR(NDArrayOperatorsMixin):
     # to keep a good overview of which variables are present
     __slots__ = ("_shape", "_ns", "_finalized", "_nnz", "ptr", "ncol", "col", "_D")
 
-    def __init__(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None, **kwargs):
+    def __init__(self, arg1, dim=1, dtype=None, nnzpr: int = 20, nnz=None, **kwargs):
         """Initialize a new sparse CSR matrix"""
 
         # step size in sparse elements
@@ -377,7 +382,7 @@ column indices of the sparse elements
         out._D = full([out._nnz, out.dim], value, dtype=dtype)
         return out
 
-    def diagonal(self):
+    def diagonal(self) -> np.ndarray:
         r"""Return the diagonal elements from the matrix"""
         # get the diagonal components
         diag = np.zeros([self.shape[0], self.shape[2]], dtype=self.dtype)
@@ -394,7 +399,7 @@ column indices of the sparse elements
             return diag.ravel()
         return diag
 
-    def diags(self, diagonals, offsets=0, dim=None, dtype=None):
+    def diags(self, diagonals, offsets=0, dim: Optional[int] = None, dtype=None):
         """Create a `SparseCSR` with diagonal elements with the same shape as the routine
 
         Parameters
@@ -404,7 +409,7 @@ column indices of the sparse elements
         offsets : scalar or array_like
            the offsets from the diagonal for each of the components (defaults
            to the diagonal)
-        dim : int, optional
+        dim :
            the extra dimension of the new diagonal matrix (default to the current
            extra dimension)
         dtype : numpy.dtype, optional
@@ -449,7 +454,7 @@ column indices of the sparse elements
 
         Parameters
         ----------
-        keep_nnz : boolean, optional
+        keep_nnz :
            if ``True`` keeps the sparse elements *as is*.
            I.e. it will merely set the stored sparse elements to zero.
            This may be advantagegous when re-constructing a new sparse
@@ -515,32 +520,18 @@ column indices of the sparse elements
 
         Parameters
         ----------
-        sort : bool, optional
+        sort :
            sort the column indices for each row
         """
         if self.finalized:
             return
 
         # Create and index array to retain the indices we want
-        ptr = self.ptr
-        ncol = self.ncol
-        idx = array_arange(ptr[:-1], n=ncol)
+        row, col, D = _to_coo(self)
+        self.col = col
+        self._D = D
+        self.ptr = _ncol_to_indptr(self.ncol)
 
-        self.col = take(self.col, idx)
-        self._D = take(self._D, idx, 0)
-        del idx
-        self.ptr[0] = 0
-        _a.cumsumi(ncol, out=self.ptr[1:])
-
-        ptr = self.ptr
-        col = self.col
-        D = self._D
-
-        # We truncate all the connections
-        # to get correct rows we need to remove those which have 0 elements
-        row_nonzero = (ncol > 0).nonzero()[0]
-        # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
-        row = repeat(row_nonzero, ncol[row_nonzero])
         if sort:
             # first sort according to row (which is already sorted)
             # then sort by col
@@ -559,6 +550,7 @@ column indices of the sparse elements
                 )
 
         else:
+            ptr = self.ptr
             for r in range(self.shape[0]):
                 ptr1 = ptr[r]
                 ptr2 = ptr[r + 1]
@@ -584,7 +576,7 @@ column indices of the sparse elements
         self._finalized = sort
 
     @singledispatchmethod
-    def _sanitize(self, idx, axis=0) -> ndarray:
+    def _sanitize(self, idx, axis: int = 0) -> ndarray:
         """Sanitize the input indices to a conforming numpy array"""
         if idx is None:
             if axis < 0:
@@ -598,13 +590,13 @@ column indices of the sparse elements
         return idx
 
     @_sanitize.register
-    def _(self, idx: ndarray, axis=0) -> ndarray:
+    def _(self, idx: ndarray, axis: int = 0) -> ndarray:
         if idx.dtype == bool_:
             return np.flatnonzero(idx).astype(np.int32)
         return idx.astype(np.int32, copy=False)
 
     @_sanitize.register
-    def _(self, idx: slice, axis=0) -> ndarray:
+    def _(self, idx: slice, axis: int = 0) -> ndarray:
         start, stop, step = idx.start, idx.stop, idx.step
         if start is None:
             start = 0
@@ -617,19 +609,19 @@ column indices of the sparse elements
             step = 1
         return _a.arangei(start, stop, step)
 
-    def edges(self, row, exclude=None):
-        """Retrieve edges (connections) of a given `row` or list of `row`'s
+    def edges(self, rows: SeqOrScalarInt, exclude: Optional[SeqOrScalarInt] = None):
+        """Retrieve edges (connections) of given `rows`
 
         The returned edges are unique and sorted (see `numpy.unique`).
 
         Parameters
         ----------
-        row : int or list of int
+        rows :
             the edges are returned only for the given row
-        exclude : int or list of int, optional
+        exclude :
            remove edges which are in the `exclude` list.
         """
-        row = unique(self._sanitize(row))
+        rows = unique(self._sanitize(rows))
         if exclude is None:
             exclude = []
         else:
@@ -640,19 +632,19 @@ column indices of the sparse elements
         ncol = self.ncol
 
         # Create column indices
-        edges = unique(self.col[array_arange(ptr[row], n=ncol[row])])
+        edges = unique(self.col[array_arange(ptr[rows], n=ncol[rows])])
 
         if len(exclude) > 0:
             # Return the difference to the exclude region, we know both are unique
             return setdiff1d(edges, exclude, assume_unique=True)
         return edges
 
-    def delete_columns(self, columns, keep_shape: bool = False):
+    def delete_columns(self, cols: SeqOrScalarInt, keep_shape: bool = False):
         """Delete all columns in `columns` (in-place action)
 
         Parameters
         ----------
-        columns : int or array_like
+        columns :
            columns to delete from the sparse pattern
         keep_shape :
            whether the ``shape`` of the object should be retained, if ``True`` all higher
@@ -663,8 +655,8 @@ column indices of the sparse elements
         cnz = count_nonzero
 
         # Sort the columns
-        columns = unique(self._sanitize(columns, axis=1))
-        n_cols = cnz(columns < self.shape[1])
+        cols = unique(self._sanitize(cols, axis=1))
+        n_cols = cnz(cols < self.shape[1])
 
         # Grab pointers
         ptr = self.ptr
@@ -674,7 +666,7 @@ column indices of the sparse elements
         # Get indices of deleted columns
         idx = array_arange(ptr[:-1], n=ncol)
         # Convert to boolean array where we have columns to be deleted
-        lidx = isin(col[idx], columns)
+        lidx = isin(col[idx], cols)
         # Count number of deleted entries per row
         ndel = _a.fromiteri(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
         # Backconvert lidx to deleted indices
@@ -705,7 +697,7 @@ column indices of the sparse elements
         update_col = not keep_shape
         if update_col:
             # Check that we really do have to update
-            update_col = np_any(columns < self.shape[1] - n_cols)
+            update_col = np_any(cols < self.shape[1] - n_cols)
 
         # Correct number of elements per column, and the pointers
         ncol[:] -= ndel
@@ -714,7 +706,7 @@ column indices of the sparse elements
         if update_col:
             # Create a count array to subtract
             count = _a.zerosi(self.shape[1])
-            count[columns] = 1
+            count[cols] = 1
             count = _a.cumsumi(count)
 
             # Recreate pointers due to deleted indices
@@ -765,16 +757,22 @@ column indices of the sparse elements
         # We are *only* deleting columns, so if it is finalized,
         # it will still be
 
-    def translate_columns(self, old, new, rows=None, clean: bool = True):
+    def translate_columns(
+        self,
+        old: SeqOrScalarInt,
+        new: SeqOrScalarInt,
+        rows: Optional[SeqOrScalarInt] = None,
+        clean: bool = True,
+    ):
         """Takes all `old` columns and translates them to `new`.
 
         Parameters
         ----------
-        old : int or array_like
+        old :
            old column indices
-        new : int or array_like
+        new :
            new column indices
-        rows : int or array_like
+        rows :
            only translate columns for the given rows
         clean :
            whether the new translated columns, outside the shape, should be deleted or not (default delete)
@@ -815,7 +813,12 @@ column indices of the sparse elements
             if np_any(new >= self.shape[1]):
                 self._clean_columns()
 
-    def scale_columns(self, cols, scale, rows=None):
+    def scale_columns(
+        self,
+        cols: SeqOrScalarInt,
+        scale: SeqOrScalarFloat,
+        rows: Optional[SeqOrScalarInt] = None,
+    ):
         r"""Scale all values with certain column values with a number
 
         This will multiply all values with certain column values with `scale`
@@ -827,12 +830,12 @@ column indices of the sparse elements
 
         Parameters
         ----------
-        cols : int or array_like
+        cols :
            column indices to scale
-        scale : float or array_like
+        scale :
            scale value for each value (if array-like it has to have the same
            dimension as the sparsity dimension)
-        rows : int or array_like, optional
+        rows :
            only scale the column values that exists in these rows, default to all
         """
         cols = self._sanitize(cols, axis=1)
@@ -940,7 +943,7 @@ column indices of the sparse elements
                 # simply extend the elements
                 self._extend(r, adds, False)
 
-    def iter_nnz(self, row=None):
+    def iter_nnz(self, rows: Optional[SeqOrScalarInt] = None):
         """Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements
 
         An iterator returning the current row index and the corresponding column index.
@@ -958,7 +961,7 @@ column indices of the sparse elements
         row : int or array_like of int
            only loop on the given row(s) default to all rows
         """
-        if row is None:
+        if rows is None:
             # loop on rows
             for r in range(self.shape[0]):
                 n = self.ncol[r]
@@ -966,7 +969,7 @@ column indices of the sparse elements
                 for c in self.col[ptr : ptr + n]:
                     yield r, c
         else:
-            for r in self._sanitize(row).ravel():
+            for r in self._sanitize(rows).ravel():
                 n = self.ncol[r]
                 ptr = self.ptr[r]
                 for c in self.col[ptr : ptr + n]:
@@ -1428,33 +1431,17 @@ column indices of the sparse elements
         # Get indices of sparse data (-1 if non-existing)
         return np_all(self._get(key[0], key[1]) >= 0)
 
-    def nonzero(self, rows=None, only_cols: bool = False):
+    def nonzero(self, rows: Optional[SeqOrScalarInt] = None, only_cols: bool = False):
         """Row and column indices where non-zero elements exists
 
         Parameters
         ----------
-        rows : int or array_like of int, optional
+        rows :
            only return the tuples for the requested rows, default is all rows
-        only_cols : bool, optional
+        only_cols :
            only return the non-zero columns
         """
-        ptr = self.ptr
-        ncol = self.ncol
-        col = self.col
-
-        if rows is None:
-            # all rows will be returned
-            cols = col[array_arange(ptr[:-1], n=ncol, dtype=int32)]
-            if not only_cols:
-                idx = (ncol > 0).nonzero()[0]
-                rows = repeat(idx.astype(int32, copy=False), ncol[idx])
-        else:
-            rows = self._sanitize(rows).ravel()
-            ncol = ncol[rows]
-            cols = col[array_arange(ptr[rows], n=ncol, dtype=int32)]
-            if not only_cols:
-                idx = (ncol > 0).nonzero()[0]
-                rows = repeat(rows[idx].astype(int32, copy=False), ncol[idx])
+        rows, cols = _to_coo(self, data=False, rows=rows)
 
         if only_cols:
             return cols
@@ -1467,7 +1454,7 @@ column indices of the sparse elements
 
         Parameters
         ----------
-        atol : float, optional
+        atol :
             absolute tolerance below this value will be considered 0.
         """
         shape2 = self.shape[2]
@@ -1499,12 +1486,12 @@ column indices of the sparse elements
             # Remove all entries with 0 values
             del self[r, col[idx[C0]]]
 
-    def copy(self, dims=None, dtype=None):
+    def copy(self, dims: Optional[SeqOrScalarInt] = None, dtype=None):
         """A deepcopy of the sparse matrix
 
         Parameters
         ----------
-        dims : int or array-like, optional
+        dims :
            which dimensions to store in the copy, defaults to all.
         dtype : `numpy.dtype`
            this defaults to the dtype of the object,
@@ -1745,12 +1732,12 @@ column indices of the sparse elements
 
         return out
 
-    def remove(self, indices) -> Self:
+    def remove(self, indices: SeqOrScalarInt) -> Self:
         """Return a new sparse CSR matrix with all the indices removed
 
         Parameters
         ----------
-        indices : array_like
+        indices :
            the indices of the rows *and* columns that are removed in the sparse pattern
         """
         indices = self._sanitize(indices, axis=-1)
@@ -1764,14 +1751,14 @@ column indices of the sparse elements
 
         return self.sub(rindices)
 
-    def sub(self, indices) -> Self:
+    def sub(self, indices: SeqOrScalarInt) -> Self:
         """Create a new sparse CSR matrix with the data only for the given rows and columns
 
         All rows and columns in `indices` are retained, everything else is removed.
 
         Parameters
         ----------
-        indices : array_like
+        indices :
            the indices of the rows *and* columns that are retained in the sparse pattern
         """
         indices = self._sanitize(indices, axis=-1).ravel()
@@ -1856,7 +1843,7 @@ column indices of the sparse elements
 
         Parameters
         ----------
-        sort : bool, optional
+        sort :
            the returned columns for the transposed structure will be sorted
            if this is true, default
 
@@ -1873,31 +1860,15 @@ column indices of the sparse elements
         T = self.copy()
         # properly set the shape!
         T._shape = (self.shape[1], self.shape[0], self.shape[2])
+
         # clean memory to not crowd memory too much
         T.ptr = None
         T.col = None
         T.ncol = None
         T._D = None
 
-        # First extract the actual data
-        ncol = self.ncol.view()
-        if self.finalized:
-            # ptr = self.ptr.view()
-            col = self.col.copy()
-            D = self._D.copy()
-        else:
-            idx = array_arange(self.ptr[:-1], n=ncol, dtype=int32)
-            col = self.col[idx]
-            D = self._D[idx, :].copy()
-            del idx
-
-        # figure out rows where ncol is > 0
-        # we skip the first column
-        row_nonzero = (ncol > 0).nonzero()[0]
-        row = repeat(row_nonzero.astype(np.int32, copy=False), ncol[row_nonzero])
-
-        # Now we have the DOK format
-        #  row, col, _D
+        # First extract the actual data in COO format
+        row, col, D = _to_coo(self)
 
         # Now we can re-create the sparse matrix
         # All we need is to count the number of non-zeros per column.

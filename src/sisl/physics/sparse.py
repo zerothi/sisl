@@ -501,7 +501,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -523,7 +523,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -545,7 +545,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -587,7 +587,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            the k-point to setup the overlap at (default Gamma point)
         dtype : numpy.dtype, optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -658,7 +658,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -700,7 +700,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            the k-point to setup the overlap at (default Gamma point)
         dtype : numpy.dtype, optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -736,7 +736,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -756,7 +756,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -801,7 +801,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            the k-point to setup the overlap at (default Gamma point)
         dtype : numpy.dtype, optional
            the data type of the returned matrix. Do NOT request non-complex
@@ -838,7 +838,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -858,7 +858,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -881,7 +881,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1487,7 +1487,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1508,7 +1508,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         spin : int, optional
            the spin-index of the quantity
@@ -1530,7 +1530,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1551,7 +1551,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1572,7 +1572,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1593,7 +1593,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1614,7 +1614,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         spin : int, optional
            the spin-index of the quantity
@@ -1636,7 +1636,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1657,7 +1657,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1678,7 +1678,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1699,7 +1699,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1720,7 +1720,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1741,7 +1741,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1762,7 +1762,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype
            default to `numpy.complex128`
@@ -1782,7 +1782,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1803,7 +1803,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1824,7 +1824,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`
@@ -1847,7 +1847,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         Parameters
         ----------
-        k : array_like, optional
+        k :
            k-point (default is Gamma point)
         dtype : numpy.dtype, optional
            default to `numpy.complex128`

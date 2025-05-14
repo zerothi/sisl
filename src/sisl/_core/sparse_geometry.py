@@ -36,7 +36,7 @@ from sisl.typing import AtomsIndex, CellAxes, Coord, SeqOrScalarFloat
 from sisl.utils.misc import direction
 from sisl.utils.ranges import list2str
 
-from .sparse import SparseCSR, _ncol_to_indptr, issparse
+from .sparse import SparseCSR, _ncol_to_indptr, _to_coo, issparse
 
 __all__ = ["SparseAtom", "SparseOrbital"]
 
@@ -525,26 +525,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # atoms or orbitals
         size = csr.shape[0]
 
-        # First extract the actual data
-        ncol = csr.ncol.view()
-        if csr.finalized:
-            # ptr = csr.ptr.view()
-            col = csr.col.copy()
-            D = csr._D.copy()
-        else:
-            idx = array_arange(csr.ptr[:-1], n=ncol, dtype=int32)
-            # ptr = _ncol_to_indptr(ncol)
-            col = csr.col[idx]
-            D = csr._D[idx, :].copy()
-            del idx
-
-        # figure out rows where ncol is > 0
-        # we skip the first column
-        row_nonzero = (ncol > 0).nonzero()[0]
-        row = repeat(row_nonzero.astype(np.int32, copy=False), ncol[row_nonzero])
-
-        # Now we have the DOK format
-        #  row, col, _D
+        # First extract the sparse matrix in COO format
+        row, col, D = _to_coo(csr)
 
         # Retrieve all sc-indices in the new transposed array
         new_sc_off = lattice.sc_index(-lattice.sc_off)

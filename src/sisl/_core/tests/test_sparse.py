@@ -490,9 +490,7 @@ def test_finalize1(s1):
     # Assert that the ordering is good
     assert np.allclose(s1.col[p[1] : p[1] + n[1]], [3, 2, 1])
     s1.finalize()
-    # This also asserts that we do not change the memory-locations
-    # of the pointers and ncol
-    assert np.allclose(s1.col[p[1] : p[1] + n[1]], [1, 2, 3])
+
     assert s1.finalized
     s1.empty(keep_nnz=True)
     assert s1.finalized
@@ -510,9 +508,7 @@ def test_finalize2(s1):
     # Assert that the ordering is good
     assert np.allclose(s1.col[p[1] : p[1] + n[1]], [3, 2, 1])
     s1.finalize(False)
-    # This also asserts that we do not change the memory-locations
-    # of the pointers and ncol
-    assert np.allclose(s1.col[p[1] : p[1] + n[1]], [3, 2, 1])
+
     assert not s1.finalized
     assert len(s1.col) == 9
 

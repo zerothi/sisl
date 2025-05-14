@@ -99,7 +99,7 @@ def tile(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     na = np.int32(SA.na)
     csr = SA._csr
     ncol = csr.ncol
-    if SA.finalized or csr.nnz == csr.ptr[-1]:
+    if csr.nnz == csr.ptr[-1]:
         col = csr.col
         D = csr._D
     else:
@@ -183,7 +183,7 @@ def repeat(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     na = np.int32(SA.na)
     csr = SA._csr
     ncol = csr.ncol
-    if SA.finalized or csr.nnz == csr.ptr[-1]:
+    if csr.nnz == csr.ptr[-1]:
         col = csr.col
         D = csr._D
     else:
@@ -275,7 +275,7 @@ def tile(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     no = np.int32(SO.no)
     csr = SO._csr
     ncol = csr.ncol
-    if SO.finalized or csr.nnz == csr.ptr[-1]:
+    if csr.nnz == csr.ptr[-1]:
         col = csr.col
         D = csr._D
     else:
@@ -357,7 +357,7 @@ def repeat(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     geom = SO.geometry
     no = np.int32(SO.no)
     csr = SO._csr
-    if SO.finalized or csr.nnz == csr.ptr[-1]:
+    if csr.nnz == csr.ptr[-1]:
         col = csr.col
         D = csr._D
     else:
@@ -375,9 +375,8 @@ def repeat(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     sc_index = geom_n.sc_index
 
     # Create new indptr, indices and D
-    idx = _a.array_arange(
-        np.repeat(geom.firsto[:-1], reps), np.repeat(geom.firsto[1:], reps)
-    )
+    idx = np.repeat(geom.firsto, reps)
+    idx = _a.array_arange(idx[:-reps], idx[reps:])
     ncol = csr.ncol[idx]
     # Now indptr is complete
     indptr = _ncol_to_indptr(ncol)
