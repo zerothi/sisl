@@ -1,0 +1,4 @@
+Fixed `stdoutSileSiesta.read_scf`
+
+It parsed the wrong spin moment and so
+had a wrong read of the first SCF iteration.
