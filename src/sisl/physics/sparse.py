@@ -3,17 +3,19 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import math as m
 import warnings
 from typing import Literal, Optional, Union
 
 import numpy as np
-from scipy.sparse import SparseEfficiencyWarning, csr_matrix
+from scipy.sparse import SparseEfficiencyWarning, coo_matrix, csr_matrix
+from scipy.sparse import hstack as ss_hstack
 
 import sisl._array as _a
 import sisl.linalg as lin
 from sisl import Geometry
-from sisl._core.sparse import SparseCSR, issparse
-from sisl._core.sparse_geometry import SparseOrbital, _SparseGeometry
+from sisl._core.sparse import SparseCSR, _to_coo, issparse
+from sisl._core.sparse_geometry import SparseAtom, SparseOrbital, _SparseGeometry
 from sisl._help import dtype_complex_to_float, dtype_float_to_complex
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, warn
@@ -22,6 +24,7 @@ from sisl.typing import (
     GaugeType,
     KPoint,
     OrSequence,
+    SeqFloat,
     SparseMatrix,
     SparseMatrixPhysical,
 )
@@ -2345,6 +2348,506 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 new._csr[i, i, -1] = 1.0
 
         return new
+
+    def spin_rotate(self, angles: SeqFloat, rad: bool = False):
+        r"""Rotate spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axes, respectively.
+
+        The angles are with respect to each spin-box initial angle.
+        One should use `spin_align` to fix all angles along a specific direction.
+
+        Notes
+        -----
+        For a polarized matrix:
+        The returned matrix will be in non-collinear spin-configuration in case
+        the angles does not reflect a pure flip of spin in the :math:`z`-axis.
+
+        The data-type of the returned matrix, may have changed.
+
+        Parameters
+        ----------
+        angles :
+           angles to rotate spin boxes around the Cartesian directions
+           :math:`x`, :math:`y` and :math:`z`, respectively (Euler angles).
+        rad :
+           Determines the unit of `angles`, for true it is in radians.
+
+        See Also
+        --------
+        spin_align : align all spin-boxes along a specific direction
+
+        Returns
+        -------
+        object
+             a new object with rotated spins
+        """
+        angles = _a.arrayd(angles)
+        if not rad:
+            angles = angles / 180 * np.pi
+        # reduce to minimal angles
+        angles %= 2 * np.pi
+
+        # Helper routines
+        def cos_sin(a):
+            return m.cos(a), m.sin(a)
+
+        def close(a, v):
+            return abs(abs(a) - v) < np.pi / 1080
+
+        c, s = zip(*list(map(cos_sin, angles)))
+
+        # define rotation matrix
+        if len(angles) == 3:
+            calpha, cbeta, cgamma = c
+            salpha, sbeta, sgamma = s
+            R = (
+                # Rz
+                np.array([[cgamma, -sgamma, 0], [sgamma, cgamma, 0], [0, 0, 1]])
+                # Ry
+                .dot([[cbeta, 0, sbeta], [0, 1, 0], [-sbeta, 0, cbeta]])
+                # Rx
+                .dot([[1, 0, 0], [0, calpha, -salpha], [0, salpha, calpha]])
+            )
+
+            # if the spin is not rotated around y, then no rotation has happened
+            # x just puts the correct place, and z rotation is a no-op.
+            is_pol_noop = (
+                close(angles[0], 0)
+                and close(angles[1], 0)
+                or (close(angles[0], np.pi) and close(angles[1], np.pi))
+            )
+
+            is_pol_flip = (close(angles[0], np.pi) and close(angles[1], 0)) or (
+                close(angles[0], 0) and close(angles[1], np.pi)
+            )
+
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.spin_rotate got wrong number of angles (expected 3, got {len(angles)}"
+            )
+
+        spin = self.spin
+
+        if spin.is_unpolarized:
+            raise ValueError(
+                f"{self.__class__.__name__}.spin_rotate requires a matrix with some spin configuration, not an unpolarized matrix."
+            )
+
+        elif spin.is_polarized:
+
+            # figure out if this is only rotating 180 for x or y
+            if is_pol_noop:
+                out = self.copy()
+
+            elif is_pol_flip:
+                # flip spin
+                out = self.transform(matrix=[[0, 1], [1, 0]])
+
+            else:
+                # We are not sure what the user really wants.
+                # So we'll just do a non-colinear thing.
+                # A user may change this subsequently.
+                out = self.transform(spin=Spin("nc")).spin_rotate(angles, rad=True)
+
+        elif spin.is_noncolinear:
+            D = self._csr._D
+            Q = _get_spin(D, spin, what="trace") * 0.5
+            A = _get_spin(D, spin, what="vector")
+
+            A = A.dot(R.T * 0.5)
+
+            # A.dtype is always float in this case
+            out = self.astype(dtype=A.dtype)
+            D = out._csr._D
+            D[:, 0] = Q + A[:, 2]
+            D[:, 1] = Q - A[:, 2]
+            D[:, 2] = A[:, 0]
+            D[:, 3] = -A[:, 1]
+
+        elif spin.is_spinorbit or self.spin.is_nambu:
+            # Since this spin-matrix has all 8 components we will take
+            # each half and align individually.
+            # I believe this should retain most of the physics in its
+            # intrinsic form and thus be a bit more accurate than
+            # later re-creating the matrix by some scaling factor.
+            D = self._csr._D
+            Q = _get_spin(D, spin, what="trace") * 0.5
+            Au = _get_spin(D, spin, what="vector:upper")
+            Al = _get_spin(D, spin, what="vector:lower")
+
+            Au = Au.dot(R.T)
+            Al = Al.dot(R.T)
+
+            # Al|Au.dtype is always float in this case
+            out = self.astype(dtype=Au.dtype)
+            D = out._csr._D
+            # Since the z-component is origin from a diff
+            # we have to align the z such that it halves the
+            # actual charge (Q * 2)
+            Au[:, 2] = (Au[:, 2] + Al[:, 2]) / 2
+            D[:, 0] = Q + Au[:, 2]
+            D[:, 1] = Q - Au[:, 2]
+            D[:, 2] = Au[:, 0]
+            D[:, 3] = -Au[:, 1]
+            D[:, 6] = Al[:, 0]
+            D[:, 7] = Al[:, 1]
+
+        else:
+            raise NotImplementedError("Unknown spin configuration")
+
+        return out
+
+    def spin_align(self, vec: SeqFloat, atoms: AtomsIndex = None):
+        r"""Aligns *all* spin along the vector `vec`
+
+        In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned
+        matrix will be a non-collinear spin configuration.
+
+        This is equivalent to rotate each spin-population to point along `vec` but
+        while keeping its magnitude.
+
+        Parameters
+        ----------
+        vec :
+           vector to align the spin boxes against
+        atoms :
+           only perform alignment for matrix elements on atoms.
+           If multiple atoms are specified, the off-diagonal elements between the
+           atoms will also be aligned.
+           To only align atomic on-site values, one would have to do a loop.
+
+        See Also
+        --------
+        spin_rotate : rotate spin-boxes by a fixed amount (does not align spins)
+
+        Notes
+        -----
+        The returned data-type of the matrix may have changed, depending
+        on options. To retain the *old* datatype, do something like this:
+
+        >>> M = M.spin_align(...).astype(dtype=M.dtype)
+
+        Returns
+        -------
+        object
+            a new object with aligned spins
+        """
+        vec: np.ndarray = _a.asarrayd(vec)
+        # normalize vector
+        vec = vec / (vec @ vec) ** 0.5
+
+        # Calculate indices that corresponds to the `atoms` argument
+        if atoms is None:
+            idx = slice(None)
+        else:
+            g = self.geometry
+            atoms = g._sanitize_atoms(atoms)
+            orbs = g.a2o(atoms, all=True)
+            csr = self._csr
+            idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
+            rows, cols = self.nonzero()
+            # Now check for existance in rows, cols
+            idx = idx[
+                np.logical_and(np.isin(rows, orbs), np.isin(cols % self.no, orbs))
+            ]
+
+        spin = self.spin
+
+        if spin.is_noncolinear:
+            D = self._csr._D
+            Q = _get_spin(D, spin, what="trace").real * 0.5
+            A = _get_spin(D, spin, what="vector")
+
+            # align with vector
+            # add factor 1/2 here (instead when unwrapping)
+            A[idx] = 0.5 * vec * (np.sum(A[idx] ** 2, axis=1).reshape(-1, 1) ** 0.5)
+
+            # This ensures that we populate it correctly.
+            out = self.astype(dtype=A.dtype)
+            D = out._csr._D
+            D[idx, 0] = Q + A[idx, 2]
+            D[idx, 1] = Q - A[idx, 2]
+            D[idx, 2] = A[idx, 0]
+            D[idx, 3] = -A[idx, 1]
+
+        elif spin.is_spinorbit or self.spin.is_nambu:
+            # Since this spin-matrix has all 8 components we will take
+            # each half and align individually.
+            # I believe this should retain most of the physics in its
+            # intrinsic form and thus be a bit more accurate than
+            # later re-creating the matrix by some scaling factor.
+            D = self._csr._D
+            Q = _get_spin(D, spin, what="trace").real * 0.5
+            Au = _get_spin(D, spin, what="vector:upper")
+            Al = _get_spin(D, spin, what="vector:lower")
+
+            # align with vector
+            Au[idx] = vec * (np.sum(Au[idx] ** 2, axis=1).reshape(-1, 1) ** 0.5)
+            Al[idx] = vec * (np.sum(Al[idx] ** 2, axis=1).reshape(-1, 1) ** 0.5)
+
+            # Al|Au.dtype is always float in this case
+            out = self.astype(dtype=Au.dtype)
+            D = out._csr._D
+            # Since the z-component is origin from a diff
+            # we have to align the z such that it halves the
+            # actual charge (Q * 2)
+            Au[:, 2] = (Au[:, 2] + Al[:, 2]) / 2
+
+            D[:, 0] = Q + Au[:, 2]
+            D[:, 1] = Q - Au[:, 2]
+            D[:, 2] = Au[:, 0]
+            D[:, 3] = -Au[:, 1]
+            D[:, 6] = Al[:, 0]
+            D[:, 7] = Al[:, 1]
+
+        elif spin.is_polarized:
+            if vec[:2] @ vec[:2] > 1e-6:
+                out = self.transform(spin=Spin("nc"))
+                out = out.spin_align(vec, atoms)
+
+            elif vec[2] < 0:
+                out = self.transform(matrix=[[0, 1], [1, 0]])
+            else:
+                out = self.copy()
+
+        elif spin.is_unpolarized:
+            raise ValueError(
+                f"{self.__class__.__name__}.spin_align requires a matrix with some spin configuration, not an unpolarized matrix."
+            )
+        else:
+            raise NotImplementedError("Unknown spin configuration")
+
+        return out
+
+    def bond_order(
+        self,
+        method: Literal["mayer", "mulliken", "wiberg"] = "mayer",
+        projection: Literal["atom", "orbital"] = "atom",
+    ):
+        r"""Bond-order calculation using various methods
+
+        For ``method='wiberg'``, the bond-order is calculated as:
+
+        .. math::
+            \mathbf B_{ij}^{\mathrm{Wiberg}} &= \mathbf M_{ij}^2
+
+        For ``method='mayer'``, the bond-order is calculated as:
+
+        .. math::
+            \mathbf B_{ij}^{\mathrm{Mayer}} &= (\mathbf M\mathbf S)_{ij} (\mathbf M\mathbf S)_{ji}
+
+        For ``method='mulliken'``, the bond-order is calculated as:
+
+        .. math::
+            \mathbf B_{ij}^{\mathrm{Mulliken}} &= 2\mathbf M_{ij}\mathbf S_{ij}
+
+        The bond order will then be using the above notation for the summation for atoms:
+
+        .. math::
+            \mathbf B_{IJ}^{\langle\rangle} &= \sum_{i\in I}\sum_{j\in J} \mathbf B^{\langle\rangle}_{ij}
+
+        The Mulliken bond-order is closely related to the COOP interpretation.
+        The COOP is generally an energy resolved Mulliken bond-order (so makes
+        sense for density matrices). So if the
+        density matrix represents a particular eigen-state, it would yield the COOP
+        value for the energy of the eigenstate. Generally the density matrix is
+        the sum over all occupied eigen states, and hence represents the full
+        picture.
+
+        For all options one can do the bond-order calculation for the
+        spin components. Albeit, their meaning may be more doubtful.
+        Simply add ``':spin'`` to the `method` argument, and the returned
+        quantity will be spin-resolved with :math:`x`, :math:`y` and :math:`z`
+        components.
+
+        Note
+        ----
+        It is unclear what the spin-density bond-order really means.
+
+        Parameters
+        ----------
+        method :
+            which method to calculate the bond-order with. Optionally suffix
+            with ``:spin`` to get spin-resolved method.
+
+        projection :
+            whether the returned matrix is in orbital form, or in atom form.
+            If orbital is used, then the above formulas will be changed
+
+        Returns
+        -------
+        SparseAtom : with the bond-order between any two atoms, in a supercell matrix.
+            Returned only if projection is atom.
+        SparseOrbital : with the bond-order between any two orbitals, in a supercell matrix.
+            Returned only if projection is orbital.
+        """
+        method = method.lower()
+
+        # split method to retrieve options
+        m, *opts = method.split(":")
+
+        # only extract the summed density
+        what = "trace"
+        if "spin" in opts:
+            # do this for each spin x, y, z
+            what = "vector"
+            del opts[opts.index("spin")]
+
+        # Check that there are no un-used options
+        if opts:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got non-valid options {opts}"
+            )
+
+        # get all rows and columns
+        geom = self.geometry
+        rows, cols, DM = _to_coo(self._csr)
+
+        # Convert to requested matrix form
+        D = _get_spin(DM, self.spin, what).T
+
+        # Define a matrix-matrix multiplication
+        def mm(A, B):
+            n = A.shape[0]
+            latt = self.geometry.lattice
+            sc_off = latt.sc_off
+
+            # we will extract sub-matrices n_s ** 2 times.
+            # Extracting once should be fine (and ok)
+            Al = [A[:, i * n : (i + 1) * n] for i in range(latt.n_s)]
+            Bl = [B[:, i * n : (i + 1) * n] for i in range(latt.n_s)]
+
+            # A matrix product in a supercell is a bit tricky
+            # since the off-diagonal elements are formed with
+            # respect to the supercell offsets from the diagonal
+            # compoent
+
+            # A = [[ sc1-sc1, sc2-sc1, sc3-sc1, ...
+            #        sc1-sc2, sc2-sc2, sc3-sc2, ...
+            #        sc1-sc3, sc2-sc3, sc3-sc3, ...
+
+            # so each column has a *principal* supercell
+            # which is used to calculate the offset of each
+            # other component.
+            # Now for the LHS in a MM, we have A[0, :]
+            # which is only wrt. the 0,0 component.
+            # In sisl this is forced to be the supercell 0,0.
+            # Hence everything in that row requires no special
+            # handling. Yet all others do.
+
+            res = []
+            for i_s in range(latt.n_s):
+
+                # Calculate the 0,i_s column of the MM
+                # This is equal to:
+                #  A[0, :] @ B[:, i_s]
+                # Calculate the offset for the B column
+                sc_offj = sc_off[i_s] - sc_off
+
+                # initialize the result array
+                # Not strictly needed, but enforces that the
+                # data always contains a csr_matrix
+                r = csr_matrix((n, n), dtype=A.dtype)
+
+                # get current supercell information
+                for i, sc in enumerate(sc_offj):
+                    # i == LHS matrix
+                    # j == RHS matrix
+                    try:
+                        # if the supercell index does not exist, it means
+                        # the matrix is 0. Hence we just neglect that contribution.
+                        j = latt.sc_index(sc)
+                        r = r + Al[i] @ Bl[j]
+                    except Exception:
+                        continue
+
+                res.append(r)
+
+            # Clean-up...
+            del Al, Bl
+
+            # Re-create a matrix where each block is joined into a
+            # big matrix, hstack == columnwise stacking.
+            return ss_hstack(res)
+
+        projection = projection.lower()
+
+        if projection.startswith("atom"):  # allows atoms
+
+            out_cls = SparseAtom
+
+            def sparse2sparse(geom, M):
+
+                # Ensure we have in COO-rdinate format
+                M = M.tocoo()
+
+                # Now re-create the sparse-atom component.
+                rows = geom.o2a(M.row)
+                cols = geom.o2a(M.col)
+                shape = (geom.na, geom.na_s)
+                M = coo_matrix((M.data, (rows, cols)), shape=shape).tocsr()
+                M.sum_duplicates()
+                return M
+
+        elif projection.startswith("orbital"):  # allows orbitals
+
+            out_cls = SparseOrbital
+
+            def sparse2sparse(geom, M):
+                M = M.tocsr()
+                M.sum_duplicates()
+                return M
+
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got unexpected keyword projection"
+            )
+
+        S = False
+
+        if m == "wiberg":
+
+            def get_BO(geom, D, S, rows, cols):
+                # square of each element
+                BO = coo_matrix((D * D, (rows, cols)), shape=self.shape[:2])
+                return sparse2sparse(geom, BO)
+
+        elif m == "mayer":
+
+            S = True
+
+            def get_BO(geom, D, S, rows, cols):
+                D = coo_matrix((D, (rows, cols)), shape=self.shape[:2]).tocsr()
+                S = coo_matrix((S, (rows, cols)), shape=self.shape[:2]).tocsr()
+                BO = mm(D, S).multiply(mm(S, D))
+                return sparse2sparse(geom, BO)
+
+        elif m == "mulliken":
+
+            S = True
+
+            def get_BO(geom, D, S, rows, cols):
+                # Got the factor 2 from Multiwfn
+                BO = coo_matrix((D * S * 2, (rows, cols)), shape=self.shape[:2]).tocsr()
+                return sparse2sparse(geom, BO)
+
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__}.bond_order got non-valid method {method}"
+            )
+
+        if S:
+            if self.orthogonal:
+                S = np.zeros(rows.size, dtype=DM.dtype)
+                S[rows == cols] = 1.0
+            else:
+                S = DM[:, -1]
+
+        if D.ndim == 2:
+            BO = [get_BO(geom, d, S, rows, cols) for d in D]
+        else:
+            BO = get_BO(geom, D, S, rows, cols)
+
+        return out_cls.fromsp(geom, BO)
 
     def astype(self, dtype, *, copy: bool = True) -> Self:
         """Convert the sparse matrix to a specific `dtype`
