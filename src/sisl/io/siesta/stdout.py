@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import os
 from collections import namedtuple
+from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Literal, Optional
 
@@ -133,6 +134,35 @@ def _parse_version(attr, instance, match):
 
 def _in_final(self):
     return self.fh.tell() >= self.info._in_final_analysis_tell
+
+
+@dataclass
+class Toggler:
+    """Allows simpler toggling for when a key is found or not.
+
+    When executing `toggle`, then they key is added if not present,
+    and return False.
+    If the key is present, it will reset the `keys` attribute, add
+    the `key`, and return True (because it got re-initialized).
+    """
+
+    keys: set[str] = field(init=False, default_factory=set)
+
+    def __bool__(self) -> bool:
+        return len(self) > 0
+
+    def __len__(self) -> int:
+        return len(self.keys)
+
+    def toggle(self, key: str) -> bool:
+        """Toggle a key in the object. Return true if it was already present."""
+        ret = False
+        if key in self.keys:
+            # easier to just reset it!
+            self.keys = set()
+            ret = True
+        self.keys.add(key)
+        return ret
 
 
 @set_module("sisl.io.siesta")
@@ -869,7 +899,7 @@ class stdoutSileSiesta(SileSiesta):
     @sile_fh_open()
     def read_scf(
         self,
-        key: str = "scf",
+        key: Literal["scf", "ts-scf"] = "scf",
         iscf: Optional[Union[int, Ellipsis]] = -1,
         as_dataframe: bool = False,
         ret_header: bool = False,
@@ -878,7 +908,7 @@ class stdoutSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        key : {'scf', 'ts-scf'}
+        key :
             parse SCF information from Siesta SCF or TranSiesta SCF
         iscf :
             which SCF cycle should be stored. If ``-1`` only the final SCF step is stored,
@@ -894,50 +924,146 @@ class stdoutSileSiesta(SileSiesta):
         """
 
         # These are the properties that are written in SIESTA scf
-        props = ["iscf", "Eharris", "E_KS", "FreeEng", "dDmax", "Ef", "dHmax"]
-
-        if iscf is Ellipsis:
-            iscf = None
-        elif iscf is not None:
+        if iscf is None:
+            iscf = Ellipsis
+        elif iscf is not Ellipsis:
             if iscf == 0:
                 raise ValueError(
                     f"{self.__class__.__name__}.read_scf requires iscf argument to *not* be 0!"
                 )
 
         def reset_d(d, line):
+            """Determine if the SCF is done, and signal what it found."""
             if line.startswith("SCF cycle converged") or line.startswith(
                 "SCF_NOT_CONV"
             ):
-                if len(d["data"]) > 0:
+                if d["_toggle"]:  # means it did find some data
                     d["_final_iscf"] = 1
+
             elif line.startswith("SCF cycle continued"):
                 d["_final_iscf"] = 0
 
-        def common_parse(line, d):
-            nonlocal props
+        def construct_data(d):
+            """Concatenate the data from the `order` and keys"""
+            try:
+                data = []
+                for key in d["order"]:
+                    data.extend(d[key])
+                    del d[key]
+                return data
+            except KeyError:
+                return None
+
+        def do_finalize(d, key):
+            """Check whether we are ready to return data (a similar key is found)."""
+            if d["_toggle"].toggle(key):
+                return construct_data(d)
+            return None
+
+        def add_order(d, key, prop=None):
+            if prop is None:
+                prop = key
+
+            if key not in d["order"]:
+                d["order"].append(key)
+                if isinstance(prop, str):
+                    d["props"].append(prop)
+                else:
+                    d["props"].extend(prop)
+
+        def p_scf_fix_spin(line):
+            assert len(line) == 97
+            data = [
+                int(line[5:9]),
+                float(line[9:25]),
+                float(line[25:41]),
+                float(line[41:57]),
+                float(line[57:67]),
+                float(line[67:77]),
+                float(line[77:87]),
+                float(line[87:97]),
+            ]
+            return data
+
+        def p_scf(line):
+            assert len(line) == 87
+            data = [
+                int(line[5:9]),
+                float(line[9:25]),
+                float(line[25:41]),
+                float(line[41:57]),
+                float(line[57:67]),
+                float(line[67:77]),
+                float(line[77:87]),
+            ]
+            return data
+
+        def p_ts_scf_fix_spin(line):
+            assert len(line) == 100
+            data = [
+                int(line[8:12]),
+                float(line[12:28]),
+                float(line[28:44]),
+                float(line[44:60]),
+                float(line[60:70]),
+                float(line[70:80]),
+                float(line[80:90]),
+                float(line[90:100]),
+            ]
+            return data
+
+        def p_ts_scf(line):
+            assert len(line) == 90
+            data = [
+                int(line[8:12]),
+                float(line[12:28]),
+                float(line[28:44]),
+                float(line[44:60]),
+                float(line[60:70]),
+                float(line[70:80]),
+                float(line[80:90]),
+            ]
+            return data
+
+        def p_default(line):
+            # Populate DATA by splitting
+            data = line.split()
+            data = [int(data[1])] + list(map(float, data[2:]))
+            return data
+
+        # For getting the parser according to len(line)
+        scf_parser = {}
+        scf_parser[87] = p_scf
+        scf_parser[97] = p_scf_fix_spin
+        scf_parser[90] = p_ts_scf
+        scf_parser[100] = p_ts_scf_fix_spin
+
+        def parse_next(line, d):
+            nonlocal key, scf_parser, p_default
+            line = line.strip().replace("*", "0")
+            reset_d(d, line)
+            ret = None
+
+            # Start parsing based on keys
             if line.startswith("ts-Vha:"):
+                ret = do_finalize(d, "ts-Vha")
                 d["ts-Vha"] = [float(line.split()[1])]
-                if "ts-Vha" not in props:
-                    d["order"].append("ts-Vha")
-                    props.append("ts-Vha")
+                add_order(d, "ts-Vha")
             elif line.startswith("spin moment: S"):
+                ret = do_finalize(d, "S")
                 # 4.1 and earlier
                 d["S"] = list(map(float, line.split("=")[1].split()[1:]))
-                if "Sx" not in props:
-                    d["order"].append("S")
-                    props.extend(["Sx", "Sy", "Sz"])
+                add_order(d, "S", ["Sx", "Sy", "Sz"])
             elif line.startswith("spin moment: {S}"):
+                ret = do_finalize(d, "S")
                 # 4.2 and later
                 d["S"] = list(map(float, line.split("= {")[1].split()[:3]))
-                if "Sx" not in props:
-                    d["order"].append("S")
-                    props.extend(["Sx", "Sy", "Sz"])
+                add_order(d, "S", ["Sx", "Sy", "Sz"])
             elif line.startswith("bulk-bias: |v"):
+                ret = do_finalize(d, "bb-v")
                 # TODO old version should be removed once released
                 d["bb-v"] = list(map(float, line.split()[-3:]))
-                if "BB-vx" not in props:
-                    d["order"].append("bb-v")
-                    props.extend(["BB-vx", "BB-vy", "BB-vz"])
+                add_order(d, "bb-v", ["BB-vx", "BB-vy", "BB-vz"])
             elif line.startswith("bulk-bias: {v}"):
                 idx = line.index("{v}")
                 if line[idx + 3] == "_":
@@ -948,126 +1074,56 @@ class stdoutSileSiesta(SileSiesta):
 
                 v = line.split("] {")[1].split()
                 v = list(map(float, v[:3]))
+                ret = do_finalize(d, lbl)
                 d[lbl] = v
-                if f"{lbl}-vx" not in props:
-                    d["order"].append(lbl)
-                    props.extend([f"{lbl}-vx", f"{lbl}-vy", f"{lbl}-vz"])
+                add_order(d, lbl, [f"{lbl}-vx", f"{lbl}-vy", f"{lbl}-vz"])
             elif line.startswith("bulk-bias: dq"):
+                ret = do_finalize(d, "BB-q")
                 d["BB-q"] = list(map(float, line.split()[-2:]))
-                if "BB-dq" not in props:
-                    d["order"].append("BB-q")
-                    props.extend(["BB-dq", "BB-q0"])
-            else:
-                return False
-            return True
+                add_order(d, "BB-q", ["BB-dq", "BB-q0"])
+            elif line.startswith("ts-q:"):
+                ret = do_finalize(d, "ts-q")
+                # even for key == scf, this won't be there.
+                # So it will just fail...
+                data = line.split()[1:]
+                try:
+                    d["ts-q"] = list(map(float, data))
+                except Exception:
+                    # We are probably reading a device list
+                    add_order(d, "ts-q", data)
 
-        if key.lower() == "scf":
+            elif line.startswith(key):
+                ret = do_finalize(d, "scf")
+                parser = scf_parser.get(len(line), p_default)
+                d["scf"] = parser(line)
+                # we don't need to add_order here, because it starts with scf
 
-            def parse_next(line, d):
-                line = line.strip().replace("*", "0")
-                reset_d(d, line)
-                if common_parse(line, d):
-                    pass
-                elif line.startswith("scf:"):
-                    d["_found_iscf"] = True
-                    if len(line) == 97:
-                        # this should be for Efup/dwn
-                        # but I think this will fail for as_dataframe (TODO)
-                        data = [
-                            int(line[5:9]),
-                            float(line[9:25]),
-                            float(line[25:41]),
-                            float(line[41:57]),
-                            float(line[57:67]),
-                            float(line[67:77]),
-                            float(line[77:87]),
-                            float(line[87:97]),
-                        ]
-                    elif len(line) == 87:
-                        data = [
-                            int(line[5:9]),
-                            float(line[9:25]),
-                            float(line[25:41]),
-                            float(line[41:57]),
-                            float(line[57:67]),
-                            float(line[67:77]),
-                            float(line[77:87]),
-                        ]
-                    else:
-                        # Populate DATA by splitting
-                        data = line.split()
-                        data = [int(data[1])] + list(map(float, data[2:]))
-                    construct_data(d, data)
-
-        elif key.lower() == "ts-scf":
-
-            def parse_next(line, d):
-                line = line.strip().replace("*", "0")
-                reset_d(d, line)
-                if common_parse(line, d):
-                    pass
-                elif line.startswith("ts-q:"):
-                    data = line.split()[1:]
-                    try:
-                        d["ts-q"] = list(map(float, data))
-                    except Exception:
-                        # We are probably reading a device list
-                        # ensure that props are appended
-                        if data[-1] not in props:
-                            d["order"].append("ts-q")
-                            props.extend(data)
-                elif line.startswith("ts-scf:"):
-                    d["_found_iscf"] = True
-                    if len(line) == 100:
-                        data = [
-                            int(line[8:12]),
-                            float(line[12:28]),
-                            float(line[28:44]),
-                            float(line[44:60]),
-                            float(line[60:70]),
-                            float(line[70:80]),
-                            float(line[80:90]),
-                            float(line[90:100]),
-                        ]
-                    elif len(line) == 90:
-                        data = [
-                            int(line[8:12]),
-                            float(line[12:28]),
-                            float(line[28:44]),
-                            float(line[44:60]),
-                            float(line[60:70]),
-                            float(line[70:80]),
-                            float(line[80:90]),
-                        ]
-                    else:
-                        # Populate DATA by splitting
-                        data = line.split()
-                        data = [int(data[1])] + list(map(float, data[2:]))
-                    construct_data(d, data)
+            return ret
 
         # A temporary dictionary to hold information while reading the output file
         d = {
-            "_found_iscf": False,
             "_final_iscf": 0,
-            "data": [],
-            "order": [],
+            "_toggle": Toggler(),
+            # The properties defaults to these keys
+            # TODO fix for fix-spin calculations (Efup/Efdown)
+            "props": ["iscf", "Eharris", "E_KS", "FreeEng", "dDmax", "Ef", "dHmax"],
+            # Default the order, start with SCF
+            "order": ["scf"],
         }
 
-        def construct_data(d, data):
-            for key in d["order"]:
-                data.extend(d[key])
-            d["data"] = data
-
+        # Jump to the `iscf` which is uniquely found for start of SCF cycles.
+        _, _ = self.step_to("iscf", allow_reread=False)
         scf = []
-        for line in self:
-            parse_next(line, d)
-            if d["_found_iscf"]:
-                d["_found_iscf"] = False
-                data = d["data"]
-                if len(data) == 0:
-                    continue
+        while line := self.readline():
+            data = parse_next(line, d)
+            if data is None and d["_final_iscf"] == 2:
+                # Catch the case where this is the final
+                # case, so we can add the data to the list of SCF segments
+                data = construct_data(d)
 
-                if iscf is None or iscf < 0:
+            if data is not None:
+                # we have found a new key
+                if iscf is Ellipsis or iscf < 0:
                     scf.append(data)
 
                 elif data[0] <= iscf:
@@ -1076,16 +1132,13 @@ class stdoutSileSiesta(SileSiesta):
                     scf = data
 
             if d["_final_iscf"] == 1:
+                # step to next line!
                 d["_final_iscf"] = 2
+
             elif d["_final_iscf"] == 2:
+                # The line after SCF cycle converged
+                # Reset, for MD reads
                 d["_final_iscf"] = 0
-                data = d["data"]
-                if len(data) == 0:
-                    # this traps the case where we read ts-scf
-                    # but find the final scf iteration.
-                    # In that case we don't have any data.
-                    scf = []
-                    continue
 
                 if len(scf) == 0:
                     # this traps cases where final_iscf has
@@ -1094,7 +1147,7 @@ class stdoutSileSiesta(SileSiesta):
                     continue
 
                 # First figure out which iscf we should store
-                if iscf is None:  # or iscf > 0
+                if iscf is Ellipsis:  # or iscf > 0
                     # scf is correct
                     pass
                 elif iscf < 0:
@@ -1108,20 +1161,23 @@ class stdoutSileSiesta(SileSiesta):
         if as_dataframe:
             import pandas as pd
 
+            # Easier
+            props = d["props"][1:]
+
             if len(scf) == 0:
-                return pd.DataFrame(index=pd.Index([], name="iscf"), columns=props[1:])
+                return pd.DataFrame(index=pd.Index([], name="iscf"), columns=props)
 
             scf = np.atleast_2d(scf)
             return pd.DataFrame(
                 scf[..., 1:],
                 index=pd.Index(scf[..., 0].ravel().astype(np.int32), name="iscf"),
-                columns=props[1:],
+                columns=props,
             )
 
         # Convert to numpy array
         scf = np.array(scf)
         if ret_header:
-            return scf, props
+            return scf, d["props"]
         return scf
 
     @sile_fh_open(True)
@@ -1171,13 +1227,13 @@ class stdoutSileSiesta(SileSiesta):
         ----------
         name:
             the name of the charges that you want to read
-        iscf: int or Opt or `...`, optional
+        iscf:
             index (0-based) of the scf iteration you want the charges for.
             If the enum specifier `Opt.ANY` or `Opt.ALL`/`...` are used, then
             the returned quantities depend on what is present.
             If ``None/Opt.NONE`` it will not return any SCF charges.
             If both `imd` and `iscf` are ``None`` then only the final charges will be returned.
-        imd: int or Opt, optional
+        imd:
             index (0-based) of the md step you want the charges for.
             If the enum specifier `Opt.ANY` or `Opt.ALL`/`...` are used, then
             the returned quantities depend on what is present.
