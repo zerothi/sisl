@@ -63,6 +63,51 @@ from ._sparse import sparse_dense
 __all__ = ["SparseCSR", "ispmatrix", "ispmatrixd"]
 
 
+def _to_cd(csr, data: bool = True, rows=None):
+    """Retrieve the CSR information in a sanitized manner
+
+    This is equivalent to `_to_coo` except it does not return the
+    `rows` data.
+
+    Parameters
+    ----------
+    csr: SparseCSR
+        matrix to sanitize
+    data:
+        whether the data should also be returned sanitized
+    rows:
+        only return for a subset of rows
+
+    Returns
+    -------
+    cols : always
+    matrix_data : when `data` is True
+    """
+    ptr = csr.ptr
+    ncol = csr.ncol
+    col = csr.col
+    D = csr._D
+
+    if csr.nnz == csr.ptr[-1] and rows is None:
+        cols = col.copy()
+        if data:
+            D = D.copy()
+    else:
+        if rows is None:
+            idx = array_arange(ptr[:-1], n=ncol, dtype=int32)
+        else:
+            rows = csr._sanitize(rows).ravel()
+            ncol = ncol[rows]
+            idx = array_arange(ptr[rows], n=ncol, dtype=int32)
+        if data:
+            D = D[idx]
+        cols = col[idx]
+
+    if data:
+        return cols, D
+    return cols
+
+
 def _to_coo(csr, data: bool = True, rows=None):
     """Retrieve the CSR information in a sanitized manner
 
@@ -1441,11 +1486,9 @@ column indices of the sparse elements
         only_cols :
            only return the non-zero columns
         """
-        rows, cols = _to_coo(self, data=False, rows=rows)
-
         if only_cols:
-            return cols
-        return rows, cols
+            return _to_cd(self, data=False, rows=rows)
+        return _to_coo(self, data=False, rows=rows)
 
     def eliminate_zeros(self, atol: float = 0.0) -> None:
         """Remove all zero elememts from the sparse matrix

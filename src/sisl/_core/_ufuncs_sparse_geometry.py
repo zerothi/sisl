@@ -11,7 +11,7 @@ from sisl import _array as _a
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.typing import AtomsIndex
 
-from .sparse import SparseCSR, _ncol_to_indptr
+from .sparse import SparseCSR, _ncol_to_indptr, _to_cd
 from .sparse_geometry import SparseAtom, SparseOrbital, _SparseGeometry
 
 # Nothing gets exposed here
@@ -98,16 +98,7 @@ def tile(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     geom = SA.geometry
     na = np.int32(SA.na)
     csr = SA._csr
-    ncol = csr.ncol
-    if csr.nnz == csr.ptr[-1]:
-        col = csr.col
-        D = csr._D
-    else:
-        ptr = csr.ptr
-        idx = _a.array_arange(ptr[:-1], n=ncol)
-        col = csr.col[idx]
-        D = csr._D[idx, :]
-        del ptr, idx
+    col, D = _to_cd(csr)
 
     # Information for the new Hamiltonian sparse matrix
     na_n = np.int32(S.na)
@@ -118,10 +109,7 @@ def tile(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     sc_index = geom_n.sc_index
 
     # Create new indptr, indices and D
-    ncol = np.tile(ncol, reps)
-    # Now indptr is complete
-    indptr = _ncol_to_indptr(ncol)
-    del ncol
+    indptr = _ncol_to_indptr(np.tile(csr.ncol, reps))
     indices = _a.emptyi([indptr[-1]])
     indices.shape = (reps, -1)
 
@@ -182,16 +170,8 @@ def repeat(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     geom = SA.geometry
     na = np.int32(SA.na)
     csr = SA._csr
+    col, D = _to_cd(csr)
     ncol = csr.ncol
-    if csr.nnz == csr.ptr[-1]:
-        col = csr.col
-        D = csr._D
-    else:
-        ptr = csr.ptr
-        idx = _a.array_arange(ptr[:-1], n=ncol)
-        col = csr.col[idx]
-        D = csr._D[idx, :]
-        del ptr, idx
 
     # Information for the new Hamiltonian sparse matrix
     na_n = np.int32(S.na)
@@ -202,10 +182,8 @@ def repeat(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
     sc_index = geom_n.sc_index
 
     # Create new indptr, indices and D
-    ncol = np.repeat(ncol, reps)
     # Now indptr is complete
-    indptr = _ncol_to_indptr(ncol)
-    del ncol
+    indptr = _ncol_to_indptr(np.repeat(ncol, reps))
     indices = _a.emptyi([indptr[-1]])
 
     # Now we should fill the data
@@ -223,7 +201,7 @@ def repeat(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
         isc[:, axis], mod = np.divmod(A, reps)
 
         # Create the indices for the repetition
-        idx = _a.array_arange(indptr[rep:-1:reps], n=csr.ncol)
+        idx = _a.array_arange(indptr[rep:-1:reps], n=ncol)
         indices[idx] = JA + mod + sc_index(isc) * na_n
 
     # Clean-up
@@ -236,7 +214,7 @@ def repeat(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
         D = np.tile(D, (reps, 1))
     else:
         ntile = partial(np.tile, reps=(reps, 1))
-        D = np.vstack(tuple(map(ntile, np.split(D, _a.cumsumi(csr.ncol[:-1]), axis=0))))
+        D = np.vstack(tuple(map(ntile, np.split(D, _a.cumsumi(ncol[:-1]), axis=0))))
 
     S._csr = SparseCSR((D, indices, indptr), shape=(geom_n.na, geom_n.na_s))
 
@@ -274,15 +252,8 @@ def tile(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     geom = SO.geometry
     no = np.int32(SO.no)
     csr = SO._csr
+    col, D = _to_cd(csr)
     ncol = csr.ncol
-    if csr.nnz == csr.ptr[-1]:
-        col = csr.col
-        D = csr._D
-    else:
-        idx = _a.array_arange(csr.ptr[:-1], n=ncol)
-        col = csr.col[idx]
-        D = csr._D[idx, :]
-        del idx
 
     # Information for the new Hamiltonian sparse matrix
     no_n = np.int32(S.no)
@@ -293,10 +264,7 @@ def tile(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     sc_index = geom_n.sc_index
 
     # Create new indptr, indices and D
-    ncol = np.tile(ncol, reps)
-    # Now indptr is complete
-    indptr = _ncol_to_indptr(ncol)
-    del ncol
+    indptr = _ncol_to_indptr(np.tile(ncol, reps))
     indices = _a.emptyi([indptr[-1]])
     indices.shape = (reps, -1)
 
@@ -357,14 +325,7 @@ def repeat(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     geom = SO.geometry
     no = np.int32(SO.no)
     csr = SO._csr
-    if csr.nnz == csr.ptr[-1]:
-        col = csr.col
-        D = csr._D
-    else:
-        idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
-        col = csr.col[idx]
-        D = csr._D[idx, :]
-        del idx
+    col, D = _to_cd(csr)
 
     # Information for the new Hamiltonian sparse matrix
     no_n = np.int32(S.no)
@@ -377,9 +338,11 @@ def repeat(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
     # Create new indptr, indices and D
     idx = np.repeat(geom.firsto, reps)
     idx = _a.array_arange(idx[:-reps], idx[reps:])
+    # This will repeat the ncol elements in correct order
     ncol = csr.ncol[idx]
     # Now indptr is complete
     indptr = _ncol_to_indptr(ncol)
+
     # Note that D above is already reduced to a *finalized* state
     # So we have to re-create the reduced index pointer
     # Then we take repeat the data by smart indexing
