@@ -22,10 +22,12 @@ Toolboxes should be imported directly.
 
 
 The implemented toolboxes are listed here:
-   
+
 .. toctree::
    :maxdepth: 1
 
    transiesta/ts_fft
    siesta/atom_plot
    btd/btd
+   siesta/minimizer
+   basis/basis
