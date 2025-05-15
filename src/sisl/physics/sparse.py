@@ -410,9 +410,10 @@ class SparseOrbitalBZ(SparseOrbital):
             try:
                 P = P._csr
                 if not orthogonal:
-                    return P.copy(dims=range(P.dim - 1))
-            except AttributeError:
-                return P
+                    P = P.copy(dims=range(P.dim - 1))
+            except Exception:
+                pass
+            return P
 
         P = list(map(extract_csr, P, orthogonal))
 

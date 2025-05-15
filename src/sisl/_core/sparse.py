@@ -931,19 +931,15 @@ column indices of the sparse elements
         ocol = other.col
 
         # Easy check for non-equal number of elements
-        if (sncol == oncol).sum() != self.shape[0]:
+        if not np.array_equal(self.ncol, other.ncol):
             return False
 
         for r in range(self.shape[0]):
-            if (
-                len(
-                    intersect1d(
-                        scol[sptr[r] : sptr[r] + sncol[r]],
-                        ocol[optr[r] : optr[r] + oncol[r]],
-                    )
-                )
-                != sncol[r]
-            ):
+            inter = intersect1d(
+                scol[sptr[r] : sptr[r] + sncol[r]],
+                ocol[optr[r] : optr[r] + oncol[r]],
+            )
+            if len(inter) != sncol[r]:
                 return False
         return True
 
