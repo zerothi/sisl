@@ -5,13 +5,11 @@ from __future__ import annotations
 
 from itertools import repeat
 from numbers import Integral, Real
-from types import NotImplementedType
 from typing import Literal, Union
 
 import numpy as np
 import numpy.typing as npt
 
-import sisl._array as _a
 from sisl._internal import set_module
 
 __all__ = ["PeriodicTable"]
@@ -861,8 +859,8 @@ class PeriodicTable:
     def Z_block(cls, Z: Union[int, npt.ArrayLike]):
         """The type-block of the atom in the periodic table.
 
-        Will return one of s, p, d, f or `NotImplemented`.
-        May return `NotImplemented` if the element isn't found
+        Will return one of s, p, d, f or `""`.
+        May return `""` if the element isn't found
         in the periodic table.
 
         Only covers up to Z=118.
@@ -899,7 +897,7 @@ class PeriodicTable:
                 16,
             ):
                 return "f"
-            return NotImplemented
+            return ""
 
         if row.ndim == 0:
             return conv(row[()], col[()])
