@@ -11,7 +11,7 @@ import numpy.typing as npt
 from ._common import SparseMatrixGeometry
 
 if TYPE_CHECKING:
-    from sisl.physics import SparseOrbitalBZ, SparseOrbitalBZSpin
+    from sisl.physics import SparseOrbitalBZ, SparseOrbitalBZSpin, Spin
 
 __all__ = [
     "GaugeType",
@@ -24,10 +24,35 @@ __all__ = [
     "DistributionFunc",
     "DistributionStr",
     "DistributionType",
+    "SpinLiteral",
+    "SpinType",
     "SparseMatrixPhysical",
 ]
 
 GaugeType = Literal["lattice", "atomic"]
+
+SpinLiteral = Literal[
+    "",
+    "unpolarized",
+    "colinear",
+    "collinear",
+    "polarized",
+    "p",
+    "pol",
+    "noncolinear",
+    "noncollinear",
+    "non-colinear",
+    "non-collinear",
+    "nc",
+    "spinorbit",
+    "spin-orbit",
+    "so",
+    "soc",
+    "nambu",
+    "bdg",
+]
+
+SpinType = Union["Spin", SpinLiteral]
 
 ProjectionTypeMatrix = Literal["matrix", "ij"]
 ProjectionTypeTrace = Literal["trace", "sum"]

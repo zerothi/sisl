@@ -62,4 +62,5 @@ The typing types are shown below:
    SparseMatrixExt
    SparseMatrixGeometry
    SparseMatrixPhysical
+   SpinType
    UnitsVar

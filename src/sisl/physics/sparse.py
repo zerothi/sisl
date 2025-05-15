@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import math as m
 import warnings
-from typing import Literal, Optional, Union
+from typing import Literal, Optional, Tuple, Union
 
 import numpy as np
 from scipy.sparse import SparseEfficiencyWarning, coo_matrix, csr_matrix
@@ -313,7 +313,7 @@ class SparseOrbitalBZ(SparseOrbital):
         return f"<{self.__module__}.{self.__class__.__name__} na={g.na}, no={g.no}, nsc={g.nsc}, dim={self.dim}, nnz={self.nnz}>"
 
     @property
-    def S(self):
+    def S(self) -> Self:
         r"""Access the overlap elements associated with the sparse matrix"""
         if self.orthogonal:
             return None
@@ -1034,10 +1034,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     Parameters
     ----------
-    geometry : Geometry
+    geometry :
       parent geometry to create a sparse matrix from. The matrix will
       have size equivalent to the number of orbitals in the geometry
-    dim : int or Spin, optional
+    dim :
       number of components per element, may be a `Spin` object
     dtype : np.dtype, optional
       data type contained in the matrix. See details of `Spin` for default values.
@@ -1045,7 +1045,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
       number of initially allocated memory per orbital in the matrix.
       For increased performance this should be larger than the actual number of entries
       per orbital.
-    spin : Spin, optional
+    spin :
       equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.
     orthogonal : bool, optional
       whether the matrix corresponds to a non-orthogonal basis. In this case
@@ -1056,16 +1056,17 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
     def __init__(
         self,
         geometry: Geometry,
-        dim: int = 1,
+        dim: Union[int, SpinType] = 1,
         dtype=None,
         nnzpr: Optional[int] = None,
         **kwargs,
     ):
         # Check that the passed parameters are correct
-        if "spin" not in kwargs:
-            if isinstance(dim, Spin):
-                spin = dim
-            else:
+        if "spin" in kwargs:
+            spin = kwargs.pop("spin")
+        else:
+            spin = dim
+            if isinstance(dim, int):
                 # Back conversion, actually this should depend
                 # on dtype
                 spin = {
@@ -1075,8 +1076,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     8: Spin.SPINORBIT,
                     16: Spin.NAMBU,
                 }.get(dim)
-        else:
-            spin = kwargs.pop("spin")
         self._spin = Spin(spin)
 
         super().__init__(geometry, self.spin.size(dtype), dtype, nnzpr, **kwargs)
@@ -1196,7 +1195,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         r"""Associated spin class"""
         return self._spin
 
-    def create_construct(self, R, params):
+    def create_construct(
+        self, R, params
+    ) -> Callable[[Self, int, AtomsLike, np.ndarray], None]:
         r"""Create a simple function for passing to the `construct` function.
 
         This is to relieve the creation of simplistic
@@ -2212,7 +2213,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
-    def transform(self, matrix=None, dtype=None, spin=None, orthogonal=None) -> Self:
+    def transform(
+        self,
+        matrix=None,
+        dtype=None,
+        spin: Optional[SpinType] = None,
+        orthogonal: Optional[bool] = None,
+    ) -> Self:
         r"""Transform the matrix by either a matrix or new spin configuration
 
         1. General transformation:
@@ -2264,9 +2271,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             transformation matrix of shape :math:`m \times n`. Default is no transformation.
         dtype : numpy.dtype, optional
             data type contained in the matrix. Defaults to the input type.
-        spin : str, sisl.Spin, optional
+        spin :
             spin class of created matrix. Defaults to the input type.
-        orthogonal : bool, optional
+        orthogonal :
             flag to control if the new matrix includes overlaps. Defaults to the input type.
         """
         if dtype is None:
@@ -2350,7 +2357,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
-    def spin_rotate(self, angles: SeqFloat, rad: bool = False):
+    def spin_rotate(self, angles: SeqFloat, rad: bool = False) -> Self:
         r"""Rotate spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axes, respectively.
 
         The angles are with respect to each spin-box initial angle.
@@ -2497,7 +2504,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return out
 
-    def spin_align(self, vec: SeqFloat, atoms: AtomsIndex = None):
+    def spin_align(self, vec: SeqFloat, atoms: AtomsIndex = None) -> Self:
         r"""Aligns *all* spin along the vector `vec`
 
         In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned

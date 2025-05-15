@@ -8,7 +8,7 @@ from typing import Union
 import numpy as np
 
 from sisl._internal import set_module
-from sisl.messages import warn
+from sisl.typing import SpinType
 
 __all__ = ["Spin"]
 
@@ -68,7 +68,7 @@ class Spin:
 
     __slots__ = ("_kind",)
 
-    def __init__(self, kind: Union[str, int] = "unpolarized"):
+    def __init__(self, kind: SpinType = "unpolarized"):
         if isinstance(kind, Spin):
             self._kind = kind._kind
             return
