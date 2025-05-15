@@ -5,40 +5,6 @@ Detailed instructions
 
 sisl is easy to install using any of your preferred methods.
 
-
-Required dependencies
----------------------
-
-Running sisl requires these dependencies:
-
-- `Python`_ 3.9 or above
-- `numpy`_
-- `scipy`_
-- `xarray`_
-- `pyparsing`_
-
-Optional dependencies:
-
-- `pytest`_ (for running the test suite)
-- `pathos`_ (for parallel `BrillouinZone` calculations)
-- `netCDF4-python <netcdf4-py_>`_
-- `tqdm`_ (for displaying progress-bars)
-- `matplotlib`_
-- `plotly`_ (for advanced visualization)
-
-Dependencies for development:
-
-- ``C`` and ``fortran`` compilers
-- `cmake`_ (3.21 or above)
-- `pandoc`_ (for locally building the documentation)
-
-
-sisl implements certain methods in Cython which speeds up the execution.
-Cython is required if one wishes to re-generate the C-sources with a different
-Cython version. Note that this is not a necessary step and should typically only
-be considered by developers of Cython modules.
-
-
 .. _installation-pip:
 
 Installation of the stable sisl releases can be done by following the common conventions
@@ -60,7 +26,7 @@ using :code:`pip` or :code:`conda` methods:
 .. tab:: conda
 
    Conda enviroments are clever, but fragile. It is recommended to contain the
-   sisl installation in a separate environment to decouple it from other fragile
+   sisl installation in a separate environment to decouple it from other
    components. Their inter-dependencies may result in problematic installations.
 
    .. code-block:: bash
@@ -99,8 +65,39 @@ These needs to be passed through the CMake environment (see
 :ref:`install-compile-options`).
 
 
-.. _installation-testing:
+.. _installation-deps:
 
+Required dependencies
+---------------------
+
+The above installation instructions installs the necessary dependencies
+to run sisl, so generally one shouldn't worry about getting correct
+packages etc. Here the more detailed requirements are listed.
+
+- `Python`_ 3.9 or above
+- `numpy`_
+- `scipy`_
+- `xarray`_
+- `pyparsing`_
+
+Optional dependencies:
+
+- `pytest`_ (for running the test suite)
+- `pathos`_ (for parallel `BrillouinZone` calculations)
+- `netCDF4-python <netcdf4-py_>`_
+- `tqdm`_ (for displaying progress-bars)
+- `matplotlib`_
+- `plotly`_ (for advanced visualization)
+
+Development dependencies:
+
+- ``C`` and ``fortran`` compilers
+- `Cython`_
+- `cmake`_ (3.21 or above)
+- `pandoc`_ (for locally building the documentation)
+
+
+.. _installation-testing:
 
 Testing your installation
 -------------------------
@@ -141,7 +138,7 @@ and should typically not be touched.
 
    It is not recommended to use these flags for production runs.
 
-Passing options to the build-system through :code:`pip` should de done with
+Passing options to the build-system through :code:`pip` should be done with
 the following convention
 
 
