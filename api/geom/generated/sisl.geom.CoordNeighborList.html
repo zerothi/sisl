@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geom.PointNeighborList &mdash; sisl</title>
+  <title>sisl.geom.CoordNeighborList &mdash; sisl</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../../../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -43,7 +43,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Physical objects (sisl.physics)" href="../../physics.html" />
-    <link rel="prev" title="sisl.geom.PointsNeighborList" href="sisl.geom.PointsNeighborList.html" /> 
+    <link rel="prev" title="sisl.geom.CoordsNeighborList" href="sisl.geom.CoordsNeighborList.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -89,8 +89,8 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.geom.PointNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.CoordsNeighborList.html">sisl.geom.CoordsNeighborList</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.geom.CoordNeighborList</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../neighbors.html#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
@@ -138,9 +138,9 @@
           <li class="breadcrumb-item"><a href="../../index.html">API reference</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../neighbors.html">Finding neighbors</a></li>
-      <li class="breadcrumb-item active">sisl.geom.PointNeighborList</li>
+      <li class="breadcrumb-item active">sisl.geom.CoordNeighborList</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/api/geom/generated/sisl.geom.PointNeighborList.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/api/geom/generated/sisl.geom.CoordNeighborList.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -148,103 +148,103 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="sisl-geom-pointneighborlist">
-<h1>sisl.geom.PointNeighborList<a class="headerlink" href="#sisl-geom-pointneighborlist" title="Link to this heading"></a></h1>
+  <section id="sisl-geom-coordneighborlist">
+<h1>sisl.geom.CoordNeighborList<a class="headerlink" href="#sisl-geom-coordneighborlist" title="Link to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">PointNeighborList</span></span><a class="headerlink" href="#sisl.geom.PointNeighborList" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">CoordNeighborList</span></span><a class="headerlink" href="#sisl.geom.CoordNeighborList" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Neighbors</span></code></p>
-<p>List of atoms that are close to a point in space.</p>
-<p>The usual way to get a <a class="reference internal" href="#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a> object is by iterating over a
-<a class="reference internal" href="sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></a>. See its documentation for examples.</p>
+<p>List of atoms that are close to a coordinate in space.</p>
+<p>The usual way to get a <a class="reference internal" href="#sisl.geom.CoordNeighborList" title="sisl.geom.CoordNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordNeighborList</span></code></a> object is by iterating over a
+<a class="reference internal" href="sisl.geom.CoordsNeighborList.html#sisl.geom.CoordsNeighborList" title="sisl.geom.CoordsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordsNeighborList</span></code></a>. See its documentation for examples.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></a></dt><dd><p>The list that, when iterated, returns <a class="reference internal" href="#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a> objects.</p>
+<dt><a class="reference internal" href="sisl.geom.CoordsNeighborList.html#sisl.geom.CoordsNeighborList" title="sisl.geom.CoordsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordsNeighborList</span></code></a></dt><dd><p>The list that, when iterated, returns <a class="reference internal" href="#sisl.geom.CoordNeighborList" title="sisl.geom.CoordNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordNeighborList</span></code></a> objects.</p>
 </dd>
 </dl>
 </div>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.PointNeighborList.I" title="sisl.geom.PointNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.CoordNeighborList.I" title="sisl.geom.CoordNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a></p></td>
 <td><p>For each neighbor pair (I, J), the first index.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.PointNeighborList.J" title="sisl.geom.PointNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.CoordNeighborList.J" title="sisl.geom.CoordNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a></p></td>
 <td><p>For each neighbor pair (I, J), the second index.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.PointNeighborList.i" title="sisl.geom.PointNeighborList.i"><code class="xref py py-obj docutils literal notranslate"><span class="pre">i</span></code></a></p></td>
-<td><p>Same as <a class="reference internal" href="#sisl.geom.PointNeighborList.I" title="sisl.geom.PointNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a>, provided for backwards compatibility, may be deprecated later</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.CoordNeighborList.i" title="sisl.geom.CoordNeighborList.i"><code class="xref py py-obj docutils literal notranslate"><span class="pre">i</span></code></a></p></td>
+<td><p>Same as <a class="reference internal" href="#sisl.geom.CoordNeighborList.I" title="sisl.geom.CoordNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a>, provided for backwards compatibility, may be deprecated later</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.PointNeighborList.isc" title="sisl.geom.PointNeighborList.isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isc</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.CoordNeighborList.isc" title="sisl.geom.CoordNeighborList.isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isc</span></code></a></p></td>
 <td><p>For each neighbor pair (I, J), the supercell indices of <span class="math notranslate nohighlight">\(J\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.PointNeighborList.j" title="sisl.geom.PointNeighborList.j"><code class="xref py py-obj docutils literal notranslate"><span class="pre">j</span></code></a></p></td>
-<td><p>Same as <a class="reference internal" href="#sisl.geom.PointNeighborList.J" title="sisl.geom.PointNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a>, provided for backwards compatibility, may be deprecated later</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.CoordNeighborList.j" title="sisl.geom.CoordNeighborList.j"><code class="xref py py-obj docutils literal notranslate"><span class="pre">j</span></code></a></p></td>
+<td><p>Same as <a class="reference internal" href="#sisl.geom.CoordNeighborList.J" title="sisl.geom.CoordNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a>, provided for backwards compatibility, may be deprecated later</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.PointNeighborList.min_nsc" title="sisl.geom.PointNeighborList.min_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_nsc</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.CoordNeighborList.min_nsc" title="sisl.geom.CoordNeighborList.min_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_nsc</span></code></a></p></td>
 <td><p>The minimum nsc for an auxiliary supercell to contain all neighbors in this object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.PointNeighborList.n_neighbors" title="sisl.geom.PointNeighborList.n_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_neighbors</span></code></a></p></td>
-<td><p>Number of neighbors of the point.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.CoordNeighborList.n_neighbors" title="sisl.geom.CoordNeighborList.n_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_neighbors</span></code></a></p></td>
+<td><p>Number of neighbors of the coordinate.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.PointNeighborList.split_indices" title="sisl.geom.PointNeighborList.split_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_indices</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.CoordNeighborList.split_indices" title="sisl.geom.CoordNeighborList.split_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_indices</span></code></a></p></td>
 <td><p>Indices to split the interactions of each atom.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.I">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">I</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.PointNeighborList.I" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.I">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">I</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.I" title="Link to this definition"></a></dt>
 <dd><p>For each neighbor pair (I, J), the first index.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.J">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">J</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.PointNeighborList.J" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.J">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">J</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.J" title="Link to this definition"></a></dt>
 <dd><p>For each neighbor pair (I, J), the second index.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.i">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">i</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.PointNeighborList.i" title="Link to this definition"></a></dt>
-<dd><p>Same as <a class="reference internal" href="#sisl.geom.PointNeighborList.I" title="sisl.geom.PointNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a>, provided for backwards compatibility, may be deprecated later</p>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.i">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">i</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.i" title="Link to this definition"></a></dt>
+<dd><p>Same as <a class="reference internal" href="#sisl.geom.CoordNeighborList.I" title="sisl.geom.CoordNeighborList.I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">I</span></code></a>, provided for backwards compatibility, may be deprecated later</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.isc">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.PointNeighborList.isc" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.isc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.isc" title="Link to this definition"></a></dt>
 <dd><p>For each neighbor pair (I, J), the supercell indices of <span class="math notranslate nohighlight">\(J\)</span>.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.j">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">j</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.PointNeighborList.j" title="Link to this definition"></a></dt>
-<dd><p>Same as <a class="reference internal" href="#sisl.geom.PointNeighborList.J" title="sisl.geom.PointNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a>, provided for backwards compatibility, may be deprecated later</p>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.j">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">j</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.j" title="Link to this definition"></a></dt>
+<dd><p>Same as <a class="reference internal" href="#sisl.geom.CoordNeighborList.J" title="sisl.geom.CoordNeighborList.J"><code class="xref py py-obj docutils literal notranslate"><span class="pre">J</span></code></a>, provided for backwards compatibility, may be deprecated later</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.min_nsc">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_nsc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.PointNeighborList.min_nsc" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.min_nsc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_nsc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.min_nsc" title="Link to this definition"></a></dt>
 <dd><p>The minimum nsc for an auxiliary supercell to contain all neighbors in this object.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.n_neighbors">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_neighbors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.geom.PointNeighborList.n_neighbors" title="Link to this definition"></a></dt>
-<dd><p>Number of neighbors of the point.</p>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.n_neighbors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_neighbors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.n_neighbors" title="Link to this definition"></a></dt>
+<dd><p>Number of neighbors of the coordinate.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.split_indices">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">split_indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.split_indices" title="Link to this definition"></a></dt>
+<dd><p>Indices to split the interactions of each atom.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.point">
-<span class="sig-name descname"><span class="pre">point</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span></em><a class="headerlink" href="#sisl.geom.PointNeighborList.point" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.geom.CoordNeighborList.xyz">
+<span class="sig-name descname"><span class="pre">xyz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span></em><a class="headerlink" href="#sisl.geom.CoordNeighborList.xyz" title="Link to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="sisl.geom.PointNeighborList.split_indices">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">split_indices</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.geom.PointNeighborList.split_indices" title="Link to this definition"></a></dt>
-<dd><p>Indices to split the interactions of each atom.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -254,7 +254,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.geom.PointsNeighborList.html" class="btn btn-neutral float-left" title="sisl.geom.PointsNeighborList" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.geom.CoordsNeighborList.html" class="btn btn-neutral float-left" title="sisl.geom.CoordsNeighborList" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../../physics.html" class="btn btn-neutral float-right" title="Physical objects (sisl.physics)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

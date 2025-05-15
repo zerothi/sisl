@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../../../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -153,7 +153,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">direction</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.ranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">list2str</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span><span class="p">,</span> <span class="n">issparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span><span class="p">,</span> <span class="n">_to_coo</span><span class="p">,</span> <span class="n">issparse</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SparseAtom&quot;</span><span class="p">,</span> <span class="s2">&quot;SparseOrbital&quot;</span><span class="p">]</span>
 
@@ -642,26 +642,8 @@
         <span class="c1"># atoms or orbitals</span>
         <span class="n">size</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># First extract the actual data</span>
-        <span class="n">ncol</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">finalized</span><span class="p">:</span>
-            <span class="c1"># ptr = csr.ptr.view()</span>
-            <span class="n">col</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
-            <span class="c1"># ptr = _ncol_to_indptr(ncol)</span>
-            <span class="n">col</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="k">del</span> <span class="n">idx</span>
-
-        <span class="c1"># figure out rows where ncol is &gt; 0</span>
-        <span class="c1"># we skip the first column</span>
-        <span class="n">row_nonzero</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncol</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">row_nonzero</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">ncol</span><span class="p">[</span><span class="n">row_nonzero</span><span class="p">])</span>
-
-        <span class="c1"># Now we have the DOK format</span>
-        <span class="c1">#  row, col, _D</span>
+        <span class="c1"># First extract the sparse matrix in COO format</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">_to_coo</span><span class="p">(</span><span class="n">csr</span><span class="p">)</span>
 
         <span class="c1"># Retrieve all sc-indices in the new transposed array</span>
         <span class="n">new_sc_off</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="o">-</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">)</span>

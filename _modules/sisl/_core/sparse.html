@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../../../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -169,7 +169,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._indices</span><span class="w"> </span><span class="kn">import</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indices_only</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">warn</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrSequence</span><span class="p">,</span> <span class="n">SparseMatrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrSequence</span><span class="p">,</span> <span class="n">SeqOrScalarFloat</span><span class="p">,</span> <span class="n">SeqOrScalarInt</span><span class="p">,</span> <span class="n">SparseMatrix</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.mathematics</span><span class="w"> </span><span class="kn">import</span> <span class="n">intersect_and_diff_sets</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparse_dense</span>
@@ -178,6 +178,51 @@
 <span class="c1"># we use it slightly differently and thus require this new sparse pattern.</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SparseCSR&quot;</span><span class="p">,</span> <span class="s2">&quot;ispmatrix&quot;</span><span class="p">,</span> <span class="s2">&quot;ispmatrixd&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_to_cd</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the CSR information in a sanitized manner</span>
+
+<span class="sd">    This is equivalent to `_to_coo` except it does not return the</span>
+<span class="sd">    `rows` data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    csr: SparseCSR</span>
+<span class="sd">        matrix to sanitize</span>
+<span class="sd">    data:</span>
+<span class="sd">        whether the data should also be returned sanitized</span>
+<span class="sd">    rows:</span>
+<span class="sd">        only return for a subset of rows</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cols : always</span>
+<span class="sd">    matrix_data : when `data` is True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ptr</span>
+    <span class="n">ncol</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span>
+
+    <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="n">ncol</span> <span class="o">=</span> <span class="n">ncol</span><span class="p">[</span><span class="n">rows</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="n">rows</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cols</span><span class="p">,</span> <span class="n">D</span>
+    <span class="k">return</span> <span class="n">cols</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_to_coo</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -189,10 +234,10 @@
 <span class="sd">    ----------</span>
 <span class="sd">    csr: SparseCSR</span>
 <span class="sd">        matrix to sanitize</span>
-<span class="sd">    data: bool</span>
+<span class="sd">    data:</span>
 <span class="sd">        whether the data should also be returned sanitized</span>
 <span class="sd">    rows:</span>
-<span class="sd">        only return for a subset of rowsj</span>
+<span class="sd">        only return for a subset of rows</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -204,15 +249,20 @@
     <span class="n">col</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span>
     <span class="n">D</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span>
 
-    <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">rows</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="n">ncol</span> <span class="o">=</span> <span class="n">ncol</span><span class="p">[</span><span class="n">rows</span><span class="p">]</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="n">rows</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-    <span class="n">cols</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="n">ncol</span> <span class="o">=</span> <span class="n">ncol</span><span class="p">[</span><span class="n">rows</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="n">rows</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncol</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">ncol</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
 
@@ -290,7 +340,7 @@
     <span class="c1"># to keep a good overview of which variables are present</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_shape&quot;</span><span class="p">,</span> <span class="s2">&quot;_ns&quot;</span><span class="p">,</span> <span class="s2">&quot;_finalized&quot;</span><span class="p">,</span> <span class="s2">&quot;_nnz&quot;</span><span class="p">,</span> <span class="s2">&quot;ptr&quot;</span><span class="p">,</span> <span class="s2">&quot;ncol&quot;</span><span class="p">,</span> <span class="s2">&quot;col&quot;</span><span class="p">,</span> <span class="s2">&quot;_D&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">nnz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a new sparse CSR matrix&quot;&quot;&quot;</span>
 
         <span class="c1"># step size in sparse elements</span>
@@ -499,7 +549,7 @@
 
 <div class="viewcode-block" id="SparseCSR.diagonal">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.diagonal">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the diagonal elements from the matrix&quot;&quot;&quot;</span>
         <span class="c1"># get the diagonal components</span>
         <span class="n">diag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -519,7 +569,7 @@
 
 <div class="viewcode-block" id="SparseCSR.diags">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.diags">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">diags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diagonals</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diagonals</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a `SparseCSR` with diagonal elements with the same shape as the routine</span>
 
 <span class="sd">        Parameters</span>
@@ -529,7 +579,7 @@
 <span class="sd">        offsets : scalar or array_like</span>
 <span class="sd">           the offsets from the diagonal for each of the components (defaults</span>
 <span class="sd">           to the diagonal)</span>
-<span class="sd">        dim : int, optional</span>
+<span class="sd">        dim :</span>
 <span class="sd">           the extra dimension of the new diagonal matrix (default to the current</span>
 <span class="sd">           extra dimension)</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
@@ -577,7 +627,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        keep_nnz : boolean, optional</span>
+<span class="sd">        keep_nnz :</span>
 <span class="sd">           if ``True`` keeps the sparse elements *as is*.</span>
 <span class="sd">           I.e. it will merely set the stored sparse elements to zero.</span>
 <span class="sd">           This may be advantagegous when re-constructing a new sparse</span>
@@ -646,32 +696,18 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sort : bool, optional</span>
+<span class="sd">        sort :</span>
 <span class="sd">           sort the column indices for each row</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finalized</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="c1"># Create and index array to retain the indices we want</span>
-        <span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span>
-        <span class="n">ncol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">)</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">_to_coo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">col</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_D</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">idx</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">_a</span><span class="o">.</span><span class="n">cumsumi</span><span class="p">(</span><span class="n">ncol</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-
-        <span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span>
-        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">col</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_D</span>
-
-        <span class="c1"># We truncate all the connections</span>
-        <span class="c1"># to get correct rows we need to remove those which have 0 elements</span>
-        <span class="n">row_nonzero</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncol</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">row_nonzero</span><span class="p">,</span> <span class="n">ncol</span><span class="p">[</span><span class="n">row_nonzero</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
             <span class="c1"># first sort according to row (which is already sorted)</span>
             <span class="c1"># then sort by col</span>
@@ -690,6 +726,7 @@
                 <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span>
             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="n">ptr1</span> <span class="o">=</span> <span class="n">ptr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
                 <span class="n">ptr2</span> <span class="o">=</span> <span class="n">ptr</span><span class="p">[</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
@@ -716,7 +753,7 @@
 
 
     <span class="nd">@singledispatchmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_sanitize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sanitize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sanitize the input indices to a conforming numpy array&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">axis</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -730,13 +767,13 @@
         <span class="k">return</span> <span class="n">idx</span>
 
     <span class="nd">@_sanitize</span><span class="o">.</span><span class="n">register</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">idx</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">bool_</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">idx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@_sanitize</span><span class="o">.</span><span class="n">register</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">step</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
@@ -751,19 +788,19 @@
 
 <div class="viewcode-block" id="SparseCSR.edges">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.edges">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve edges (connections) of a given `row` or list of `row`&#39;s</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="n">SeqOrScalarInt</span><span class="p">,</span> <span class="n">exclude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqOrScalarInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve edges (connections) of given `rows`</span>
 
 <span class="sd">        The returned edges are unique and sorted (see `numpy.unique`).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        row : int or list of int</span>
+<span class="sd">        rows :</span>
 <span class="sd">            the edges are returned only for the given row</span>
-<span class="sd">        exclude : int or list of int, optional</span>
+<span class="sd">        exclude :</span>
 <span class="sd">           remove edges which are in the `exclude` list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">rows</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">exclude</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -774,7 +811,7 @@
         <span class="n">ncol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span>
 
         <span class="c1"># Create column indices</span>
-        <span class="n">edges</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">[</span><span class="n">row</span><span class="p">])])</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="n">rows</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">[</span><span class="n">rows</span><span class="p">])])</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># Return the difference to the exclude region, we know both are unique</span>
@@ -784,12 +821,12 @@
 
 <div class="viewcode-block" id="SparseCSR.delete_columns">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.delete_columns">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">delete_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">keep_shape</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">:</span> <span class="n">SeqOrScalarInt</span><span class="p">,</span> <span class="n">keep_shape</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete all columns in `columns` (in-place action)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        columns : int or array_like</span>
+<span class="sd">        columns :</span>
 <span class="sd">           columns to delete from the sparse pattern</span>
 <span class="sd">        keep_shape :</span>
 <span class="sd">           whether the ``shape`` of the object should be retained, if ``True`` all higher</span>
@@ -800,8 +837,8 @@
         <span class="n">cnz</span> <span class="o">=</span> <span class="n">count_nonzero</span>
 
         <span class="c1"># Sort the columns</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">n_cols</span> <span class="o">=</span> <span class="n">cnz</span><span class="p">(</span><span class="n">columns</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">n_cols</span> <span class="o">=</span> <span class="n">cnz</span><span class="p">(</span><span class="n">cols</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="c1"># Grab pointers</span>
         <span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span>
@@ -811,7 +848,7 @@
         <span class="c1"># Get indices of deleted columns</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">)</span>
         <span class="c1"># Convert to boolean array where we have columns to be deleted</span>
-        <span class="n">lidx</span> <span class="o">=</span> <span class="n">isin</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">columns</span><span class="p">)</span>
+        <span class="n">lidx</span> <span class="o">=</span> <span class="n">isin</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">cols</span><span class="p">)</span>
         <span class="c1"># Count number of deleted entries per row</span>
         <span class="n">ndel</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fromiteri</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">count_nonzero</span><span class="p">,</span> <span class="n">split</span><span class="p">(</span><span class="n">lidx</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">cumsumi</span><span class="p">(</span><span class="n">ncol</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))))</span>
         <span class="c1"># Backconvert lidx to deleted indices</span>
@@ -842,7 +879,7 @@
         <span class="n">update_col</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">keep_shape</span>
         <span class="k">if</span> <span class="n">update_col</span><span class="p">:</span>
             <span class="c1"># Check that we really do have to update</span>
-            <span class="n">update_col</span> <span class="o">=</span> <span class="n">np_any</span><span class="p">(</span><span class="n">columns</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">n_cols</span><span class="p">)</span>
+            <span class="n">update_col</span> <span class="o">=</span> <span class="n">np_any</span><span class="p">(</span><span class="n">cols</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">n_cols</span><span class="p">)</span>
 
         <span class="c1"># Correct number of elements per column, and the pointers</span>
         <span class="n">ncol</span><span class="p">[:]</span> <span class="o">-=</span> <span class="n">ndel</span>
@@ -851,7 +888,7 @@
         <span class="k">if</span> <span class="n">update_col</span><span class="p">:</span>
             <span class="c1"># Create a count array to subtract</span>
             <span class="n">count</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">count</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">count</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="n">count</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">cumsumi</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
 
             <span class="c1"># Recreate pointers due to deleted indices</span>
@@ -905,16 +942,22 @@
 
 <div class="viewcode-block" id="SparseCSR.translate_columns">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.translate_columns">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">translate_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate_columns</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">old</span><span class="p">:</span> <span class="n">SeqOrScalarInt</span><span class="p">,</span>
+        <span class="n">new</span><span class="p">:</span> <span class="n">SeqOrScalarInt</span><span class="p">,</span>
+        <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqOrScalarInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">clean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Takes all `old` columns and translates them to `new`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        old : int or array_like</span>
+<span class="sd">        old :</span>
 <span class="sd">           old column indices</span>
-<span class="sd">        new : int or array_like</span>
+<span class="sd">        new :</span>
 <span class="sd">           new column indices</span>
-<span class="sd">        rows : int or array_like</span>
+<span class="sd">        rows :</span>
 <span class="sd">           only translate columns for the given rows</span>
 <span class="sd">        clean :</span>
 <span class="sd">           whether the new translated columns, outside the shape, should be deleted or not (default delete)</span>
@@ -958,7 +1001,12 @@
 
 <div class="viewcode-block" id="SparseCSR.scale_columns">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.scale_columns">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">scale_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scale_columns</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cols</span><span class="p">:</span> <span class="n">SeqOrScalarInt</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="n">SeqOrScalarFloat</span><span class="p">,</span>
+        <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqOrScalarInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scale all values with certain column values with a number</span>
 
 <span class="sd">        This will multiply all values with certain column values with `scale`</span>
@@ -970,12 +1018,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cols : int or array_like</span>
+<span class="sd">        cols :</span>
 <span class="sd">           column indices to scale</span>
-<span class="sd">        scale : float or array_like</span>
+<span class="sd">        scale :</span>
 <span class="sd">           scale value for each value (if array-like it has to have the same</span>
 <span class="sd">           dimension as the sparsity dimension)</span>
-<span class="sd">        rows : int or array_like, optional</span>
+<span class="sd">        rows :</span>
 <span class="sd">           only scale the column values that exists in these rows, default to all</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1035,19 +1083,15 @@
         <span class="n">ocol</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">col</span>
 
         <span class="c1"># Easy check for non-equal number of elements</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">sncol</span> <span class="o">==</span> <span class="n">oncol</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">ncol</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="nb">len</span><span class="p">(</span>
-                    <span class="n">intersect1d</span><span class="p">(</span>
-                        <span class="n">scol</span><span class="p">[</span><span class="n">sptr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="p">:</span> <span class="n">sptr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">+</span> <span class="n">sncol</span><span class="p">[</span><span class="n">r</span><span class="p">]],</span>
-                        <span class="n">ocol</span><span class="p">[</span><span class="n">optr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="p">:</span> <span class="n">optr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">+</span> <span class="n">oncol</span><span class="p">[</span><span class="n">r</span><span class="p">]],</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="o">!=</span> <span class="n">sncol</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
-            <span class="p">):</span>
+            <span class="n">inter</span> <span class="o">=</span> <span class="n">intersect1d</span><span class="p">(</span>
+                <span class="n">scol</span><span class="p">[</span><span class="n">sptr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="p">:</span> <span class="n">sptr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">+</span> <span class="n">sncol</span><span class="p">[</span><span class="n">r</span><span class="p">]],</span>
+                <span class="n">ocol</span><span class="p">[</span><span class="n">optr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="p">:</span> <span class="n">optr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">+</span> <span class="n">oncol</span><span class="p">[</span><span class="n">r</span><span class="p">]],</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inter</span><span class="p">)</span> <span class="o">!=</span> <span class="n">sncol</span><span class="p">[</span><span class="n">r</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
@@ -1098,7 +1142,7 @@
 
 <div class="viewcode-block" id="SparseCSR.iter_nnz">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.iter_nnz">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqOrScalarInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements</span>
 
 <span class="sd">        An iterator returning the current row index and the corresponding column index.</span>
@@ -1116,7 +1160,7 @@
 <span class="sd">        row : int or array_like of int</span>
 <span class="sd">           only loop on the given row(s) default to all rows</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">row</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># loop on rows</span>
             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
@@ -1124,7 +1168,7 @@
                 <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">ptr</span> <span class="p">:</span> <span class="n">ptr</span> <span class="o">+</span> <span class="n">n</span><span class="p">]:</span>
                     <span class="k">yield</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">():</span>
                 <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
                 <span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">ptr</span> <span class="p">:</span> <span class="n">ptr</span> <span class="o">+</span> <span class="n">n</span><span class="p">]:</span>
@@ -1589,37 +1633,19 @@
 
 <div class="viewcode-block" id="SparseCSR.nonzero">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.nonzero">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqOrScalarInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Row and column indices where non-zero elements exists</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rows : int or array_like of int, optional</span>
+<span class="sd">        rows :</span>
 <span class="sd">           only return the tuples for the requested rows, default is all rows</span>
-<span class="sd">        only_cols : bool, optional</span>
+<span class="sd">        only_cols :</span>
 <span class="sd">           only return the non-zero columns</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span>
-        <span class="n">ncol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span>
-        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">col</span>
-
-        <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># all rows will be returned</span>
-            <span class="n">cols</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">only_cols</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncol</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">rows</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">ncol</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-            <span class="n">ncol</span> <span class="o">=</span> <span class="n">ncol</span><span class="p">[</span><span class="n">rows</span><span class="p">]</span>
-            <span class="n">cols</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">array_arange</span><span class="p">(</span><span class="n">ptr</span><span class="p">[</span><span class="n">rows</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">only_cols</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncol</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">rows</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">ncol</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
-
         <span class="k">if</span> <span class="n">only_cols</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cols</span>
-        <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span></div>
+            <span class="k">return</span> <span class="n">_to_cd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_to_coo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SparseCSR.eliminate_zeros">
@@ -1631,7 +1657,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        atol : float, optional</span>
+<span class="sd">        atol :</span>
 <span class="sd">            absolute tolerance below this value will be considered 0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">shape2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -1666,12 +1692,12 @@
 
 <div class="viewcode-block" id="SparseCSR.copy">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.copy">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqOrScalarInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A deepcopy of the sparse matrix</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dims : int or array-like, optional</span>
+<span class="sd">        dims :</span>
 <span class="sd">           which dimensions to store in the copy, defaults to all.</span>
 <span class="sd">        dtype : `numpy.dtype`</span>
 <span class="sd">           this defaults to the dtype of the object,</span>
@@ -1927,12 +1953,12 @@
 
 <div class="viewcode-block" id="SparseCSR.remove">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.remove">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">SeqOrScalarInt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new sparse CSR matrix with all the indices removed</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        indices : array_like</span>
+<span class="sd">        indices :</span>
 <span class="sd">           the indices of the rows *and* columns that are removed in the sparse pattern</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
@@ -1949,14 +1975,14 @@
 
 <div class="viewcode-block" id="SparseCSR.sub">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseCSR.html#sisl.SparseCSR.sub">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">SeqOrScalarInt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new sparse CSR matrix with the data only for the given rows and columns</span>
 
 <span class="sd">        All rows and columns in `indices` are retained, everything else is removed.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        indices : array_like</span>
+<span class="sd">        indices :</span>
 <span class="sd">           the indices of the rows *and* columns that are retained in the sparse pattern</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -2044,7 +2070,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sort : bool, optional</span>
+<span class="sd">        sort :</span>
 <span class="sd">           the returned columns for the transposed structure will be sorted</span>
 <span class="sd">           if this is true, default</span>
 
@@ -2061,31 +2087,15 @@
         <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># properly set the shape!</span>
         <span class="n">T</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
         <span class="c1"># clean memory to not crowd memory too much</span>
         <span class="n">T</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">T</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">T</span><span class="o">.</span><span class="n">ncol</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">T</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># First extract the actual data</span>
-        <span class="n">ncol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finalized</span><span class="p">:</span>
-            <span class="c1"># ptr = self.ptr.view()</span>
-            <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_D</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
-            <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="k">del</span> <span class="n">idx</span>
-
-        <span class="c1"># figure out rows where ncol is &gt; 0</span>
-        <span class="c1"># we skip the first column</span>
-        <span class="n">row_nonzero</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncol</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">row_nonzero</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">ncol</span><span class="p">[</span><span class="n">row_nonzero</span><span class="p">])</span>
-
-        <span class="c1"># Now we have the DOK format</span>
-        <span class="c1">#  row, col, _D</span>
+        <span class="c1"># First extract the actual data in COO format</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">_to_coo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># Now we can re-create the sparse matrix</span>
         <span class="c1"># All we need is to count the number of non-zeros per column.</span>

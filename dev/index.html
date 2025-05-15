@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#summary-of-development-process">Summary of development process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contribute-external-code">Contribute external code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contribute-additional-tests">Contribute additional tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contribute-to-the-docs">Contribute to the docs</a></li>
 </ul>
 </li>
 </ul>
@@ -123,38 +124,63 @@
            <div itemprop="articleBody">
              
   <section id="contributing-to-sisl">
-<span id="devindex"></span><h1>Contributing to sisl<a class="headerlink" href="#contributing-to-sisl" title="Link to this heading"></a></h1>
+<span id="dev-index"></span><h1>Contributing to sisl<a class="headerlink" href="#contributing-to-sisl" title="Link to this heading"></a></h1>
 <p>The sisl code is open-source, and thus we encourage external users to contribute
 back to the code base.</p>
 <p>Even if you are a non-coder, your contributions are valuable to the community!
 Please do remember that open-source projects benefits from interaction!</p>
 <p>There are many aspects of useful contributions:</p>
 <ul class="simple">
-<li><p>Code maintenance and development</p></li>
 <li><p>Creating tutorials and extending documentation</p></li>
+<li><p>Code maintenance and development</p></li>
 <li><p>Finding bugs or typos</p></li>
 <li><p>Development of the website</p></li>
 <li><p>Missing a useful feature</p></li>
 </ul>
 <p>We understand that people have different backgrounds, and thus different
-experience in coding. We try to engage as much as possible with ticket creators.</p>
+experience in coding. We try to engage as much as possible with ticket creators, and
+guide.</p>
 <p>In the following of this document you will find information related to the specifics
 of making a development workflow for <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>.</p>
 <section id="summary-of-development-process">
-<h2>Summary of development process<a class="headerlink" href="#summary-of-development-process" title="Link to this heading"></a></h2>
+<span id="dev-summary"></span><h2>Summary of development process<a class="headerlink" href="#summary-of-development-process" title="Link to this heading"></a></h2>
+<p>You are free to choose your development environment, but for new Python developers,
+we recommend using a <code class="docutils literal notranslate"><span class="pre">conda</span></code> environment because compilers are easier to set up.
+To create one, install <a class="reference external" href="https://github.com/conda-forge/miniforge">miniforge</a> and then create a new environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sisl-dev<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>python<span class="w"> </span>compilers<span class="w"> </span>cmake<span class="w"> </span>pandoc
+</pre></div>
+</div>
+<p>Then activate it doing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>sisl-dev
+</pre></div>
+</div>
 <p>Here is a short summary of how to do developments with <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>.</p>
 <ol class="arabic">
+<li><p>Install the development dependencies, see <a class="reference internal" href="../quickstart/install.html#install"><span class="std std-ref">here</span></a>.</p>
+<p>Note, in particular if you want to build the documentation locally, then <a class="reference external" href="https://pandoc.org/">pandoc</a>
+is required.</p>
+</li>
 <li><p>If you are a first time contributor, you need to clone your forked repository
 and setup a few things.</p>
 <p>The procedure enables one to follow the upstream changes, while simultaneously
 have a fork where one has write access.</p>
 <ul>
-<li><p>Go to <a class="reference external" href="https://github.com/zerothi/sisl/">github.com/zerothi/sisl</a> and click the “fork” button to
+<li><p>Go to <a class="reference external" href="https://github.com/zerothi/sisl/">github.com/zerothi/sisl</a> and click the <span class="guilabel">Fork</span> button to
 create your own copy of the code base.</p></li>
 <li><p>Clone the fork to your local machine:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">SSH</label><div class="tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:&lt;your-username&gt;/sisl.git
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">HTML</label><div class="tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/&lt;your-username&gt;/sisl.git
 </pre></div>
 </div>
+</div>
+</div>
+<p>And move to the folder <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">sisl</span></code>.</p>
 </li>
 <li><p>Add the upstream repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>upstream<span class="w"> </span>https://github.com/zerothi/sisl.git
@@ -197,7 +223,7 @@ to name your branch according to the issue number following a sensible name:</p>
 <p>Be sure to document your changes, and write sensible documentation
 for the API.</p>
 </li>
-<li><p>To submit your contribution:</p>
+<li><p>Submit your contribution:</p>
 <ul>
 <li><p>Push your changes back to your fork on GitHub:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span><span class="m">42</span>-enhancing-doc
@@ -210,7 +236,7 @@ button. Make sure the title and message are clear, concise, and self-
 explanatory. Then click the button to submit it.</p></li>
 <li><p>Likely, your contribution will need a comment for the release notes.
 Please add one in <code class="docutils literal notranslate"><span class="pre">/changes/</span></code> by following the instructions found in
-the <code class="docutils literal notranslate"><span class="pre">README.rst</span></code> there.</p></li>
+the <code class="docutils literal notranslate"><span class="pre">/changes/README.rst</span></code>.</p></li>
 </ul>
 </li>
 <li><p>Review process.</p>
@@ -223,20 +249,58 @@ wait until it succeeds before taking any action.</p>
 <section id="contribute-external-code">
 <h2>Contribute external code<a class="headerlink" href="#contribute-external-code" title="Link to this heading"></a></h2>
 <p>External toolbox codes may be contributed <a class="reference external" href="https://github.com/zerothi/sisl/issues">here</a>, then press
-“Issue” and select <em>Contribute toolbox</em>.</p>
+<span class="guilabel">Issue</span> and select <span class="guilabel">Contribute toolbox</span>.</p>
 <p>There are two cases of external contributions:</p>
 <ol class="arabic simple">
-<li><p>If the code is directly integrable into sisl it will be merged into the sisl source.</p></li>
+<li><p>If the code is integrable into sisl it will be merged into the sisl source.</p></li>
 <li><p>If the code is showing how to use sisl to calculate some physical quantity but is not a general
 implementation, it will be placed in toolbox directory.</p></li>
 </ol>
-<p>Either way, any contribution is very welcome.</p>
+<p>Either way, any contribution is very welcome!</p>
 </section>
 <section id="contribute-additional-tests">
 <h2>Contribute additional tests<a class="headerlink" href="#contribute-additional-tests" title="Link to this heading"></a></h2>
 <p>Additional test files should be added to <a class="reference external" href="https://github.com/zerothi/sisl-files">this repository</a>.
 Please follow the guidelines there, or open up an issue at that repository
 for specific details.</p>
+</section>
+<section id="contribute-to-the-docs">
+<h2>Contribute to the docs<a class="headerlink" href="#contribute-to-the-docs" title="Link to this heading"></a></h2>
+<p>To contribute to the documentation one needs to install <a class="reference external" href="https://pandoc.org/">pandoc</a> first (see
+<a class="reference internal" href="#dev-summary"><span class="std std-ref">Summary of development process</span></a>). Then follow these steps:</p>
+<ol class="arabic">
+<li><p>Sitting inside the <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> tree, install the <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> documentation via:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>docs<span class="o">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>Download tutorial files accompanying the <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>init
+git<span class="w"> </span>submodule<span class="w"> </span>update
+</pre></div>
+</div>
+</li>
+<li><p><strong>OPTIONAL</strong></p>
+<p>If you are not contributing specifically to the notebooks,
+you may consider deactivating their compilation by creating this environment
+variable to drastically speed up build time:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">_SISL_DOC_SKIP</span><span class="o">=</span>notebook
+</pre></div>
+</div>
+</li>
+<li><p>Within the docs folder (<code class="docutils literal notranslate"><span class="pre">/docs</span></code>) do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make
+</pre></div>
+</div>
+<p>This will build the documentation in the <code class="docutils literal notranslate"><span class="pre">/docs/build/html</span></code> folder. Open the
+<code class="docutils literal notranslate"><span class="pre">docs/build/html/index.html</span></code> to visualize the built documentation.</p>
+</li>
+<li><p>The easiest thing that you can do now is to modify one of the <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files
+(reStructuredText, or reST) sitting in <code class="docutils literal notranslate"><span class="pre">/docs</span></code>. Then build again (<code class="docutils literal notranslate"><span class="pre">make</span></code>)
+and check your changes in the browser.</p></li>
+<li><p>Once happy with your changes, <em>push</em> them to your fork and create a PR following the
+instructions under <em>To submit your contribution</em> in <a class="reference internal" href="#dev-summary"><span class="std std-ref">Summary of development process</span></a>.</p></li>
+</ol>
 </section>
 </section>
 

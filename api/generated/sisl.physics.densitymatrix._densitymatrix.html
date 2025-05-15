@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -261,7 +261,7 @@
 <td><p>Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.tocsr" title="sisl.physics.densitymatrix._densitymatrix.tocsr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocsr</span></code></a>([dim, isc])</p></td>
-<td><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p></td>
+<td><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.transform" title="sisl.physics.densitymatrix._densitymatrix.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>([matrix, dtype, spin, orthogonal])</p></td>
 <td><p>Transform the matrix by either a matrix or new spin configuration</p></td>
@@ -364,12 +364,12 @@ structure is completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
 <li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>) – the chosen gauge</p></li>
-<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;csr&quot;,</span> <span class="pre">&quot;array&quot;,</span> <span class="pre">&quot;matrix&quot;,</span> <span class="pre">&quot;coo&quot;,</span> <span class="pre">...}</span></code>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
+<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;csr&quot;,</span> <span class="pre">&quot;array&quot;,</span> <span class="pre">&quot;matrix&quot;,</span> <span class="pre">&quot;coo&quot;,</span> <span class="pre">...}</span></code>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
 return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">“array”</em>/<em class="xref py py-obj">”dense”</em>/<em class="xref py py-obj">”matrix”</em>).
 Prefixing with “sc:”, or simply “sc” returns the matrix in supercell format
@@ -567,22 +567,23 @@ complex valued arrays are allowed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.densitymatrix._densitymatrix.bond_order">
-<span class="sig-name descname"><span class="pre">bond_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mayer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'atom'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/densitymatrix.html#_densitymatrix.bond_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.bond_order" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bond_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mayer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'atom'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.bond_order" title="Link to this definition"></a></dt>
 <dd><p>Bond-order calculation using various methods</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">method='wiberg'</span></code>, the bond-order is calculated as:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf B_{ij}^{\mathrm{Wiberg}} &amp;= \mathbf D_{ij}^2\]</div>
+\[\mathbf B_{ij}^{\mathrm{Wiberg}} &amp;= \mathbf M_{ij}^2\]</div>
 <p>For <code class="docutils literal notranslate"><span class="pre">method='mayer'</span></code>, the bond-order is calculated as:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf B_{ij}^{\mathrm{Mayer}} &amp;= (\mathbf D\mathbf S)_{ij} (\mathbf D\mathbf S)_{ji}\]</div>
+\[\mathbf B_{ij}^{\mathrm{Mayer}} &amp;= (\mathbf M\mathbf S)_{ij} (\mathbf M\mathbf S)_{ji}\]</div>
 <p>For <code class="docutils literal notranslate"><span class="pre">method='mulliken'</span></code>, the bond-order is calculated as:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf B_{ij}^{\mathrm{Mulliken}} &amp;= 2\mathbf D_{ij}\mathbf S_{ij}\]</div>
+\[\mathbf B_{ij}^{\mathrm{Mulliken}} &amp;= 2\mathbf M_{ij}\mathbf S_{ij}\]</div>
 <p>The bond order will then be using the above notation for the summation for atoms:</p>
 <div class="math notranslate nohighlight">
 \[\mathbf B_{IJ}^{\langle\rangle} &amp;= \sum_{i\in I}\sum_{j\in J} \mathbf B^{\langle\rangle}_{ij}\]</div>
 <p>The Mulliken bond-order is closely related to the COOP interpretation.
-The COOP is generally an energy resolved Mulliken bond-order. So if the
+The COOP is generally an energy resolved Mulliken bond-order (so makes
+sense for density matrices). So if the
 density matrix represents a particular eigen-state, it would yield the COOP
 value for the energy of the eigenstate. Generally the density matrix is
 the sum over all occupied eigen states, and hence represents the full
@@ -599,7 +600,8 @@ components.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<code class="docutils literal notranslate"><span class="pre">{mayer,</span> <span class="pre">wiberg,</span> <span class="pre">mulliken}</span></code><code class="xref py py-class docutils literal notranslate"><span class="pre">[:spin]</span></code>) – which method to calculate the bond-order with</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'mayer'</em><em>, </em><em>'mulliken'</em><em>, </em><em>'wiberg'</em><em>]</em>) – which method to calculate the bond-order with. Optionally suffix
+with <code class="docutils literal notranslate"><span class="pre">:spin</span></code> to get spin-resolved method.</p></li>
 <li><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'atom'</em><em>, </em><em>'orbital'</em><em>]</em>) – whether the returned matrix is in orbital form, or in atom form.
 If orbital is used, then the above formulas will be changed</p></li>
 </ul>
@@ -750,12 +752,12 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
 <li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>) – the chosen gauge.</p></li>
-<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;csr&quot;,</span> <span class="pre">&quot;array&quot;,</span> <span class="pre">&quot;matrix&quot;,</span> <span class="pre">&quot;coo&quot;,</span> <span class="pre">...}</span></code>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
+<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;csr&quot;,</span> <span class="pre">&quot;array&quot;,</span> <span class="pre">&quot;matrix&quot;,</span> <span class="pre">&quot;coo&quot;,</span> <span class="pre">...}</span></code>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
 return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">“array”</em>/<em class="xref py py-obj">”dense”</em>/<em class="xref py py-obj">”matrix”</em>).</p></li>
 </ul>
@@ -807,13 +809,13 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
 <li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>) – the chosen gauge, <code class="docutils literal notranslate"><span class="pre">cell</span></code> for cell vector gauge, and <code class="docutils literal notranslate"><span class="pre">atom</span></code> for atomic distance
 gauge.</p></li>
-<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;csr&quot;,</span> <span class="pre">&quot;array&quot;,</span> <span class="pre">&quot;matrix&quot;,</span> <span class="pre">&quot;coo&quot;,</span> <span class="pre">...}</span></code>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
+<li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;csr&quot;,</span> <span class="pre">&quot;array&quot;,</span> <span class="pre">&quot;matrix&quot;,</span> <span class="pre">&quot;coo&quot;,</span> <span class="pre">...}</span></code>) – the returned format of the matrix, defaulting to the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>,
 however if one always requires operations on dense matrices, one can always
 return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">“array”</em>/<em class="xref py py-obj">”dense”</em>/<em class="xref py py-obj">”matrix”</em>).</p></li>
 </ul>
@@ -917,7 +919,7 @@ requested atom). The returned edges are also atoms.</p></li>
 <dd><p>Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)</p>
 <p>Setup the system and overlap matrix with respect to
 the given k-point and calculate the eigenvalues.</p>
-<p>All subsequent arguments gets passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.eig.html#scipy.linalg.eig" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.linalg.eig</span></code></a></p>
+<p>All subsequent arguments gets passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.eig.html#scipy.linalg.eig" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.linalg.eig</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -940,7 +942,7 @@ this parameter is only valid for <code class="xref py py-obj docutils literal no
 <dd><p>Returns the eigenvalues of the physical quantity</p>
 <p>Setup the system and overlap matrix with respect to
 the given k-point and calculate the eigenvalues.</p>
-<p>All subsequent arguments gets passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.eigh.html#scipy.linalg.eigh" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.linalg.eigh</span></code></a></p>
+<p>All subsequent arguments gets passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.eigh.html#scipy.linalg.eigh" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.linalg.eigh</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -963,7 +965,7 @@ this parameter is only valid for <code class="xref py py-obj docutils literal no
 <dd><p>Calculates a subset of eigenvalues of the physical quantity using sparse matrices</p>
 <p>Setup the quantity and overlap matrix with respect to
 the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.</p>
-<p>All subsequent arguments gets passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html#scipy.sparse.linalg.eigsh" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.linalg.eigsh</span></code></a>.</p>
+<p>All subsequent arguments gets passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html#scipy.sparse.linalg.eigsh" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.linalg.eigsh</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -971,7 +973,7 @@ the given k-point and calculate a subset of the eigenvalues using the sparse alg
 Defaults to the <em class="xref py py-obj">n</em> smallest magnitude eigevalues.</p></li>
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code> matrices.</p></li>
-<li><p><strong>**kwargs</strong> – arguments passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html#scipy.sparse.linalg.eigsh" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.linalg.eigsh</span></code></a>.</p></li>
+<li><p><strong>**kwargs</strong> – arguments passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html#scipy.sparse.linalg.eigsh" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.linalg.eigsh</span></code></a>.</p></li>
 <li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>)</p></li>
 <li><p><strong>gauge</strong> (<a class="reference internal" href="sisl.typing.GaugeType.html#sisl.typing.GaugeType" title="sisl.typing.GaugeType"><em>GaugeType</em></a>)</p></li>
 <li><p><strong>eigvals_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
@@ -1043,7 +1045,7 @@ internal data-representation.</p>
 <dt class="sig sig-object py" id="sisl.physics.densitymatrix._densitymatrix.fromsp">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fromsp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.fromsp" title="Link to this definition"></a></dt>
 <dd><p>Create a sparse model from a preset <code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code> and a list of sparse matrices</p>
-<p>The passed sparse matrices are in one of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.15.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> formats.</p>
+<p>The passed sparse matrices are in one of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> formats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1572,7 +1574,7 @@ that references the supercell will be deleted.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.densitymatrix._densitymatrix.spin_align">
-<span class="sig-name descname"><span class="pre">spin_align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/densitymatrix.html#_densitymatrix.spin_align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.spin_align" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">spin_align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.spin_align" title="Link to this definition"></a></dt>
 <dd><p>Aligns <em>all</em> spin along the vector <em class="xref py py-obj">vec</em></p>
 <p>In case the matrix is polarized and <em class="xref py py-obj">vec</em> is not aligned at the z-axis, the returned
 matrix will be a non-collinear spin configuration.</p>
@@ -1600,7 +1602,7 @@ To only align atomic on-site values, one would have to do a loop.</p></li>
 <p class="admonition-title">Notes</p>
 <p>The returned data-type of the matrix may have changed, depending
 on options. To retain the <em>old</em> datatype, do something like this:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DM</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">spin_align</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">DM</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">spin_align</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1622,7 +1624,7 @@ on options. To retain the <em>old</em> datatype, do something like this:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.densitymatrix._densitymatrix.spin_rotate">
-<span class="sig-name descname"><span class="pre">spin_rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/densitymatrix.html#_densitymatrix.spin_rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.spin_rotate" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">spin_rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.spin_rotate" title="Link to this definition"></a></dt>
 <dd><p>Rotate spin-boxes by fixed angles around the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> axes, respectively.</p>
 <p>The angles are with respect to each spin-box initial angle.
 One should use <a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.spin_align" title="sisl.physics.densitymatrix._densitymatrix.spin_align"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_align</span></code></a> to fix all angles along a specific direction.</p>
@@ -1840,7 +1842,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.densitymatrix._densitymatrix.tocsr">
 <span class="sig-name descname"><span class="pre">tocsr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.densitymatrix._densitymatrix.tocsr" title="Link to this definition"></a></dt>
-<dd><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p>
+<dd><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.15.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1860,7 +1862,7 @@ dimension is the overlap matrix)</p></li>
 * If <em class="xref py py-obj">matrix</em> is provided, a linear transformation <span class="math notranslate nohighlight">\(\mathbf R^n \rightarrow \mathbf R^m\)</span> is applied
 to the <span class="math notranslate nohighlight">\(n\)</span>-dimensional elements of the original sparse matrix.
 The <a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.spin" title="sisl.physics.densitymatrix._densitymatrix.spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin</span></code></a> and <a class="reference internal" href="#sisl.physics.densitymatrix._densitymatrix.orthogonal" title="sisl.physics.densitymatrix._densitymatrix.orthogonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orthogonal</span></code></a> flags are optional but need to be consistent with the creation of an
-<code class="xref py py-obj docutils literal notranslate"><span class="pre">m</span></code>-dimensional matrix.</p>
+<em class="xref py py-obj">m</em>-dimensional matrix.</p>
 <p>This method will copy over the overlap matrix in case the <em class="xref py py-obj">matrix</em> argument
 only acts on the non-overlap matrix elements and both input and output
 matrices are non-orthogonal.</p>

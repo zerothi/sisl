@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../../../../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -134,8 +134,8 @@
     <span class="s2">&quot;FullNeighborList&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PartialNeighborList&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AtomNeighborList&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;PointsNeighborList&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;PointNeighborList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CoordsNeighborList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CoordNeighborList&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -385,7 +385,7 @@
 
 <span class="sd">    You can get a partial neighbors list from the `find_neighbors` method of a</span>
 <span class="sd">    `NeighborFinder` object if you pass the `atoms` argument. Then, you can</span>
-<span class="sd">    retreive the neighbors from it:</span>
+<span class="sd">    retrieve the neighbors from it:</span>
 
 <span class="sd">    .. code-block:: python</span>
 
@@ -419,8 +419,8 @@
 <span class="sd">        The object returned by this list when iterating or indexing.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: The atoms for which the neighbors are stored.</span>
     <span class="n">atoms</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The atoms for which the neighbors are stored.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">split_indices</span><span class="o">=</span><span class="kc">None</span>
@@ -467,10 +467,10 @@
 <span class="sd">        The lists that, when iterated, return `AtomNeighborList` objects.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: The atom for which the neighbors are stored.</span>
     <span class="n">atom</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The atom for which the neighbors are stored.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">atom</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">)</span>
 
@@ -481,14 +481,14 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">PointsNeighborList</span><span class="p">(</span><span class="n">Neighbors</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of atoms that are close to a set of points in space.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CoordsNeighborList</span><span class="p">(</span><span class="n">Neighbors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of atoms that are close to a set of coordinates in space.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    You can get a points neighbors list from the `find_close` method of a</span>
-<span class="sd">    `NeighborFinder` object. Then, you can retreive the neighbors from it:</span>
+<span class="sd">    You can get a coordinates neighbors list from the `find_close` method of a</span>
+<span class="sd">    `NeighborFinder` object. Then, you can retrieve the neighbors from it:</span>
 
 <span class="sd">    .. code-block:: python</span>
 
@@ -502,38 +502,36 @@
 <span class="sd">        finder = sisl.geom.NeighborFinder(graphene, R=1.5)</span>
 
 <span class="sd">        # Get the full neighbors list</span>
-<span class="sd">        points = [[0, 0, 0], [2, 0, 0]]</span>
-<span class="sd">        neighbors = finder.find_close(points)</span>
+<span class="sd">        coords = [[0, 0, 0], [2, 0, 0]]</span>
+<span class="sd">        neighbors = finder.find_close(coords)</span>
 
-<span class="sd">        # You can loop through points to get their neighbors</span>
-<span class="sd">        for point_neighs in neighbors:</span>
+<span class="sd">        # You can loop through coordinates to get their neighbors</span>
+<span class="sd">        for coord_neighs in neighbors:</span>
 <span class="sd">            print()</span>
-<span class="sd">            print(f&quot;NEIGHBORS OF POINT {point_neighs.point} ({point_neighs.n_neighbors} neighbors): &quot;)</span>
-<span class="sd">            print(&quot;J&quot;, point_neighs.J)</span>
-<span class="sd">            print(&quot;ISC&quot;, point_neighs.isc)</span>
+<span class="sd">            print(f&quot;NEIGHBORS OF COORDINATE {coord_neighs.xyz} ({coord_neighs.n_neighbors} neighbors): &quot;)</span>
+<span class="sd">            print(&quot;J&quot;, coord_neighs.J)</span>
+<span class="sd">            print(&quot;ISC&quot;, coord_neighs.isc)</span>
 
-<span class="sd">        # Or get the neighbors of a particular point:</span>
+<span class="sd">        # Or get the neighbors of a particular coordinate:</span>
 <span class="sd">        neighbors[0].J</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    PointNeighborList</span>
+<span class="sd">    CoordNeighborList</span>
 <span class="sd">        The object returned by this list when iterating or indexing.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">split_indices</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">xyzs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">split_indices</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyzs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">xyzs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">,</span> <span class="n">split_indices</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of atoms that are close to each point&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of atoms that are close to each coordinate&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xyzs</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="n">index</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">n_neighbors</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span>
             <span class="k">return</span> <span class="n">n_neighbors</span>
@@ -541,15 +539,15 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_indices</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the interactions of a given point.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the interactions of a given coordinate.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
 
             <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">[</span><span class="n">item</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_indices</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 
-            <span class="k">return</span> <span class="n">PointNeighborList</span><span class="p">(</span>
+            <span class="k">return</span> <span class="n">CoordNeighborList</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">item</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xyzs</span><span class="p">[</span><span class="n">item</span><span class="p">],</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -557,28 +555,28 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">PointNeighborList</span><span class="p">(</span><span class="n">Neighbors</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of atoms that are close to a point in space.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CoordNeighborList</span><span class="p">(</span><span class="n">Neighbors</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List of atoms that are close to a coordinate in space.</span>
 
-<span class="sd">    The usual way to get a `PointNeighborList` object is by iterating over a</span>
-<span class="sd">    `PointsNeighborList`. See its documentation for examples.</span>
+<span class="sd">    The usual way to get a `CoordNeighborList` object is by iterating over a</span>
+<span class="sd">    `CoordsNeighborList`. See its documentation for examples.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    PointsNeighborList</span>
-<span class="sd">        The list that, when iterated, returns `PointNeighborList` objects.</span>
+<span class="sd">    CoordsNeighborList</span>
+<span class="sd">        The list that, when iterated, returns `CoordNeighborList` objects.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: The point for which the neighbors are stored.</span>
-    <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">xyz</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Cartesian coordinate for which the neighbors are stored.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">point</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">xyz</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span> <span class="o">=</span> <span class="n">xyz</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">finder_results</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">n_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of neighbors of the point.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of neighbors of the coordinate.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_finder_results</span><span class="p">)</span>
 </pre></div>
 

@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -89,8 +89,8 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.UniqueNeighborList.html">sisl.geom.UniqueNeighborList</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.PartialNeighborList.html">sisl.geom.PartialNeighborList</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html">sisl.geom.AtomNeighborList</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html">sisl.geom.PointsNeighborList</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html">sisl.geom.PointNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.CoordsNeighborList.html">sisl.geom.CoordsNeighborList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.CoordNeighborList.html">sisl.geom.CoordNeighborList</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#neighbor-lists">Neighbor lists</a></li>
 </ul>
 </li>
@@ -174,11 +174,11 @@ as you want. You can ask for all neighbors or only the neighbors of atoms that y
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.AtomNeighborList.html#sisl.geom.AtomNeighborList" title="sisl.geom.AtomNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomNeighborList</span></code></a></p></td>
 <td><p>List of atoms that are close to a given atom.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></a></p></td>
-<td><p>List of atoms that are close to a set of points in space.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.CoordsNeighborList.html#sisl.geom.CoordsNeighborList" title="sisl.geom.CoordsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordsNeighborList</span></code></a></p></td>
+<td><p>List of atoms that are close to a set of coordinates in space.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a></p></td>
-<td><p>List of atoms that are close to a point in space.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.CoordNeighborList.html#sisl.geom.CoordNeighborList" title="sisl.geom.CoordNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordNeighborList</span></code></a></p></td>
+<td><p>List of atoms that are close to a coordinate in space.</p></td>
 </tr>
 </tbody>
 </table>
@@ -217,13 +217,13 @@ neighbor list.</p>
 <td><p><span class="fas fa-circle-xmark"></span></p></td>
 <td><p>N/A</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.PointsNeighborList.html#sisl.geom.PointsNeighborList" title="sisl.geom.PointsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointsNeighborList</span></code></a></p></td>
-<td><p>Points in space</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.CoordsNeighborList.html#sisl.geom.CoordsNeighborList" title="sisl.geom.CoordsNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordsNeighborList</span></code></a></p></td>
+<td><p>Coordinates in space</p></td>
 <td><p><span class="fas fa-circle-xmark"></span></p></td>
-<td><p><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a></p></td>
+<td><p><a class="reference internal" href="generated/sisl.geom.CoordNeighborList.html#sisl.geom.CoordNeighborList" title="sisl.geom.CoordNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordNeighborList</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.PointNeighborList.html#sisl.geom.PointNeighborList" title="sisl.geom.PointNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointNeighborList</span></code></a></p></td>
-<td><p>One point in space</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.CoordNeighborList.html#sisl.geom.CoordNeighborList" title="sisl.geom.CoordNeighborList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoordNeighborList</span></code></a></p></td>
+<td><p>Coordinate in space</p></td>
 <td><p><span class="fas fa-circle-xmark"></span></p></td>
 <td><p>N/A</p></td>
 </tr>

@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../../../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -530,12 +530,12 @@ reading this would be very welcome.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>Literal</em><em>[</em><em>'voronoi'</em><em>, </em><em>'hirshfeld'</em><em>, </em><em>'mulliken'</em><em>, </em><em>'mulliken:&lt;5.2'</em><em>]</em>) – the name of the charges that you want to read</p></li>
-<li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Opt</span></code> or <em class="xref py py-obj"></em>, <em>optional</em>) – index (0-based) of the scf iteration you want the charges for.
+<li><p><strong>iscf</strong> (<em>Union</em><em>[</em><em>Opt</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.13)"><em>Ellipsis</em></a><em>]</em>) – index (0-based) of the scf iteration you want the charges for.
 If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em>/<em class="xref py py-obj"></em> are used, then
 the returned quantities depend on what is present.
 If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any SCF charges.
 If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then only the final charges will be returned.</p></li>
-<li><p><strong>imd</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Opt</span></code>, <em>optional</em>) – index (0-based) of the md step you want the charges for.
+<li><p><strong>imd</strong> (<em>Union</em><em>[</em><em>Opt</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.13)"><em>Ellipsis</em></a><em>]</em>) – index (0-based) of the md step you want the charges for.
 If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em>/<em class="xref py py-obj"></em> are used, then
 the returned quantities depend on what is present.
 If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any MD charges.
@@ -798,7 +798,7 @@ will loose the slice after each call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<code class="docutils literal notranslate"><span class="pre">{'scf',</span> <span class="pre">'ts-scf'}</span></code>) – parse SCF information from Siesta SCF or TranSiesta SCF</p></li>
+<li><p><strong>key</strong> (<em>Literal</em><em>[</em><em>'scf'</em><em>, </em><em>'ts-scf'</em><em>]</em>) – parse SCF information from Siesta SCF or TranSiesta SCF</p></li>
 <li><p><strong>iscf</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.13)"><em>Ellipsis</em></a><em>]</em><em>]</em>) – which SCF cycle should be stored. If <code class="docutils literal notranslate"><span class="pre">-1</span></code> only the final SCF step is stored,
 for <em class="xref py py-obj"></em>/<em class="xref py py-obj">None</em> <em>all</em> SCF cycles are returned. When <em class="xref py py-obj">iscf</em> values queried are not found they
 will be truncated to the nearest SCF step.</p></li>

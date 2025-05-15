@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8c675c27"></script>
+      <script src="../_static/documentation_options.js?v=1422a18e"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -70,9 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="overview.html">Package overview</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#installation">Installation</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Detailed instructions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#required-dependencies">Required dependencies</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#testing-your-installation">Testing your installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#compile-time-options">Compile time options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
 </li>
 </ul>
@@ -134,29 +132,6 @@
   <section id="detailed-instructions">
 <span id="install"></span><h1>Detailed instructions<a class="headerlink" href="#detailed-instructions" title="Link to this heading"></a></h1>
 <p>sisl is easy to install using any of your preferred methods.</p>
-<section id="required-dependencies">
-<h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Link to this heading"></a></h2>
-<p>Running sisl requires these dependencies:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.9 or above</p></li>
-<li><p><a class="reference external" href="https://www.numpy.org/">numpy</a></p></li>
-<li><p><a class="reference external" href="https://docs.scipy.org/doc/scipy">scipy</a></p></li>
-<li><p><a class="reference external" href="https://xarray.pydata.org/en/stable/index.html">xarray</a></p></li>
-<li><p><a class="reference external" href="https://github.com/pyparsing/pyparsing">pyparsing</a></p></li>
-</ul>
-<p>Optional dependencies:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> (for running the test suite)</p></li>
-<li><p><a class="reference external" href="https://github.com/uqfoundation/pathos">pathos</a> (for parallel <em class="xref py py-obj">BrillouinZone</em> calculations)</p></li>
-<li><p><a class="reference external" href="https://github.com/Unidata/netcdf4-python">netCDF4-python</a></p></li>
-<li><p><a class="reference external" href="https://github.com/tqdm/tqdm">tqdm</a> (for displaying progress-bars)</p></li>
-<li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a></p></li>
-<li><p><a class="reference external" href="https://plotly.com/python/">plotly</a> (for advanced visualization)</p></li>
-</ul>
-<p>sisl implements certain methods in Cython which speeds up the execution.
-Cython is required if one wishes to re-generate the C-sources with a different
-Cython version. Note that this is not a necessary step and should typically only
-be considered by developers of Cython modules.</p>
 <p id="installation-pip">Installation of the stable sisl releases can be done by following the common conventions
 using <code class="code docutils literal notranslate"><span class="pre">pip</span></code> or <code class="code docutils literal notranslate"><span class="pre">conda</span></code> methods:</p>
 <div class="tab-set docutils">
@@ -173,7 +148,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 </div>
 <input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">conda</label><div class="tab-content docutils">
 <p>Conda enviroments are clever, but fragile. It is recommended to contain the
-sisl installation in a separate environment to decouple it from other fragile
+sisl installation in a separate environment to decouple it from other
 components. Their inter-dependencies may result in problematic installations.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sisl
 conda<span class="w"> </span>activate<span class="w"> </span>sisl
@@ -194,7 +169,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 </div>
 </div>
 <section id="windows">
-<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h3>
+<h2>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Currently compiling sisl on Windows is not tested in CI, any contributions
@@ -206,10 +181,37 @@ one will likely be required to adapt the C and Fortran compiler for
 the Windows platform.
 These needs to be passed through the CMake environment (see
 <a class="reference internal" href="#install-compile-options"><span class="std std-ref">Compile time options</span></a>).</p>
-</section>
+<section id="required-dependencies">
+<span id="installation-deps"></span><h3>Required dependencies<a class="headerlink" href="#required-dependencies" title="Link to this heading"></a></h3>
+<p>The above installation instructions installs the necessary dependencies
+to run sisl, so generally one shouldn’t worry about getting correct
+packages etc. Here the more detailed requirements are listed.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.9 or above</p></li>
+<li><p><a class="reference external" href="https://www.numpy.org/">numpy</a></p></li>
+<li><p><a class="reference external" href="https://docs.scipy.org/doc/scipy">scipy</a></p></li>
+<li><p><a class="reference external" href="https://xarray.pydata.org/en/stable/index.html">xarray</a></p></li>
+<li><p><a class="reference external" href="https://github.com/pyparsing/pyparsing">pyparsing</a></p></li>
+</ul>
+<p>Optional dependencies:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> (for running the test suite)</p></li>
+<li><p><a class="reference external" href="https://github.com/uqfoundation/pathos">pathos</a> (for parallel <em class="xref py py-obj">BrillouinZone</em> calculations)</p></li>
+<li><p><a class="reference external" href="https://github.com/Unidata/netcdf4-python">netCDF4-python</a></p></li>
+<li><p><a class="reference external" href="https://github.com/tqdm/tqdm">tqdm</a> (for displaying progress-bars)</p></li>
+<li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a></p></li>
+<li><p><a class="reference external" href="https://plotly.com/python/">plotly</a> (for advanced visualization)</p></li>
+</ul>
+<p>Development dependencies:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">C</span></code> and <code class="docutils literal notranslate"><span class="pre">fortran</span></code> compilers</p></li>
+<li><p><a class="reference external" href="https://cython.org/">Cython</a></p></li>
+<li><p><a class="reference external" href="https://cmake.org">cmake</a> (3.21 or above)</p></li>
+<li><p><a class="reference external" href="https://pandoc.org/">pandoc</a> (for locally building the documentation)</p></li>
+</ul>
 </section>
 <section id="testing-your-installation">
-<span id="installation-testing"></span><h2>Testing your installation<a class="headerlink" href="#testing-your-installation" title="Link to this heading"></a></h2>
+<span id="installation-testing"></span><h3>Testing your installation<a class="headerlink" href="#testing-your-installation" title="Link to this heading"></a></h3>
 <p>After installation (by either of the above listed methods) you are encouraged
 to perform the shipped tests to ensure everything got installed correctly.</p>
 <p>Note that <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> needs to be installed to run the tests.
@@ -228,7 +230,7 @@ and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS
 </div>
 </section>
 <section id="compile-time-options">
-<span id="install-compile-options"></span><h2>Compile time options<a class="headerlink" href="#compile-time-options" title="Link to this heading"></a></h2>
+<span id="install-compile-options"></span><h3>Compile time options<a class="headerlink" href="#compile-time-options" title="Link to this heading"></a></h3>
 <p>By default sisl enables everything that is possible, i.e. the compilation flags
 listed here are primarily intended for debugging, performance analysis/regressions
 and should typically not be touched.</p>
@@ -236,7 +238,7 @@ and should typically not be touched.</p>
 <p class="admonition-title">Warning</p>
 <p>It is not recommended to use these flags for production runs.</p>
 </div>
-<p>Passing options to the build-system through <code class="code docutils literal notranslate"><span class="pre">pip</span></code> should de done with
+<p>Passing options to the build-system through <code class="code docutils literal notranslate"><span class="pre">pip</span></code> should be done with
 the following convention</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">pip&gt;=22.1</label><div class="tab-content docutils">
@@ -309,6 +311,7 @@ are copied upon fortran routine calls.</p></td>
 </tr>
 </tbody>
 </table>
+</section>
 </section>
 </section>
 
