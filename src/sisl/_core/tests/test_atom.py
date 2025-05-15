@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Orbital, PeriodicTable
+from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Orbital
 
 pytestmark = [pytest.mark.atom]
 
@@ -18,7 +18,6 @@ def setup():
             self.C = Atom["C"]
             self.C3 = Atom("C", [-1] * 3)
             self.Au = Atom("Au")
-            self.PT = PeriodicTable()
 
     return t()
 
@@ -137,43 +136,8 @@ def test7(setup):
     assert len(str(Atom(1, [-1] * 3)))
 
 
-def test8(setup):
-    a = setup.PT.Z([1, 2])
-    assert len(a) == 2
-    assert a[0] == 1
-    assert a[1] == 2
-
-
-def test9(setup):
-    a = setup.PT.Z_label(["H", 2])
-    assert len(a) == 2
-    assert a[0] == "H"
-    assert a[1] == "He"
-    a = setup.PT.Z_label(1)
-    assert a == "H"
-
-
-def test10(setup):
-    assert setup.PT.atomic_mass(1) == setup.PT.atomic_mass("H")
-    assert np.allclose(setup.PT.atomic_mass([1, 2]), setup.PT.atomic_mass(["H", "He"]))
-
-
-def test11(setup):
-    PT = setup.PT
-    for m in ["calc", "empirical", "vdw"]:
-        assert PT.radius(1, method=m) == PT.radius("H", method=m)
-        assert np.allclose(
-            PT.radius([1, 2], method=m), PT.radius(["H", "He"], method=m)
-        )
-
-
 def test_fail_equal():
     assert Atom(1.2) != 2.0
-
-
-def test_radius1(setup):
-    with pytest.raises(AttributeError):
-        setup.PT.radius(1, method="unknown")
 
 
 def test_tag1():

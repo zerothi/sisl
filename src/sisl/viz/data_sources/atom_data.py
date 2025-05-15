@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from sisl._core.atom import AtomGhost, PeriodicTable
+from sisl._core import AtomGhost, PeriodicTable
 
 from .data_source import DataSource
 

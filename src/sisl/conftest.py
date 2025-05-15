@@ -330,6 +330,7 @@ def pytest_configure(config):
         "grid",
         "atoms",
         "atom",
+        "periodictable",
         "sgrid",
         "sdata",
         "sgeom",

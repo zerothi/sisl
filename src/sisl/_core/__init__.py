@@ -11,6 +11,7 @@ from .quaternion import *
 
 # isort: off
 from .orbital import *
+from .periodictable import *
 from .atom import *
 from .lattice import *
 from .geometry import *

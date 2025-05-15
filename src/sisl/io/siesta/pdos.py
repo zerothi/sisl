@@ -6,9 +6,7 @@ from __future__ import annotations
 import numpy as np
 
 from sisl._array import arrayd, arrayi, asarrayi
-from sisl._core.atom import Atom, Atoms, PeriodicTable
-from sisl._core.geometry import Geometry
-from sisl._core.orbital import AtomicOrbital
+from sisl._core import Atom, AtomicOrbital, Atoms, Geometry, PeriodicTable
 from sisl._help import xml_parse
 from sisl._internal import set_module
 from sisl.messages import SislWarning, warn

@@ -4648,7 +4648,7 @@ class GeometryTopymatgenDispatch(GeometryToDispatch):
         """
         from pymatgen.core import Lattice, Molecule, Structure
 
-        from sisl._core.atom import PeriodicTable
+        from sisl._core import PeriodicTable
 
         # ensure we have an object
         geom = self._get_object()
