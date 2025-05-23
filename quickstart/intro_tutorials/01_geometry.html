@@ -23,7 +23,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1422a18e"></script>
+      <script src="../../_static/documentation_options.js?v=93e5b6a2"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -574,6 +574,20 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |  Z
  |      Atomic number
  |
+ |  column
+ |      The column of the atom in the periodic table.
+ |
+ |      May return `NotImplemented` if the element isn&#39;t found
+ |      in the periodic table.
+ |
+ |      Only covers up to Z=118.
+ |
+ |      See Also
+ |      --------
+ |      row : for getting the periodic table row
+ |      PeriodicTable.Z_row : used to extract the periodic table row of an atomic number
+ |      PeriodicTable.Z_column : used to extract the periodic table column of an atomic number
+ |
  |  mass
  |      Atomic mass
  |
@@ -582,6 +596,20 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |
  |  orbitals
  |      List of orbitals
+ |
+ |  row
+ |      The row of the atom in the periodic table.
+ |
+ |      May return `NotImplemented` if the element isn&#39;t found
+ |      in the periodic table.
+ |
+ |      Only covers up to Z=118.
+ |
+ |      See Also
+ |      --------
+ |      column : for getting the periodic table column
+ |      PeriodicTable.Z_row : used to extract the periodic table row of an atomic number
+ |      PeriodicTable.Z_column : used to extract the periodic table column of an atomic number
  |
  |  symbol
  |      Return short atomic name (Au==79).

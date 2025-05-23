@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1422a18e"></script>
+      <script src="../../../_static/documentation_options.js?v=93e5b6a2"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -122,7 +122,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">m</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseEfficiencyWarning</span><span class="p">,</span> <span class="n">coo_matrix</span><span class="p">,</span> <span class="n">csr_matrix</span>
@@ -430,7 +430,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> na=</span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">na</span><span class="si">}</span><span class="s2">, no=</span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">no</span><span class="si">}</span><span class="s2">, nsc=</span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">nsc</span><span class="si">}</span><span class="s2">, dim=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">, nnz=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">S</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">S</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Access the overlap elements associated with the sparse matrix&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -1178,10 +1178,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    geometry : Geometry</span>
+<span class="sd">    geometry :</span>
 <span class="sd">      parent geometry to create a sparse matrix from. The matrix will</span>
 <span class="sd">      have size equivalent to the number of orbitals in the geometry</span>
-<span class="sd">    dim : int or Spin, optional</span>
+<span class="sd">    dim :</span>
 <span class="sd">      number of components per element, may be a `Spin` object</span>
 <span class="sd">    dtype : np.dtype, optional</span>
 <span class="sd">      data type contained in the matrix. See details of `Spin` for default values.</span>
@@ -1189,7 +1189,7 @@
 <span class="sd">      number of initially allocated memory per orbital in the matrix.</span>
 <span class="sd">      For increased performance this should be larger than the actual number of entries</span>
 <span class="sd">      per orbital.</span>
-<span class="sd">    spin : Spin, optional</span>
+<span class="sd">    spin :</span>
 <span class="sd">      equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.</span>
 <span class="sd">    orthogonal : bool, optional</span>
 <span class="sd">      whether the matrix corresponds to a non-orthogonal basis. In this case</span>
@@ -1200,16 +1200,17 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span>
-        <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">dim</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">SpinType</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">nnzpr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="c1"># Check that the passed parameters are correct</span>
-        <span class="k">if</span> <span class="s2">&quot;spin&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">Spin</span><span class="p">):</span>
-                <span class="n">spin</span> <span class="o">=</span> <span class="n">dim</span>
-            <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;spin&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">spin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spin</span> <span class="o">=</span> <span class="n">dim</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="c1"># Back conversion, actually this should depend</span>
                 <span class="c1"># on dtype</span>
                 <span class="n">spin</span> <span class="o">=</span> <span class="p">{</span>
@@ -1219,8 +1220,6 @@
                     <span class="mi">8</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span>
                     <span class="mi">16</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NAMBU</span><span class="p">,</span>
                 <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">spin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spin</span> <span class="o">=</span> <span class="n">Spin</span><span class="p">(</span><span class="n">spin</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">dtype</span><span class="p">),</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">nnzpr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1342,7 +1341,9 @@
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.create_construct">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.create_construct">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_construct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_construct</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">params</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Self</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AtomsLike</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a simple function for passing to the `construct` function.</span>
 
 <span class="sd">        This is to relieve the creation of simplistic</span>
@@ -2376,7 +2377,13 @@
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.transform">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.transform">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">spin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SpinType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">orthogonal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform the matrix by either a matrix or new spin configuration</span>
 
 <span class="sd">        1. General transformation:</span>
@@ -2428,9 +2435,9 @@
 <span class="sd">            transformation matrix of shape :math:`m \times n`. Default is no transformation.</span>
 <span class="sd">        dtype : numpy.dtype, optional</span>
 <span class="sd">            data type contained in the matrix. Defaults to the input type.</span>
-<span class="sd">        spin : str, sisl.Spin, optional</span>
+<span class="sd">        spin :</span>
 <span class="sd">            spin class of created matrix. Defaults to the input type.</span>
-<span class="sd">        orthogonal : bool, optional</span>
+<span class="sd">        orthogonal :</span>
 <span class="sd">            flag to control if the new matrix includes overlaps. Defaults to the input type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2517,7 +2524,7 @@
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.spin_rotate">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.spin_rotate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">spin_rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">SeqFloat</span><span class="p">,</span> <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spin_rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">SeqFloat</span><span class="p">,</span> <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Rotate spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axes, respectively.</span>
 
 <span class="sd">        The angles are with respect to each spin-box initial angle.</span>
@@ -2667,7 +2674,7 @@
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.spin_align">
 <a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.spin_align">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">spin_align</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">:</span> <span class="n">SeqFloat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spin_align</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">:</span> <span class="n">SeqFloat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Aligns *all* spin along the vector `vec`</span>
 
 <span class="sd">        In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned</span>

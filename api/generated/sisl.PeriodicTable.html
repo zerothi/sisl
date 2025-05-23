@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1422a18e"></script>
+      <script src="../../_static/documentation_options.js?v=93e5b6a2"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -199,26 +199,35 @@ and a negative number is returned.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z" title="sisl.PeriodicTable.Z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z</span></code></a>(key)</p></td>
 <td><p>Atomic number based on general input</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_block" title="sisl.PeriodicTable.Z_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_block</span></code></a>(Z)</p></td>
+<td><p>The type-block of the atom in the periodic table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_column" title="sisl.PeriodicTable.Z_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_column</span></code></a>(Z)</p></td>
+<td><p>The column of the atom in the periodic table.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_int" title="sisl.PeriodicTable.Z_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_int</span></code></a>(key)</p></td>
 <td><p>Atomic number based on general input</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_label" title="sisl.PeriodicTable.Z_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_label</span></code></a>(key)</p></td>
 <td><p>Atomic label of the corresponding atom</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_short" title="sisl.PeriodicTable.Z_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_short</span></code></a>(key)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_row" title="sisl.PeriodicTable.Z_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_row</span></code></a>(Z)</p></td>
+<td><p>The row of the atom in the periodic table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_short" title="sisl.PeriodicTable.Z_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_short</span></code></a>(key)</p></td>
 <td><p>Atomic label of the corresponding atom</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.atomic_mass" title="sisl.PeriodicTable.atomic_mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atomic_mass</span></code></a>(key)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.atomic_mass" title="sisl.PeriodicTable.atomic_mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atomic_mass</span></code></a>(key)</p></td>
 <td><p>Atomic mass of the corresponding atom</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.radius" title="sisl.PeriodicTable.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code></a>(key[, method])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.radius" title="sisl.PeriodicTable.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code></a>(key[, method])</p></td>
 <td><p>Atomic radius using different methods</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.PeriodicTable.Z">
-<span class="sig-name descname"><span class="pre">Z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/atom.html#PeriodicTable.Z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/periodictable.html#PeriodicTable.Z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z" title="Link to this definition"></a></dt>
 <dd><p>Atomic number based on general input</p>
 <p>Return the atomic number corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
 <dl class="field-list simple">
@@ -243,6 +252,35 @@ will the returned value be.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.Z_block">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Z_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/periodictable.html#PeriodicTable.Z_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z_block" title="Link to this definition"></a></dt>
+<dd><p>The type-block of the atom in the periodic table.</p>
+<p>Will return one of s, p, d, f or <em class="xref py py-obj">“”</em>.
+May return <em class="xref py py-obj">“”</em> if the element isn’t found
+in the periodic table.</p>
+<p>Only covers up to Z=118.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.2)"><em>ArrayLike</em></a>) – the atomic number to search for</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.Z_column">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Z_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/periodictable.html#PeriodicTable.Z_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z_column" title="Link to this definition"></a></dt>
+<dd><p>The column of the atom in the periodic table.</p>
+<p>May return <em class="xref py py-obj">-1</em> if the element isn’t found
+in the periodic table.</p>
+<p>Only covers up to Z=118.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.2)"><em>ArrayLike</em></a>)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -276,7 +314,7 @@ will the returned value be.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.PeriodicTable.Z_label">
-<span class="sig-name descname"><span class="pre">Z_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/atom.html#PeriodicTable.Z_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z_label" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Z_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/periodictable.html#PeriodicTable.Z_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z_label" title="Link to this definition"></a></dt>
 <dd><p>Atomic label of the corresponding atom</p>
 <p>Return the atomic short name corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
 <dl class="field-list simple">
@@ -290,6 +328,20 @@ is array_like, so will the returned value be.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.Z_row">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Z_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/periodictable.html#PeriodicTable.Z_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z_row" title="Link to this definition"></a></dt>
+<dd><p>The row of the atom in the periodic table.</p>
+<p>May return <em class="xref py py-obj">-1</em> if the element isn’t found
+in the periodic table.</p>
+<p>Only covers up to Z=118.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.2)"><em>ArrayLike</em></a>) – the atomic number to search for</p>
 </dd>
 </dl>
 </dd></dl>
@@ -316,7 +368,7 @@ is array_like, so will the returned value be.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.PeriodicTable.atomic_mass">
-<span class="sig-name descname"><span class="pre">atomic_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/atom.html#PeriodicTable.atomic_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.atomic_mass" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">atomic_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/periodictable.html#PeriodicTable.atomic_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.atomic_mass" title="Link to this definition"></a></dt>
 <dd><p>Atomic mass of the corresponding atom</p>
 <p>Return the atomic mass corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
 <dl class="field-list simple">
@@ -336,7 +388,7 @@ if <em class="xref py py-obj">key</em> is array_like, so will the returned value
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.PeriodicTable.radius">
-<span class="sig-name descname"><span class="pre">radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/atom.html#PeriodicTable.radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.radius" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/periodictable.html#PeriodicTable.radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.radius" title="Link to this definition"></a></dt>
 <dd><p>Atomic radius using different methods</p>
 <p>Return the atomic radius.</p>
 <dl class="field-list simple">

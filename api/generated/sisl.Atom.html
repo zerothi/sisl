@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1422a18e"></script>
+      <script src="../../_static/documentation_options.js?v=93e5b6a2"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -260,14 +260,20 @@ in an AtomUnknown object</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.Z" title="sisl.Atom.Z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z</span></code></a></p></td>
 <td><p>Atomic number</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.mass" title="sisl.Atom.mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mass</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.column" title="sisl.Atom.column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column</span></code></a></p></td>
+<td><p>The column of the atom in the periodic table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.mass" title="sisl.Atom.mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mass</span></code></a></p></td>
 <td><p>Atomic mass</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.no" title="sisl.Atom.no"><code class="xref py py-obj docutils literal notranslate"><span class="pre">no</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.no" title="sisl.Atom.no"><code class="xref py py-obj docutils literal notranslate"><span class="pre">no</span></code></a></p></td>
 <td><p>Number of orbitals on this atom</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.orbitals" title="sisl.Atom.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.orbitals" title="sisl.Atom.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></td>
 <td><p>List of orbitals</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.row" title="sisl.Atom.row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">row</span></code></a></p></td>
+<td><p>The row of the atom in the periodic table.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.symbol" title="sisl.Atom.symbol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symbol</span></code></a></p></td>
 <td><p>Return short atomic name (Au==79).</p></td>
@@ -447,6 +453,26 @@ otherwise a single orbital is returned</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="sisl.Atom.column">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">column</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.column" title="Link to this definition"></a></dt>
+<dd><p>The column of the atom in the periodic table.</p>
+<p>May return <em class="xref py py-obj">NotImplemented</em> if the element isn’t found
+in the periodic table.</p>
+<p>Only covers up to Z=118.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Atom.row" title="sisl.Atom.row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">row</span></code></a></dt><dd><p>for getting the periodic table row</p>
+</dd>
+<dt><a class="reference internal" href="sisl.PeriodicTable.html#sisl.PeriodicTable.Z_row" title="sisl.PeriodicTable.Z_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable.Z_row</span></code></a></dt><dd><p>used to extract the periodic table row of an atomic number</p>
+</dd>
+<dt><a class="reference internal" href="sisl.PeriodicTable.html#sisl.PeriodicTable.Z_column" title="sisl.PeriodicTable.Z_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable.Z_column</span></code></a></dt><dd><p>used to extract the periodic table column of an atomic number</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="sisl.Atom.mass">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Atom.mass" title="Link to this definition"></a></dt>
 <dd><p>Atomic mass</p>
@@ -462,6 +488,26 @@ otherwise a single orbital is returned</p>
 <dt class="sig sig-object py" id="sisl.Atom.orbitals">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orbitals</span></span><a class="headerlink" href="#sisl.Atom.orbitals" title="Link to this definition"></a></dt>
 <dd><p>List of orbitals</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Atom.row">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.row" title="Link to this definition"></a></dt>
+<dd><p>The row of the atom in the periodic table.</p>
+<p>May return <em class="xref py py-obj">NotImplemented</em> if the element isn’t found
+in the periodic table.</p>
+<p>Only covers up to Z=118.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Atom.column" title="sisl.Atom.column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column</span></code></a></dt><dd><p>for getting the periodic table column</p>
+</dd>
+<dt><a class="reference internal" href="sisl.PeriodicTable.html#sisl.PeriodicTable.Z_row" title="sisl.PeriodicTable.Z_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable.Z_row</span></code></a></dt><dd><p>used to extract the periodic table row of an atomic number</p>
+</dd>
+<dt><a class="reference internal" href="sisl.PeriodicTable.html#sisl.PeriodicTable.Z_column" title="sisl.PeriodicTable.Z_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable.Z_column</span></code></a></dt><dd><p>used to extract the periodic table column of an atomic number</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py property">

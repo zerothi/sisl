@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1422a18e"></script>
+      <script src="../../_static/documentation_options.js?v=93e5b6a2"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -905,6 +905,9 @@ ranges. <code class="docutils literal notranslate"><span class="pre">params[0,:]
 for the all atoms within <code class="docutils literal notranslate"><span class="pre">R[0]</span></code> of each atom.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Callable</em>[[<em>Self</em>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>, <a class="reference internal" href="sisl.typing.AtomsLike.html#sisl.typing.AtomsLike" title="sisl.typing.AtomsLike"><em>AtomsLike</em></a>, np.ndarray], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>]</p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -1187,13 +1190,13 @@ the given k-point and calculate the eigenvalues.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p></li>
-<li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>)</p></li>
-<li><p><strong>gauge</strong> (<a class="reference internal" href="sisl.typing.GaugeType.html#sisl.typing.GaugeType" title="sisl.typing.GaugeType"><em>GaugeType</em></a>)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
 <li><p><strong>eigvals_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Union</em>[np.ndarray, <em>Tuple</em>[np.ndarray, np.ndarray]]</p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><em>Tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1288,13 +1291,13 @@ the given k-point and calculate the eigenvalues.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p></li>
-<li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>)</p></li>
-<li><p><strong>gauge</strong> (<a class="reference internal" href="sisl.typing.GaugeType.html#sisl.typing.GaugeType" title="sisl.typing.GaugeType"><em>GaugeType</em></a>)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
 <li><p><strong>eigvals_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Union</em>[np.ndarray, <em>Tuple</em>[np.ndarray, np.ndarray]]</p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><em>Tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1314,13 +1317,13 @@ Defaults to the <em class="xref py py-obj">n</em> smallest magnitude eigevalues.
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p></li>
 <li><p><strong>**kwargs</strong> – arguments passed directly to <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html#scipy.sparse.linalg.eigsh" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.linalg.eigsh</span></code></a>.</p></li>
-<li><p><strong>k</strong> (<a class="reference internal" href="sisl.typing.KPoint.html#sisl.typing.KPoint" title="sisl.typing.KPoint"><em>KPoint</em></a>)</p></li>
-<li><p><strong>gauge</strong> (<a class="reference internal" href="sisl.typing.GaugeType.html#sisl.typing.GaugeType" title="sisl.typing.GaugeType"><em>GaugeType</em></a>)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>)</p></li>
 <li><p><strong>eigvals_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Union</em>[np.ndarray, <em>Tuple</em>[np.ndarray, np.ndarray]]</p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a> | <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><em>Tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 <div class="admonition-notes admonition">
@@ -2048,6 +2051,9 @@ atoms will also be aligned.
 To only align atomic on-site values, one would have to do a loop.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
+</dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -2096,10 +2102,13 @@ the angles does not reflect a pure flip of spin in the <span class="math notrans
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – angles to rotate spin boxes around the Cartesian directions
+<li><p><strong>angles</strong> (<em>SeqFloat</em>) – angles to rotate spin boxes around the Cartesian directions
 <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span>, respectively (Euler angles).</p></li>
 <li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Determines the unit of <em class="xref py py-obj">angles</em>, for true it is in radians.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -2118,7 +2127,7 @@ the angles does not reflect a pure flip of spin in the <span class="math notrans
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>angles</strong> (<em>SeqFloat</em>)</p></li>
 <li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
@@ -2357,8 +2366,8 @@ final dimension of the matrix.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – transformation matrix of shape <span class="math notranslate nohighlight">\(m \times n\)</span>. Default is no transformation.</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – data type contained in the matrix. Defaults to the input type.</p></li>
-<li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.Spin</span></code>, <em>optional</em>) – spin class of created matrix. Defaults to the input type.</p></li>
-<li><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – flag to control if the new matrix includes overlaps. Defaults to the input type.</p></li>
+<li><p><strong>spin</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="sisl.typing.SpinType.html#sisl.typing.SpinType" title="sisl.typing.SpinType"><em>SpinType</em></a><em>]</em>) – spin class of created matrix. Defaults to the input type.</p></li>
+<li><p><strong>orthogonal</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – flag to control if the new matrix includes overlaps. Defaults to the input type.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2558,7 +2567,7 @@ it will halve the coupling and use the same coupling to the left, which is clear
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.Hamiltonian.S">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">S</span></span><a class="headerlink" href="#sisl.physics.Hamiltonian.S" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">S</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Self</span></em><a class="headerlink" href="#sisl.physics.Hamiltonian.S" title="Link to this definition"></a></dt>
 <dd><p>Access the overlap elements associated with the sparse matrix</p>
 </dd></dl>
 
