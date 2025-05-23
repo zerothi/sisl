@@ -377,19 +377,15 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return self._value("a", self._elec(elec)) - 1
 
-    def a_down(self, elec: ElecType, bulk: bool = False):
+    @lru_cache(maxsize=16)
+    def a_down(self, elec: ElecType):
         """Down-folding atomic indices for a given electrode
 
         Parameters
         ----------
         elec :
            electrode to retrieve indices for
-        bulk :
-           whether the returned indices are *only* in the pristine electrode,
-           or the down-folding region (electrode + downfolding region, not in device)
         """
-        if bulk:
-            return self.a_elec(elec)
         return self._value("a_down", self._elec(elec)) - 1
 
     @property
@@ -527,7 +523,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     @lru_cache(maxsize=16)
     def na_down(self, elec: ElecType) -> int:
-        """Number of atoms in the downfolding region (without device downfolded region)
+        """Number of atoms the electrode occupies in the downfolded device region
 
         Parameters
         ----------
@@ -538,7 +534,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     @lru_cache(maxsize=16)
     def no_e(self, elec: ElecType) -> int:
-        """Number of orbitals in the downfolded region of the electrode in the device
+        """Number of orbitals the electrode occupies in the downfolded device region
 
         Parameters
         ----------
@@ -549,7 +545,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     @lru_cache(maxsize=16)
     def no_down(self, elec: ElecType) -> int:
-        """Number of orbitals in the downfolding region (plus device downfolded region)
+        """Number of orbitals in the downfolding region (including device downfolded region)
 
         Parameters
         ----------
@@ -558,16 +554,39 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return len(self._dimension("no_down", self._elec(elec)))
 
-    @lru_cache(maxsize=16)
-    def pivot_down(self, elec: ElecType):
+    @lru_cache(maxsize=32)
+    def pivot_down(self, elec: ElecType, in_down: bool = False):
         """Pivoting orbitals for the downfolding region of a given electrode
+
+        This pivoting table includes the electrode + the downfolding region +
+        the resulting orbitals in the device region.
+
+        Essentially this is equivalent to (but not in the same order):
+        >>> pvt = tbt.geometry.a2o(tbt.a_down(elec))
+        >>> pvt_down = np.append(pvt, tbt.pivot(elec))
 
         Parameters
         ----------
         elec :
            the corresponding electrode to get the pivoting indices for
+        in_down :
+           If ``True`` the pivoting table will be translated to the down-folding region
+           orbitals.
+
+        Notes
+        -----
+        This does *not* correspond to the atoms of the downfolding region from
+        the atomic indices:
+
+        >>> tbt.pivot_down("Left") != tbt.geometry.a2o(tbt.a_down("Left"))
+
+        The point for this is that `pivot_down` is not guaranteed to fully
+        encapsulate all orbitals of the atoms in the device region.
         """
-        return self._value("pivot_down", self._elec(elec)) - 1
+        pvt_down = self._value("pivot_down", self._elec(elec)) - 1
+        if in_down:
+            return indices(np.sort(pvt_down), pvt_down)
+        return pvt_down
 
     @lru_cache(maxsize=32)
     def pivot(
@@ -613,6 +632,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         --------
         pivot_down : for the pivot table for electrodes down-folding regions
         """
+
         if elec is None:
             if in_device and sort:
                 return _a.arangei(self.no_d)
@@ -641,6 +661,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
                 pvt = np.sort(pvt)
             # translate to the device indices
             se_pvt = indices(pvt, se_pvt, 0)
+
         return se_pvt
 
     def a2p(self, atoms):

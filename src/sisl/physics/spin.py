@@ -215,22 +215,22 @@ class Spin:
 
     # Comparisons
     def __lt__(self, other) -> bool:
-        return self.kind < other.kind
+        return self.kind < self.__class__(other).kind
 
     def __le__(self, other) -> bool:
-        return self.kind <= other.kind
+        return self.kind <= self.__class__(other).kind
 
     def __eq__(self, other) -> bool:
-        return self.kind == other.kind
+        return self.kind == self.__class__(other).kind
 
     def __ne__(self, other) -> bool:
-        return not self == other
+        return not (self == other)
 
     def __gt__(self, other) -> bool:
-        return self.kind > other.kind
+        return self.kind > self.__class__(other).kind
 
     def __ge__(self, other) -> bool:
-        return self.kind >= other.kind
+        return self.kind >= self.__class__(other).kind
 
     def __getstate__(self) -> dict:
         return {"kind": self.kind}

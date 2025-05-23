@@ -39,12 +39,16 @@ def _datacopied(arr, original):
 # we should be able to reduce the overhead by retrieving the intrinsic version.
 _linalg_info_dtype = {
     np.float32: "f4",
-    np.float64: "f8",
-    np.complex64: "c8",
-    np.complex128: "c16",
+    np.float32().dtype: "f4",
     "f4": "f4",
+    np.float64: "f8",
+    np.float64().dtype: "f8",
     "f8": "f8",
+    np.complex64: "c8",
+    np.complex64().dtype: "c8",
     "c8": "c8",
+    np.complex128: "c16",
+    np.complex128().dtype: "c16",
     "c16": "c16",
 }
 _linalg_info_base = {}

@@ -8,9 +8,12 @@ try:
 except Exception:
     from io import StringIO
 
+from typing import Union
+
 import numpy as np
 
 from sisl._internal import set_module
+from sisl.typing import KPoint
 
 # Import the geometry object
 from sisl.unit.siesta import unit_convert
@@ -67,20 +70,21 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
     _trans_type = "TBT"
     _E2eV = Ry2eV
 
-    def self_energy(self, elec, E, k=0, sort=False):
+    def self_energy(
+        self, elec, E: float, k: Union[int, KPoint] = 0, sort: bool = False
+    ) -> np.ndarray:
         """Return the self-energy from the electrode `elec`
 
         Parameters
         ----------
         elec : str or int
            the corresponding electrode to return the self-energy from
-        E : float or int
-           energy to retrieve the self-energy at, if a floating point the closest
-           energy value will be found and returned, if an integer it will correspond
-           to the exact index
-        k : array_like or int
+        E :
+           energy to retrieve the self-energy at.
+           The closest energy point will be chosen.
+        k :
            k-point to retrieve, if an integer it is the k-index in the file
-        sort : bool, optional
+        sort :
            if ``True`` the returned self-energy will be sorted according to the order of
            the orbitals in the non-pivoted geometry, otherwise the self-energy will
            be returned according to the pivoted orbitals in the device region.
@@ -105,7 +109,9 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         return SE
 
-    def broadening_matrix(self, elec, E, k=0, sort=False):
+    def broadening_matrix(
+        self, elec, E: float, k: Union[int, KPoint] = 0, sort: bool = False
+    ) -> np.ndarray:
         r"""Return the broadening matrix from the electrode `elec`
 
         The broadening matrix is calculated as:
@@ -117,13 +123,12 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         ----------
         elec : str or int
            the corresponding electrode to return the broadening matrix from
-        E : float or int
-           energy to retrieve the broadening matrix at, if a floating point the closest
-           energy value will be found and returned, if an integer it will correspond
-           to the exact index
-        k : array_like or int
+        E :
+           energy to retrieve the self-energy at.
+           The closest energy point will be chosen.
+        k :
            k-point to retrieve, if an integer it is the k-index in the file
-        sort : bool, optional
+        sort :
            if ``True`` the returned broadening matrix will be sorted according to the order of
            the orbitals in the non-pivoted geometry, otherwise the broadening matrix will
            be returned according to the pivoted orbitals in the device region.
@@ -149,18 +154,17 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         return G
 
-    def self_energy_average(self, elec, E, sort=False):
+    def self_energy_average(self, elec, E: float, sort: bool = False):
         """Return the k-averaged average self-energy from the electrode `elec`
 
         Parameters
         ----------
         elec : str or int
            the corresponding electrode to return the self-energy from
-        E : float or int
-           energy to retrieve the self-energy at, if a floating point the closest
-           energy value will be found and returned, if an integer it will correspond
-           to the exact index
-        sort : bool, optional
+        E :
+           energy to retrieve the self-energy at.
+           The closest energy point will be chosen.
+        sort :
            if ``True`` the returned self-energy will be sorted according to the order of
            the orbitals in the non-pivoted geometry, otherwise the self-energy will
            be returned according to the pivoted orbitals in the device region.

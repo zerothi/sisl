@@ -2372,6 +2372,12 @@ class _gfSileSiesta(SileBinSiesta):
     ...            f.write_hamiltonian(H, S)
     ...        f.write_self_energy(SeHSE)
 
+    Notes
+    -----
+
+    The Greens function files does not implement the cases where un-expanded
+    parts of the self-energies/Hamiltonians are stored.
+    This is a missing implementation.
     """
 
     def _open_gf(self, mode, rewind=False):
@@ -2608,7 +2614,9 @@ class _gfSileSiesta(SileBinSiesta):
         k, E = _siesta.read_gf_header(self._iu, nkpt, NE)
         self._fortran_check("read_header", "could not read header information.")
 
-        if self._nspin > 2:  # non-colinear
+        if self._nspin > 8:  # Nambu
+            self._no_u = no_u * 4
+        elif self._nspin > 2:  # non-colinear + soc
             self._no_u = no_u * 2
         else:
             self._no_u = no_u
@@ -2888,7 +2896,8 @@ class _gfSileSiesta(SileBinSiesta):
         )
         self._fortran_check("write_self_energy", "could not write self-energy.")
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """Return number of entries thi object has"""
         return self._nE * self._nk * self._nspin
 
     def __iter__(self):

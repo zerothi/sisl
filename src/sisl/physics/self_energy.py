@@ -3,12 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Literal, Sequence, Tuple, Union
+from typing import Literal, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from numpy import abs as _abs
 from numpy import (
-    complex128,
     conjugate,
     delete,
     empty,
@@ -181,7 +180,7 @@ class WideBandSE(SelfEnergy):
         else:
             E = complex(0, E.imag)
 
-        broad = dtype(-1j * np.pi * E.imag)
+        broad = -1j * np.pi * E.imag
         try:
             if not self.spgeom.orthogonal:
                 S = self.spgeom.Sk(k=k, dtype=dtype, format="array")
@@ -270,11 +269,13 @@ class RecursiveSI(SemiInfinite):
         """Representation of the RecursiveSI model"""
         direction = {-1: "-", 1: "+"}
         axis = {0: "A", 1: "B", 2: "C"}
+        # TODO, fix the nonzero elements when writing
+        # It should be sum of spgeom[01]
         return "{0}{{direction: {1}{2},\n {3}\n}}".format(
             self.__class__.__name__,
             direction[self.semi_inf_dir],
             axis[self.semi_inf],
-            str(self.spgeom0).replace("\n", "\n "),
+            str(self.spgeom1).replace("\n", "\n "),
         )
 
     def _setup(self, spgeom) -> None:
@@ -369,7 +370,6 @@ class RecursiveSI(SemiInfinite):
 
         if E.imag == 0.0:
             E = E.real + 1j * self.eta
-        E = dtype(E)
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
@@ -488,7 +488,6 @@ class RecursiveSI(SemiInfinite):
 
         if E.imag == 0.0:
             E = E.real + 1j * self.eta
-        E = dtype(E)
 
         sp0 = self.spgeom0
         sp1 = self.spgeom1
@@ -607,7 +606,6 @@ class RecursiveSI(SemiInfinite):
         """
         if E.imag == 0.0:
             E = E.real + 1j * self.eta
-        E = dtype(E)
 
         # Get k-point
         k = _a.asarrayd(k)
@@ -1048,7 +1046,6 @@ class RealSpaceSE(SelfEnergy):
         """
         if E.imag == 0:
             E = E.real + 1j * self._options["eta"]
-        E = dtype(E)
 
         # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
@@ -1133,7 +1130,6 @@ class RealSpaceSE(SelfEnergy):
         # Now we are to calculate the real-space self-energy
         if E.imag == 0:
             E = E.real + 1j * opt["eta"]
-        E = dtype(E)
 
         # Retrieve integration k-grid
         bz = opt["bz"]
@@ -1808,7 +1804,6 @@ class RealSpaceSI(SelfEnergy):
         """
         if E.imag == 0:
             E = E.real + 1j * self._options["eta"]
-        E = dtype(E)
 
         # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
@@ -1885,7 +1880,6 @@ class RealSpaceSI(SelfEnergy):
         # Now we are to calculate the real-space self-energy
         if E.imag == 0:
             E = E.real + 1j * opt["eta"]
-        E = dtype(E)
 
         # Retrieve integration k-grid
         bz = opt["bz"]

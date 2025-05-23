@@ -20,7 +20,7 @@ from numpy import (
     zeros,
 )
 
-__all__ = ["broadcast_shapes"]
+__all__ = ["broadcast_shapes", "array_arange"]
 
 
 def _append(name, suffix="ilfd"):
@@ -95,8 +95,6 @@ def array_arange(start, end=None, n=None, dtype=int64):
 
     return cumsum(a, dtype=dtype)
 
-
-__all__ += ["array_arange"]
 
 # Create all partial objects for creating arrays
 array_arangei = _partial(array_arange, dtype=int32)
