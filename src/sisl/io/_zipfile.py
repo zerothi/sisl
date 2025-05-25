@@ -127,5 +127,7 @@ class ZipPath(zipfile.Path):
                         str(path.relative_to(zip_path)),
                         close_zipfile=close_zipfile,
                     )
-        else:
-            raise FileNotFoundError(f"Could not find zip file in {path}")
+
+        # If we got here it is because we did not find a zip file in the path,
+        # so we raise an error
+        raise FileNotFoundError(f"Could not find zip file in {path}")
