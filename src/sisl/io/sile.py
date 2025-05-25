@@ -883,13 +883,13 @@ class BufferSileCDF(BaseBufferSile):
             # (tests will fail if this line is commented out)
             filename = "dummy"
 
-        if hasattr(filehandle, "mode") and filehandle.mode != mode:
+        # Remove the b from the mode, as netCDF4 only accepts "r" or "w"
+        mode = mode.replace("b", "")
+
+        if hasattr(filehandle, "mode") and filehandle.mode.replace("b", "") != mode:
             raise ValueError(
                 f"The filehandle's mode ({filehandle.mode}) does not match the sile's mode ({mode})"
             )
-
-        # Remove the b from the mode, as netCDF4 only accepts "r" or "w"
-        mode = mode.replace("b", "")
 
         self._buffer = filehandle
         self._wrapped = False
@@ -1598,7 +1598,6 @@ class SileCDF(BaseSile):
         """Opens the output file and returns it self"""
         # We do the import here
         if "fh" not in self.__dict__:
-            file = self.file
 
             if self._is_inside_zip:
                 if self._buffer_instance is None:
