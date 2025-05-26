@@ -2,8 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import functools
+import sys
 import zipfile
 from pathlib import Path
+
+_is_python_old = sys.version_info < (3, 10)
 
 
 class ZipPath(zipfile.Path):
@@ -50,6 +53,12 @@ class ZipPath(zipfile.Path):
 
     def __init__(self, *args, close_zipfile: bool = False, **kwargs):
         """Initialize the ZipPath with a zipfile object and a path"""
+        if _is_python_old:
+            raise RuntimeError(
+                "Zip file functionality in sisl requires Python 3.10 or newer. "
+                "Upgrade your Python version if you want to use it."
+            )
+
         super().__init__(*args, **kwargs)
 
         self.close_zipfile = close_zipfile
