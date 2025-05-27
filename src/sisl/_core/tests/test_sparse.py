@@ -582,7 +582,7 @@ def test_iterator3(s1):
         assert n == nvals
 
 
-def test_delitem1(s1):
+def test_delitem_simple(s1):
     s1[0, [1, 2, 3]] = 1
     assert s1.nnz == 3
     del s1[0, 1]
@@ -602,6 +602,17 @@ def test_delitem1(s1):
         assert s1[i, 0] == 0
     del s1[range(2), range(3), 0]
     assert s1.nnz == 0
+
+
+def test_delitem_order():
+    s = SparseCSR((10, 10), dtype=np.int32)
+    s[0, 3] = 3
+    s[0, 2] = 2
+    s[0, 1] = 1
+    del s[0, 2]
+    assert s.nnz == 2
+    assert s[0, 1] == 1
+    assert s[0, 3] == 3
 
 
 def test_contains1(s1):

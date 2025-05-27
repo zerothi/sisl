@@ -3171,7 +3171,7 @@ class Geometry(
         return a + isc * self.na
 
     def auc2sc(self, atoms: AtomsIndex, unique: bool = False) -> ndarray:
-        """Returns atom from unit-cell indices to supercell indices, possibly removing dublicates
+        """Returns atom from unit-cell indices to supercell indices, possibly removing duplicates
 
         Parameters
         ----------
@@ -3195,7 +3195,7 @@ class Geometry(
     )(auc2sc)
 
     def asc2uc(self, atoms: AtomsIndex, unique: bool = False) -> ndarray:
-        """Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates
+        """Returns atoms from supercell indices to unit-cell indices, possibly removing duplicates
 
         Parameters
         ----------
@@ -3216,7 +3216,7 @@ class Geometry(
     )(asc2uc)
 
     def osc2uc(self, orbitals: OrbitalsIndex, unique: bool = False) -> ndarray:
-        """Orbitals from supercell indices to unit-cell indices, possibly removing dublicates
+        """Orbitals from supercell indices to unit-cell indices, possibly removing duplicates
 
         Parameters
         ----------
@@ -3231,7 +3231,7 @@ class Geometry(
         return orbitals
 
     def ouc2sc(self, orbitals: OrbitalsIndex, unique: bool = False) -> ndarray:
-        """Orbitals from unit-cell indices to supercell indices, possibly removing dublicates
+        """Orbitals from unit-cell indices to supercell indices, possibly removing duplicates
 
         Parameters
         ----------

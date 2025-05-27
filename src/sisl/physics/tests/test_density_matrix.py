@@ -527,6 +527,15 @@ class TestDensityMatrix:
         assert not np.allclose(D_mull, d_mull)
         assert np.allclose(D_mull[0], d_mull[0])
 
+        d1 = (
+            d.spin_rotate([0, 0, -90], rad=False)
+            .spin_rotate([0, -60, 0], rad=False)
+            .spin_rotate([-45, 0, 0], rad=False)
+        )
+        d1_mull = d1.mulliken()
+        assert not np.allclose(d_mull, d1_mull)
+        assert np.allclose(D_mull, d1_mull)
+
     def test_rho_eta(self, setup, density_method):
         D = setup.D.copy()
         D.construct(setup.func)

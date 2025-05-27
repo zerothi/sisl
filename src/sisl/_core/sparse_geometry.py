@@ -9,6 +9,7 @@ from numbers import Integral
 from typing import Optional, Tuple
 
 import numpy as np
+import numpy.typing as npt
 from numpy import (
     allclose,
     argsort,
@@ -33,10 +34,11 @@ from sisl._core import Atom, Geometry, Orbital
 from sisl._internal import set_module
 from sisl.messages import SislError, SislWarning, deprecate_argument, progressbar, warn
 from sisl.typing import AtomsIndex, CellAxes, Coord, SeqOrScalarFloat
+from sisl.typing._atom import AtomsLike
 from sisl.utils.misc import direction
 from sisl.utils.ranges import list2str
 
-from .sparse import SparseCSR, _ncol_to_indptr, _to_coo, issparse
+from .sparse import SparseCSR, _ncol_to_indptr, _to_coo, issparse, valid_index
 
 __all__ = ["SparseAtom", "SparseOrbital"]
 
@@ -212,6 +214,35 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # Simply translate the atoms to move all atoms to the unit cell. That is, all atoms
         # should be moved to supercell (0,0,0).
         return self._translate_atoms_sc(-current_sc)
+
+    def _transpose_indices(
+        self, indices: npt.ArrayLike, base: Optional[npt.ArrayLike] = None
+    ) -> np.ndarray:
+        """Converts from supercell indices to supercell transposed indices.
+
+        Parameters
+        ----------
+        indices :
+            the indices that contains the supercell indices.
+        base :
+            the resulting base orbitals that needs to translated.
+            These defaults to the unit-cell indices of `indices`.
+        """
+        lattice = self.geometry.lattice
+
+        # transposed offsets
+        new_sc_off = lattice.sc_index(-lattice.sc_off)
+
+        # Calculate the row-offsets in the new sparse geometry
+        size = self.shape[0]
+        if base is None:
+            base = indices % size
+
+        base = (
+            base
+            + new_sc_off[lattice.sc_index(lattice.sc_off[indices // size, :])] * size
+        )
+        return base
 
     def _translate_atoms_sc(self, sc_translations):
         """Translates atoms across supercells.
@@ -515,9 +546,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         T._csr.ncol = None
         T._csr._D = None
 
-        # Short-links
-        lattice = self.geometry.lattice
-
         # Create "DOK" format indices
         csr = self._csr
         # Number of rows (used for converting to supercell indices)
@@ -528,11 +556,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # First extract the sparse matrix in COO format
         row, col, D = _to_coo(csr)
 
-        # Retrieve all sc-indices in the new transposed array
-        new_sc_off = lattice.sc_index(-lattice.sc_off)
-
-        # Calculate the row-offsets in the new sparse geometry
-        row += new_sc_off[lattice.sc_index(lattice.sc_off[col // size, :])] * size
+        row = self._transpose_indices(col, base=row)
 
         # Now convert columns into unit-cell
         col %= size
@@ -1409,23 +1433,26 @@ class SparseOrbital(_SparseGeometry):
         orbitals : int or list of int
             the edges are returned only for the given orbital. The returned edges are orbitals.
 
+        Returns
+        -------
+        indices :
+            If `orbitals` is None, the returned indices are atomic indices.
+            Otherwise it will be orbital indices.
+
         See Also
         --------
         SparseCSR.edges: the underlying routine used for extracting the edges
         """
         if exclude is not None:
-            exclude = self.geometry._sanitize_atoms(exclude)
+            exclude = self.geometry._sanitize_orbs(exclude)
         if atoms is None and orbitals is None:
             raise ValueError(
                 f"{self.__class__.__name__}.edges must have either 'atoms' or 'orbitals' keyword defined."
             )
         if orbitals is None:
-            return unique(
-                self.geometry.o2a(
-                    self._csr.edges(self.geometry.a2o(atoms, True), exclude)
-                )
-            )
-        orbitals = self.geometry._sanitize_orbs(orbitals)
+            orbs = self.geometry.a2o(atoms, all=True)
+            return self.geometry.o2a(self._csr.edges(orbs, exclude), unique=True)
+        orbitals = np.unique(self.geometry._sanitize_orbs(orbitals))
         return self._csr.edges(orbitals, exclude)
 
     def nonzero(self, atoms: AtomsIndex = None, only_cols: bool = False):
@@ -2409,16 +2436,18 @@ class SparseOrbital(_SparseGeometry):
         Warns
         -----
         SislWarning
-           in case the overlapping atoms are not comprising the same atomic specie. In some cases this may not be a problem. However, care must be taken by the user if this warning is issued.
+           in case the overlapping atoms are not comprising the same atomic specie.
+           In some cases this may not be a problem.
+           However, care must be taken by the user if this warning is issued.
 
         Returns
         -------
         object
             a new instance with two sparse matrices merged together by replacing some atoms
         """
-        if np.asarray(scale).size == 1:
-            scale = np.array([scale, scale])
         scale = np.asarray(scale)
+        if scale.size == 1:
+            scale = np.repeat(scale, 2)
 
         # here our connection is defined as what is connected to "in"
         # and what is connected to "out"
@@ -2426,13 +2455,15 @@ class SparseOrbital(_SparseGeometry):
         # And `atoms` is [0].
         # Then in = [0], out = [1]
         # since atoms connect out to [1]
+        # In certain cases, when `atoms` does not connect *into* itself,
+        # it may be smaller than `atoms`.
 
         # figure out the atoms that needs replacement
         def get_reduced_system(sp, atoms):
             """convert the geometry in `sp` to only atoms `atoms` and return the following:
 
             1. atoms (sanitized and no order change)
-            2. orbitals (ordered as `atoms`
+            2. orbitals (ordered as `atoms`)
             3. the atoms that are connected to OUT and IN
             4. the orbitals that are connected to OUT and IN
             """
@@ -2448,9 +2479,9 @@ class SparseOrbital(_SparseGeometry):
             # Find the orbitals that these atoms connect to such that we can compare
             # atomic coordinates
             out_connect_orb_sc = sp.edges(orbitals=orbs, exclude=orbs)
-            out_connect_orb = geom.osc2uc(out_connect_orb_sc, True)
-            out_connect_atom_sc = geom.o2a(out_connect_orb_sc, True)
-            out_connect_atom = geom.asc2uc(out_connect_atom_sc, True)
+            out_connect_orb = geom.osc2uc(out_connect_orb_sc, unique=True)
+            out_connect_atom_sc = geom.o2a(out_connect_orb_sc, unique=True)
+            out_connect_atom = geom.asc2uc(out_connect_atom_sc, unique=True)
 
             # figure out connecting back
             atoms_orbs = list(
@@ -2491,7 +2522,7 @@ class SparseOrbital(_SparseGeometry):
         other_atoms = o_info.atoms  # sanitized (no order change)
 
         # Get overlapping atoms by their offset
-        # We need to get a 1-1 correspondance between the two connecting geometries
+        # We need to get a 1-1 correspondence between the two connecting geometries
         # For instance `self` may be ordered differently than `other`.
         # So we need to figure out how the atoms are arranged in *both* regions.
         # This is where `atol` comes into play since we have to ensure that the
@@ -2527,21 +2558,16 @@ class SparseOrbital(_SparseGeometry):
         )
 
         # trigger for errors
-        err_msg = ""
+        msg = ""
 
         # Now we have the different geometries around to handle how the merging
         # process.
         # Before proceeding we will check whether the dimensions match.
-        # I.e. checking that the orbitals connecting in/out are the same is important.
+        if len(sgeom_in) != len(soverlap_in) or len(ogeom_in) != len(ooverlap_in):
+            # We check that the couplings INTO the replaced atoms
+            # are equivalent.
+            # I.e. # of atoms
 
-        # print("in:")
-        # print(s_info.atom_connect.uc.IN)
-        # print(soverlap_in)
-        # print(o_info.atom_connect.uc.IN)
-        # print(ooverlap_in)
-        if not (
-            len(sgeom_in) == len(soverlap_in) and len(ogeom_in) == len(ooverlap_in)
-        ):
             # figure out which atoms are not connecting
             s_diff = np.setdiff1d(
                 np.arange(s_info.atom_connect.uc.IN.size), soverlap_in
@@ -2550,33 +2576,37 @@ class SparseOrbital(_SparseGeometry):
                 np.arange(o_info.atom_connect.uc.IN.size), ooverlap_in
             )
             if len(s_diff) > 0 or len(o_diff) > 0:
-                err_msg = f"""{err_msg}
+                msg = f"""{msg}
 
 The number of atoms in the replacement region that connects to the surrounding
 atoms are not the same in 'self' and 'other'.
-This means that the number of connections is not the same. Please ensure this."""
+This means that the number of connections is not the same."""
 
             if len(s_diff) > 0:
-                err_msg = f"""{err_msg}
+                tmp = list2str(np.sort(s_info.atom_connect.uc.IN[s_diff]))
+                msg = f"""{msg}
 
-self: atoms not matched in 'other': {s_info.atom_connect.uc.IN[s_diff]}."""
+self: atoms not matched in 'other': {tmp}."""
             if len(o_diff) > 0:
-                err_msg = f"""{err_msg}
+                tmp = list2str(np.sort(o_info.atom_connect.uc.IN[o_diff]))
+                msg = f"""{msg}
 
-other: atoms not matched in 'self': {o_info.atom_connect.uc.IN[o_diff]}."""
+other: atoms not matched in 'self': {tmp}."""
 
         elif not np.allclose(
             sgeom_in.orbitals[soverlap_in], ogeom_in.orbitals[ooverlap_in]
         ):
-            err_msg = f"""{err_msg}
+            tmp_self = list2str(np.sort(sgeom_in.orbitals[soverlap_in]))
+            tmp_other = list2str(np.sort(ogeom_in.orbitals[ooverlap_in]))
+            msg = f"""{msg}
 
 Atoms in the replacement region have different number of orbitals on the atoms
 that lie at the border.
 
 self orbitals:
-   {sgeom_in.orbitals[soverlap_in]}
+   {tmp_self}
 other orbitals:
-   {ogeom_in.orbitals[ooverlap_in]}"""
+   {tmp_other}"""
 
         # print("out:")
         # print(s_info.atom_connect.uc.OUT)
@@ -2589,9 +2619,7 @@ other orbitals:
         # We cannot really check the soverlap_out == len(sgeom_out)
         # in case we have a replaced sparse matrix in the middle of another bigger
         # sparse matrix.
-        if not (
-            len(sgeom_out) == len(soverlap_out) and len(ogeom_out) == len(ooverlap_out)
-        ):
+        if len(sgeom_out) != len(soverlap_out) or len(ogeom_out) != len(ooverlap_out):
             # figure out which atoms are not connecting
             s_diff = np.setdiff1d(
                 np.arange(s_info.atom_connect.sc.OUT.size), soverlap_out
@@ -2600,45 +2628,46 @@ other orbitals:
                 np.arange(o_info.atom_connect.sc.OUT.size), ooverlap_out
             )
             if len(s_diff) > 0 or len(o_diff) > 0:
-                err_msg = f"""{err_msg}
+                msg = f"""{msg}
 
 Number of atoms connecting to the replacement region are not the same in 'self' and 'other'.
 Please ensure this."""
 
             if len(s_diff) > 0:
-                err_msg = f"""{err_msg}
+                tmp = list2str(np.sort(s_info.atom_connect.sc.OUT[s_diff]))
+                msg = f"""{msg}
 
-self: atoms (in supercell) connecting to 'atoms' not matched in 'other': {s_info.atom_connect.sc.OUT[s_diff]}."""
+self: atoms (in supercell) connecting to 'atoms' not matched in 'other': {tmp}."""
             if len(o_diff) > 0:
-                err_msg = f"""{err_msg}
+                tmp = list2str(np.sort(o_info.atom_connect.sc.OUT[o_diff]))
+                msg = f"""{msg}
 
-other: atoms (in supercell) connecting to 'other_atoms' not matched in 'self': {o_info.atom_connect.sc.OUT[o_diff]}."""
+other: atoms (in supercell) connecting to 'other_atoms' not matched in 'self': {tmp}."""
 
         elif not np.allclose(
             sgeom_out.orbitals[soverlap_out], ogeom_out.orbitals[ooverlap_out]
         ):
-            err_msg = f"""{err_msg}
+            tmp_self = list2str(np.sort(sgeom_out.orbitals[soverlap_out]))
+            tmp_other = list2str(np.sort(ogeom_out.orbitals[ooverlap_out]))
+            msg = f"""{msg}
 
 Atoms in the connection region have different number of orbitals on the atoms.
 
 self orbitals:
-   {sgeom_out.orbitals[soverlap_out]}
+   {tmp_self}
 other orbitals:
-   {ogeom_out.orbitals[ooverlap_out]}"""
+   {tmp_other}"""
 
         # we can only ensure the orbitals that connect *out* have the same count
         # For supercell connections hopping *IN* might be different due to the supercell
-        if (
-            len(s_info.orb_connect.sc.OUT) != len(o_info.orb_connect.sc.OUT)
-            and not err_msg
-        ):
-            err_msg = f"""{err_msg}
+        if len(s_info.orb_connect.sc.OUT) != len(o_info.orb_connect.sc.OUT) and not msg:
+            msg = f"""{msg}
 
 Number of orbitals connecting to replacement region is not consistent
 between 'self' and 'other'."""
 
-        if err_msg:
-            raise ValueError(err_msg[1:])
+        if msg:
+            raise ValueError(msg[1:])
 
         warn_msg = ""
         S_ = s_info.atom_connect.uc.IN
@@ -2819,7 +2848,7 @@ depending on your use case. Note indices in the following are supercell indices.
         csr.scale_columns(convert[1][1], scale=scale[1], rows=rows)
 
         # ensure we have translated all columns correctly
-        assert len((csr.col >= geom.no_s).nonzero()[0]) == 0
+        assert valid_index(csr.col, geom.no_s).all()
         # correct shape of column matrix
         csr._shape = (csr.shape[0], geom.no_s, csr.shape[2])
         out = self.copy()
@@ -2827,7 +2856,78 @@ depending on your use case. Note indices in the following are supercell indices.
         out._geometry = geom
         return out
 
-    def toSparseAtom(self, dim: int = None, dtype=None):
+    def prune_range(
+        self,
+        *,
+        R: float,
+        atoms: Optional[AtomsLike] = None,
+        atoms_to: Optional[AtomsLike] = None,
+    ) -> "Self":
+        r"""Prune elements coupling further than `R`.
+
+        Search for connections from `atoms` to `atoms_to` where the distances are
+        further than `R`. If such couplings exists, remove them.
+
+        Parameters
+        ----------
+        R :
+            the distance at which the couplings are cut
+        atoms :
+            atoms that will be considered in the check.
+            The rows of the couplings that is taken into account.
+        atoms_to :
+            The columns of the couplings that is taken into account.
+
+        Notes
+        -----
+        The transposed couplings are *also* deleted to ensure a symmetric
+        matrix.
+
+        Currently, one cannot select subset of atoms.
+        """
+        geom = self.geometry
+        atoms = np.unique(geom._sanitize_atoms(atoms))
+        atoms_to = geom.auc2sc(geom._sanitize_atoms(atoms_to))
+        atoms_all = atoms.size == geom.na and atoms_to.size == geom.na_s
+        if not atoms_all:
+            raise NotImplementedError(
+                f"{self.__class__.__name__}.prune_range "
+                "does not work with subsets of atoms."
+            )
+
+        # change to *not* selected atoms
+        atoms_to_exclude = np.delete(np.arange(geom.na_s), atoms_to)
+        orbs_to_exclude = geom.a2o(atoms_to_exclude, all=True)
+
+        # Now search the couplings
+        edges = self.edges(atoms, exclude=orbs_to_exclude)
+
+        out = self.copy()
+
+        # Now we have all edges that couples between atoms and atoms_to.
+        # Determine the distances between the atoms
+        for ia in atoms:
+            iorbs = geom.a2o(ia, all=True)
+
+            dist = geom.rij(ia, edges)
+            # Select atoms with distances larger than R
+            idx = edges[dist > R]
+            if len(idx) == 0:
+                continue
+
+            # find orbitals that idx represents
+            jorbs = geom.a2o(idx, all=True)
+            uc_jorbs = np.unique(jorbs % self.shape[0])
+            for io in iorbs:
+                del out[io, jorbs]
+                if not atoms_all:
+                    # this ends up deleting everything...
+                    io_sc = np.unique(self._transpose_indices(jorbs, base=io))
+                    del out[uc_jorbs, io_sc]
+
+        return out
+
+    def toSparseAtom(self, dim: Optional[int] = None, dtype=None):
         """Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern
 
         This converts the orbital sparse pattern to an atomic sparse pattern.

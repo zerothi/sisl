@@ -134,6 +134,9 @@ def _get_spin(
         return m
 
     if what.startswith("vector:"):
+        if spin < Spin("soc"):
+            return _get_spin(M, spin, what="vector") * 0.5
+
         _, ul = what.split(":")
         upper = True
         if ul == "upper":
@@ -142,9 +145,6 @@ def _get_spin(
             upper = False
         else:
             raise ValueError("Could not determine what")
-
-        if spin < Spin("soc"):
-            return _get_spin(M, spin, what="vector") * 0.5
 
         # Calculate the vector of the spin (excluding the "density")
         shape = M.shape[:-1] + (3,)
@@ -2391,8 +2391,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         angles = _a.arrayd(angles)
         if not rad:
             angles = angles / 180 * np.pi
-        # reduce to minimal angles
-        angles %= 2 * np.pi
 
         # Helper routines
         def cos_sin(a):

@@ -162,6 +162,16 @@ def _ncol_to_indptr(ncol):
     return ptr
 
 
+def valid_index(idx, shape: int):
+    """Check that all indices in `idx` is between [0; shape["""
+    return np.logical_and(0 <= idx, idx < shape)
+
+
+def invalid_index(idx, shape: int):
+    """Check that all indices in `idx` is not between [0; shape["""
+    return np.logical_or(idx < 0, shape <= idx)
+
+
 @set_module("sisl")
 class SparseCSR(NDArrayOperatorsMixin):
     """
@@ -478,7 +488,7 @@ column indices of the sparse elements
         indices = _a.arangei(shape[0]) + offsets
 
         # create the pointer.
-        idx_ok = np.logical_and(0 <= indices, indices < shape[1])
+        idx_ok = valid_index(indices, shape[1])
         data = data[idx_ok]
         ptr1 = _a.onesi(shape[0])
         ptr1[~idx_ok] = 0
@@ -611,7 +621,7 @@ column indices of the sparse elements
             )  # pragma: no cover
 
         # Check that all column indices are within the expected shape
-        if np_any(self.shape[1] <= self.col):
+        if invalid_index(self.col, self.shape[1]).any():
             warn(
                 "Sparse matrix contains column indices outside the shape "
                 "of the matrix. Data may not represent what is expected!"
@@ -768,7 +778,8 @@ column indices of the sparse elements
             self._shape = tuple(shape)
 
     def _clean_columns(self):
-        """Remove all intrinsic columns that are not defined in the sparse matrix"""
+        """Remove all intrinsic columns that are not defined in the sparse matrix
+        (below 0 or above nc)"""
         # Grab pointers
         ptr = self.ptr
         ncol = self.ncol
@@ -780,7 +791,7 @@ column indices of the sparse elements
         # Get indices of columns
         idx = array_arange(ptr[:-1], n=ncol)
         # Convert to boolean array where we have columns to be deleted
-        lidx = col[idx] >= nc
+        lidx = invalid_index(col[idx], nc)
         # Count number of deleted entries per row
         ndel = _a.fromiteri(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
         # Backconvert lidx to deleted indices
@@ -835,7 +846,7 @@ column indices of the sparse elements
             # No need to translate anything...
             return
 
-        if np_any(old >= self.shape[1]):
+        if invalid_index(old, self.shape[1]).any():
             raise ValueError(
                 f"{self.__class__.__name__}.translate_columns has non-existing old column values"
             )
@@ -855,7 +866,7 @@ column indices of the sparse elements
         # After translation, set to not finalized
         self._finalized = False
         if clean:
-            if np_any(new >= self.shape[1]):
+            if invalid_index(new, self.shape[1]).any():
                 self._clean_columns()
 
     def scale_columns(
@@ -885,7 +896,7 @@ column indices of the sparse elements
         """
         cols = self._sanitize(cols, axis=1)
 
-        if np_any(cols >= self.shape[1]):
+        if invalid_index(cols, self.shape[1]).any():
             raise ValueError(
                 f"{self.__class__.__name__}.scale_columns has non-existing old column values"
             )
@@ -1059,7 +1070,7 @@ column indices of the sparse elements
             raise ValueError(
                 "extending the sparse matrix is only allowed for single rows at a time"
             )
-        if i < 0 or i >= self.shape[0]:
+        if invalid_index(i, self.shape[0]):
             raise IndexError(f"row index is out-of-bounds {i} : {self.shape[0]}")
         i1 = i + 1
 
@@ -1072,7 +1083,7 @@ column indices of the sparse elements
         j = self._sanitize(j, axis=1).ravel()
         if len(j) == 0:
             return _a.arrayi([])
-        if np_any(j < 0) or np_any(j >= self.shape[1]):
+        if invalid_index(j, self.shape[1]).any():
             raise IndexError(f"column index is out-of-bounds {j} : {self.shape[1]}")
 
         # fast reference
@@ -1176,7 +1187,7 @@ column indices of the sparse elements
         IndexError
             for indices out of bounds
         """
-        if i < 0 or i >= self.shape[0]:
+        if invalid_index(i, self.shape[0]):
             raise IndexError("row index is out-of-bounds")
 
         # fast reference
@@ -1255,21 +1266,19 @@ column indices of the sparse elements
     def __delitem__(self, key):
         """Remove items from the sparse patterns"""
         # Get indices of sparse data (-1 if non-existing)
-        key = list(key)
-        key[0] = self._slice2list(key[0], 0)
-        if isiterable(key[0]):
-            if len(key) == 2:
-                for i in key[0]:
-                    del self[i, key[1]]
-            elif len(key) == 3:
-                for i in key[0]:
-                    del self[i, key[1], key[2]]
+        key0 = self._slice2list(key[0], 0)
+        if isiterable(key0):
+            for i in key0:
+                del self[i, *key[1:]]
             return
 
-        i = key[0]
-        key[1] = self._slice2list(key[1], 1)
-        index = self._get_only(i, key[1])
-        index.sort()
+        # We are now accessing a single item
+        i = key0
+        key1 = self._slice2list(key[1], 1)
+
+        # We can only delete unique values, trying to delete
+        # the same value twice is just not a good idea!
+        index = unique(self._get_only(i, key1))
 
         if len(index) == 0:
             # There are no elements to delete...
@@ -1282,8 +1291,8 @@ column indices of the sparse elements
         # Get original values
         sl = slice(ptr[i], ptr[i] + ncol[i], None)
         oC = self.col[sl].copy()
-        self.col[sl] = -1
         oD = self._D[sl, :].copy()
+        self.col[sl] = -1
         self._D[sl, :] = 0
 
         # Now create the compressed data...
@@ -1494,7 +1503,7 @@ column indices of the sparse elements
         Parameters
         ----------
         atol :
-            absolute tolerance below this value will be considered 0.
+            absolute tolerance below or equal this value will be considered 0.
         """
         shape2 = self.shape[2]
 
