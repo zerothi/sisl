@@ -3,6 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import math as m
+from numbers import Integral
+
+import numpy as np
 from numpy import (
     arccos,
     arctan2,
@@ -24,10 +28,14 @@ from scipy.special import sph_harm
 
 from sisl import _array as _a
 from sisl._indices import indices_le
+from sisl.typing import CartesianAxes
+
+from .misc import direction
 
 __all__ = ["fnorm", "fnorm2", "expand", "orthogonalize"]
 __all__ += ["spher2cart", "cart2spher", "spherical_harm"]
 __all__ += ["curl", "close"]
+__all__ += ["rotation_matrix"]
 
 
 def fnorm(array, axis=-1):
@@ -344,3 +352,89 @@ def intersect_and_diff_sets(a, b):
     bonly = aux_sort_indices[bonly] - a.size
 
     return int1d, aover, bover, aonly, bonly
+
+
+def rotation_matrix(
+    x: float, y: float, z: float, rad: bool = False, order: CartesianAxes = "zyx"
+) -> np.ndarray:
+    r"""Create the rotation matrix defined by the Cartesian rotation angles.
+
+    The rotation matrix will be composed of matrices:
+
+    .. math::
+
+        R(x) &= \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & \cos(x) & -\sin(x) \\
+        0 & \sin(x) & \cos(x)
+        \end{bmatrix}
+        \\
+        R(y) &= \begin{bmatrix}
+        \cos(x) & 0 & \sin(x) \\
+        0 & 1 & 0 \\
+        -\sin(x) & 0 & \cos(x)
+        \end{bmatrix}
+        R(z) &= \begin{bmatrix}
+        \cos(x) & -\sin(x) & 0 \\
+        \sin(x) & \cos(x) & 0 \\
+        0 & 0 & 1
+        \end{bmatrix}
+
+    Parameters
+    ----------
+    x :
+        angle to rotate around the :math:`x`-axis
+    y :
+        angle to rotate around the :math:`y`-axis
+    z :
+        angle to rotate around the :math:`z`-axis
+    rad :
+        if true, the angles are in radians, otherwise in degrees.
+    order :
+        specify the order of the rotation matrix.
+        Last letter will be the first one to be rotated.
+        It defaults to ``zyx``, which results in :math:`R = R(z)R(y)R(x)`.
+        If a direction is omitted, it will not be part of the rotation,
+        regardless of the angle passed.
+
+    Examples
+    --------
+
+    Ensure that rotation and back rotation works. Note the order
+    has to be reversed.
+
+    >>> R1 = rotation_matrix(10, 24, 50, order="xyz")
+    >>> R2 = rotation_matrix(-10, -24, -50, order="zyx")
+    >>> assert np.allclose(R1 @ R2, np.identity(3))
+
+    Rotate around x, then y, then x again (same angle twice)
+
+    >>> R = rotation_matrix(10, 24, 0, order="xyx")
+    """
+    if rad:
+
+        def cos_sin(a):
+            return m.cos(a), m.sin(a)
+
+    else:
+
+        def cos_sin(a):
+            a = a / 180 * m.pi
+            return m.cos(a), m.sin(a)
+
+    # define rotation matrix
+    c, s = cos_sin(x)
+    Rx = np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
+    c, s = cos_sin(y)
+    Ry = np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]])
+    c, s = cos_sin(z)
+    Rz = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+    Rs = (Rx, Ry, Rz)
+    R = np.identity(3)
+    if isinstance(order, Integral):
+        order = [order]
+    for dir in order:
+        idir = direction(dir)
+        R = R @ Rs[idir]
+
+    return R

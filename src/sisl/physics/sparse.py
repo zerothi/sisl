@@ -21,6 +21,7 @@ from sisl._internal import set_module
 from sisl.messages import deprecate_argument, warn
 from sisl.typing import (
     AtomsIndex,
+    CartesianAxes,
     GaugeType,
     KPoint,
     OrSequence,
@@ -28,6 +29,7 @@ from sisl.typing import (
     SparseMatrix,
     SparseMatrixPhysical,
 )
+from sisl.utils.mathematics import rotation_matrix
 
 from ._matrix_ddk import (
     matrix_ddk,
@@ -2357,7 +2359,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
-    def spin_rotate(self, angles: SeqFloat, rad: bool = False) -> Self:
+    def spin_rotate(
+        self, angles: SeqFloat, rad: bool = False, order: CartesianAxes = "zyx"
+    ) -> Self:
         r"""Rotate spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axes, respectively.
 
         The angles are with respect to each spin-box initial angle.
@@ -2378,10 +2382,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            :math:`x`, :math:`y` and :math:`z`, respectively (Euler angles).
         rad :
            Determines the unit of `angles`, for true it is in radians.
+        order :
+            the order of the rotation matrix. The last letter, will
+            be rotated *first*.
 
         See Also
         --------
         spin_align : align all spin-boxes along a specific direction
+        sisl.utils.mathematics.rotation_matrix
 
         Returns
         -------
@@ -2392,44 +2400,28 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         if not rad:
             angles = angles / 180 * np.pi
 
-        # Helper routines
-        def cos_sin(a):
-            return m.cos(a), m.sin(a)
-
         def close(a, v):
             return abs(abs(a) - v) < np.pi / 1080
 
-        c, s = zip(*list(map(cos_sin, angles)))
-
         # define rotation matrix
-        if len(angles) == 3:
-            calpha, cbeta, cgamma = c
-            salpha, sbeta, sgamma = s
-            R = (
-                # Rz
-                np.array([[cgamma, -sgamma, 0], [sgamma, cgamma, 0], [0, 0, 1]])
-                # Ry
-                .dot([[cbeta, 0, sbeta], [0, 1, 0], [-sbeta, 0, cbeta]])
-                # Rx
-                .dot([[1, 0, 0], [0, calpha, -salpha], [0, salpha, calpha]])
-            )
-
-            # if the spin is not rotated around y, then no rotation has happened
-            # x just puts the correct place, and z rotation is a no-op.
-            is_pol_noop = (
-                close(angles[0], 0)
-                and close(angles[1], 0)
-                or (close(angles[0], np.pi) and close(angles[1], np.pi))
-            )
-
-            is_pol_flip = (close(angles[0], np.pi) and close(angles[1], 0)) or (
-                close(angles[0], 0) and close(angles[1], np.pi)
-            )
-
-        else:
+        if len(angles) != 3:
             raise ValueError(
                 f"{self.__class__.__name__}.spin_rotate got wrong number of angles (expected 3, got {len(angles)}"
             )
+
+        R = rotation_matrix(*angles, rad=True, order=order)
+
+        # if the spin is not rotated around y, then no rotation has happened
+        # x just puts the correct place, and z rotation is a no-op.
+        is_pol_noop = (
+            close(angles[0], 0)
+            and close(angles[1], 0)
+            or (close(angles[0], np.pi) and close(angles[1], np.pi))
+        )
+
+        is_pol_flip = (close(angles[0], np.pi) and close(angles[1], 0)) or (
+            close(angles[0], 0) and close(angles[1], np.pi)
+        )
 
         spin = self.spin
 
@@ -2468,6 +2460,42 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             D[:, 1] = Q - A[:, 2]
             D[:, 2] = A[:, 0]
             D[:, 3] = -A[:, 1]
+
+        elif (spin.is_spinorbit or self.spin.is_nambu) and False:
+            # Since this spin-matrix has all 8 components we will take
+            # each half and align individually.
+            # I believe this should retain most of the physics in its
+            # intrinsic form and thus be a bit more accurate than
+            # later re-creating the matrix by some scaling factor.
+            D = self._csr._D
+            Q = _get_spin(D, spin, what="trace") * 0.5
+            A = _get_spin(D, spin, what="vector")
+            Au = _get_spin(D, spin, what="vector:upper") ** 2
+            Al = _get_spin(D, spin, what="vector:lower") ** 2
+
+            A = A.dot(R.T)
+
+            # Al|Au.dtype is always float in this case
+            out = self.astype(dtype=A.dtype)
+            D = out._csr._D
+            D[:, 0] = Q + A[:, 2] / 2
+            D[:, 1] = Q - A[:, 2] / 2
+
+            def correct(Au, Al, i):
+                total = Au[:, i] + Al[:, i]
+                idx = (total < 1e-8).nonzero()[0]
+                total[idx] = 1
+                Au[idx, i] = 0.5
+                Al[idx, i] = 0.5
+                Au[:, i] /= total
+                Al[:, i] /= total
+
+            correct(Au, Al, 0)
+            correct(Au, Al, 1)
+            D[:, 2] = A[:, 0] * Au[:, 0]
+            D[:, 6] = A[:, 0] * Al[:, 0]
+            D[:, 3] = -A[:, 1] * Au[:, 1]
+            D[:, 7] = A[:, 1] * Al[:, 1]
 
         elif spin.is_spinorbit or self.spin.is_nambu:
             # Since this spin-matrix has all 8 components we will take
