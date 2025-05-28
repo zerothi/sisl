@@ -351,7 +351,7 @@ class Geometry(
             atoms = atoms.indices(self.na)
         else:
             atoms = atoms.indices(self.na_s)
-        return self.axyz(_a.arangei(atoms[0], atoms[1], atoms[2]))
+        return self.axyz(_a.arangei(*atoms))
 
     @__getitem__.register
     def _(self, atoms: tuple) -> ndarray:
@@ -388,15 +388,8 @@ class Geometry(
 
     @_sanitize_atoms.register
     def _(self, atoms: slice) -> ndarray:
-        # TODO consider doing range(self.na)[atoms]
-        start, stop, step = atoms.start, atoms.stop, atoms.step
-        if start is None:
-            start = 0
-        if stop is None:
-            stop = self.na
-        if step is None:
-            step = 1
-        return np.arange(start, stop, step)
+        atoms = atoms.indices(self.na)
+        return np.arange(*atoms)
 
     @_sanitize_atoms.register
     def _(self, atoms: str) -> ndarray:
@@ -473,14 +466,8 @@ class Geometry(
 
     @_sanitize_orbs.register
     def _(self, orbitals: slice) -> ndarray:
-        start, stop, step = orbitals.start, orbitals.stop, orbitals.step
-        if start is None:
-            start = 0
-        if stop is None:
-            stop = self.no
-        if step is None:
-            step = 1
-        return np.arange(start, stop, step)
+        orbitals = orbitals.indices(self.no)
+        return np.arange(*orbitals)
 
     @_sanitize_orbs.register
     def _(self, orbitals: str) -> ndarray:

@@ -600,8 +600,6 @@ def test_delitem_simple(s1):
     assert s1.nnz == 1
     for i in range(2):
         assert s1[i, 0] == 0
-    del s1[range(2), range(3), 0]
-    assert s1.nnz == 0
 
 
 def test_delitem_order():

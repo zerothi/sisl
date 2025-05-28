@@ -202,14 +202,8 @@ information regarding the creation of the object
 
     @_sanitize_index.register
     def _(self, index: slice) -> ndarray:
-        start, stop, step = index.start, index.stop, index.step
-        if start is None:
-            start = 0
-        if stop is None:
-            stop = len(self)
-        if step is None:
-            step = 1
-        return np.arange(start, stop, step)
+        index = index.indices(len(self))
+        return np.arange(*index)
 
     def _geometry(self):
         """Return the parent geometry if one is found"""

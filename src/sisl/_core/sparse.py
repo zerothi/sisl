@@ -641,7 +641,7 @@ column indices of the sparse elements
         if idx.size == 0:
             return _a.asarrayi([])
         if idx.dtype == bool_:
-            return idx.nonzero()[0].astype(np.int32)
+            return idx.nonzero()[0].astype(np.int32, copy=False)
         return idx
 
     @_sanitize.register
@@ -652,17 +652,8 @@ column indices of the sparse elements
 
     @_sanitize.register
     def _(self, idx: slice, axis: int = 0) -> ndarray:
-        start, stop, step = idx.start, idx.stop, idx.step
-        if start is None:
-            start = 0
-        if stop is None:
-            if axis < 0:
-                stop = np.max(self.shape)
-            else:
-                stop = self.shape[axis]
-        if step is None:
-            step = 1
-        return _a.arangei(start, stop, step)
+        idx = idx.indices(self.shape[axis])
+        return _a.arangei(*idx)
 
     def edges(self, rows: SeqOrScalarInt, exclude: Optional[SeqOrScalarInt] = None):
         """Retrieve edges (connections) of given `rows`
@@ -1030,17 +1021,6 @@ column indices of the sparse elements
     # Define default iterator
     __iter__ = iter_nnz
 
-    def _slice2list(self, slc, axis):
-        """Convert a slice to a list depending on the provided details"""
-        if not isinstance(slc, slice):
-            return slc
-
-        # Do conversion
-        N = self.shape[axis]
-        # Get the indices
-        idx = slc.indices(N)
-        return range(idx[0], idx[1], idx[2])
-
     def _extend(self, i, j, ret_indices=True):
         """Extends the sparsity pattern to retain elements `j` in row `i`
 
@@ -1266,15 +1246,19 @@ column indices of the sparse elements
     def __delitem__(self, key):
         """Remove items from the sparse patterns"""
         # Get indices of sparse data (-1 if non-existing)
-        key0 = self._slice2list(key[0], 0)
-        if isiterable(key0):
-            for i in key0:
-                del self[i, *key[1:]]
-            return
+        if len(key) > 2:
+            raise ValueError(
+                f"{self.__class__.__name__}.__delitem__ requires "
+                "key to only be of length 2 (cannot delete sub-sets of "
+                "the last dimension."
+            )
 
-        # We are now accessing a single item
-        i = key0
-        key1 = self._slice2list(key[1], 1)
+        i = self._sanitize(key[0], axis=0)
+        key1 = self._sanitize(key[1], axis=1)
+        if i.size > 1:
+            for I in i:
+                del self[I, key1]
+            return
 
         # We can only delete unique values, trying to delete
         # the same value twice is just not a good idea!
