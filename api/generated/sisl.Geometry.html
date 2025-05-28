@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=93e5b6a2"></script>
+      <script src="../../_static/documentation_options.js?v=d9901acd"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -307,13 +307,13 @@ sisl’s dispatch functionality</p>
 <td><p>Create a new geometry equivalent to <code class="docutils literal notranslate"><span class="pre">self</span> <span class="pre">*</span> <span class="pre">self.nsc</span></code>, where the indices are ordered as the supercells</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a>(atoms[, unique])</p></td>
-<td><p>Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates</p></td>
+<td><p>Returns atoms from supercell indices to unit-cell indices, possibly removing duplicates</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.attach" title="sisl.Geometry.attach"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attach</span></code></a>(atom, other, other_atom[, dist, axis])</p></td>
 <td><p>Attaches another <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> at the <code class="xref py py-obj docutils literal notranslate"><span class="pre">atom</span></code> index with respect to <em class="xref py py-obj">other_atom</em> using different methods.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a>(atoms[, unique])</p></td>
-<td><p>Returns atom from unit-cell indices to supercell indices, possibly removing dublicates</p></td>
+<td><p>Returns atom from unit-cell indices to supercell indices, possibly removing duplicates</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.axyz" title="sisl.Geometry.axyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axyz</span></code></a>([atoms, isc])</p></td>
 <td><p>Return the atomic coordinates in the supercell of a given atom.</p></td>
@@ -400,10 +400,10 @@ sisl’s dispatch functionality</p>
 <td><p>Distance between orbital <em class="xref py py-obj">orbitals1</em> and <em class="xref py py-obj">orbitals2</em>, orbitals can be in super-cell indices</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a>(orbitals[, unique])</p></td>
-<td><p>Orbitals from supercell indices to unit-cell indices, possibly removing dublicates</p></td>
+<td><p>Orbitals from supercell indices to unit-cell indices, possibly removing duplicates</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a>(orbitals[, unique])</p></td>
-<td><p>Orbitals from unit-cell indices to supercell indices, possibly removing dublicates</p></td>
+<td><p>Orbitals from unit-cell indices to supercell indices, possibly removing duplicates</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.overlap" title="sisl.Geometry.overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlap</span></code></a>(other[, atol, offset, offset_other])</p></td>
 <td><p>Calculate the overlapping indices between two geometries</p></td>
@@ -445,7 +445,7 @@ sisl’s dispatch functionality</p>
 <td><p>Align Miller direction along <code class="docutils literal notranslate"><span class="pre">v</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.sc2uc" title="sisl.Geometry.sc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc2uc</span></code></a>(atoms[, unique])</p></td>
-<td><p>Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates</p></td>
+<td><p>Returns atoms from supercell indices to unit-cell indices, possibly removing duplicates</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.sc_index" title="sisl.Geometry.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Call local <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.sc_index" title="sisl.Lattice.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.sc_index</span></code></a> function</p></td>
@@ -490,7 +490,7 @@ sisl’s dispatch functionality</p>
 <td><p>Translates atoms in the geometry into the unit cell</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.uc2sc" title="sisl.Geometry.uc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uc2sc</span></code></a>(atoms[, unique])</p></td>
-<td><p>Returns atom from unit-cell indices to supercell indices, possibly removing dublicates</p></td>
+<td><p>Returns atom from unit-cell indices to supercell indices, possibly removing duplicates</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.unrepeat" title="sisl.Geometry.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis, *args, **kwargs)</p></td>
 <td><p>Unrepeats the geometry similarly as <a class="reference internal" href="sisl.untile.html#sisl.untile" title="sisl.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a></p></td>
@@ -956,7 +956,7 @@ note that <code class="docutils literal notranslate"><span class="pre">iter(g)</
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.asc2uc">
 <span class="sig-name descname"><span class="pre">asc2uc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/geometry.html#Geometry.asc2uc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.asc2uc" title="Link to this definition"></a></dt>
-<dd><p>Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates</p>
+<dd><p>Returns atoms from supercell indices to unit-cell indices, possibly removing duplicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1004,7 +1004,7 @@ Not used if <em class="xref py py-obj">dist</em> is an array-like argument.</p><
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.auc2sc">
 <span class="sig-name descname"><span class="pre">auc2sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/geometry.html#Geometry.auc2sc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.auc2sc" title="Link to this definition"></a></dt>
-<dd><p>Returns atom from unit-cell indices to supercell indices, possibly removing dublicates</p>
+<dd><p>Returns atom from unit-cell indices to supercell indices, possibly removing duplicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1839,7 +1839,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.osc2uc">
 <span class="sig-name descname"><span class="pre">osc2uc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/geometry.html#Geometry.osc2uc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.osc2uc" title="Link to this definition"></a></dt>
-<dd><p>Orbitals from supercell indices to unit-cell indices, possibly removing dublicates</p>
+<dd><p>Orbitals from supercell indices to unit-cell indices, possibly removing duplicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1856,7 +1856,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.ouc2sc">
 <span class="sig-name descname"><span class="pre">ouc2sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/geometry.html#Geometry.ouc2sc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.ouc2sc" title="Link to this definition"></a></dt>
-<dd><p>Orbitals from unit-cell indices to supercell indices, possibly removing dublicates</p>
+<dd><p>Orbitals from unit-cell indices to supercell indices, possibly removing duplicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2313,7 +2313,7 @@ points along the Cartesian vector <code class="docutils literal notranslate"><sp
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.sc2uc">
 <span class="sig-name descname"><span class="pre">sc2uc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.sc2uc" title="Link to this definition"></a></dt>
-<dd><p>Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates</p>
+<dd><p>Returns atoms from supercell indices to unit-cell indices, possibly removing duplicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -3022,7 +3022,7 @@ directions.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.uc2sc">
 <span class="sig-name descname"><span class="pre">uc2sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.uc2sc" title="Link to this definition"></a></dt>
-<dd><p>Returns atom from unit-cell indices to supercell indices, possibly removing dublicates</p>
+<dd><p>Returns atom from unit-cell indices to supercell indices, possibly removing duplicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

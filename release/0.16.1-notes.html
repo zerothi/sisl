@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl 0.16.1 Release Notes &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d9901acd"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=7800a641"></script>
+      <script src="../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sisl 0.16.0 Release Notes" href="0.16.0-notes.html" />
+    <link rel="prev" title="Release Notes" href="../release.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../release.html">Release Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">0.16.1</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-features">New features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changes-and-improvements">Changes and improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bugfixes">Bugfixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="0.16.0-notes.html">0.16.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../release.html#changelogs">Changelogs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../release.html">Release Notes</a></li>
+      <li class="breadcrumb-item active">sisl 0.16.1 Release Notes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/release/0.16.1-notes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sisl-0-16-1-release-notes">
+<h1>sisl 0.16.1 Release Notes<a class="headerlink" href="#sisl-0-16-1-release-notes" title="Link to this heading"></a></h1>
+<p>Released on 2025-05-28.</p>
+<section id="new-features">
+<h2>New features<a class="headerlink" href="#new-features" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Full I/O support for buffers and zip files</p>
+<p>Up to now, the support for buffers was limited to text buffers. Now,
+byte buffers are also supported, so one can read/write binary files
+and CDF files from/to buffers.</p>
+<p>This change also introduced support for zipfiles.</p>
+<p><strong>Example for buffers:</strong></p>
+<p>Writing a grid to a buffer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">geometry</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+<span class="n">grid</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+
+<span class="n">nc</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">gridncSileSiesta</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+<span class="n">nc</span><span class="o">.</span><span class="n">write_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Reading a grid from a buffer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">buffer</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># Get a buffer with the grid data</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">gridncSileSiesta</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span><span class="o">.</span><span class="n">read_grid</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Example for zip files:</strong></p>
+<p>Reading the Hamiltonian from a SIESTA run inside a zip file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+
+<span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;/path/to/data.zip/run/RUN.fdf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Writing a Hamiltonian inside a zip file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+
+<span class="n">geom</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+
+<span class="n">H</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="s2">&quot;/path/to/data.zip/graphene.HSX&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By passing the path inside the zip file as a string, <code class="docutils literal notranslate"><span class="pre">sisl</span></code> will
+automatically create the <code class="docutils literal notranslate"><span class="pre">zipfile.ZipFile</span></code> object and close it
+when it is done. If you don’t want the zip file to be closed, you can
+create it externally and then pass a <code class="docutils literal notranslate"><span class="pre">zipfile.Path</span></code> to <code class="docutils literal notranslate"><span class="pre">sisl</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+
+<span class="c1"># Create a zip file or append to an existing one</span>
+<span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s2">&quot;myzipfile.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="c1"># Define path inside the zip file</span>
+<span class="n">H_path</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">zip_file</span><span class="p">,</span> <span class="s2">&quot;graphene.HSX&quot;</span><span class="p">)</span>
+
+<span class="n">geom</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+
+<span class="n">H</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="n">H_path</span><span class="p">)</span>
+
+<span class="c1"># Now the zip file is not closed, it is up to you to close it</span>
+<span class="c1"># when you are done</span>
+<span class="n">zip_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/914">PR914</a>)</p>
+</li>
+<li><p>Added <em class="xref py py-obj">prune_range</em> to matrices</p>
+<p>This allows one to remove couplings
+that are further than some distance.
+It isn’t fully implemented for atomic sub-sets.
+But should be implemented in the future.</p>
+</li>
+<li><p>Added pressure and efield unit types</p></li>
+<li><p>Added rotation_matrix to make rotations simpler</p>
+<p>Also enabled <em class="xref py py-obj">order</em> argument to <em class="xref py py-obj">spin_rotate</em>.</p>
+</li>
+</ul>
+</section>
+<section id="changes-and-improvements">
+<h2>Changes and improvements<a class="headerlink" href="#changes-and-improvements" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Added and made CODATA-2022 values the default</p>
+<p>Now a wider range of CODATA values
+are available. One can switch between
+used version by using <em class="xref py py-obj">SISL_CODATA=2018|2022</em>
+if needed.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/913">PR913</a>)</p>
+</li>
+<li><p>Allow <em class="xref py py-obj">spin_rotate</em>/<em class="xref py py-obj">spin_align</em> on other than <em class="xref py py-obj">DensityMatrix</em> objects</p>
+<p>This is needed because one might equally be interested in this
+for Hamiltonians etc.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/921">PR921</a>)</p>
+</li>
+</ul>
+</section>
+<section id="bugfixes">
+<h2>Bugfixes<a class="headerlink" href="#bugfixes" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Allowed complex data-types in DensityMatrix methods</p>
+<p>In particular <em class="xref py py-obj">spin_align</em>, <em class="xref py py-obj">spin_rotate</em> and <em class="xref py py-obj">mulliken</em>
+are now fixed for any data-type.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/911">PR911</a>)</p>
+</li>
+<li><p>Fixed <em class="xref py py-obj">stdoutSileSiesta.read_scf</em></p>
+<p>It parsed the wrong spin moment and so
+had a wrong read of the first SCF iteration.</p>
+<p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/919">PR919</a>)</p>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../release.html" class="btn btn-neutral float-left" title="Release Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="0.16.0-notes.html" class="btn btn-neutral float-right" title="sisl 0.16.0 Release Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

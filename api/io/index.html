@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=93e5b6a2"></script>
+      <script src="../../_static/documentation_options.js?v=d9901acd"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -89,21 +89,32 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Input/Output</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="basic.html">Basic IO methods/classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generic.html">Generic files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="bigdft.html">BigDFT</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dftb.html">DFTB+</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fhiaims.html">FHIaims</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gulp.html">GULP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="openmx.html">OpenMX</a></li>
-<li class="toctree-l3"><a class="reference internal" href="orca.html">ORCA</a></li>
-<li class="toctree-l3"><a class="reference internal" href="scaleup.html">ScaleUP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="siesta.html">Siesta</a></li>
-<li class="toctree-l3"><a class="reference internal" href="siesta.html#transiesta">TranSiesta</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tbtrans.html">TBtrans</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tbtrans.html#phtrans">PHtrans</a></li>
-<li class="toctree-l3"><a class="reference internal" href="vasp.html">VASP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="wannier90.html">Wannier90</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-sile-framework">The sile framework</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="basic.html">Basic IO methods/classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#i-o-from-buffers-and-zip-files">I/O from buffers and zip files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-for-buffers">Example for buffers:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-for-zip-files">Example for zip files:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#list-of-available-siles">List of available siles</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generic.html">Generic files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bigdft.html">BigDFT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dftb.html">DFTB+</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fhiaims.html">FHIaims</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gulp.html">GULP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="openmx.html">OpenMX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="orca.html">ORCA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scaleup.html">ScaleUP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siesta.html">Siesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="siesta.html#transiesta">TranSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tbtrans.html">TBtrans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tbtrans.html#phtrans">PHtrans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vasp.html">VASP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wannier90.html">Wannier90</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
@@ -151,14 +162,31 @@
              
   <section id="module-sisl.io">
 <span id="input-output"></span><span id="io"></span><h1>Input/Output<a class="headerlink" href="#module-sisl.io" title="Link to this heading"></a></h1>
-<p>Available files for reading/writing</p>
-<p><a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> handles a large variety of input/output files from a large selection
-of DFT software and other post-processing tools.</p>
-<p>In <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> all files are conventionally named <em>siles</em>
-to distinguish them from files from other packages.</p>
-<p>All files are generally accessed through the <a class="reference internal" href="generated/sisl.io.get_sile.html#sisl.io.get_sile" title="sisl.io.get_sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code></a> method
-which exposes all siles through their extension recognition.</p>
-<p>The current procedure for determining the file type is based on these
+<p>Read and write files to many different formats used within
+the atomic simulation community.</p>
+<section id="the-sile-framework">
+<h2>The sile framework<a class="headerlink" href="#the-sile-framework" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> provides a unified interface to read and write files.
+To distinguish a normal file from a <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> file, we use the term <em>sile</em>:</p>
+<hr class="docutils" />
+<p><strong>sile</strong>, noun (<em>sisl-file</em>)</p>
+<p><em>A supercharged file that has the capability to read and write
+quantities related to atomic simulations.</em></p>
+<hr class="docutils" />
+<p>One can create a sile by simply doing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="n">sile</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s1">&#39;myfile.extension&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Which will automatically determine the sile type based on the file extension.
+Then, you might ask to read whatever the file contains. For example, if the
+file contains a Hamiltonian, you can do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hamiltonian</span> <span class="o">=</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Sometimes, the file extension is ambiguous as there are multiple file formats
+that use the same extension. For this reason, <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> has other mechanisms at
+your disposal. The current procedure for determining the file type is based on these
 steps:</p>
 <ol class="arabic">
 <li><p>Extract the extension of the filename passed to <a class="reference internal" href="generated/sisl.io.get_sile.html#sisl.io.get_sile" title="sisl.io.get_sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code></a>, for instance
@@ -181,6 +209,8 @@ and collect all that matches the longest extension found.</p></li>
 <li><p>If there is only 1 match, then return that class. If there are multiple <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will try all <code class="docutils literal notranslate"><span class="pre">read_*</span></code>
 methods and if all fail, then the sile will be removed from the eligible list.</p></li>
 </ol>
+<p>You can find more information about the core functions and classes of the <a class="reference internal" href="#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code></a> module
+here:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="basic.html">Basic IO methods/classes</a><ul>
@@ -188,6 +218,97 @@ methods and if all fail, then the sile will be removed from the eligible list.</
 <li class="toctree-l2"><a class="reference internal" href="basic.html#base-classes">Base classes</a></li>
 </ul>
 </li>
+</ul>
+</div>
+</section>
+<section id="i-o-from-buffers-and-zip-files">
+<h2>I/O from buffers and zip files<a class="headerlink" href="#i-o-from-buffers-and-zip-files" title="Link to this heading"></a></h2>
+<p>Sometimes, things are not as simple as reading/writing from/to the normal file system.
+For example, you might have the files inside a zip file or you might have acces to the
+file contents through a buffer (<code class="docutils literal notranslate"><span class="pre">io.StringIO</span></code>, <code class="docutils literal notranslate"><span class="pre">io.BytesIO</span></code>…).</p>
+<p><strong>All siles in `sisl` have the ability of reading and writing from buffers and zip files.</strong>
+In this case, there is no automatic detection of the sile type, so you will need to specify
+the exact sile type you want to use. Following, we provide some examples:</p>
+<section id="example-for-buffers">
+<h3>Example for buffers:<a class="headerlink" href="#example-for-buffers" title="Link to this heading"></a></h3>
+<p>Writing a grid to a buffer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">geometry</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Grid</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+<span class="n">grid</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+
+<span class="n">nc</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">gridncSileSiesta</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+<span class="n">nc</span><span class="o">.</span><span class="n">write_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Reading a grid from a buffer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">buffer</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># Get a buffer with the grid data</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">gridncSileSiesta</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span><span class="o">.</span><span class="n">read_grid</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="example-for-zip-files">
+<h3>Example for zip files:<a class="headerlink" href="#example-for-zip-files" title="Link to this heading"></a></h3>
+<p>Reading the Hamiltonian from a SIESTA run inside a zip file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+
+<span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;/path/to/data.zip/run/RUN.fdf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Writing a Hamiltonian inside a zip file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+
+<span class="n">geom</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+
+<span class="n">H</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="s2">&quot;/path/to/data.zip/graphene.HSX&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By passing the path inside the zip file as a string, <code class="docutils literal notranslate"><span class="pre">sisl</span></code> will
+automatically create the <code class="docutils literal notranslate"><span class="pre">zipfile.ZipFile</span></code> object and close it
+when it is done. If you don’t want the zip file to be closed, you can
+create it externally and then pass a <code class="docutils literal notranslate"><span class="pre">zipfile.Path</span></code> to <code class="docutils literal notranslate"><span class="pre">sisl</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+
+<span class="c1"># Create a zip file or append to an existing one</span>
+<span class="n">zip_file</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s2">&quot;myzipfile.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="c1"># Define path inside the zip file</span>
+<span class="n">H_path</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">zip_file</span><span class="p">,</span> <span class="s2">&quot;graphene.HSX&quot;</span><span class="p">)</span>
+
+<span class="n">geom</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+
+<span class="n">H</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="n">H_path</span><span class="p">)</span>
+
+<span class="c1"># Now the zip file is not closed, it is up to you to close it</span>
+<span class="c1"># when you are done</span>
+<span class="n">zip_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="list-of-available-siles">
+<h2>List of available siles<a class="headerlink" href="#list-of-available-siles" title="Link to this heading"></a></h2>
+<p>The above is a full list of all the available siles in <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>, and therefore
+all the formats that you can read to and write from.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are missing the ability to read or write a specific file format in <a class="reference internal" href="../../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>,
+you can open an issue/PR. If you already have the code to read or write the file format,
+adding a new sile is easy, and it will make your main code compatible with
+other formats (e.g. other DFT codes) thanks to the unified interface.</p>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="generic.html">Generic files</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.tableSile.html">sisl.io.tableSile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.xyzSile.html">sisl.io.xyzSile</a></li>
@@ -298,6 +419,7 @@ methods and if all fail, then the sile will be removed from the eligible list.</
 </li>
 </ul>
 </div>
+</section>
 </section>
 
 

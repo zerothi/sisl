@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=93e5b6a2"></script>
+      <script src="../../../_static/documentation_options.js?v=d9901acd"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -126,6 +126,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">allclose</span><span class="p">,</span>
     <span class="n">argsort</span><span class="p">,</span>
@@ -150,10 +151,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">CellAxes</span><span class="p">,</span> <span class="n">Coord</span><span class="p">,</span> <span class="n">SeqOrScalarFloat</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing._atom</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomsLike</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">direction</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.ranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">list2str</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span><span class="p">,</span> <span class="n">_to_coo</span><span class="p">,</span> <span class="n">issparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span><span class="p">,</span> <span class="n">_to_coo</span><span class="p">,</span> <span class="n">issparse</span><span class="p">,</span> <span class="n">valid_index</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SparseAtom&quot;</span><span class="p">,</span> <span class="s2">&quot;SparseOrbital&quot;</span><span class="p">]</span>
 
@@ -329,6 +331,35 @@
         <span class="c1"># Simply translate the atoms to move all atoms to the unit cell. That is, all atoms</span>
         <span class="c1"># should be moved to supercell (0,0,0).</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate_atoms_sc</span><span class="p">(</span><span class="o">-</span><span class="n">current_sc</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_transpose_indices</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts from supercell indices to supercell transposed indices.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        indices :</span>
+<span class="sd">            the indices that contains the supercell indices.</span>
+<span class="sd">        base :</span>
+<span class="sd">            the resulting base orbitals that needs to translated.</span>
+<span class="sd">            These defaults to the unit-cell indices of `indices`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span>
+
+        <span class="c1"># transposed offsets</span>
+        <span class="n">new_sc_off</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="o">-</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">)</span>
+
+        <span class="c1"># Calculate the row-offsets in the new sparse geometry</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">%</span> <span class="n">size</span>
+
+        <span class="n">base</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">base</span>
+            <span class="o">+</span> <span class="n">new_sc_off</span><span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">indices</span> <span class="o">//</span> <span class="n">size</span><span class="p">,</span> <span class="p">:])]</span> <span class="o">*</span> <span class="n">size</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_translate_atoms_sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc_translations</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Translates atoms across supercells.</span>
@@ -632,9 +663,6 @@
         <span class="n">T</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">T</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Short-links</span>
-        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span>
-
         <span class="c1"># Create &quot;DOK&quot; format indices</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span>
         <span class="c1"># Number of rows (used for converting to supercell indices)</span>
@@ -645,11 +673,7 @@
         <span class="c1"># First extract the sparse matrix in COO format</span>
         <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">_to_coo</span><span class="p">(</span><span class="n">csr</span><span class="p">)</span>
 
-        <span class="c1"># Retrieve all sc-indices in the new transposed array</span>
-        <span class="n">new_sc_off</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="o">-</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">)</span>
-
-        <span class="c1"># Calculate the row-offsets in the new sparse geometry</span>
-        <span class="n">row</span> <span class="o">+=</span> <span class="n">new_sc_off</span><span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">col</span> <span class="o">//</span> <span class="n">size</span><span class="p">,</span> <span class="p">:])]</span> <span class="o">*</span> <span class="n">size</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpose_indices</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">row</span><span class="p">)</span>
 
         <span class="c1"># Now convert columns into unit-cell</span>
         <span class="n">col</span> <span class="o">%=</span> <span class="n">size</span>
@@ -1546,23 +1570,26 @@
 <span class="sd">        orbitals : int or list of int</span>
 <span class="sd">            the edges are returned only for the given orbital. The returned edges are orbitals.</span>
 
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        indices :</span>
+<span class="sd">            If `orbitals` is None, the returned indices are atomic indices.</span>
+<span class="sd">            Otherwise it will be orbital indices.</span>
+
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        SparseCSR.edges: the underlying routine used for extracting the edges</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">exclude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span>
+            <span class="n">exclude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">orbitals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.edges must have either &#39;atoms&#39; or &#39;orbitals&#39; keyword defined.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">orbitals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">unique</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">exclude</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
+            <span class="n">orbs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="n">exclude</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">exclude</span><span class="p">)</span></div>
 
 
@@ -2582,16 +2609,18 @@
 <span class="sd">        Warns</span>
 <span class="sd">        -----</span>
 <span class="sd">        SislWarning</span>
-<span class="sd">           in case the overlapping atoms are not comprising the same atomic specie. In some cases this may not be a problem. However, care must be taken by the user if this warning is issued.</span>
+<span class="sd">           in case the overlapping atoms are not comprising the same atomic specie.</span>
+<span class="sd">           In some cases this may not be a problem.</span>
+<span class="sd">           However, care must be taken by the user if this warning is issued.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        object</span>
 <span class="sd">            a new instance with two sparse matrices merged together by replacing some atoms</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">])</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scale</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="c1"># here our connection is defined as what is connected to &quot;in&quot;</span>
         <span class="c1"># and what is connected to &quot;out&quot;</span>
@@ -2599,13 +2628,15 @@
         <span class="c1"># And `atoms` is [0].</span>
         <span class="c1"># Then in = [0], out = [1]</span>
         <span class="c1"># since atoms connect out to [1]</span>
+        <span class="c1"># In certain cases, when `atoms` does not connect *into* itself,</span>
+        <span class="c1"># it may be smaller than `atoms`.</span>
 
         <span class="c1"># figure out the atoms that needs replacement</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">get_reduced_system</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;convert the geometry in `sp` to only atoms `atoms` and return the following:</span>
 
 <span class="sd">            1. atoms (sanitized and no order change)</span>
-<span class="sd">            2. orbitals (ordered as `atoms`</span>
+<span class="sd">            2. orbitals (ordered as `atoms`)</span>
 <span class="sd">            3. the atoms that are connected to OUT and IN</span>
 <span class="sd">            4. the orbitals that are connected to OUT and IN</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -2621,9 +2652,9 @@
             <span class="c1"># Find the orbitals that these atoms connect to such that we can compare</span>
             <span class="c1"># atomic coordinates</span>
             <span class="n">out_connect_orb_sc</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">orbitals</span><span class="o">=</span><span class="n">orbs</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">orbs</span><span class="p">)</span>
-            <span class="n">out_connect_orb</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">osc2uc</span><span class="p">(</span><span class="n">out_connect_orb_sc</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-            <span class="n">out_connect_atom_sc</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">out_connect_orb_sc</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-            <span class="n">out_connect_atom</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">out_connect_atom_sc</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">out_connect_orb</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">osc2uc</span><span class="p">(</span><span class="n">out_connect_orb_sc</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">out_connect_atom_sc</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">out_connect_orb_sc</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">out_connect_atom</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">out_connect_atom_sc</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># figure out connecting back</span>
             <span class="n">atoms_orbs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
@@ -2664,7 +2695,7 @@
         <span class="n">other_atoms</span> <span class="o">=</span> <span class="n">o_info</span><span class="o">.</span><span class="n">atoms</span>  <span class="c1"># sanitized (no order change)</span>
 
         <span class="c1"># Get overlapping atoms by their offset</span>
-        <span class="c1"># We need to get a 1-1 correspondance between the two connecting geometries</span>
+        <span class="c1"># We need to get a 1-1 correspondence between the two connecting geometries</span>
         <span class="c1"># For instance `self` may be ordered differently than `other`.</span>
         <span class="c1"># So we need to figure out how the atoms are arranged in *both* regions.</span>
         <span class="c1"># This is where `atol` comes into play since we have to ensure that the</span>
@@ -2700,21 +2731,16 @@
         <span class="p">)</span>
 
         <span class="c1"># trigger for errors</span>
-        <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="c1"># Now we have the different geometries around to handle how the merging</span>
         <span class="c1"># process.</span>
         <span class="c1"># Before proceeding we will check whether the dimensions match.</span>
-        <span class="c1"># I.e. checking that the orbitals connecting in/out are the same is important.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sgeom_in</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">soverlap_in</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">ogeom_in</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ooverlap_in</span><span class="p">):</span>
+            <span class="c1"># We check that the couplings INTO the replaced atoms</span>
+            <span class="c1"># are equivalent.</span>
+            <span class="c1"># I.e. # of atoms</span>
 
-        <span class="c1"># print(&quot;in:&quot;)</span>
-        <span class="c1"># print(s_info.atom_connect.uc.IN)</span>
-        <span class="c1"># print(soverlap_in)</span>
-        <span class="c1"># print(o_info.atom_connect.uc.IN)</span>
-        <span class="c1"># print(ooverlap_in)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-            <span class="nb">len</span><span class="p">(</span><span class="n">sgeom_in</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">soverlap_in</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ogeom_in</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ooverlap_in</span><span class="p">)</span>
-        <span class="p">):</span>
             <span class="c1"># figure out which atoms are not connecting</span>
             <span class="n">s_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">s_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">uc</span><span class="o">.</span><span class="n">IN</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="n">soverlap_in</span>
@@ -2723,33 +2749,37 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">uc</span><span class="o">.</span><span class="n">IN</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="n">ooverlap_in</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">o_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
 <span class="s2">The number of atoms in the replacement region that connects to the surrounding</span>
 <span class="s2">atoms are not the same in &#39;self&#39; and &#39;other&#39;.</span>
-<span class="s2">This means that the number of connections is not the same. Please ensure this.&quot;&quot;&quot;</span>
+<span class="s2">This means that the number of connections is not the same.&quot;&quot;&quot;</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">s_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">uc</span><span class="o">.</span><span class="n">IN</span><span class="p">[</span><span class="n">s_diff</span><span class="p">]))</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
-<span class="s2">self: atoms not matched in &#39;other&#39;: </span><span class="si">{</span><span class="n">s_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">uc</span><span class="o">.</span><span class="n">IN</span><span class="p">[</span><span class="n">s_diff</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;&quot;&quot;</span>
+<span class="s2">self: atoms not matched in &#39;other&#39;: </span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">o_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">uc</span><span class="o">.</span><span class="n">IN</span><span class="p">[</span><span class="n">o_diff</span><span class="p">]))</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
-<span class="s2">other: atoms not matched in &#39;self&#39;: </span><span class="si">{</span><span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">uc</span><span class="o">.</span><span class="n">IN</span><span class="p">[</span><span class="n">o_diff</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;&quot;&quot;</span>
+<span class="s2">other: atoms not matched in &#39;self&#39;: </span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">.&quot;&quot;&quot;</span>
 
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
             <span class="n">sgeom_in</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">soverlap_in</span><span class="p">],</span> <span class="n">ogeom_in</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">ooverlap_in</span><span class="p">]</span>
         <span class="p">):</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+            <span class="n">tmp_self</span> <span class="o">=</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">sgeom_in</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">soverlap_in</span><span class="p">]))</span>
+            <span class="n">tmp_other</span> <span class="o">=</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ogeom_in</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">ooverlap_in</span><span class="p">]))</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
 <span class="s2">Atoms in the replacement region have different number of orbitals on the atoms</span>
 <span class="s2">that lie at the border.</span>
 
 <span class="s2">self orbitals:</span>
-<span class="s2">   </span><span class="si">{</span><span class="n">sgeom_in</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">soverlap_in</span><span class="p">]</span><span class="si">}</span>
+<span class="s2">   </span><span class="si">{</span><span class="n">tmp_self</span><span class="si">}</span>
 <span class="s2">other orbitals:</span>
-<span class="s2">   </span><span class="si">{</span><span class="n">ogeom_in</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">ooverlap_in</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">   </span><span class="si">{</span><span class="n">tmp_other</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
 
         <span class="c1"># print(&quot;out:&quot;)</span>
         <span class="c1"># print(s_info.atom_connect.uc.OUT)</span>
@@ -2762,9 +2792,7 @@
         <span class="c1"># We cannot really check the soverlap_out == len(sgeom_out)</span>
         <span class="c1"># in case we have a replaced sparse matrix in the middle of another bigger</span>
         <span class="c1"># sparse matrix.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-            <span class="nb">len</span><span class="p">(</span><span class="n">sgeom_out</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">soverlap_out</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ogeom_out</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ooverlap_out</span><span class="p">)</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sgeom_out</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">soverlap_out</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">ogeom_out</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ooverlap_out</span><span class="p">):</span>
             <span class="c1"># figure out which atoms are not connecting</span>
             <span class="n">s_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">s_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="n">soverlap_out</span>
@@ -2773,45 +2801,46 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="n">ooverlap_out</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">o_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
 <span class="s2">Number of atoms connecting to the replacement region are not the same in &#39;self&#39; and &#39;other&#39;.</span>
 <span class="s2">Please ensure this.&quot;&quot;&quot;</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">s_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">[</span><span class="n">s_diff</span><span class="p">]))</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
-<span class="s2">self: atoms (in supercell) connecting to &#39;atoms&#39; not matched in &#39;other&#39;: </span><span class="si">{</span><span class="n">s_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">[</span><span class="n">s_diff</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;&quot;&quot;</span>
+<span class="s2">self: atoms (in supercell) connecting to &#39;atoms&#39; not matched in &#39;other&#39;: </span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">o_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">[</span><span class="n">o_diff</span><span class="p">]))</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
-<span class="s2">other: atoms (in supercell) connecting to &#39;other_atoms&#39; not matched in &#39;self&#39;: </span><span class="si">{</span><span class="n">o_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">[</span><span class="n">o_diff</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;&quot;&quot;</span>
+<span class="s2">other: atoms (in supercell) connecting to &#39;other_atoms&#39; not matched in &#39;self&#39;: </span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s2">.&quot;&quot;&quot;</span>
 
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
             <span class="n">sgeom_out</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">soverlap_out</span><span class="p">],</span> <span class="n">ogeom_out</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">ooverlap_out</span><span class="p">]</span>
         <span class="p">):</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+            <span class="n">tmp_self</span> <span class="o">=</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">sgeom_out</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">soverlap_out</span><span class="p">]))</span>
+            <span class="n">tmp_other</span> <span class="o">=</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ogeom_out</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">ooverlap_out</span><span class="p">]))</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
 <span class="s2">Atoms in the connection region have different number of orbitals on the atoms.</span>
 
 <span class="s2">self orbitals:</span>
-<span class="s2">   </span><span class="si">{</span><span class="n">sgeom_out</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">soverlap_out</span><span class="p">]</span><span class="si">}</span>
+<span class="s2">   </span><span class="si">{</span><span class="n">tmp_self</span><span class="si">}</span>
 <span class="s2">other orbitals:</span>
-<span class="s2">   </span><span class="si">{</span><span class="n">ogeom_out</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">ooverlap_out</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">   </span><span class="si">{</span><span class="n">tmp_other</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
 
         <span class="c1"># we can only ensure the orbitals that connect *out* have the same count</span>
         <span class="c1"># For supercell connections hopping *IN* might be different due to the supercell</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">len</span><span class="p">(</span><span class="n">s_info</span><span class="o">.</span><span class="n">orb_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">o_info</span><span class="o">.</span><span class="n">orb_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="n">err_msg</span>
-        <span class="p">):</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_info</span><span class="o">.</span><span class="n">orb_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">o_info</span><span class="o">.</span><span class="n">orb_connect</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">msg</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span>
 
 <span class="s2">Number of orbitals connecting to replacement region is not consistent</span>
 <span class="s2">between &#39;self&#39; and &#39;other&#39;.&quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">err_msg</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">msg</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
         <span class="n">warn_msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">S_</span> <span class="o">=</span> <span class="n">s_info</span><span class="o">.</span><span class="n">atom_connect</span><span class="o">.</span><span class="n">uc</span><span class="o">.</span><span class="n">IN</span>
@@ -2992,7 +3021,7 @@
         <span class="n">csr</span><span class="o">.</span><span class="n">scale_columns</span><span class="p">(</span><span class="n">convert</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
 
         <span class="c1"># ensure we have translated all columns correctly</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">((</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span> <span class="o">&gt;=</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">valid_index</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="c1"># correct shape of column matrix</span>
         <span class="n">csr</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -3001,9 +3030,83 @@
         <span class="k">return</span> <span class="n">out</span></div>
 
 
+<div class="viewcode-block" id="SparseOrbital.prune_range">
+<a class="viewcode-back" href="../../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.prune_range">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prune_range</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">R</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">atoms_to</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Self&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Prune elements coupling further than `R`.</span>
+
+<span class="sd">        Search for connections from `atoms` to `atoms_to` where the distances are</span>
+<span class="sd">        further than `R`. If such couplings exists, remove them.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        R :</span>
+<span class="sd">            the distance at which the couplings are cut</span>
+<span class="sd">        atoms :</span>
+<span class="sd">            atoms that will be considered in the check.</span>
+<span class="sd">            The rows of the couplings that is taken into account.</span>
+<span class="sd">        atoms_to :</span>
+<span class="sd">            The columns of the couplings that is taken into account.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The transposed couplings are *also* deleted to ensure a symmetric</span>
+<span class="sd">        matrix.</span>
+
+<span class="sd">        Currently, one cannot select subset of atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span>
+        <span class="n">atoms_to</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">auc2sc</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms_to</span><span class="p">))</span>
+        <span class="n">atoms_all</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">na</span> <span class="ow">and</span> <span class="n">atoms_to</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">na_s</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atoms_all</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.prune_range &quot;</span>
+                <span class="s2">&quot;does not work with subsets of atoms.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># change to *not* selected atoms</span>
+        <span class="n">atoms_to_exclude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">na_s</span><span class="p">),</span> <span class="n">atoms_to</span><span class="p">)</span>
+        <span class="n">orbs_to_exclude</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms_to_exclude</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Now search the couplings</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">orbs_to_exclude</span><span class="p">)</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Now we have all edges that couples between atoms and atoms_to.</span>
+        <span class="c1"># Determine the distances between the atoms</span>
+        <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="n">iorbs</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">rij</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">edges</span><span class="p">)</span>
+            <span class="c1"># Select atoms with distances larger than R</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">R</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># find orbitals that idx represents</span>
+            <span class="n">jorbs</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">uc_jorbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">jorbs</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="n">iorbs</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">out</span><span class="p">[</span><span class="n">io</span><span class="p">,</span> <span class="n">jorbs</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">atoms_all</span><span class="p">:</span>
+                    <span class="c1"># this ends up deleting everything...</span>
+                    <span class="n">io_sc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transpose_indices</span><span class="p">(</span><span class="n">jorbs</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">io</span><span class="p">))</span>
+                    <span class="k">del</span> <span class="n">out</span><span class="p">[</span><span class="n">uc_jorbs</span><span class="p">,</span> <span class="n">io_sc</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
 <div class="viewcode-block" id="SparseOrbital.toSparseAtom">
 <a class="viewcode-back" href="../../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.toSparseAtom">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">toSparseAtom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toSparseAtom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</span>
 
 <span class="sd">        This converts the orbital sparse pattern to an atomic sparse pattern.</span>

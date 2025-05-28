@@ -22,7 +22,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=93e5b6a2"></script>
+      <script src="_static/documentation_options.js?v=d9901acd"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -129,10 +129,10 @@
              
   <section id="introduction">
 <span id="id1"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h1>
-<p>sisl has a number of features which makes it easy to jump right into
+<p><a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> has a number of features which makes it easy to jump right into
 and perform a large variation of tasks.</p>
 <ol class="arabic simple">
-<li><p>Easy creation of geometries. Similar to <a class="reference external" href="https://wiki.fysik.dtu.dk/ase">ASE</a> sisl provides an
+<li><p><strong>Easy creation of geometries.</strong> Similar to <a class="reference external" href="https://wiki.fysik.dtu.dk/ase">ASE</a> sisl provides an
 easy scripting engine to create and manipulate geometries.
 The goal of sisl is not specifically DFT-related software which
 typically only targets a limited number of atoms. One of the main
@@ -141,19 +141,22 @@ very large geometries such as attaching two geometries together,
 rotating atoms, removing atoms, changing bond-lengths etc.
 Everything is optimized for extremely large scale systems <em class="xref py py-obj">&gt;1,000,000</em> atoms
 such that creating geometries for tight-binding models becomes a breeze.</p></li>
-<li><p>Easy creation of tight-binding Hamiltonians via intrinsic and very fast
+<li><p><strong>Easy creation of tight-binding Hamiltonians</strong> via intrinsic and very fast
 algorithms for creating sparse matrices.
 One of the key-points is that the Hamiltonian is treated as a matrix.
 I.e. one may easily specify couplings without using routine calls.
 For large systems, <em class="xref py py-obj">&gt;10,000</em> atoms, it becomes advantegeous to iterate on
 sub-grids of atoms to speed up the creation by orders of magnitudes.
 sisl intrinsically implements such algorithms.</p></li>
-<li><p>Post-processing of data from DFT software. One may easily add additional
+<li><p><strong>Post-processing of data from DFT software.</strong> One may easily add additional
 post-processing tools to use sisl on non-implemented data-files.</p></li>
+<li><p><strong>Input/Output for many different formats.</strong> Sisl provides a unified interface
+to read and write files for many different formats relevant to the atomistic
+simulation community. See the <a class="reference internal" href="api/io/index.html#io"><span class="std std-ref">I/O documentation</span></a> for more details.</p></li>
 </ol>
 <section id="package">
 <h2>Package<a class="headerlink" href="#package" title="Link to this heading"></a></h2>
-<p>sisl is mainly a Python package with many intrinsic capabilities.</p>
+<p><a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> is mainly a Python package with many intrinsic capabilities.</p>
 <p>Follow <em class="xref py py-obj">these</em> instructions for installing sisl.</p>
 <section id="dft">
 <h3>DFT<a class="headerlink" href="#dft" title="Link to this heading"></a></h3>
