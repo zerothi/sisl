@@ -1,4 +1,0 @@
-Allow `spin_rotate`/`spin_align` on other than `DensityMatrix` objects
-
-This is needed because one might equally be interested in this
-for Hamiltonians etc.

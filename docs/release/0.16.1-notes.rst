@@ -1,0 +1,150 @@
+sisl 0.16.1 Release Notes
+*************************
+
+Released on 2025-05-28.
+
+
+New features
+============
+
+- Full I/O support for buffers and zip files
+
+  Up to now, the support for buffers was limited to text buffers. Now,
+  byte buffers are also supported, so one can read/write binary files
+  and CDF files from/to buffers.
+
+  This change also introduced support for zipfiles.
+
+  **Example for buffers:**
+
+  Writing a grid to a buffer:
+
+  .. code-block:: python
+
+      import sisl
+      import io
+
+      geometry = sisl.geom.graphene()
+      grid = sisl.Grid((2, 2, 2), geometry=geometry)
+      grid[:] = np.random.random(grid.shape)
+
+      buffer = io.BytesIO()
+
+      nc = sisl.io.gridncSileSiesta(buffer, mode="wb")
+      nc.write_grid(grid)
+
+  Reading a grid from a buffer:
+
+  .. code-block:: python
+
+      import sisl
+      import io
+
+      buffer = ... # Get a buffer with the grid data
+
+      grid = sisl.io.gridncSileSiesta(buffer).read_grid()
+
+  **Example for zip files:**
+
+  Reading the Hamiltonian from a SIESTA run inside a zip file:
+
+  .. code-block:: python
+
+      import sisl
+
+      sisl.get_sile("/path/to/data.zip/run/RUN.fdf").read_hamiltonian()
+
+  Writing a Hamiltonian inside a zip file:
+
+  ..  code-block:: python
+
+      import sisl
+
+      geom = sisl.geom.graphene()
+      H = sisl.Hamiltonian(geom)
+
+      H.write_hamiltonian("/path/to/data.zip/graphene.HSX")
+
+  By passing the path inside the zip file as a string, ``sisl`` will
+  automatically create the ``zipfile.ZipFile`` object and close it
+  when it is done. If you don't want the zip file to be closed, you can
+  create it externally and then pass a ``zipfile.Path`` to ``sisl``:
+
+  .. code-block:: python
+
+      import sisl
+      import zipfile
+
+      # Create a zip file or append to an existing one
+      zip_file = zipfile.ZipFile("myzipfile.zip", "a")
+      # Define path inside the zip file
+      H_path = zipfile.Path(zip_file, "graphene.HSX")
+
+      geom = sisl.geom.graphene()
+      H = sisl.Hamiltonian(geom)
+
+      H.write_hamiltonian(H_path)
+
+      # Now the zip file is not closed, it is up to you to close it
+      # when you are done
+      zip_file.close()
+
+  (:pull:`914`)
+
+
+- Added `prune_range` to matrices
+
+  This allows one to remove couplings
+  that are further than some distance.
+  It isn't fully implemented for atomic sub-sets.
+  But should be implemented in the future.
+
+
+- Added pressure and efield unit types
+
+
+- Added rotation_matrix to make rotations simpler
+
+  Also enabled `order` argument to `spin_rotate`.
+
+
+
+Changes and improvements
+========================
+
+- Added and made CODATA-2022 values the default
+
+  Now a wider range of CODATA values
+  are available. One can switch between
+  used version by using `SISL_CODATA=2018|2022`
+  if needed.
+
+  (:pull:`913`)
+
+
+- Allow `spin_rotate`/`spin_align` on other than `DensityMatrix` objects
+
+  This is needed because one might equally be interested in this
+  for Hamiltonians etc.
+
+  (:pull:`921`)
+
+
+
+Bugfixes
+========
+
+- Allowed complex data-types in DensityMatrix methods
+
+  In particular `spin_align`, `spin_rotate` and `mulliken`
+  are now fixed for any data-type.
+
+  (:pull:`911`)
+
+
+- Fixed `stdoutSileSiesta.read_scf`
+
+  It parsed the wrong spin moment and so
+  had a wrong read of the first SCF iteration.
+
+  (:pull:`919`)

@@ -28,13 +28,9 @@ between versions.
 .. toctree::
    :maxdepth: 2
 
-   0.16.0 <release/0.16.0-notes.rst>
+   0.16.1 <release/0.16.1-notes.rst>
 
-..
-   Once we have two releases using towncrier, we'll only
-   have maxdepth of 2 for the latest entry, others
-   will just have maxdepth 1
-   .. toctree::
+.. toctree::
    :maxdepth: 1
 
    0.16.0 <release/0.16.0-notes.rst>
