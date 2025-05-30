@@ -1,0 +1,6 @@
+sisl 0.16.2 Release Notes
+*************************
+
+Released on 2025-05-30.
+
+(bugfix for wheel-creation)
