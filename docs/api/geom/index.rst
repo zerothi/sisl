@@ -22,3 +22,4 @@ are available to handle this complex object.
    :maxdepth: 1
 
    neighbors
+   indexing

@@ -1,8 +1,8 @@
 .. .. _utilities:
 
-*********
-Utilities
-*********
+************************
+Utilities (`sisl.utils`)
+************************
 
 .. module:: sisl.utils
 

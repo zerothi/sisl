@@ -11,12 +11,13 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._category import CategoryMeta
-from sisl._core import Geometry, Lattice, LatticeChild
+from sisl._core import Geometry, Lattice
 from sisl._core._lattice import cell_invert
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.shape import Shape
 from sisl.typing import AtomsIndex
+from sisl.typing._core import LatticeLike
 from sisl.utils.misc import direction
 
 from .base import AtomCategory, NullCategory
@@ -62,12 +63,13 @@ class AtomFracSite(AtomCategory):
 
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", "0.15", "0.17")
     def __init__(
-        self, lattice, atol=1.0e-5, offset=(0.0, 0.0, 0.0), foffset=(0.0, 0.0, 0.0)
+        self,
+        lattice: LatticeLike,
+        atol: float = 1.0e-5,
+        offset: coord = (0.0, 0.0, 0.0),
+        foffset: Coord = (0.0, 0.0, 0.0),
     ):
-        if isinstance(lattice, LatticeChild):
-            lattice = lattice.lattice
-        elif not isinstance(lattice, Lattice):
-            lattice = Lattice(lattice)
+        lattice = Lattice.new(lattice)
 
         # Unit-cell to fractionalize
         self._cell = lattice.cell.copy()

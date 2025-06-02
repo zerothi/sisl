@@ -16,8 +16,8 @@ Some of the geometries are created in section based geometries, such as `heteror
 This functionality is provided through the `composite_geometry`.
 
 
-Bulk
-----
+Bulk (3D)
+---------
 
 .. autosummary::
    :toctree: generated/
@@ -40,6 +40,7 @@ Surfaces (slabs)
    fcc_slab
    rocksalt_slab
 
+
 0D materials
 ------------
 
@@ -49,6 +50,7 @@ Surfaces (slabs)
    honeycomb_flake
    graphene_flake
    triangulene
+
 
 1D materials
 ------------
@@ -79,12 +81,11 @@ Surfaces (slabs)
    goldene
 
 
-Helpers
--------
+Ancillary methods
+-----------------
 
 .. autosummary::
    :toctree: generated/
 
-   AtomCategory
    composite_geometry
    CompositeGeometrySection

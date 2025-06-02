@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from math import pi
+from typing import Optional
 
 import numpy as np
 
@@ -11,6 +12,7 @@ import sisl._array as _a
 from sisl._indices import indices_in_cylinder
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument, deprecation, warn
+from sisl.typing import Coord, SeqInt, SeqOrScalarFloat
 from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
 
 from .base import PureShape, ShapeToDispatch
@@ -52,7 +54,9 @@ class EllipticalCylinder(PureShape):
 
     __slots__ = ("_v", "_nh", "_iv", "_h")
 
-    def __init__(self, v, h: float, axes=(0, 1), center=None):
+    def __init__(
+        self, v: Coord, h: float, axes: SeqInt = (0, 1), center: Optional[Coord] = None
+    ):
         super().__init__(center)
 
         v = _a.asarrayd(v)
@@ -92,7 +96,7 @@ class EllipticalCylinder(PureShape):
         # scalar
         self._h = h
 
-    def copy(self):
+    def copy(self) -> Self:
         return self.__class__(self.radial_vector, self.height, self.center)
 
     @property
@@ -106,21 +110,21 @@ class EllipticalCylinder(PureShape):
         return self._h
 
     @property
-    def radius(self):
+    def radius(self) -> np.ndarray:
         """Radius of the ellipse base vectors"""
         return fnorm(self._v)
 
     @property
-    def radial_vector(self):
+    def radial_vector(self) -> np.ndarray:
         """The radial vectors"""
         return self._v
 
     @property
-    def height_vector(self):
+    def height_vector(self) -> np.ndarray:
         """The height vector"""
         return self._nh
 
-    def scale(self, scale: float):
+    def scale(self, scale: SeqOrScalarFloat) -> Self:
         """Create a new shape with all dimensions scaled according to `scale`
 
         Parameters
@@ -138,7 +142,7 @@ class EllipticalCylinder(PureShape):
             h = self._h * scale
         return self.__class__(v, h, self.center)
 
-    def expand(self, radius):
+    def expand(self, radius: SeqOrScalarFloat) -> Self:
         """Expand elliptical cylinder by a constant value along each vector and height
 
         Parameters

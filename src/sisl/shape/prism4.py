@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from typing import Optional
+
 import numpy as np
 
 import sisl._array as _a
@@ -11,6 +13,7 @@ from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.linalg import inv
 from sisl.messages import deprecate_argument, deprecation
+from sisl.typing import Coord, SeqOrScalarFloat
 from sisl.utils.mathematics import expand, fnorm
 
 from .base import PureShape, ShapeToDispatch
@@ -27,10 +30,10 @@ class Cuboid(PureShape):
     v : float or (3,) or (3, 3)
        vectors describing the cuboid, if only 3 the cuboid will be
        along the Euclidean vectors.
-    center : (3,), optional
+    center :
        the center of the cuboid. Defaults to the origin.
        Not allowed as argument if `origin` is passed.
-    origin : (3,), optional
+    origin :
        the offset for the cuboid. The center will be equal to ``v.sum(0) + origin``.
        Not allowed as argument if `center` is passed.
 
@@ -45,7 +48,9 @@ class Cuboid(PureShape):
 
     __slots__ = ("_v", "_iv")
 
-    def __init__(self, v, center=None, origin=None):
+    def __init__(
+        self, v, center: Optional[Coord] = None, origin: Optional[Coord] = None
+    ):
         v = _a.asarrayd(v)
         if v.size == 1:
             self._v = np.identity(3) * v  # a "Euclidean" cube
@@ -71,10 +76,10 @@ class Cuboid(PureShape):
         # Create the reciprocal cell
         self._iv = inv(self._v)
 
-    def copy(self):
+    def copy(self) -> Self:
         return self.__class__(self._v, self.center)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__class__.__name__ + "{{O({1} {2} {3}), vol: {0}}}".format(
             self.volume, *self.origin
         )
@@ -85,21 +90,21 @@ class Cuboid(PureShape):
         return abs(dot3(self._v[0, :], cross3(self._v[1, :], self._v[2, :])))
 
     @property
-    def origin(self):
+    def origin(self) -> np.ndarray:
         """Return the origin of the Cuboid (lower-left corner)"""
         return self.center - (self._v * 0.5).sum(0)
 
     @origin.setter
-    def origin(self, origin):
+    def origin(self, origin: Coord):
         """Re-setting the origin can sometimes be necessary"""
         self.center = origin + (self._v * 0.5).sum(0)
 
     @property
-    def edge_length(self):
+    def edge_length(self) -> np.ndarray:
         """The lengths of each of the vector that defines the cuboid"""
         return fnorm(self._v)
 
-    def scale(self, scale):
+    def scale(self, scale: SeqOrScalarFloat) -> Self:
         """Scale the cuboid box size (center is retained)
 
         Parameters
@@ -112,7 +117,7 @@ class Cuboid(PureShape):
             scale.shape = (3, 1)
         return self.__class__(self._v * scale, self.center)
 
-    def expand(self, length):
+    def expand(self, length: SeqOrScalarFloat) -> Self:
         """Expand the cuboid by a constant value along side vectors
 
         Parameters
@@ -239,18 +244,23 @@ class Cube(Cuboid, dispatchs=[("to", "keep")]):
 
     Parameters
     ----------
-    side : float
+    side :
        side-length of the cube, or vector
-    center : (3,), optional
+    center :
        the center of the cuboid. Defaults to the origin.
        Not allowed as argument if `origin` is passed.
-    origin : (3,), optional
+    origin :
        the lower left corner of the cuboid.
        Not allowed as argument if `center` is passed.
     """
 
     __slots__ = ()
 
-    def __init__(self, side, center=None, origin=None):
+    def __init__(
+        self,
+        side: float,
+        center: Optional[Coord] = None,
+        origin: Optional[Coord] = None,
+    ):
         side = _a.asarrayd(side).ravel()[0]
         super().__init__(side, center, origin)

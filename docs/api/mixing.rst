@@ -1,6 +1,6 @@
 .. _mixing:
 
-Mixing self-consistent quantities
+Mixing (`sisl.mixing`)
 =================================
 
 .. module:: sisl.mixing
@@ -39,4 +39,3 @@ Mixing algorithms
    PulayMixer
    AdaptiveDIISMixer
    AdaptivePulayMixer
-   

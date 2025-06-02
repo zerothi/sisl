@@ -13,6 +13,8 @@ from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 from sisl._internal import set_module
 from sisl.messages import deprecation
+from sisl.typing import Coord
+from sisl.typing._common import SeqOrScalarFloat
 from sisl.utils.mathematics import fnorm
 
 __all__ = [
@@ -36,51 +38,51 @@ class Shape(
 ):
     """Baseclass for all shapes. Logical operations are implemented on this class.
 
-    **This class must be sub classed.**
+        **This class must be sub classed.**
 
-    Also all the required methods are predefined although they issue an error if they are
-    not implemented in the sub-classed class.
+        Also all the required methods are predefined although they issue an error if they are
+        not implemented in the sub-classed class.
 
-    There are a few routines that are necessary when implementing
-    an inherited class:
+        There are a few routines that are necessary when implementing
+        an inherited class:
 
-    `center`
-      return the geometric center of the shape.
+        `center`
+          return the geometric center of the shape.
 
-    `within`
-      Returns a boolean array which defines whether a coordinate is within
-      or outside the shape.
+        `within`
+          Returns a boolean array which defines whether a coordinate is within
+          or outside the shape.
 
-    `within_index`
-      Equivalent to `within`, however only the indices of those within are returned.
+        `within_index`
+          Equivalent to `within`, however only the indices of those within are returned.
 
-    `copy`
-      Create a new identical shape.
+        `copy`
+          Create a new identical shape.
+    oor
+        The minimal requirement a shape can have are the above attributes.
 
-    The minimal requirement a shape can have are the above attributes.
+        Subclassed shapes may have additional methods by which they are defined.
 
-    Subclassed shapes may have additional methods by which they are defined.
+        Any `Shape` may be used to construct other shapes by applying set operations.
+        Currently implemented binary operators are:
 
-    Any `Shape` may be used to construct other shapes by applying set operations.
-    Currently implemented binary operators are:
+        `__or__`/`__add__` : set union, either `|` or `+` operator (not `or`)
 
-    `__or__`/`__add__` : set union, either `|` or `+` operator (not `or`)
+        `__and__` : set intersection, `&` operator (not `and`)
 
-    `__and__` : set intersection, `&` operator (not `and`)
+        `__sub__` : set complement, `-` operator
 
-    `__sub__` : set complement, `-` operator
+        `__xor__` : set disjunctive union, `^` operator
 
-    `__xor__` : set disjunctive union, `^` operator
-
-    Parameters
-    ----------
-    center : (3,)
-       the center of the shape
+        Parameters
+        ----------
+        center : (3,)
+           the center of the shape
     """
 
     __slots__ = ("_center",)
 
-    def __init__(self, center=(0, 0, 0)):
+    def __init__(self, center: Coord = (0, 0, 0)):
         if center is None:
             center = (0, 0, 0)
         center = _a.asarrayd(center).flatten()
@@ -94,27 +96,27 @@ class Shape(
             )
         self._center = center
 
-    def copy(self):
+    def copy(self) -> Self:
         """Create a new copy of this object."""
         return self.__class__(self.center)
 
     @property
-    def center(self):
+    def center(self) -> np.ndarray:
         """The geometric center of the shape"""
         return self._center
 
     @center.setter
-    def center(self, center):
+    def center(self, center: Coord):
         """Set the geometric center of the shape"""
         self._center[:] = center
 
-    def scale(self, scale):
+    def scale(self, scale: SeqOrScalarFloat) -> Self:
         """Return a new Shape with scaled size"""
         raise NotImplementedError(
             f"{self.__class__.__name__}.scale has not been implemented"
         )
 
-    def translate(self, xyz: Sequence[float]):
+    def translate(self, xyz: Coord):
         """Translate the center of the shape by `xyz`."""
         copy = self.copy()
         copy.center = copy.center + xyz
@@ -181,24 +183,24 @@ class Shape(
         """Checks whether all of `other` is within the shape"""
         return np.all(self.within(other))
 
-    def __str__(self):
+    def __str__(self) -> str:
         c = self.center
         return f"{self.__class__.__name__}{{c({c[0]} {c[1]} {c[2]})}}"
 
     # Implement logical operators to enable composition of sets
-    def __and__(self, other):
+    def __and__(self, other) -> AndShape:
         return AndShape(self, other)
 
-    def __or__(self, other):
+    def __or__(self, other) -> OrShape:
         return OrShape(self, other)
 
-    def __add__(self, other):
+    def __add__(self, other) -> OrShape:
         return OrShape(self, other)
 
-    def __sub__(self, other):
+    def __sub__(self, other) -> SubShape:
         return SubShape(self, other)
 
-    def __xor__(self, other):
+    def __xor__(self, other) -> XOrShape:
         return XOrShape(self, other)
 
 
@@ -244,7 +246,7 @@ class CompositeShape(Shape):
 
     __slots__ = ("A", "B")
 
-    def __init__(self, A, B):
+    def __init__(self, A: Shape, B: Shape):
         self.A = A.copy()
         self.B = B.copy()
 
@@ -253,23 +255,23 @@ class CompositeShape(Shape):
         cls.__slots__ = ()
         cls.__str__ = _composite_name(composite_name)
 
-    def copy(self):
+    def copy(self) -> Self:
         """Create a new copy of this object."""
         return self.__class__(self.A, self.B)
 
     @property
-    def center(self):
+    def center(self) -> np.ndarray:
         """Average center of composite shapes"""
         return (self.A.center + self.B.center) * 0.5
 
     @center.setter
-    def center(self, center):
+    def center(self, center: Coord):
         """Set the geometric center of the shape"""
         self.A.center[:] = center
         self.B.center[:] = center
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Volume of a composite shape is current undefined, so a negative number is returned (may change)"""
         # The volume for these set operators cannot easily be defined, so
         # we should rather not do anything about it.
@@ -289,7 +291,7 @@ class CompositeShape(Shape):
         """Create a sphere which is surely encompassing the *full* shape"""
         return self.to.Sphere(*args, **kwargs)
 
-    def scale(self, scale):
+    def scale(self, scale: SeqOrScalarFloat):
         """Return a new Shape with scaled center coords and shapes"""
         return self.__class__(self.A.scale(scale), self.B.scale(scale))
 
@@ -472,7 +474,7 @@ class PureShape(Shape):
     __slots__ = ()
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         raise NotImplementedError(
             f"{self.__class__.__name__}.volume has not been implemented"
         )
@@ -534,7 +536,7 @@ class NullShape(PureShape, dispatchs=[("to", "copy")]):
         return self.to.Cuboid(*args, **kwargs)
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """The volume of a null shape is exactly 0."""
         return 0.0
 

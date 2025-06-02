@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from math import pi
+from typing import Optional
 
 import numpy as np
 
@@ -12,6 +13,7 @@ from sisl._indices import indices_in_sphere
 from sisl._internal import set_module
 from sisl._math_small import product3
 from sisl.messages import deprecate_argument, deprecation, warn
+from sisl.typing import Coord, SeqOrScalarFloat
 from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
 
 from .base import PureShape, ShapeToDispatch
@@ -42,7 +44,7 @@ class Ellipsoid(PureShape):
 
     __slots__ = ("_v", "_iv")
 
-    def __init__(self, v, center=None):
+    def __init__(self, v, center: Optional[Coord] = None):
         super().__init__(center)
         v = _a.asarrayd(v)
         if v.size == 1:
@@ -72,7 +74,7 @@ class Ellipsoid(PureShape):
         # Create the reciprocal cell
         self._iv = np.linalg.inv(self._v)
 
-    def copy(self):
+    def copy(self) -> Self:
         return self.__class__(self._v, self.center)
 
     @property
@@ -81,22 +83,22 @@ class Ellipsoid(PureShape):
         return 4.0 / 3.0 * pi * product3(self.radius)
 
     @property
-    def radius(self):
+    def radius(self) -> np.ndarray:
         """Return the radius of the Ellipsoid"""
         return fnorm(self._v)
 
     @property
-    def radial_vector(self):
+    def radial_vector(self) -> np.ndarray:
         """The radial vectors"""
         return self._v
 
-    def __str__(self):
+    def __str__(self) -> str:
         cr = np.array([self.center, self.radius])
         return self.__class__.__name__ + (
             "{{c({0:.2f} {1:.2f} {2:.2f}) " "r({3:.2f} {4:.2f} {5:.2f})}}"
         ).format(*cr.ravel())
 
-    def scale(self, scale):
+    def scale(self, scale: SeqOrScalarFloat) -> Self:
         """Return a new shape with a larger corresponding to `scale`
 
         Parameters
@@ -109,7 +111,7 @@ class Ellipsoid(PureShape):
             scale.shape = (3, 1)
         return self.__class__(self._v * scale, self.center)
 
-    def expand(self, radius):
+    def expand(self, radius: SeqOrScalarFloat) -> Self:
         """Expand ellipsoid by a constant value along each radial vector
 
         Parameters
@@ -233,7 +235,7 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
 
     __slots__ = ()
 
-    def __init__(self, radius, center=None):
+    def __init__(self, radius, center: Optional[Coord] = None):
         radius = _a.asarrayd(radius).ravel()
         if len(radius) > 1:
             raise ValueError(
@@ -243,12 +245,12 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
             )
         super().__init__(radius, center=center)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "{0}{{c({2:.2f} {3:.2f} {4:.2f}) r({1:.2f})}}".format(
             self.__class__.__name__, self.radius, *self.center
         )
 
-    def copy(self):
+    def copy(self) -> Self:
         return self.__class__(self.radius, self.center)
 
     @property
@@ -257,26 +259,26 @@ class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
         return 4.0 / 3.0 * pi * self.radius**3
 
     @property
-    def radius(self):
+    def radius(self) -> float:
         """Return the radius of the Sphere"""
         return self._v[0, 0]
 
-    def scale(self, scale):
+    def scale(self, scale: float) -> Self:
         """Return a new sphere with a larger radius
 
         Parameters
         ----------
-        scale : float
+        scale :
             the scale parameter for the radius
         """
         return self.__class__(self.radius * scale, self.center)
 
-    def expand(self, radius):
+    def expand(self, radius: float) -> Self:
         """Expand sphere by a constant radius
 
         Parameters
         ----------
-        radius : float
+        radius :
            the extension in Ang per ellipsoid radial vector
         """
         return self.__class__(self.radius + radius, self.center)

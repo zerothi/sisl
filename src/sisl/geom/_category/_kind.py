@@ -15,6 +15,7 @@ from sisl._core import Geometry
 from sisl._help import isiterable
 from sisl._internal import set_module
 from sisl.typing import AtomsIndex
+from sisl.typing._common import SeqOrScalarInt
 from sisl.utils import lstranges, strmap
 
 from .base import AtomCategory, NullCategory, _sanitize_loop
@@ -34,7 +35,7 @@ class AtomZ(AtomCategory):
 
     __slots__ = ("_Z",)
 
-    def __init__(self, Z: Union[int, Sequence[int]]):
+    def __init__(self, Z: SeqOrScalarInt):
         if isiterable(Z):
             self._Z = set(Z)
         else:
@@ -233,7 +234,7 @@ class AtomSeq(AtomIndex):
 
     __slots__ = ("_seq",)
 
-    def __init__(self, seq):
+    def __init__(self, seq: str):
         self._seq = seq
         self._name = seq
 
@@ -287,7 +288,7 @@ class AtomEven(AtomCategory):
 
     __slots__ = ()
 
-    def __init__(self, name="even"):
+    def __init__(self, name: str = "even"):
         super().__init__(name)
 
     @_sanitize_loop
@@ -307,7 +308,7 @@ class AtomOdd(AtomCategory):
 
     __slots__ = ()
 
-    def __init__(self, name="odd"):
+    def __init__(self, name: str = "odd"):
         super().__init__(name)
 
     @_sanitize_loop

@@ -2,8 +2,8 @@
 
 .. _toc-sisl-viz:
 
-Visualization
-----------------------------
+Visualization (`sisl.viz`)
+--------------------------
 
 This is a full visualization framework developed specifically for ``sisl`` to visualize
 all the processing that you can do with the package. The aim is to provide a **high-level API**
@@ -16,7 +16,7 @@ there is support for visualizing the plots with `plotly`_, `matplotlib`_, `blend
 allows for the user to **extend the visualizing options** quite simply without modifying ``sisl``'s internal code.
 
 The framework started as a GUI, but then evolved to make it usable by ``sisl`` users directly. Therefore,
-it can serve as a very robust (highly tested) and featureful **backend to integrate visualizations into graphical interfaces**.
+it can serve as a very robust (highly tested) and feature full **backend to integrate visualizations into graphical interfaces**.
 An example of this is `the sisl-gui package <https://pypi.org/project/sisl-gui/>`_.
 
 Basic Tutorials
