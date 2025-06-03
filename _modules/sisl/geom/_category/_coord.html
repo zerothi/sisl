@@ -1,0 +1,526 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.geom._category._coord &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=7800a641"></script>
+      <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.geom._category._coord</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.geom._category._coord</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl._array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_a</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._category</span><span class="w"> </span><span class="kn">import</span> <span class="n">CategoryMeta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._core._lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">cell_invert</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.shape</span><span class="w"> </span><span class="kn">import</span> <span class="n">Shape</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">Coord</span><span class="p">,</span> <span class="n">LatticeLike</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">direction</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomCategory</span><span class="p">,</span> <span class="n">NullCategory</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AtomFracSite&quot;</span><span class="p">,</span> <span class="s2">&quot;AtomXYZ&quot;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AtomFracSite</span><span class="p">(</span><span class="n">AtomCategory</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Classify atoms based on fractional sites for a given supercell</span>
+
+<span class="sd">    Match atomic coordinates based on the fractional positions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lattice :</span>
+<span class="sd">       an object that defines the lattice vectors.</span>
+<span class="sd">    atol :</span>
+<span class="sd">       the absolute tolerance (in Ang) to check whether the site is an integer</span>
+<span class="sd">       site.</span>
+<span class="sd">    offset :</span>
+<span class="sd">       an offset made to the geometry coordinates before calculating the fractional</span>
+<span class="sd">       coordinates according to `lattice`</span>
+<span class="sd">    foffset :</span>
+<span class="sd">       fractional offset of the fractional coordinates, this allows to select sub-regions</span>
+<span class="sd">       in the `lattice` lattice vectors.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; gr = graphene() * (4, 5, 1)</span>
+<span class="sd">    &gt;&gt;&gt; A_site = AtomFracSite(graphene())</span>
+<span class="sd">    &gt;&gt;&gt; B_site = AtomFracSite(graphene(), foffset=(-1/3, -1/3, 0))</span>
+<span class="sd">    &gt;&gt;&gt; cat = (A_site | B_site).categorize(gr)</span>
+<span class="sd">    &gt;&gt;&gt; for ia, c in enumerate(cat):</span>
+<span class="sd">    ...    if ia % 2 == 0:</span>
+<span class="sd">    ...        assert c == A_site</span>
+<span class="sd">    ...    else:</span>
+<span class="sd">    ...        assert c == B_site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_cell&quot;</span><span class="p">,</span> <span class="s2">&quot;_icell&quot;</span><span class="p">,</span> <span class="s2">&quot;_length&quot;</span><span class="p">,</span> <span class="s2">&quot;_atol&quot;</span><span class="p">,</span> <span class="s2">&quot;_offset&quot;</span><span class="p">,</span> <span class="s2">&quot;_foffset&quot;</span><span class="p">)</span>
+
+    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lattice</span><span class="p">:</span> <span class="n">LatticeLike</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0e-5</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="n">Coord</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="n">foffset</span><span class="p">:</span> <span class="n">Coord</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+    <span class="p">):</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
+
+        <span class="c1"># Unit-cell to fractionalize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># lengths of lattice vectors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">length</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># inverse cell (for fractional coordinate calculations)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_icell</span> <span class="o">=</span> <span class="n">cell_invert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="p">)</span>
+        <span class="c1"># absolute tolerance [Ang]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_atol</span> <span class="o">=</span> <span class="n">atol</span>
+        <span class="c1"># offset of coordinates before calculating the fractional coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># fractional offset before comparing to the integer part of the fractional coordinate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_foffset</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">foffset</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;fracsite(atol=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_atol</span><span class="si">}</span><span class="s2">, offset=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="si">}</span><span class="s2">, foffset=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_foffset</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="AtomFracSite.categorize">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.AtomFracSite.html#sisl.geom.AtomFracSite.categorize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">categorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># _sanitize_loop will ensure that atoms will always be an integer</span>
+        <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fxyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foffset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+            <span class="n">fxyz</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foffset</span>
+            <span class="p">)</span>
+        <span class="c1"># Find fractional indices that match to an integer of the passed cell</span>
+        <span class="c1"># We multiply with the length of the cell to get an error in Ang</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">((</span><span class="n">fxyz</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">fxyz</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atol</span><span class="p">,</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">NullCategory</span><span class="p">(),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;icell&quot;</span><span class="p">,</span> <span class="s2">&quot;atol&quot;</span><span class="p">,</span> <span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="s2">&quot;foffset&quot;</span><span class="p">),</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AtomXYZ</span><span class="p">(</span><span class="n">AtomCategory</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Classify atoms based on coordinates</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    *args : Shape</span>
+<span class="sd">       any shape that implements `Shape.within`</span>
+<span class="sd">    **kwargs:</span>
+<span class="sd">       keys are operator specifications and values are</span>
+<span class="sd">       used in those specifications.</span>
+<span class="sd">       The keys are split into 3 sections</span>
+<span class="sd">       ``&lt;options&gt;_&lt;direction&gt;_&lt;operator&gt;``</span>
+<span class="sd">       - ``options`` are made of combinations of ``[&#39;a&#39;, &#39;f&#39;]``</span>
+<span class="sd">         i.e. ``&quot;af&quot;``, ``&quot;f&quot;`` or ``&quot;a&quot;`` are all valid.</span>
+<span class="sd">         An ``a`` takes the absolute value, ``f`` means a fractional</span>
+<span class="sd">         coordinate. This part is optional.</span>
+<span class="sd">       - ``direction`` is anything that gets parsed in `sisl.utils.misc.direction`</span>
+<span class="sd">         either one of ``{0, &quot;X&quot;, &quot;x&quot;, &quot;a&quot;, 1, &quot;Y&quot;, &quot;y&quot;, &quot;b&quot;, 2, &quot;Z&quot;, &quot;z&quot;, &quot;c&quot;}``.</span>
+<span class="sd">       - ``operator`` is a name for an operator defined in the `operator` module.</span>
+
+<span class="sd">       For instance ``a_z_lt=3.`` will be equivalent to the</span>
+<span class="sd">       boolean operation ``np.fabs(geometry.xyz[:, 2]) &lt; 3.``.</span>
+
+<span class="sd">       Optionally one need not specify the operator in which case one should</span>
+<span class="sd">       provide an argument of two values.</span>
+
+<span class="sd">       For instance ``c=(3., 6.)`` will be equivalent to the</span>
+<span class="sd">       boolean operation ``3. &lt;= geometry.xyz[:, 2]) &lt;= 6.``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    -----------</span>
+<span class="sd">    x, y, z, fx, fy, fz, ax, ay, az: AtomCategory</span>
+<span class="sd">        Shortcuts for creating an `AtomXYZ` category.</span>
+
+<span class="sd">        .. code::</span>
+
+<span class="sd">            AtomXYZ.x(-2, 3) == AtomXYZ(x=(-2, 3))</span>
+<span class="sd">            AtomXYZ.fx &lt; 3 == AtomXYZ.fx(None, 3) == AtomXYZ(f_x=(None, 3)) == AtomXYZ(f_x_lt=3)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_coord_check&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">create1</span><span class="p">(</span><span class="n">is_frac</span><span class="p">,</span> <span class="n">is_abs</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_abs</span><span class="p">:</span>
+
+                <span class="nd">@wraps</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="nd">@wraps</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">is_frac</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">create2</span><span class="p">(</span><span class="n">is_frac</span><span class="p">,</span> <span class="n">is_abs</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_abs</span><span class="p">:</span>
+
+                <span class="nd">@wraps</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">b</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="nd">@wraps</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+                <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">is_frac</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">val</span>
+
+        <span class="n">coord_ops</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># For each *args we expect this to be a shape</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Shape</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires non-keyword arguments &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;to be of type Shape </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">coord_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">create1</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">within</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># will allow us to do value.size</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="c1"># Parse key for to get values</span>
+            <span class="c1"># The key must have this specification:</span>
+            <span class="c1"># [fa]_&quot;dir&quot;_&quot;op&quot;</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">spec</span><span class="p">,</span> <span class="n">sdir</span><span class="p">,</span> <span class="n">op</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">spec</span><span class="p">,</span> <span class="n">sdir</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sdir</span><span class="p">,</span> <span class="n">op</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">sdir</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not determine the operations for </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> must be on the form [fa]_&lt;dir&gt;_&lt;operator&gt;&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># parse options</span>
+            <span class="n">is_abs</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span> <span class="ow">in</span> <span class="n">spec</span>
+            <span class="n">is_frac</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="ow">in</span> <span class="n">spec</span>
+            <span class="c1"># Convert to integer axis</span>
+            <span class="n">sdir</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">sdir</span><span class="p">)</span>
+
+            <span class="c1"># Now we are ready to build our scheme</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># do it twice</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">coord_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">create2</span><span class="p">(</span><span class="n">is_frac</span><span class="p">,</span> <span class="n">is_abs</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">,</span> <span class="n">sdir</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">coord_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">create2</span><span class="p">(</span><span class="n">is_frac</span><span class="p">,</span> <span class="n">is_abs</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">,</span> <span class="n">sdir</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">coord_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">create2</span><span class="p">(</span><span class="n">is_frac</span><span class="p">,</span> <span class="n">is_abs</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">operator</span><span class="p">,</span> <span class="n">op</span><span class="p">),</span> <span class="n">sdir</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_check</span> <span class="o">=</span> <span class="n">coord_ops</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;coord&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AtomXYZ.categorize">
+<a class="viewcode-back" href="../../../../api/geom/generated/sisl.geom.AtomXYZ.html#sisl.geom.AtomXYZ.categorize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">categorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span>
+            <span class="n">fxyz</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
+            <span class="n">fxyz</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="n">frac</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">frac</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">fxyz</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">d</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">d</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+
+        <span class="n">and_reduce</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">and_reduce</span><span class="p">([</span><span class="n">call</span><span class="p">(</span><span class="o">*</span><span class="n">four</span><span class="p">)</span> <span class="k">for</span> <span class="n">four</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coord_check</span><span class="p">]),</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">NullCategory</span><span class="p">(),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coord_check</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_coord_check</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">s4</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coord_check</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">s4</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_coord_check</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="c1"># The following code is just to make the use of coordinate categories more convenient</span>
+<span class="c1"># We will create one individual category for each direction. In this way, one can access</span>
+<span class="c1"># them directly in the keyword category builder. E.g.: `AtomCategory(x=(1,2))` creates `AtomXYZ(x=(1,2))`</span>
+<span class="c1"># without needing to nest &quot;x&quot;, as in `AtomCategory(xyz={&quot;x&quot;: (1,2)})`.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AtomXYZMeta</span><span class="p">(</span><span class="n">CategoryMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Metaclass to give extra functionality to individual coordinates categories.</span>
+
+<span class="sd">    The classes generated by this metaclass can use `&lt;` and `&gt;` to create categories.</span>
+<span class="sd">    See examples.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    If `AtomX` has been built using this metaclass:</span>
+<span class="sd">    &gt;&gt;&gt; AtomX &lt; 5 == AtomX((None, 5)) == AtomXYZ(x=(None, 5))</span>
+<span class="sd">    &gt;&gt;&gt; AtomX &gt; 5 == AtomX(gt=5) == AtomXYZ(x=(5, None))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">lt</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">le</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">gt</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_new_factory</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">interval</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will go into the __new__ method of the coordinate classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_apply_key</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">v</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">new_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_apply_key</span><span class="p">,</span> <span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Convert interval to correct interpretation</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># we want to do it explicitly to let AtomXYZ raise an</span>
+            <span class="c1"># error for multiple entries</span>
+            <span class="k">return</span> <span class="n">AtomXYZ</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]},</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># we want to do it explicitly to let AtomXYZ raise an</span>
+            <span class="c1"># error for multiple entries</span>
+            <span class="k">return</span> <span class="n">AtomXYZ</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">interval</span><span class="p">},</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> non-keyword argumest must be 1 tuple, or 2 values&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">AtomXYZ</span><span class="p">(</span><span class="o">**</span><span class="n">new_kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_new</span>
+
+
+<span class="c1"># Iterate over all directions that deserve an individual class</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;f_x&quot;</span><span class="p">,</span> <span class="s2">&quot;f_y&quot;</span><span class="p">,</span> <span class="s2">&quot;f_z&quot;</span><span class="p">,</span> <span class="s2">&quot;a_x&quot;</span><span class="p">,</span> <span class="s2">&quot;a_y&quot;</span><span class="p">,</span> <span class="s2">&quot;a_z&quot;</span><span class="p">):</span>
+    <span class="c1"># The underscores are just kept for the key that is passed to AtomXYZ,</span>
+    <span class="c1"># but the name of the category will have no underscore</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create the class for this direction</span>
+    <span class="c1"># note this is lower case since AtomZ should not interfere with Atomz</span>
+    <span class="n">new_cls</span> <span class="o">=</span> <span class="n">AtomXYZMeta</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Atom</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">AtomCategory</span><span class="p">,),</span> <span class="p">{</span><span class="s2">&quot;__new__&quot;</span><span class="p">:</span> <span class="n">_new_factory</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="s2">&quot;__slots__&quot;</span><span class="p">:</span> <span class="p">()}</span>
+    <span class="p">)</span>
+
+    <span class="n">new_cls</span> <span class="o">=</span> <span class="n">set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)(</span><span class="n">new_cls</span><span class="p">)</span>
+
+    <span class="c1"># Set it as an attribute of `AtomXYZ`, so that you can access them from it.</span>
+    <span class="c1"># Note that the classes are never exposed, so you can not import them, and the way</span>
+    <span class="c1"># to use them is either through the kw builder in `AtomCategory` or from `AtomXYZ` attributes.</span>
+    <span class="c1"># This enables AtomXYZ.fz &lt; 0.5, for example.</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">AtomXYZ</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">new_cls</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

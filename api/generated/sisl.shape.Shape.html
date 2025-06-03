@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=d9901acd"></script>
+      <script src="../../_static/documentation_options.js?v=c2762048"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -72,7 +72,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../visualization/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
@@ -81,10 +81,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.mixing</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../utilities.html">Utilities</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../utilities.shape.html">Shapes</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.shape.Shape</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.shape.Cuboid.html">sisl.shape.Cuboid</a></li>
@@ -100,7 +100,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
@@ -134,7 +134,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
-          <li class="breadcrumb-item"><a href="../utilities.html">Utilities</a></li>
+          <li class="breadcrumb-item"><a href="../utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../utilities.shape.html">Shapes</a></li>
       <li class="breadcrumb-item active">sisl.shape.Shape</li>
       <li class="wy-breadcrumbs-aside">
@@ -153,22 +153,22 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.shape.</span></span><span class="sig-name descname"><span class="pre">Shape</span></span><a class="headerlink" href="#sisl.shape.Shape" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Dispatchs</span></code></p>
 <p>Baseclass for all shapes. Logical operations are implemented on this class.</p>
-<p><strong>This class must be sub classed.</strong></p>
+<p>This class must be sub classed.</p>
 <p>Also all the required methods are predefined although they issue an error if they are
 not implemented in the sub-classed class.</p>
 <p>There are a few routines that are necessary when implementing
 an inherited class:</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.shape.Shape.center" title="sisl.shape.Shape.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></dt><dd><p>return the geometric center of the shape.</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.shape.Shape.within" title="sisl.shape.Shape.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a></dt><dd><p>Returns a boolean array which defines whether a coordinate is within
-or outside the shape.</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.shape.Shape.within_index" title="sisl.shape.Shape.within_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_index</span></code></a></dt><dd><p>Equivalent to <a class="reference internal" href="#sisl.shape.Shape.within" title="sisl.shape.Shape.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a>, however only the indices of those within are returned.</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.shape.Shape.copy" title="sisl.shape.Shape.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></dt><dd><p>Create a new identical shape.</p>
-</dd>
-</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">center</span></code>
+return the geometric center of the shape.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">within</span></code>
+Returns a boolean array which defines whether a coordinate is within
+or outside the shape.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">within_index</span></code>
+Equivalent to <a class="reference internal" href="#sisl.shape.Shape.within" title="sisl.shape.Shape.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a>, however only the indices of those within are returned.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">copy</span></code>
+Create a new identical shape.</p></li>
+</ul>
 <p>The minimal requirement a shape can have are the above attributes.</p>
 <p>Subclassed shapes may have additional methods by which they are defined.</p>
 <p>Any <a class="reference internal" href="#sisl.shape.Shape" title="sisl.shape.Shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Shape</span></code></a> may be used to construct other shapes by applying set operations.
@@ -179,7 +179,7 @@ Currently implemented binary operators are:</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__xor__</span></code> : set disjunctive union, <em class="xref py py-obj">^</em> operator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>center</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span></code>) – the center of the shape</p>
+<dd class="field-odd"><p><strong>center</strong> – the center of the shape</p>
 </dd>
 </dl>
 <p class="rubric">Conversion</p>
@@ -237,12 +237,25 @@ Currently implemented binary operators are:</p>
 <dt class="sig sig-object py" id="sisl.shape.Shape.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.copy" title="Link to this definition"></a></dt>
 <dd><p>Create a new copy of this object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Self</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.Shape.scale">
 <span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.scale" title="Link to this definition"></a></dt>
 <dd><p>Return a new Shape with scaled size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scale</strong> (<em>SeqOrScalarFloat</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -308,7 +321,7 @@ Currently implemented binary operators are:</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.shape.Shape.center">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#sisl.shape.Shape.center" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.shape.Shape.center" title="Link to this definition"></a></dt>
 <dd><p>The geometric center of the shape</p>
 </dd></dl>
 

@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=d9901acd"></script>
+      <script src="../../_static/documentation_options.js?v=c2762048"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -72,7 +72,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../visualization/index.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
@@ -81,10 +81,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.mixing</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../utilities.html">Utilities</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../utilities.shape.html">Shapes</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.shape.Shape.html">sisl.shape.Shape</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.shape.Cuboid.html">sisl.shape.Cuboid</a></li>
@@ -100,7 +100,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../core.html">Functional programming</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
 </ul>
 </li>
@@ -134,7 +134,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API reference</a></li>
-          <li class="breadcrumb-item"><a href="../utilities.html">Utilities</a></li>
+          <li class="breadcrumb-item"><a href="../utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a></li>
           <li class="breadcrumb-item"><a href="../utilities.shape.html">Shapes</a></li>
       <li class="breadcrumb-item active">sisl.shape.NullShape</li>
       <li class="wy-breadcrumbs-aside">
@@ -224,6 +224,11 @@ has any meaning.</p>
 <dt class="sig sig-object py" id="sisl.shape.NullShape.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape.copy" title="Link to this definition"></a></dt>
 <dd><p>Create a new copy of this object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Self</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -236,6 +241,14 @@ has any meaning.</p>
 <dt class="sig sig-object py" id="sisl.shape.NullShape.scale">
 <span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape.scale" title="Link to this definition"></a></dt>
 <dd><p>Return a new Shape with scaled size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scale</strong> (<em>SeqOrScalarFloat</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -306,7 +319,7 @@ has any meaning.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.center">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#sisl.shape.NullShape.center" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.shape.NullShape.center" title="Link to this definition"></a></dt>
 <dd><p>The geometric center of the shape</p>
 </dd></dl>
 
@@ -343,7 +356,7 @@ This controls the dispatcher used if called from a class.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.volume">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><a class="headerlink" href="#sisl.shape.NullShape.volume" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.shape.NullShape.volume" title="Link to this definition"></a></dt>
 <dd><p>The volume of a null shape is exactly 0.</p>
 </dd></dl>
 

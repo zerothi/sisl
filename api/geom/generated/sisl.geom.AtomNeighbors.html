@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.geom.AtomNeighbors &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
+      <script src="../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="sisl.geom.NullCategory" href="sisl.geom.NullCategory.html" />
+    <link rel="prev" title="sisl.geom.AtomEven" href="sisl.geom.AtomEven.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../building.html">Creating geometries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../neighbors.html">Finding neighbors</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../indexing.html">Indexing atoms</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomCategory.html">sisl.geom.AtomCategory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomFracSite.html">sisl.geom.AtomFracSite</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomXYZ.html">sisl.geom.AtomXYZ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomZ.html">sisl.geom.AtomZ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomIndex.html">sisl.geom.AtomIndex</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomSeq.html">sisl.geom.AtomSeq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomTag.html">sisl.geom.AtomTag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomOdd.html">sisl.geom.AtomOdd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.AtomEven.html">sisl.geom.AtomEven</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.geom.AtomNeighbors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.NullCategory.html">sisl.geom.NullCategory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.mixing</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../viz/index.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core.html">Functional programming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../io/index.html">Input/Output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+          <li class="breadcrumb-item"><a href="../indexing.html">Indexing atoms</a></li>
+      <li class="breadcrumb-item active">sisl.geom.AtomNeighbors</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/geom/generated/sisl.geom.AtomNeighbors.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sisl-geom-atomneighbors">
+<h1>sisl.geom.AtomNeighbors<a class="headerlink" href="#sisl-geom-atomneighbors" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.geom.AtomNeighbors">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">AtomNeighbors</span></span><a class="headerlink" href="#sisl.geom.AtomNeighbors" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomCategory</span></code></a></p>
+<p>Classify atoms based on number of neighbors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – minimum number of neighbors</p></li>
+<li><p><strong>max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – maximum number of neighbors</p></li>
+<li><p><strong>neighbor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Category</span></code>, <em>optional</em>) – a category the neighbor must be in to be counted</p></li>
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <em>optional</em>) – Value passed to <em class="xref py py-obj">Geometry.close</em>.
+<code class="docutils literal notranslate"><span class="pre">tuple</span></code>, directly passed and thus only neigbors within
+the tuple range are considered
+<code class="docutils literal notranslate"><span class="pre">float</span></code>, this will pass <code class="docutils literal notranslate"><span class="pre">(0.01,</span> <span class="pre">R)</span></code> and thus <em>not</em> count the
+atom itself.
+<code class="docutils literal notranslate"><span class="pre">callable</span></code>, the return value of this will be directly passed.
+If the callable returns a single float it will count the atom itself.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AtomNeighbors</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># 4 neighbors within (0.01, Geometry.maxR())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AtomNeighbors</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.44</span><span class="p">)</span> <span class="c1"># 4 neighbors within (0.01, 1.44)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AtomNeighbors</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">))</span> <span class="c1"># 4 neighbors within (1, Geometry.maxR())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AtomNeighbors</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="k">lambda</span> <span class="n">atom</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">Z</span><span class="p">)))</span> <span class="c1"># 4 neighbors within (0.01, &lt;&gt;)</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.AtomNeighbors.R" title="sisl.geom.AtomNeighbors.R"><code class="xref py py-obj docutils literal notranslate"><span class="pre">R</span></code></a>(atom)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.AtomNeighbors.categorize" title="sisl.geom.AtomNeighbors.categorize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">categorize</span></code></a>(geometry[, atoms])</p></td>
+<td><p>Check if geometry and atoms matches the neighbor criteria</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.AtomNeighbors.is_class" title="sisl.geom.AtomNeighbors.is_class"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_class</span></code></a>(name[, case])</p></td>
+<td><p>Query whether <a class="reference internal" href="#sisl.geom.AtomNeighbors.name" title="sisl.geom.AtomNeighbors.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a> matches the class name by removing a prefix <a class="reference internal" href="#sisl.geom.AtomNeighbors.kw" title="sisl.geom.AtomNeighbors.kw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kw</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.geom.AtomNeighbors.kw" title="sisl.geom.AtomNeighbors.kw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kw</span></code></a>(**kwargs)</p></td>
+<td><p>Create categories based on keywords</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.geom.AtomNeighbors.name" title="sisl.geom.AtomNeighbors.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p>Name of category</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.geom.AtomNeighbors.R">
+<span class="sig-name descname"><span class="pre">R</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/geom/_category/_neighbors.html#AtomNeighbors.R"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.AtomNeighbors.R" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.geom.AtomNeighbors.categorize">
+<span class="sig-name descname"><span class="pre">categorize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/geom/_category/_neighbors.html#AtomNeighbors.categorize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.AtomNeighbors.categorize" title="Link to this definition"></a></dt>
+<dd><p>Check if geometry and atoms matches the neighbor criteria</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>)</p></li>
+<li><p><strong>atoms</strong> (<a class="reference internal" href="../../generated/sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.geom.AtomNeighbors.is_class">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.geom.AtomNeighbors.is_class" title="Link to this definition"></a></dt>
+<dd><p>Query whether <a class="reference internal" href="#sisl.geom.AtomNeighbors.name" title="sisl.geom.AtomNeighbors.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a> matches the class name by removing a prefix <a class="reference internal" href="#sisl.geom.AtomNeighbors.kw" title="sisl.geom.AtomNeighbors.kw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kw</span></code></a></p>
+<p>This is important to ensure that users match the full class name
+by omitting the prefix returned from this method.</p>
+<p>This is an abstract method to ensure sub-classes of <em class="xref py py-obj">Category</em>
+implements it.</p>
+<p>For instance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyCategory</span><span class="p">(</span><span class="n">Category</span><span class="p">):</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+         <span class="c1"># strip &quot;My&quot; and do comparison</span>
+         <span class="k">return</span> <span class="n">cl</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>would enable one to compare against the <em>base</em> category scheme.</p>
+<p>This has the option to search case-sensitivity or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.geom.AtomNeighbors.kw">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.geom.AtomNeighbors.kw" title="Link to this definition"></a></dt>
+<dd><p>Create categories based on keywords</p>
+<p>This will search through the inherited classes and
+return and &amp; category object for all keywords.</p>
+<p>Since this is a class method one should use this
+on the base category class in the given section
+of the code.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.geom.AtomNeighbors.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#sisl.geom.AtomNeighbors.name" title="Link to this definition"></a></dt>
+<dd><p>Name of category</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.geom.AtomEven.html" class="btn btn-neutral float-left" title="sisl.geom.AtomEven" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.geom.NullCategory.html" class="btn btn-neutral float-right" title="sisl.geom.NullCategory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
