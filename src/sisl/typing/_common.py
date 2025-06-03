@@ -20,6 +20,8 @@ __all__ = [
     "FuncType",
     "OrSequence",
     "KPoint",
+    "SeqBool",
+    "SeqOrScalarBool",
     "SeqInt",
     "SeqOrScalarInt",
     "SeqFloat",
@@ -37,6 +39,8 @@ class OrSequence:
         return Union[Sequence[parameter], parameter]
 
 
+SeqBool = Sequence[bool]
+SeqOrScalarBool = Union[bool, SeqBool]
 SeqInt = Sequence[int]
 SeqOrScalarInt = Union[int, SeqInt]
 SeqFloat = Sequence[float]
