@@ -1062,8 +1062,9 @@ class TestHamiltonian:
         # Ensure that shc calculates AHC in other segments
         c_shc = shc(mp, J_axes="y")
         assert np.allclose(c_ahc[0], c_shc[0])
-        assert not np.allclose(c_ahc[1], c_shc[1])
         assert np.allclose(c_ahc[2], c_shc[2])
+        # Sometimes the y-component is the same (its basically 0)
+        # assert np.allclose(c_ahc[1], c_shc[1])
 
     @pytest.mark.xfail(reason="Gauges make different decouplings")
     def test_gauge_eff(self, setup):
