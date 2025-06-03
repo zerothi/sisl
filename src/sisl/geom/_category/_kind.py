@@ -7,15 +7,13 @@ import operator as op
 import re
 from functools import reduce, wraps
 from numbers import Integral
-from typing import Union
 
 import numpy as np
 
 from sisl._core import Geometry
 from sisl._help import isiterable
 from sisl._internal import set_module
-from sisl.typing import AtomsIndex
-from sisl.typing._common import SeqOrScalarInt
+from sisl.typing import AtomsIndex, SeqOrScalarInt
 from sisl.utils import lstranges, strmap
 
 from .base import AtomCategory, NullCategory, _sanitize_loop
@@ -29,7 +27,7 @@ class AtomZ(AtomCategory):
 
     Parameters
     ----------
-    Z : int or array_like
+    Z :
        atomic number match for several values this is equivalent to AND
     """
 
@@ -66,7 +64,7 @@ class AtomTag(AtomCategory):
 
     Parameters
     ----------
-    tag : str
+    tag :
        The tag you want atoms to match. It can be a regex expression.
     """
 
@@ -207,13 +205,8 @@ class AtomSeq(AtomIndex):
 
     Parameters
     ----------
-    seq: str
+    seq:
        sequence indicating the indices that you want to match (see examples)
-    **kwargs : key, value
-       if key is a function it must accept two values ``value, atom``
-       where ``value`` is the value on this command. The function should
-       return anything that can be interpreted as a True/False.
-       Multiple ``key`` equates to an `and` statement.
 
     Examples
     --------
@@ -228,11 +221,11 @@ class AtomSeq(AtomIndex):
 
     See also
     ---------
-    `strmap`, `lstranges`:
+    strmap, lstranges:
         the functions used to parse the sequence string into indices.
     """
 
-    __slots__ = ("_seq",)
+    __slots__ = ("_seq", "_name")
 
     def __init__(self, seq: str):
         self._seq = seq

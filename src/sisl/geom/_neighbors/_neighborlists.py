@@ -344,6 +344,7 @@ class AtomNeighborList(Neighbors):
         The lists that, when iterated, return `AtomNeighborList` objects.
     """
 
+    #: The atom for which the neighbors are stored.
     atom: int
     """The atom for which the neighbors are stored."""
 

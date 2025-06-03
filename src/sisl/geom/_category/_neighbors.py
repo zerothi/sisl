@@ -28,12 +28,12 @@ class AtomNeighbors(AtomCategory):
        a category the neighbor must be in to be counted
     R : tuple, float, callable or None, optional
        Value passed to `Geometry.close`.
-       - ``tuple``, directly passed and thus only neigbours within
-         the tuple range are considered
-       - ``float``, this will pass ``(0.01, R)`` and thus *not* count the
-         atom itself.
-       - ``callable``, the return value of this will be directly passed.
-         If the callable returns a single float it will count the atom itself.
+       ``tuple``, directly passed and thus only neigbors within
+       the tuple range are considered
+       ``float``, this will pass ``(0.01, R)`` and thus *not* count the
+       atom itself.
+       ``callable``, the return value of this will be directly passed.
+       If the callable returns a single float it will count the atom itself.
 
     Examples
     --------

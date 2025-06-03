@@ -58,7 +58,7 @@ Surfaces
 
 
 They generally take a lattice-parameter argument, and will all allow
-to pass an ``atoms`` argument to prefil the atomic species for the
+to pass an ``atoms`` argument to pre-fill the atomic species for the
 returned geometry:
 
   >>> graphene = si.geom.graphene(1.42, # bond-length

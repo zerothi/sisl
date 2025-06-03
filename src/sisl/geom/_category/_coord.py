@@ -16,8 +16,7 @@ from sisl._core._lattice import cell_invert
 from sisl._internal import set_module
 from sisl.messages import deprecate_argument
 from sisl.shape import Shape
-from sisl.typing import AtomsIndex
-from sisl.typing._core import LatticeLike
+from sisl.typing import AtomsIndex, Coord, LatticeLike
 from sisl.utils.misc import direction
 
 from .base import AtomCategory, NullCategory
@@ -33,16 +32,15 @@ class AtomFracSite(AtomCategory):
 
     Parameters
     ----------
-    lattice : Lattice, LatticeChild or argument to Lattice
-       an object that defines the lattice vectors (will be passed through to `Lattice`
-       if not an object instance of `Lattice` or `LatticeChild`
-    atol : float, optional
+    lattice :
+       an object that defines the lattice vectors.
+    atol :
        the absolute tolerance (in Ang) to check whether the site is an integer
        site.
-    offset : array_like, optional
+    offset :
        an offset made to the geometry coordinates before calculating the fractional
        coordinates according to `lattice`
-    foffset : array_like, optional
+    foffset :
        fractional offset of the fractional coordinates, this allows to select sub-regions
        in the `lattice` lattice vectors.
 
@@ -66,7 +64,7 @@ class AtomFracSite(AtomCategory):
         self,
         lattice: LatticeLike,
         atol: float = 1.0e-5,
-        offset: coord = (0.0, 0.0, 0.0),
+        offset: Coord = (0.0, 0.0, 0.0),
         foffset: Coord = (0.0, 0.0, 0.0),
     ):
         lattice = Lattice.new(lattice)

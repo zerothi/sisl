@@ -38,51 +38,51 @@ class Shape(
 ):
     """Baseclass for all shapes. Logical operations are implemented on this class.
 
-        **This class must be sub classed.**
+    This class must be sub classed.
 
-        Also all the required methods are predefined although they issue an error if they are
-        not implemented in the sub-classed class.
+    Also all the required methods are predefined although they issue an error if they are
+    not implemented in the sub-classed class.
 
-        There are a few routines that are necessary when implementing
-        an inherited class:
+    There are a few routines that are necessary when implementing
+    an inherited class:
 
-        `center`
-          return the geometric center of the shape.
+    - ``center``
+      return the geometric center of the shape.
 
-        `within`
-          Returns a boolean array which defines whether a coordinate is within
-          or outside the shape.
+    - ``within``
+      Returns a boolean array which defines whether a coordinate is within
+      or outside the shape.
 
-        `within_index`
-          Equivalent to `within`, however only the indices of those within are returned.
+    - ``within_index``
+      Equivalent to `within`, however only the indices of those within are returned.
 
-        `copy`
-          Create a new identical shape.
-    oor
-        The minimal requirement a shape can have are the above attributes.
+    - ``copy``
+      Create a new identical shape.
 
-        Subclassed shapes may have additional methods by which they are defined.
+    The minimal requirement a shape can have are the above attributes.
 
-        Any `Shape` may be used to construct other shapes by applying set operations.
-        Currently implemented binary operators are:
+    Subclassed shapes may have additional methods by which they are defined.
 
-        `__or__`/`__add__` : set union, either `|` or `+` operator (not `or`)
+    Any `Shape` may be used to construct other shapes by applying set operations.
+    Currently implemented binary operators are:
 
-        `__and__` : set intersection, `&` operator (not `and`)
+    `__or__`/`__add__` : set union, either `|` or `+` operator (not `or`)
 
-        `__sub__` : set complement, `-` operator
+    `__and__` : set intersection, `&` operator (not `and`)
 
-        `__xor__` : set disjunctive union, `^` operator
+    `__sub__` : set complement, `-` operator
 
-        Parameters
-        ----------
-        center : (3,)
-           the center of the shape
+    `__xor__` : set disjunctive union, `^` operator
+
+    Parameters
+    ----------
+    center :
+       the center of the shape
     """
 
     __slots__ = ("_center",)
 
-    def __init__(self, center: Coord = (0, 0, 0)):
+    def __init__(self, center: Optional[Coord] = (0, 0, 0)):
         if center is None:
             center = (0, 0, 0)
         center = _a.asarrayd(center).flatten()

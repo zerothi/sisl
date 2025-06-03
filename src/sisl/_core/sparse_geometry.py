@@ -35,6 +35,7 @@ from sisl._internal import set_module
 from sisl.messages import SislError, SislWarning, deprecate_argument, progressbar, warn
 from sisl.typing import AtomsIndex, CellAxes, Coord, SeqOrScalarFloat
 from sisl.typing._atom import AtomsLike
+from sisl.typing._common import SeqOrScalarInt
 from sisl.utils.misc import direction
 from sisl.utils.ranges import list2str
 
@@ -1564,7 +1565,7 @@ class SparseOrbital(_SparseGeometry):
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
-    def sub_orbital(self, atoms: AtomsIndex, orbitals):
+    def sub_orbital(self, atoms: AtomsIndex, orbitals: Union[SeqOrScalarInt, Orbital]):
         r"""Retain only a subset of the orbitals on `atoms` according to `orbitals`
 
         This allows one to retain only a given subset of the sparse matrix elements.
@@ -1573,7 +1574,7 @@ class SparseOrbital(_SparseGeometry):
         ----------
         atoms :
             indices of atoms or `Atom` that will be reduced in size according to `orbitals`
-        orbitals : array_like of int or Orbital
+        orbitals :
             indices of the orbitals on `atoms` that are retained in the sparse matrix, the list of
             orbitals will be sorted. One cannot re-arrange matrix elements currently.
 
