@@ -145,7 +145,7 @@ from __future__ import annotations
 import itertools
 from collections.abc import Sequence
 from numbers import Integral, Real
-from typing import Union
+from typing import Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -158,9 +158,13 @@ from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate_argument, info, warn
+from sisl.typing import Coord, SeqOrScalarFloat, SeqOrScalarInt
+from sisl.typing._common import KPoint
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import direction, listify
+
+from .spin import Spin
 
 __all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure", "linspace_bz"]
 
@@ -283,7 +287,12 @@ class BrillouinZone:
         obj_getattr=lambda obj, key: getattr(obj.parent, key),
     )
 
-    def __init__(self, parent, k=None, weight=None):
+    def __init__(
+        self,
+        parent,
+        k: Optional[npt.ArrayLike] = None,
+        weight: Optional[npt.ArrayLike] = None,
+    ):
         self.set_parent(parent)
         # define a bz_attr as though it has not been set
         self._bz_attr = ("", None)
@@ -315,7 +324,7 @@ class BrillouinZone:
         except Exception:
             self.parent = Lattice(parent)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """String representation of the BrillouinZone"""
         parent = str(self._parent_lattice()).replace("\n", "\n ")
         return f"{self.__class__.__name__}{{nk: {len(self)},\n {parent}\n}}"
@@ -349,7 +358,7 @@ class BrillouinZone:
         self.set_parent(parent)
 
     @staticmethod
-    def merge(bzs, weight_scale: Union[Sequence[float], float] = 1.0, parent=None):
+    def merge(bzs, weight_scale: SeqOrScalarFloat = 1.0, parent=None):
         """Merge several BrillouinZone objects into one
 
         The merging strategy only stores the new list of k-points and weights.
@@ -360,7 +369,7 @@ class BrillouinZone:
         bzs : list-like of BrillouinZone objects
            each element is a BrillouinZone object with ``bzs[i].k`` and ``bzs[i].weight``
            fields.
-        weight_scale : list-like or float
+        weight_scale :
            these are matched item-wise with `bzs` and applied to.
            Internally ``itertools.zip_longest(fillvalue=weight_scale[-1])`` will be
            used to extend for all `bzs`.
@@ -453,9 +462,7 @@ class BrillouinZone:
         return vol
 
     @staticmethod
-    def parametrize(
-        parent, func, N: Union[Sequence[int], int], *args, **kwargs
-    ) -> BrillouinZone:
+    def parametrize(parent, func, N: SeqOrScalarInt, *args, **kwargs) -> BrillouinZone:
         """Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
@@ -472,7 +479,7 @@ class BrillouinZone:
            3. ``i``: current index of the k-point (starting from 0)
 
            the function must return a k-point in 3 dimensions.
-        N : int or list of int
+        N :
            number of k-points generated using the parameterization,
            or a list of integers that will be looped over.
            In this case arguments ``N`` and ``i`` in `func` will be
@@ -519,8 +526,8 @@ class BrillouinZone:
         parent,
         N_or_dk: Union[int, float],
         kR: float,
-        normal,
-        origin,
+        normal: Coord,
+        origin: Coord,
         loop: bool = False,
     ):
         r"""Create a parameterized k-point list where the k-points are generated on a circle around an origin
@@ -707,7 +714,7 @@ class BrillouinZone:
 
     __iter__ = iter
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._k)
 
 
@@ -720,22 +727,25 @@ class MonkhorstPack(BrillouinZone):
     parent : object or array_like
        An object with associated `parent.cell` and `parent.rcell` or
        an array of floats which may be turned into a `Lattice`
-    nkpt : array_like of ints
+    nkpt :
        a list of number of k-points along each cell direction
-    displacement : float or array_like of float, optional
+    displacement :
        the displacement of the evenly spaced grid, a single floating
        number is the displacement for the 3 directions, else they
        are the individual displacements
-    size : float or array_like of float, optional
+    size :
        the size of the Brillouin zone sampled. This reduces the boundaries
        of the Brillouin zone around the displacement to the fraction specified.
        I.e. `size` must be of values :math:`]0 ; 1]`. Defaults to the entire BZ.
        Note that this will also reduce the weights such that the weights
        are normalized to the entire BZ.
-    centered : bool, optional
+    centered :
        whether the k-points are :math:`\Gamma`-centered (for zero displacement)
-    trs : bool, optional
+    trs :
        whether time-reversal symmetry exists in the Brillouin zone.
+       If ``None``, it will be true for (un)-polarized calculations.
+       For spin configurations higher than or equal to non-collinear, it will
+       be false.
 
     Examples
     --------
@@ -748,11 +758,11 @@ class MonkhorstPack(BrillouinZone):
     def __init__(
         self,
         parent,
-        nkpt: Union[Sequence[int], int],
-        displacement=None,
-        size=None,
+        nkpt: SeqOrScalarInt,
+        displacement: Optional[SeqOrScalarFloat] = None,
+        size: Optional[SeqOrScalarFloat] = None,
         centered: bool = True,
-        trs: bool = True,
+        trs: Optional[bool] = None,
     ):
         super().__init__(parent)
 
@@ -782,6 +792,13 @@ class MonkhorstPack(BrillouinZone):
             size = _a.fulld(3, size)
         else:
             size = _a.asarrayd(size)
+
+        if trs is None:
+            trs = True
+            try:
+                trs = parent.spin <= Spin("polarized")
+            except AttributeError:
+                pass
 
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt).astype(np.int32)
@@ -891,7 +908,7 @@ class MonkhorstPack(BrillouinZone):
         self._trs = i_trs
 
     @property
-    def displacement(self):
+    def displacement(self) -> np.ndarray:
         """Displacement for this Monkhorst-Pack grid"""
         return self._displ
 
@@ -934,7 +951,7 @@ class MonkhorstPack(BrillouinZone):
     @classmethod
     def grid(
         cls,
-        n,
+        n: int,
         displ: float = 0.0,
         size: float = 1.0,
         centered: bool = True,
@@ -946,15 +963,15 @@ class MonkhorstPack(BrillouinZone):
 
         Parameters
         ----------
-        n : int
+        n :
            number of points in the grid. If `trs` is ``True`` this may be smaller than `n`
-        displ : float, optional
+        displ :
            the displacement of the grid
-        size : float, optional
+        size :
            the total size of the Brillouin zone to sample
-        centered : bool, optional
+        centered :
            if the points are centered
-        trs : bool, optional
+        trs :
            whether time-reversal-symmetry is applied
 
         Returns
@@ -1028,9 +1045,9 @@ class MonkhorstPack(BrillouinZone):
 
     def replace(
         self,
-        k,
+        k: KPoint,
         mp: MonkhorstPack,
-        displacement=False,
+        displacement: Union[SeqOrScalarFloat, bool] = False,
         as_index: bool = False,
         check_vol: bool = True,
     ):
@@ -1053,9 +1070,9 @@ class MonkhorstPack(BrillouinZone):
            Defaults to not displace anything. The inserted k-points will be `mp.k + displacement`.
            If True, it will use `k` as the displacement vector. For multiple k-point replacements
            each k-point will be replaced my `mp` with k as the displacement.
-        as_index : bool, optional
+        as_index :
            whether `k` is input as reciprocal k-points, or as indices of k-points in this object.
-        check_vol : bool, optional
+        check_vol :
            whether to check the volume of the replaced k-point(s); by default the volume of each k-point
            is determined by the original ``size`` and ``nkpt`` values. However, when doing
            replacements of k-points these values are not kept for the individual k-points
@@ -1468,7 +1485,7 @@ class BandStructure(BrillouinZone):
 
         Examples
         --------
-        Create a bandrstructure with a discontinuity.
+        Create a bandstructure with a discontinuity.
 
         >>> gr = geom.graphene()
         >>> bs = BandStructure(gr, [[0, 0, 0], [0.5, 0, 0], None, [0, 0, 0], [0, 0.5, 0]], 4)

@@ -64,3 +64,13 @@ The typing types are shown below:
    SparseMatrixPhysical
    SpinType
    UnitsVar
+
+.. autosummary::
+   :toctree: generated/
+
+   SeqBool
+   SeqOrScalarBool
+   SeqInt
+   SeqOrScalarInt
+   SeqFloat
+   SeqOrScalarFloat
