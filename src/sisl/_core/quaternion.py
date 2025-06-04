@@ -8,7 +8,7 @@ import math as m
 import numpy as np
 
 from sisl._internal import set_module
-from sisl.messages import deprecation
+from sisl.messages import deprecate_argument, deprecation
 
 __all__ = ["Quaternion"]
 
@@ -87,12 +87,12 @@ class Quaternion:
 
     def __str__(self) -> str:
         """Stringify this quaternion object"""
-        angle = self.angle(in_rad=True)
+        angle = self.angle(rad=True)
         return f"{type(self).__name__}{{θ={angle:.4f}, v={self._v[1:]}}}"
 
     def __repr__(self) -> str:
         """Representation of this quaternion object"""
-        angle = self.angle(in_rad=True)
+        angle = self.angle(rad=True)
         return f"<{type(self).__name__} θ={angle:.4f}, v={self._v[1:]}>"
 
     def copy(self) -> Quaternion:
@@ -108,24 +108,31 @@ class Quaternion:
         v = self._v
         return np.sqrt(v.dot(v))
 
-    def angle(self, in_rad: bool = True) -> float:
+    @deprecate_argument(
+        "in_rad",
+        "rad",
+        "argument in_rad has been deprecated in favor of rad, please update your code.",
+        "0.16.3",
+        "0.18",
+    )
+    def angle(self, rad: bool = True) -> float:
         """Return the angle of this quaternion, in requested unit"""
         angle = m.acos(self._v[0]) * 2
-        if in_rad:
+        if rad:
             return angle
         return angle / m.pi * 180
 
     @property
-    @deprecation("Use .angle(in_rad=False) instead of .degree", "0.15.3", "0.17")
+    @deprecation("Use .angle(rad=False) instead of .degree", "0.15.3", "0.17")
     def degree(self) -> float:
         """Returns the angle associated with this quaternion (in degrees)"""
-        return self.angle(in_rad=False)
+        return self.angle(rad=False)
 
     @property
-    @deprecation("Use .angle(in_rad=True) instead of .degree", "0.15.3", "0.17")
+    @deprecation("Use .angle(rad=True) instead of .radian", "0.15.3", "0.17")
     def radian(self) -> float:
         """Returns the angle associated with this quaternion (in radians)"""
-        return self.angle(in_rad=True)
+        return self.angle(rad=True)
 
     def rotate(self, v) -> np.ndarray:
         r""" Rotate a vector `v` by this quaternion

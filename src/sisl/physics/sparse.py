@@ -3,7 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import math as m
 import warnings
 from typing import Literal, Optional, Tuple, Union
 
@@ -52,13 +51,14 @@ __all__ = ["SparseOrbitalBZ", "SparseOrbitalBZSpin"]
 
 
 # Filter warnings from the sparse library
-warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
+warnings.filterwarnings("ignore", category=SparseEfficiencyWarning, module=__name__)
 
 
 def _get_spin(
     M,
     spin: Spin,
     what: Literal["trace", "box", "vector", "vector:upper", "vector:lower"] = "box",
+    dtype: Optional = None,
 ):
     r"""Calculate the spin-components of the given matrix from sisl.
 
@@ -92,6 +92,17 @@ def _get_spin(
             to enable a coherent data form of the spinvalues.
             Always returns complex dtype.
     """
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=np.ComplexWarning)
+        return __get_spin(M, spin, what, dtype)
+
+
+def __get_spin(
+    M,
+    spin: Spin,
+    what: Literal["trace", "box", "vector", "vector:upper", "vector:lower"] = "box",
+    dtype: Optional = None,
+):
     if what == "trace":
         if spin.spinor >= 2:
             # we have both up+down
@@ -101,9 +112,12 @@ def _get_spin(
         return M[..., 0]
 
     if what == "vector":
+        if dtype is None:
+            dtype = dtype_complex_to_float(M.dtype)
+
         # Calculate the vector of the spin (excluding the "density")
         shape = M.shape[:-1] + (3,)
-        m = np.empty(shape, dtype=dtype_complex_to_float(M.dtype))
+        m = np.empty(shape, dtype=dtype)
 
         if spin.is_unpolarized:
             # no spin-density
@@ -111,7 +125,7 @@ def _get_spin(
 
         else:
             # Same for all spin-configurations
-            m[..., 2] = (M[..., 0] - M[..., 1]).real
+            m[..., 2] = M[..., 0] - M[..., 1]
 
             # These indices should be reflected in sisl/physics/sparse.py
             # for the Mxy[ri] indices in the reset method
@@ -119,8 +133,8 @@ def _get_spin(
                 m[..., :2] = 0.0
             elif spin.is_noncolinear:
                 if np.iscomplexobj(M):
-                    m[..., 0] = 2 * M[..., 2].real
-                    m[..., 1] = -2 * M[..., 2].imag
+                    m[..., 0] = 2 * M[..., 2]
+                    m[..., 1] = 2j * M[..., 2]
                 else:
                     m[..., 0] = 2 * M[..., 2]
                     m[..., 1] = -2 * M[..., 3]
@@ -128,8 +142,8 @@ def _get_spin(
                 # spin-orbit + nambu
                 if np.iscomplexobj(M):
                     tmp = M[..., 2].conj() + M[..., 3]
-                    m[..., 0] = tmp.real
-                    m[..., 1] = tmp.imag
+                    m[..., 0] = tmp
+                    m[..., 1] = -1j * tmp
                 else:
                     m[..., 0] = M[..., 2] + M[..., 6]
                     m[..., 1] = -M[..., 3] + M[..., 7]
@@ -138,6 +152,8 @@ def _get_spin(
     if what.startswith("vector:"):
         if spin < Spin("soc"):
             return _get_spin(M, spin, what="vector") * 0.5
+        if dtype is None:
+            dtype = dtype_complex_to_float(M.dtype)
 
         _, ul = what.split(":")
         upper = True
@@ -150,10 +166,10 @@ def _get_spin(
 
         # Calculate the vector of the spin (excluding the "density")
         shape = M.shape[:-1] + (3,)
-        m = np.empty(shape, dtype=dtype_complex_to_float(M.dtype))
+        m = np.empty(shape, dtype=dtype)
 
         # Only half so the sum equals `vector`
-        m[..., 2] = (M[..., 0] - M[..., 1]).real * 0.5
+        m[..., 2] = (M[..., 0] - M[..., 1]) * 0.5
 
         # spin-orbit + nambu
         if np.iscomplexobj(M):
@@ -162,7 +178,7 @@ def _get_spin(
             else:
                 tmp = M[..., 3]
             m[..., 0] = tmp.real
-            m[..., 1] = tmp.imag
+            m[..., 1] = -1j * tmp
         else:
             if upper:
                 m[..., 0] = M[..., 2]
@@ -173,8 +189,11 @@ def _get_spin(
         return m
 
     if what == "box":
+        if dtype is None:
+            dtype = dtype_float_to_complex(M.dtype)
+
         shape = M.shape[:-1] + (2, 2)
-        m = np.empty(shape, dtype=dtype_float_to_complex(M.dtype))
+        m = np.empty(shape, dtype=dtype)
 
         if spin.is_unpolarized:
             # no spin-density

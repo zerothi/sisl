@@ -50,7 +50,7 @@ class TestQuaternion:
 
     def test_degree1(self, setup):
         for c in "xyz":
-            assert getattr(setup, "q" + c).angle(in_rad=False) == pytest.approx(90)
+            assert getattr(setup, "q" + c).angle(rad=False) == pytest.approx(90)
 
     def test_radians1(self, setup):
         rx = setup.qx.radian
