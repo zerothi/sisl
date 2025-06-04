@@ -93,7 +93,12 @@ def _get_spin(
             Always returns complex dtype.
     """
     with warnings.catch_warnings():
-        warnings.simplefilter("ignore", category=np.ComplexWarning)
+        try:
+            warnings.simplefilter("ignore", category=np.ComplexWarning)
+        except AttributeError:
+            # too old numpy version
+            # TODO remove for numpy>1.25
+            pass
         return __get_spin(M, spin, what, dtype)
 
 
