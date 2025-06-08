@@ -770,7 +770,7 @@ class stdoutSileSiesta(SileSiesta):
                 val = float(val)
             except ValueError:
                 warn(
-                    f"Could not convert energy '{key}' ({val}) to a float, assigning nan."
+                    f"Could not convert energy '{key}' ({val.strip()}) to a float, assigning nan."
                 )
                 val = np.nan
 
@@ -786,7 +786,7 @@ class stdoutSileSiesta(SileSiesta):
         while len(line.strip()) > 0:
             key, val = line.split("=")
             key = key.split(":")[1].strip()
-            assign(out, key, val)
+            assign(out, key, val.split()[0])
             line = next(itt)
 
         # now skip to the pressure
@@ -796,7 +796,7 @@ class stdoutSileSiesta(SileSiesta):
         )
         if found:
             key, val = line.split("=")
-            assign(out, key.strip(), val)
+            assign(out, key.strip(), val.split()[0])
 
         return out
 
