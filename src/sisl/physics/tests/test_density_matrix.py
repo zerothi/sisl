@@ -429,7 +429,7 @@ class TestDensityMatrix:
 
         # Rotate back
         d = d.spin_rotate((-90, "x"), rad=False)
-        assert np.allclose(d.mulliken(), [[1.5, 1.5], [0.5, 0.5]])
+        assert np.allclose(d.mulliken(), [[1.5, 1.5], [0, 0], [0, 0], [0.5, 0.5]])
 
     def test_spin_rotate_pol_full(self):
         bond = 1.42
