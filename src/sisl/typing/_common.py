@@ -76,5 +76,3 @@ RotationType = Union[
     SeqFloat,  # (ang-x, ang-y, ang-z)
     "Quaternion",  # Direct
 ]
-RotationCartesian = Union[str, SeqFloat]
-RotationDirect = Tuple[float, Union[str, Coord]]
