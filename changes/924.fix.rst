@@ -1,0 +1,8 @@
+Fixed spin-rotations
+
+Now one can denote rotations in a much more
+generic way.
+
+Removed `rotation_matrix` and superseeded by
+`parse_rotation` which returns a `Quaternion`
+which can be used to create a rotation-matrix.

@@ -57,6 +57,7 @@ The typing types are shown below:
    DistributionStr
    DistributionFunc
    DistributionType
+   RotationType
    SileLike
    SparseMatrix
    SparseMatrixExt

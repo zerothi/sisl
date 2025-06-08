@@ -3,8 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import math as m
-from numbers import Integral
+from itertools import zip_longest
+from numbers import Real
+from typing import Optional, Sequence, Union
 
 import numpy as np
 from numpy import (
@@ -27,15 +28,16 @@ from numpy import (
 from scipy.special import sph_harm
 
 from sisl import _array as _a
+from sisl._core.quaternion import Quaternion
 from sisl._indices import indices_le
-from sisl.typing import CartesianAxes
+from sisl.typing._common import RotationType
 
 from .misc import direction
 
 __all__ = ["fnorm", "fnorm2", "expand", "orthogonalize"]
 __all__ += ["spher2cart", "cart2spher", "spherical_harm"]
 __all__ += ["curl", "close"]
-__all__ += ["rotation_matrix"]
+__all__ += ["parse_rotation"]
 
 
 def fnorm(array, axis=-1):
@@ -354,87 +356,67 @@ def intersect_and_diff_sets(a, b):
     return int1d, aover, bover, aonly, bonly
 
 
-def rotation_matrix(
-    x: float, y: float, z: float, rad: bool = False, order: CartesianAxes = "zyx"
-) -> np.ndarray:
-    r"""Create the rotation matrix defined by the Cartesian rotation angles.
+def parse_rotation(
+    rotation: Union[RotationType, Sequence[RotationType]],
+    rad: bool,
+    abc: Optional[np.ndarray] = None,
+) -> Quaternion:
+    """Parses the rotation arguments as they are seen"""
 
-    The rotation matrix will be composed of matrices:
+    # Determine whether it is a single one or not
+    if isinstance(rotation, Quaternion):
+        return rotation
 
-    .. math::
+    # It must be a sequence
+    if not isinstance(rotation, Sequence):
+        raise ValueError(
+            f"expected a sequence for the 'rotation' argument, got {type(rotation)}."
+        )
 
-        R(x) &= \begin{bmatrix}
-        1 & 0 & 0 \\
-        0 & \cos(x) & -\sin(x) \\
-        0 & \sin(x) & \cos(x)
-        \end{bmatrix}
-        \\
-        R(y) &= \begin{bmatrix}
-        \cos(x) & 0 & \sin(x) \\
-        0 & 1 & 0 \\
-        -\sin(x) & 0 & \cos(x)
-        \end{bmatrix}
-        R(z) &= \begin{bmatrix}
-        \cos(x) & -\sin(x) & 0 \\
-        \sin(x) & \cos(x) & 0 \\
-        0 & 0 & 1
-        \end{bmatrix}
+    # to accummulate the quaternion
+    q = 1
 
-    Parameters
-    ----------
-    x :
-        angle to rotate around the :math:`x`-axis
-    y :
-        angle to rotate around the :math:`y`-axis
-    z :
-        angle to rotate around the :math:`z`-axis
-    rad :
-        if true, the angles are in radians, otherwise in degrees.
-    order :
-        specify the order of the rotation matrix.
-        Last letter will be the first one to be rotated.
-        It defaults to ``zyx``, which results in :math:`R = R(z)R(y)R(x)`.
-        If a direction is omitted, it will not be part of the rotation,
-        regardless of the angle passed.
+    # number of arguments of the rotation
+    lrot = len(rotation)
 
-    Examples
-    --------
+    if lrot == 3 and isinstance(rotation[0], Real):
+        # it *must* be 3 floats. Should be equivalent to the Euler angles
+        for i, angle in enumerate(rotation):
 
-    Ensure that rotation and back rotation works. Note the order
-    has to be reversed.
+            dir = [0] * 3
+            dir[i] = 1
+            q = Quaternion(angle, dir, rad=rad) * q
 
-    >>> R1 = rotation_matrix(10, 24, 50, order="xyz")
-    >>> R2 = rotation_matrix(-10, -24, -50, order="zyx")
-    >>> assert np.allclose(R1 @ R2, np.identity(3))
+        return q
 
-    Rotate around x, then y, then x again (same angle twice)
+    if lrot == 2 and (isinstance(rotation[0], str) or isinstance(rotation[1], str)):
 
-    >>> R = rotation_matrix(10, 24, 0, order="xyx")
-    """
-    if rad:
+        if isinstance(rotation[0], str):
+            dirs, angles = rotation
+        elif isinstance(rotation[1], str):
+            angles, dirs = rotation
 
-        def cos_sin(a):
-            return m.cos(a), m.sin(a)
+        if not isinstance(angles, Sequence):
+            angles = [angles]
 
-    else:
+        xyz = np.identity(3)
 
-        def cos_sin(a):
-            a = a / 180 * m.pi
-            return m.cos(a), m.sin(a)
+        for angle, dir in zip_longest(angles, dirs):
+            # Convert to q
+            dir = direction(dir, abc=abc, xyz=xyz)
+            q = Quaternion(angle, dir, rad=rad) * q
 
-    # define rotation matrix
-    c, s = cos_sin(x)
-    Rx = np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
-    c, s = cos_sin(y)
-    Ry = np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]])
-    c, s = cos_sin(z)
-    Rz = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
-    Rs = (Rx, Ry, Rz)
-    R = np.identity(3)
-    if isinstance(order, Integral):
-        order = [order]
-    for dir in order:
-        idir = direction(dir)
-        R = R @ Rs[idir]
+        return q
 
-    return R
+    if (
+        lrot == 2
+        and isinstance(rotation[0], Real)
+        and isinstance(rotation[1], Sequence)
+    ):
+        # Simple case ,it *must* be float, (3*float)
+        return Quaternion(*rotation, rad=rad)
+
+    for rot in rotation:
+        q = parse_rotation(rot, rad=rad, abc=abc) * q
+
+    return q

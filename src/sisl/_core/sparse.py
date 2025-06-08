@@ -2273,7 +2273,9 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
         )
 
     ret = ufunc.reduce(array._D[0:1, :], axis=0, *args, **kwargs)
-    ret = empty([array.shape[0], array.shape[2]], dtype=kwargs.get("dtype", ret.dtype))
+    if dtype := kwargs.get("dtype") is None:
+        dtype = ret.dtype
+    ret = empty([array.shape[0], array.shape[2]], dtype=dtype)
 
     # Now do ufunc calculations, note that initial gets passed directly
     ptr = array.ptr

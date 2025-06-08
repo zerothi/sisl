@@ -15,8 +15,28 @@ __all__ = ["Quaternion"]
 
 @set_module("sisl")
 class Quaternion:
-    """
+    r"""
     Quaternion object to enable easy rotational quantities.
+
+    The rotation using quaternions amounts to a rotation around a vector :math:`v`
+    by an angle :math:`\phi`.
+
+    The rotation follows the Euler-Rodrigues formula.
+
+    The components of the quaternion will be referenced as:
+
+    .. math::
+
+        a + b\mathbf i + c\mathbf j + d\mathbf k
+
+    The general way this gets translated is the complex matrix:
+
+    .. math::
+
+        \begin{bmatrix}
+            a + b i & c + d i\\
+            -c + d i & a - b i
+        \end{bmatrix}
 
     Parameters
     ----------
@@ -101,12 +121,16 @@ class Quaternion:
 
     def conj(self) -> Quaternion:
         """Returns the conjugate of the quaternion"""
-        return self.__class__(self._v * -1)
+        return self.__class__(self._v * [1, -1, -1, -1])
 
     def norm(self) -> float:
         """Returns the norm of this quaternion"""
+        return self.norm2() ** 0.5
+
+    def norm2(self) -> float:
+        """Returns the squared norm of this quaternion"""
         v = self._v
-        return np.sqrt(v.dot(v))
+        return v.dot(v)
 
     @deprecate_argument(
         "in_rad",
@@ -134,6 +158,12 @@ class Quaternion:
         """Returns the angle associated with this quaternion (in radians)"""
         return self.angle(rad=True)
 
+    def rotation_vector(self) -> np.ndarray:
+        """Retrieve the vector the rotation rotates about"""
+        angle = self.angle(rad=True)
+        sh = m.sin(angle / 2)
+        return self._v[1:] / sh
+
     def rotate(self, v) -> np.ndarray:
         r""" Rotate a vector `v` by this quaternion
 
@@ -159,6 +189,52 @@ class Quaternion:
         t = 2 * np.cross(q, v)
         vp = v + qw * t + np.cross(q, t)
         return vp
+
+    def rotation_matrix_su2(self) -> np.ndarray:
+        r"""Returns the special unitary group 2 rotation matrix.
+
+        The SU(2) group defines the unitary group encompassing spin
+        matrices enables one to rotate the spin-block-matrices.
+
+        The quaternion can directly be translated to the 2x2 matrix
+        defining the rotation of the spin-block matrix:
+
+        .. math::
+
+            U = a \mathbf I
+            - ib\sigma_x - ic\sigma_y -id\sigma_z
+
+        Notes
+        -----
+        This implementation uses the *alternate* representation.
+
+        .. math::
+
+            \begin{bmatrix}
+                a - d i & -c - b i\\
+                c - b i & a + d i
+            \end{bmatrix}
+        """
+        from sisl.physics.spin import Spin
+
+        U = self._v[0] * np.identity(2, dtype=np.complex128) + 1j * (
+            -self._v[1] * Spin.X - self._v[2] * Spin.Y - self._v[3] * Spin.Z
+        )
+        return U
+
+    def rotation_matrix(self) -> np.ndarray:
+        """Determine the Cartesian rotation matrix from the quaternion."""
+        s = 2 / self.norm2()
+        a, b, c, d = self._v
+        _, bs, cs, ds = self._v * s
+        R = np.array(
+            [
+                [1 - c * cs - d * ds, b * cs - a * ds, b * ds + a * cs],
+                [b * cs + a * ds, 1 - b * bs - d * ds, c * ds - a * bs],
+                [b * ds - a * cs, c * ds + a * bs, 1 - b * bs - c * cs],
+            ]
+        )
+        return R
 
     def __eq__(self, other):
         """Returns whether two Quaternions are equal"""

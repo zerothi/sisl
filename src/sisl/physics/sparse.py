@@ -28,7 +28,8 @@ from sisl.typing import (
     SparseMatrix,
     SparseMatrixPhysical,
 )
-from sisl.utils.mathematics import rotation_matrix
+from sisl.typing._common import RotationType
+from sisl.utils.mathematics import parse_rotation
 
 from ._matrix_ddk import (
     matrix_ddk,
@@ -2383,9 +2384,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
-    def spin_rotate(
-        self, angles: SeqFloat, rad: bool = False, order: CartesianAxes = "zyx"
-    ) -> Self:
+    @deprecate_argument(
+        "angles",
+        "rotation",
+        "Name change of the argument to clarify more options",
+        "0.16.3",
+        "0.18",
+    )
+    def spin_rotate(self, rotation: RotationType, rad: bool = False) -> Self:
         r"""Rotate spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axes, respectively.
 
         The angles are with respect to each spin-box initial angle.
@@ -2396,57 +2402,74 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         For a polarized matrix:
         The returned matrix will be in non-collinear spin-configuration in case
         the angles does not reflect a pure flip of spin in the :math:`z`-axis.
+        If you explicitly want a spin-orbit matrix, convert it to that before
+        using `spin_rotate`.
 
         The data-type of the returned matrix, may have changed.
 
         Parameters
         ----------
-        angles :
-           angles to rotate spin boxes around the Cartesian directions
-           :math:`x`, :math:`y` and :math:`z`, respectively (Euler angles).
+        rotation :
+            How to perform the rotation, can be:
+
+            - 3 floats: Euler angles around Cartesian coordinates
+            - (float, str): angle + Cartesian/lattice vector name
+            - (float, 3 floats): angle + vector of rotation
+            - Quaternion: direct used rotation
+            - or a sequence of the above.
+              The resulting rotation matrix will be constructed as
+              ``U[n] @ U[n-1] @ ... @ U[0]``.
         rad :
            Determines the unit of `angles`, for true it is in radians.
-        order :
-            the order of the rotation matrix. The last letter, will
-            be rotated *first*.
 
         See Also
         --------
+        transform : convert the matrix to another spin-configuration
         spin_align : align all spin-boxes along a specific direction
-        sisl.utils.mathematics.rotation_matrix
+        Quaternion : used method for rotation.
+
+        Examples
+        --------
+
+        Rotating 45 degrees around the :math:`x` axis can by any of the following:
+        >>> M.spin_rotate((45, "x"), rad=False)
+        >>> M.spin_rotate((45, [1, 0, 0]), rad=False)
+        >>> M.spin_rotate((45, 0, 0), rad=False)
+
+        Rotating 45 degrees around the :math:`x` and :math:`y` axes can be done by
+        either of the following:
+        >>> M.spin_rotate((45, "xy"), rad=False)
+        >>> M.spin_rotate([(45, [1, 0, 0]), (45, [0, 1, 0])], rad=False)
+        >>> M.spin_rotate([(45, [1, 0, 0]), (45, "y")], rad=False)
+        >>> M.spin_rotate([(45, 0, 0), (0, 45, 0)], rad=False)
 
         Returns
         -------
         object
              a new object with rotated spins
         """
-        angles = _a.arrayd(angles)
-        if not rad:
-            angles = angles / 180 * np.pi
+        q = parse_rotation(rotation, rad=rad, abc=self.cell)
+
+        # Get rotation matrix for the SU(2) group
+        U = q.rotation_matrix_su2()
+        Ud = U.T.conj()
+
+        # if the spin is not rotated around y, then no rotation has happened
+        # x just puts the correct place, and z rotation is a no-op.
+
+        # Get the rotation angle, and vector
+        ang = q.angle()
+        v = q.rotation_vector()
 
         def close(a, v):
             return abs(abs(a) - v) < np.pi / 1080
 
-        # define rotation matrix
-        if len(angles) != 3:
-            raise ValueError(
-                f"{self.__class__.__name__}.spin_rotate got wrong number of angles (expected 3, got {len(angles)}"
-            )
+        # this will be a little hard... Any combined rotations
+        # will be equivalent to moving the rotation vector.
+        is_pol_noop = close(ang, 0) or (close(v[0], 0) and close(v[1], 0))
+        is_pol_flip = close(ang, np.pi) and (close(v[0], 1) or close(v[1], 1))
 
-        R = rotation_matrix(*angles, rad=True, order=order)
-
-        # if the spin is not rotated around y, then no rotation has happened
-        # x just puts the correct place, and z rotation is a no-op.
-        is_pol_noop = (
-            close(angles[0], 0)
-            and close(angles[1], 0)
-            or (close(angles[0], np.pi) and close(angles[1], np.pi))
-        )
-
-        is_pol_flip = (close(angles[0], np.pi) and close(angles[1], 0)) or (
-            close(angles[0], 0) and close(angles[1], np.pi)
-        )
-
+        # Shorthand for the spin attribute
         spin = self.spin
 
         if spin.is_unpolarized:
@@ -2468,58 +2491,20 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 # We are not sure what the user really wants.
                 # So we'll just do a non-colinear thing.
                 # A user may change this subsequently.
-                out = self.transform(spin=Spin("nc")).spin_rotate(angles, rad=True)
+                out = self.transform(spin=Spin("nc")).spin_rotate(q, rad=rad)
 
         elif spin.is_noncolinear:
             D = self._csr._D
-            Q = _get_spin(D, spin, what="trace") * 0.5
-            A = _get_spin(D, spin, what="vector")
+            # this will upscale it to complex numbers
+            Dbox = _get_spin(D, spin, what="box")
+            Dbox = U @ Dbox @ Ud
 
-            A = A.dot(R.T * 0.5)
-
-            # A.dtype is always float in this case
-            out = self.astype(dtype=A.dtype)
+            out = self.astype(dtype=Dbox.dtype)
             D = out._csr._D
-            D[:, 0] = Q + A[:, 2]
-            D[:, 1] = Q - A[:, 2]
-            D[:, 2] = A[:, 0]
-            D[:, 3] = -A[:, 1]
-
-        elif (spin.is_spinorbit or self.spin.is_nambu) and False:
-            # Since this spin-matrix has all 8 components we will take
-            # each half and align individually.
-            # I believe this should retain most of the physics in its
-            # intrinsic form and thus be a bit more accurate than
-            # later re-creating the matrix by some scaling factor.
-            D = self._csr._D
-            Q = _get_spin(D, spin, what="trace") * 0.5
-            A = _get_spin(D, spin, what="vector")
-            Au = _get_spin(D, spin, what="vector:upper") ** 2
-            Al = _get_spin(D, spin, what="vector:lower") ** 2
-
-            A = A.dot(R.T)
-
-            # Al|Au.dtype is always float in this case
-            out = self.astype(dtype=A.dtype)
-            D = out._csr._D
-            D[:, 0] = Q + A[:, 2] / 2
-            D[:, 1] = Q - A[:, 2] / 2
-
-            def correct(Au, Al, i):
-                total = Au[:, i] + Al[:, i]
-                idx = (total < 1e-8).nonzero()[0]
-                total[idx] = 1
-                Au[idx, i] = 0.5
-                Al[idx, i] = 0.5
-                Au[:, i] /= total
-                Al[:, i] /= total
-
-            correct(Au, Al, 0)
-            correct(Au, Al, 1)
-            D[:, 2] = A[:, 0] * Au[:, 0]
-            D[:, 6] = A[:, 0] * Al[:, 0]
-            D[:, 3] = -A[:, 1] * Au[:, 1]
-            D[:, 7] = A[:, 1] * Al[:, 1]
+            D[:, 0] = Dbox[:, 0, 0]
+            D[:, 1] = Dbox[:, 1, 1]
+            # Ensure Hermitian property
+            D[:, 2] = (Dbox[:, 0, 1] + Dbox[:, 1, 0].conj()) / 2
 
         elif spin.is_spinorbit or self.spin.is_nambu:
             # Since this spin-matrix has all 8 components we will take
@@ -2528,33 +2513,28 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # intrinsic form and thus be a bit more accurate than
             # later re-creating the matrix by some scaling factor.
             D = self._csr._D
-            Q = _get_spin(D, spin, what="trace") * 0.5
-            Au = _get_spin(D, spin, what="vector:upper")
-            Al = _get_spin(D, spin, what="vector:lower")
+            Dbox = _get_spin(D, spin, what="box")
+            # I have tried to reduce numerical noise
+            # by 1) subtraction the charge from the box,
+            # 2) then rotate
+            # 3) then re-add the charge.
+            # But it doesn't seem to help...
+            Dbox = U @ Dbox @ Ud
 
-            Au = Au.dot(R.T)
-            Al = Al.dot(R.T)
-
-            # Al|Au.dtype is always float in this case
-            out = self.astype(dtype=Au.dtype)
+            # Dbox should always be complex
+            out = self.astype(dtype=Dbox.dtype)
             D = out._csr._D
-            # Since the z-component is origin from a diff
-            # we have to align the z such that it halves the
-            # actual charge (Q * 2)
-            Au[:, 2] = (Au[:, 2] + Al[:, 2]) / 2
-            D[:, 0] = Q + Au[:, 2]
-            D[:, 1] = Q - Au[:, 2]
-            D[:, 2] = Au[:, 0]
-            D[:, 3] = -Au[:, 1]
-            D[:, 6] = Al[:, 0]
-            D[:, 7] = Al[:, 1]
+            D[:, 0] = Dbox[:, 0, 0]
+            D[:, 1] = Dbox[:, 1, 1]
+            D[:, 2] = Dbox[:, 0, 1]
+            D[:, 3] = Dbox[:, 1, 0]
 
         else:
             raise NotImplementedError("Unknown spin configuration")
 
         return out
 
-    def spin_align(self, vec: SeqFloat, atoms: AtomsIndex = None) -> Self:
+    def spin_align(self, vec: SeqFloat, atoms: Optional[AtomsIndex] = None) -> Self:
         r"""Aligns *all* spin along the vector `vec`
 
         In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned
@@ -2950,7 +2930,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         shape = csr._D.shape
 
         def r2c(D, re, im):
-            return (D[..., re] + 1j * D[..., im]).astype(dtype, copy=False)
+            return conv(D[..., re] + 1j * D[..., im])
+
+        def conv(D):
+            return D.astype(dtype, copy=False)
 
         if old_dtype.kind in ("f", "i"):
             if new_dtype.kind in ("f", "i"):
@@ -2965,10 +2948,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 elif spin.is_noncolinear:
                     D = np.empty(shape[:-1] + (shape[-1] - 1,), dtype=dtype)
                     # These should be real only anyways!
-                    D[..., [0, 1]] = csr._D[..., [0, 1]].real.astype(dtype)
+                    D[..., [0, 1]] = conv(csr._D[..., [0, 1]].real)
                     D[..., 2] = r2c(csr._D, 2, 3)
                     if D.shape[-1] > 4:
-                        D[..., 3:] = csr._D[..., 4:].astype(dtype)
+                        D[..., 3:] = conv(csr._D[..., 4:])
                     csr._D = D
                 elif spin.is_spinorbit:
                     D = np.empty(shape[:-1] + (shape[-1] - 4,), dtype=dtype)
@@ -2977,7 +2960,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     D[..., 2] = r2c(csr._D, 2, 3)
                     D[..., 3] = r2c(csr._D, 6, 7)
                     if D.shape[-1] > 4:
-                        D[..., 4:] = csr._D[..., 8:].astype(dtype)
+                        D[..., 4:] = conv(csr._D[..., 8:])
                     csr._D = D
                 elif spin.is_nambu:
                     D = np.empty(shape[:-1] + (shape[-1] - 8,), dtype=dtype)
@@ -2990,7 +2973,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     D[..., 6] = r2c(csr._D, 12, 13)  # Tdd
                     D[..., 7] = r2c(csr._D, 14, 15)  # T0
                     if D.shape[-1] > 8:
-                        D[..., 8:] = csr._D[..., 16:].astype(dtype)
+                        D[..., 8:] = conv(csr._D[..., 16:])
                     csr._D = D
                 else:
                     raise NotImplementedError("Unknown spin-type")
@@ -3010,45 +2993,45 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 elif spin.is_noncolinear:
                     D = np.empty(shape[:-1] + (shape[-1] + 1,), dtype=dtype)
                     # These should be real only anyways!
-                    D[..., [0, 1]] = csr._D[..., [0, 1]].real.astype(dtype)
-                    D[..., 2] = csr._D[..., 2].real.astype(dtype)
-                    D[..., 3] = csr._D[..., 2].imag.astype(dtype)
+                    D[..., [0, 1]] = conv(csr._D[..., [0, 1]].real)
+                    D[..., 2] = conv(csr._D[..., 2].real)
+                    D[..., 3] = conv(csr._D[..., 2].imag)
                     if D.shape[-1] > 4:
-                        D[..., 4:] = csr._D[..., 3:].real.astype(dtype)
+                        D[..., 4:] = conv(csr._D[..., 3:].real)
                     csr._D = D
                 elif spin.is_spinorbit:
                     D = np.empty(shape[:-1] + (shape[-1] + 4,), dtype=dtype)
-                    D[..., 0] = csr._D[..., 0].real.astype(dtype)
-                    D[..., 1] = csr._D[..., 1].real.astype(dtype)
-                    D[..., 2] = csr._D[..., 2].real.astype(dtype)
-                    D[..., 3] = csr._D[..., 2].imag.astype(dtype)
-                    D[..., 4] = csr._D[..., 0].imag.astype(dtype)
-                    D[..., 5] = csr._D[..., 1].imag.astype(dtype)
-                    D[..., 6] = csr._D[..., 3].real.astype(dtype)
-                    D[..., 7] = csr._D[..., 3].imag.astype(dtype)
+                    D[..., 0] = conv(csr._D[..., 0].real)
+                    D[..., 1] = conv(csr._D[..., 1].real)
+                    D[..., 2] = conv(csr._D[..., 2].real)
+                    D[..., 3] = conv(csr._D[..., 2].imag)
+                    D[..., 4] = conv(csr._D[..., 0].imag)
+                    D[..., 5] = conv(csr._D[..., 1].imag)
+                    D[..., 6] = conv(csr._D[..., 3].real)
+                    D[..., 7] = conv(csr._D[..., 3].imag)
                     if D.shape[-1] > 8:
-                        D[..., 8:] = csr._D[..., 4:].real.astype(dtype)
+                        D[..., 8:] = conv(csr._D[..., 4:].real)
                     csr._D = D
                 elif spin.is_nambu:
                     D = np.empty(shape[:-1] + (shape[-1] + 8,), dtype=dtype)
-                    D[..., 0] = csr._D[..., 0].real.astype(dtype)
-                    D[..., 1] = csr._D[..., 1].real.astype(dtype)
-                    D[..., 2] = csr._D[..., 2].real.astype(dtype)
-                    D[..., 3] = csr._D[..., 2].imag.astype(dtype)
-                    D[..., 4] = csr._D[..., 0].imag.astype(dtype)
-                    D[..., 5] = csr._D[..., 1].imag.astype(dtype)
-                    D[..., 6] = csr._D[..., 3].real.astype(dtype)
-                    D[..., 7] = csr._D[..., 3].imag.astype(dtype)
-                    D[..., 8] = csr._D[..., 4].real.astype(dtype)  # S
-                    D[..., 9] = csr._D[..., 4].imag.astype(dtype)
-                    D[..., 10] = csr._D[..., 5].real.astype(dtype)  # Tuu
-                    D[..., 11] = csr._D[..., 5].imag.astype(dtype)
-                    D[..., 12] = csr._D[..., 6].real.astype(dtype)  # Tdd
-                    D[..., 13] = csr._D[..., 6].imag.astype(dtype)
-                    D[..., 14] = csr._D[..., 7].real.astype(dtype)  # T0
-                    D[..., 15] = csr._D[..., 7].imag.astype(dtype)
+                    D[..., 0] = conv(csr._D[..., 0].real)
+                    D[..., 1] = conv(csr._D[..., 1].real)
+                    D[..., 2] = conv(csr._D[..., 2].real)
+                    D[..., 3] = conv(csr._D[..., 2].imag)
+                    D[..., 4] = conv(csr._D[..., 0].imag)
+                    D[..., 5] = conv(csr._D[..., 1].imag)
+                    D[..., 6] = conv(csr._D[..., 3].real)
+                    D[..., 7] = conv(csr._D[..., 3].imag)
+                    D[..., 8] = conv(csr._D[..., 4].real)  # S
+                    D[..., 9] = conv(csr._D[..., 4].imag)
+                    D[..., 10] = conv(csr._D[..., 5].real)  # Tuu
+                    D[..., 11] = conv(csr._D[..., 5].imag)
+                    D[..., 12] = conv(csr._D[..., 6].real)  # Tdd
+                    D[..., 13] = conv(csr._D[..., 6].imag)
+                    D[..., 14] = conv(csr._D[..., 7].real)  # T0
+                    D[..., 15] = conv(csr._D[..., 7].imag)
                     if D.shape[-1] > 16:
-                        D[..., 16:] = csr._D[..., 8:].real.astype(dtype)
+                        D[..., 16:] = conv(csr._D[..., 8:].real)
                     csr._D = D
                 else:
                     raise NotImplementedError("Unknown spin-type")
