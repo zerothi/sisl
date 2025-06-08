@@ -4,22 +4,25 @@
 from __future__ import annotations
 
 import math
-from functools import reduce
 from numbers import Integral
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 
-import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
-from sisl.messages import deprecate_argument
-from sisl.typing import AnyAxes, CellAxes, CellAxis, Coord, CoordOrScalar, SileLike
+from sisl.typing import (
+    AnyAxes,
+    CellAxes,
+    CellAxis,
+    CoordOrScalar,
+    RotationType,
+    SileLike,
+)
 from sisl.utils import direction
-from sisl.utils.mathematics import fnorm
+from sisl.utils.mathematics import parse_rotation
 from sisl.utils.misc import direction
 
 from .lattice import Lattice
-from .quaternion import Quaternion
 
 # Nothing gets exposed here
 __all__ = []
@@ -200,11 +203,14 @@ def swapaxes(
     )
 
 
+from ._ufuncs_geometry import patch_rotate
+
+
 @register_sisl_dispatch(Lattice, module="sisl")
+@patch_rotate
 def rotate(
     lattice: Lattice,
-    angle: float,
-    v: Union[str, int, Coord],
+    rotation: RotationType,
     rad: bool = False,
     what: Literal["abc", "a", ...] = "abc",
 ) -> Lattice:
@@ -215,29 +221,23 @@ def rotate(
 
     Parameters
     ----------
-    angle :
-         the angle of which the geometry should be rotated
-    v     :
-         the vector around the rotation is going to happen
-         ``[1, 0, 0]`` will rotate in the ``yz`` plane
+    rotations :
+         A specification of multiple rotations in a single list of arguments.
+
+         - 3 floats: Euler angles around Cartesian coordinates
+         - (float, str): angle + Cartesian/lattice vector name
+         - (float, 3 floats): angle + vector of rotation
+         - Quaternion: direct used rotation
+         - or a sequence of the above.
+           The resulting rotation matrix will be constructed as
+           ``U[n] @ U[n-1] @ ... @ U[0]``.
     rad :
          Whether the angle is in radians (True) or in degrees (False)
     what :
          only rotate the designated cell vectors.
     """
-    if isinstance(v, Integral):
-        v = direction(v, abc=lattice.cell, xyz=np.diag([1, 1, 1]))
-    elif isinstance(v, str):
-        v = reduce(
-            lambda a, b: a + direction(b, abc=lattice.cell, xyz=np.diag([1, 1, 1])),
-            v,
-            0,
-        )
-    # flatten => copy
-    vn = _a.asarrayd(v).flatten()
-    vn /= fnorm(vn)
-    q = Quaternion(angle, vn, rad=rad)
-    q /= q.norm()  # normalize the quaternion
+    q = parse_rotation(rotation, rad=rad, abc=lattice.cell)
+
     cell = np.copy(lattice.cell)
     idx = []
     for i, d in enumerate("abc"):

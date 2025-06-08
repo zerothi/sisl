@@ -14,3 +14,5 @@ Various helper classes and functions that make using `sisl` easier.
 
    utilities.shape
    utilities.misc
+
+   parse_rotation

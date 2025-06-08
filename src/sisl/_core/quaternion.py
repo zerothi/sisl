@@ -108,12 +108,14 @@ class Quaternion:
     def __str__(self) -> str:
         """Stringify this quaternion object"""
         angle = self.angle(rad=True)
-        return f"{type(self).__name__}{{θ={angle:.4f}, v={self._v[1:]}}}"
+        v = self.rotation_vector()
+        return f"{type(self).__name__}{{θ={angle:.4f}, v={v}}}"
 
     def __repr__(self) -> str:
         """Representation of this quaternion object"""
         angle = self.angle(rad=True)
-        return f"<{type(self).__name__} θ={angle:.4f}, v={self._v[1:]}>"
+        v = self.rotation_vector()
+        return f"<{type(self).__name__} θ={angle:.4f}, v={v}>"
 
     def copy(self) -> Quaternion:
         """Return a copy of itself"""

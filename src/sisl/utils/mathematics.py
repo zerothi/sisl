@@ -30,7 +30,7 @@ from scipy.special import sph_harm
 from sisl import _array as _a
 from sisl._core.quaternion import Quaternion
 from sisl._indices import indices_le
-from sisl.typing._common import RotationType
+from sisl.typing import RotationType
 
 from .misc import direction
 
@@ -361,14 +361,52 @@ def parse_rotation(
     rad: bool,
     abc: Optional[np.ndarray] = None,
 ) -> Quaternion:
-    """Parses the rotation arguments as they are seen"""
+    r"""Parses a sequence of rotation arguments.
+
+    Parameters
+    ----------
+    rotation :
+        the rotations that is to be parsed and collected.
+    rad :
+        whether angles specified in the rotation argument are in radians.
+        Currently, one cannot combine radians and degree angles.
+    abc :
+        the vectors that any string 'abc` in the `rotation` argument will be translated
+        to.
+
+    Examples
+    --------
+    A rotation of 45 degrees around the :math:`x` axis.
+    >>> q = parse_rotation([45, "x"], rad=False)
+
+    A rotation of 45 degrees around the :math:`y` axis, but specified through the
+    2nd index of the abc argument
+    >>> q = parse_rotation([45, "b"], rad=False, abc=[[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+    Explicitly specify the angle and the vector of rotation (around :math:`xy` vector)
+    >>> q = parse_rotation([np.pi/4, [0.4, 0.4, 0]])
+
+    Explicitly specify the angle of rotation around all three Cartesian coordinates
+    >>> q = parse_rotation([np.pi/4, np.pi/2, np.pi/4])
+
+    Specify a list of rotations:
+    >>> q = parse_rotation([
+    ...        [np.pi/4, np.pi/2, np.pi/4],
+    ...        [np.pi/3, "x"],
+    ...        [np.pi/3, (0.1, 0.2, 0.3)], rad=True)
+
+    See Also
+    --------
+    Quaternion : returned class
+    Quaternion.rotation_matrix : to retrieve an explicit rotation matrix.
+    """
 
     # Determine whether it is a single one or not
     if isinstance(rotation, Quaternion):
         return rotation
 
     # It must be a sequence
-    if not isinstance(rotation, Sequence):
+    if not isinstance(rotation, (Sequence, np.ndarray)):
         raise ValueError(
             f"expected a sequence for the 'rotation' argument, got {type(rotation)}."
         )
@@ -396,7 +434,7 @@ def parse_rotation(
         elif isinstance(rotation[1], str):
             angles, dirs = rotation
 
-        if not isinstance(angles, Sequence):
+        if not isinstance(angles, (Sequence, np.ndarray)):
             angles = [angles]
 
         xyz = np.identity(3)
@@ -404,17 +442,19 @@ def parse_rotation(
         for angle, dir in zip_longest(angles, dirs):
             # Convert to q
             dir = direction(dir, abc=abc, xyz=xyz)
-            q = Quaternion(angle, dir, rad=rad) * q
+            q = Quaternion(angle, dir / fnorm(dir), rad=rad) * q
 
         return q
 
     if (
         lrot == 2
         and isinstance(rotation[0], Real)
-        and isinstance(rotation[1], Sequence)
+        and isinstance(rotation[1], (Sequence, np.ndarray))
     ):
         # Simple case ,it *must* be float, (3*float)
-        return Quaternion(*rotation, rad=rad)
+        ang, dir = rotation
+        dir = np.array(dir)
+        return Quaternion(ang, dir / fnorm(dir), rad=rad)
 
     for rot in rotation:
         q = parse_rotation(rot, rad=rad, abc=abc) * q

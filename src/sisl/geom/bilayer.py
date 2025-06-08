@@ -106,7 +106,7 @@ def bilayer(
     else:
         # Twisting
         cos_theta = (n**2 + 4 * n * m + m**2) / (2 * (n**2 + n * m + m**2))
-        theta = acos(cos_theta) * 180 / pi
+        theta = acos(cos_theta)
         rep = 4 * (n + m)
         natoms = 2 * (n**2 + n * m + m**2)
 
@@ -132,7 +132,7 @@ def bilayer(
             top.tile(rep, axis=0)
             .tile(rep, axis=1)
             .move(align_vec)
-            .rotate(theta, [0, 0, 1], what="abc+xyz")
+            .rotate(theta, "z", rad=True, what="abc+xyz")
         )
 
         inside_idx = cell_box.within_index(top.xyz)
@@ -165,8 +165,8 @@ def bilayer(
         offset = fxyz_min.dot(bilayer.cell)
         vec = bilayer.cell[0] + bilayer.cell[1]
         vec_costh = vec[0] / vec.dot(vec) ** 0.5
-        vec_th = -acos(vec_costh) * 180 / pi
-        bilayer = bilayer.move(-offset).rotate(vec_th, [0, 0, 1], what="xyz+abc")
+        vec_th = -acos(vec_costh)
+        bilayer = bilayer.move(-offset).rotate(vec_th, "z", rad=True, what="xyz+abc")
 
     # Sanity check
     assert len(bilayer) == natoms
@@ -174,6 +174,6 @@ def bilayer(
     geometry_define_nsc(bilayer, [True, True, False])
 
     if ret_angle:
-        return bilayer, theta
+        return bilayer, theta / np.pi * 180
 
     return bilayer

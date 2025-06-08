@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from functools import reduce
-from numbers import Integral
+from functools import wraps
+from numbers import Integral, Real
 from typing import Any, Literal, Optional, Protocol, Union
 
 import numpy as np
@@ -13,7 +13,7 @@ import numpy.typing as npt
 
 import sisl._array as _a
 from sisl._ufuncs import register_sisl_dispatch
-from sisl.messages import deprecate_argument, warn
+from sisl.messages import deprecate, deprecate_argument, warn
 from sisl.typing import (
     AnyAxes,
     AtomsIndex,
@@ -24,8 +24,9 @@ from sisl.typing import (
     LatticeOrGeometryLike,
     SileLike,
 )
+from sisl.typing._common import RotationType
 from sisl.utils import direction
-from sisl.utils.mathematics import fnorm
+from sisl.utils.mathematics import fnorm, parse_rotation
 
 from .geometry import Geometry
 from .lattice import Lattice
@@ -1098,11 +1099,68 @@ def remove(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     return geometry.sub(atoms)
 
 
+# Patch `rotate` to allow ``(geometry, angle, v, ...)` arguments instead
+# of the newer ``(geometry, rotation, ...)`` arguments.
+def patch_rotate(func):
+
+    # Define a new func that passes the correct stuff
+    @wraps(func)
+    def new_func(geometry, *args, **kwargs):
+
+        if "rotation" in kwargs or isinstance(args[0], Quaternion):
+            # one cannot combine, so we just pass on!
+            return func(geometry, *args, **kwargs)
+
+        def dep():
+            deprecate(
+                f"{func.__name__} 'angle' and 'v' arguments are deprecated in favor of 'rotation' which is a more powerful method.",
+                from_version="0.16.3",
+                remove_version="0.18",
+            )
+
+        if "angle" in kwargs:
+            # all is fine, we got both arguments
+            angle = kwargs.pop("angle")
+            if "v" in kwargs:
+                # all is fine, we got both arguments
+                v = kwargs.pop("v")
+            elif len(args) > 0:
+                v = args[0]
+                args = args[1:]
+
+            # Re-insert the rotation to the arguments
+            kwargs["rotation"] = (angle, v)
+            dep()
+
+        elif "v" in kwargs:
+            # all is fine, we got both arguments
+            v = kwargs.pop("v")
+
+            # we know that "angle" is not in kwargs...
+            if isinstance(args[0], Real):
+                angle = args[0]
+                args = args[1:]
+
+            # Re-insert the rotation to the arguments
+            kwargs["rotation"] = (angle, v)
+            dep()
+
+        elif isinstance(args[0], Real):
+            # the 2nd-argument *has* to be the vector
+            kwargs["rotation"] = (args[0], args[1])
+            args = args[2:]
+            dep()
+
+        return func(geometry, *args, **kwargs)
+
+    return new_func
+
+
 @register_sisl_dispatch(Geometry, module="sisl")
+@patch_rotate
 def rotate(
     geometry: Geometry,
-    angle: float,
-    v: Union[str, int, Coord],
+    rotation: RotationType,
     origin: Union[int, Coord] = (0, 0, 0),
     atoms: AtomsIndex = None,
     rad: bool = False,
@@ -1171,21 +1229,10 @@ def rotate(
         # Only rotate the unique values
         atoms = geometry.asc2uc(atoms, unique=True)
 
-    if isinstance(v, Integral):
-        v = direction(v, abc=geometry.cell, xyz=np.diag([1, 1, 1]))
-    elif isinstance(v, str):
-        v = reduce(
-            lambda a, b: a + direction(b, abc=geometry.cell, xyz=np.diag([1, 1, 1])),
-            v,
-            0,
-        )
-
-    # Ensure the normal vector is normalized... (flatten == copy)
-    vn = _a.asarrayd(v).flatten()
-    vn /= fnorm(vn)
+    q = parse_rotation(rotation, rad=rad, abc=geometry.cell)
 
     # Rotate by direct call
-    lattice = geometry.lattice.rotate(angle, vn, rad=rad, what=what)
+    lattice = geometry.lattice.rotate(q, rad=rad, what=what)
 
     # Copy
     xyz = np.copy(geometry.xyz)
@@ -1196,9 +1243,6 @@ def rotate(
             idx.append(i)
 
     if idx:
-        # Prepare quaternion...
-        q = Quaternion(angle, vn, rad=rad)
-        q /= q.norm()
         # subtract and add origin, before and after rotation
         rotated = q.rotate(xyz[atoms] - origin) + origin
         # get which coordinates to rotate

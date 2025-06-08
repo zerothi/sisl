@@ -97,7 +97,7 @@ def nanoribbon(
 
     elif kind in ("zigzag", "chiral"):
         # Construct zigzag GNR
-        ribbon = ribbon.rotate(90, [0, 0, -1], what="abc+xyz")
+        ribbon = ribbon.rotate((-90, "z"), rad=False, what="abc+xyz")
         if m == 1:
             ribbon = ribbon.tile(n + 1, 0)
             ribbon = ribbon.remove(-1).remove(-1)
@@ -125,7 +125,7 @@ def nanoribbon(
                 x.dot([1, 0, 0]) / x.dot(x) ** 0.5
             )  # angle of vectors, x and b=[1, 0, 0]
             ribbon = ribbon.rotate(
-                angle, [0, 0, -1], origin=ribbon.xyz[0], rad=True, what="abc+xyz"
+                -angle, "z", origin=ribbon.xyz[0], rad=True, what="abc+xyz"
             )
             # first lattice vector strictly along x
             ribbon.cell[0, 1] = 0

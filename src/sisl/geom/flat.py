@@ -192,10 +192,10 @@ def honeycomb_flake(
     next_triangle = (
         geom if single_atom_type else Geometry(op, atoms=np.asarray(atoms)[types - 1])
     )
-    geom += next_triangle.rotate(60, [0, 0, 1])
+    geom += next_triangle.rotate((60, "z"), rad=False)
 
     # Then just rotate the two triangles by 120 and 240 degrees to get the full hexagon.
-    geom += geom.rotate(120, [0, 0, 1]) + geom.rotate(240, [0, 0, 1])
+    geom += geom.rotate((120, "z"), rad=False) + geom.rotate((240, "z"), rad=False)
 
     # Set the cell according to the requested vacuum
     xyz = geom.xyz
