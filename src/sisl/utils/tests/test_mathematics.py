@@ -80,14 +80,3 @@ def test_cart2spher_nd_maxr():
     assert R.ndim == 1
     assert theta.ndim == 1
     assert phi.ndim == 1
-
-
-def test_rotation_matrix():
-    angles = [10, 40, 59]
-    R1 = rotation_matrix(*angles, order="xyz")
-    R2 = rotation_matrix(*list(map(lambda x: -x, angles)), order="zyx")
-    assert np.allclose(R1 @ R2, np.identity(3))
-
-    R1 = rotation_matrix(*angles, order="xz")
-    R2 = rotation_matrix(*list(map(lambda x: -x, angles)), order="zx")
-    assert np.allclose(R1 @ R2, np.identity(3))

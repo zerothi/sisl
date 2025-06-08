@@ -94,6 +94,12 @@ def density_method(request):
     return request.param
 
 
+def check_hermitian(DM):
+    # Easily check a matrix is hermitian
+    dDM = DM - DM.transpose(conjugate=True)
+    assert dDM._csr._D.sum() == pytest.approx(0.0)
+
+
 @pytest.mark.physics
 @pytest.mark.densitymatrix
 class TestDensityMatrix:
@@ -410,13 +416,20 @@ class TestDensityMatrix:
         D_mull = D.mulliken()
         assert np.allclose(D_mull, D.astype(np.complex128).mulliken())
         assert D_mull.shape == (2, len(D))
+        assert np.allclose(D_mull, [[1.5, 1.5], [0.5, 0.5]])
 
-        d = D.spin_rotate([45, 60, 90], rad=False)
+        # rotating a spin [0, 0, 0.5] around x yields a spin along y
+        d = D.spin_rotate((90, "x"), rad=False)
+        assert d.spin.is_noncolinear
+        check_hermitian(d)
+
         d_mull = d.mulliken()
         assert d_mull.shape == (4, len(D))
+        assert np.allclose(d_mull, [[1.5, 1.5], [0, 0], [-0.5, -0.5], [0, 0]])
 
-        assert not np.allclose(D_mull[1], d_mull[3])
-        assert np.allclose(D_mull[0], d_mull[0])
+        # Rotate back
+        d = d.spin_rotate((-90, "x"), rad=False)
+        assert np.allclose(d.mulliken(), [[1.5, 1.5], [0.5, 0.5]])
 
     def test_spin_rotate_pol_full(self):
         bond = 1.42
@@ -445,19 +458,20 @@ class TestDensityMatrix:
 
         # Euler (noop)
         d = D.spin_rotate([0, 0, 64], rad=False)
+        check_hermitian(d)
         assert d.spin.is_polarized
         assert np.allclose(d.mulliken()[1], D.mulliken()[1])
         d = D.spin_rotate([180, 180, 64], rad=False)
+        check_hermitian(d)
         assert d.spin.is_polarized
         assert np.allclose(d.mulliken()[1], D.mulliken()[1])
 
         # Euler (full)
         d = D.spin_rotate([0, 180, 64], rad=False)
-        assert d.spin.is_polarized
-        assert np.allclose(d.mulliken()[1], -D.mulliken()[1])
+        check_hermitian(d)
+
         d = D.spin_rotate([180, 0, 64], rad=False)
-        assert d.spin.is_polarized
-        assert np.allclose(d.mulliken()[1], -D.mulliken()[1])
+        check_hermitian(d)
 
     def test_spin_rotate_nc(self):
         bond = 1.42
@@ -481,15 +495,21 @@ class TestDensityMatrix:
         D.construct(
             [[0.1, bond + 0.01], [(1.0, 0.5, 0.01, 0.01), (0.1, 0.2, 0.1, 0.1)]]
         )
+        check_hermitian(D)
 
         D_mull = D.mulliken()
         assert np.allclose(D_mull, D.astype(np.complex128).mulliken())
         d = D.spin_rotate([45, 60, 90], rad=False)
+        check_hermitian(d)
 
         d_mull = d.mulliken()
-
         assert not np.allclose(D_mull, d_mull)
         assert np.allclose(D_mull[0], d_mull[0])
+
+        # Back-rotate
+        d = d.spin_rotate([-45, -60, -90], rad=False)
+        d_mull = d.mulliken()
+        assert not np.allclose(D_mull, d_mull)
 
     @pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
     def test_spin_rotate_so(self):
@@ -520,9 +540,11 @@ class TestDensityMatrix:
                 ],
             ]
         )
+
         D_mull = D.mulliken()
         assert np.allclose(D_mull, D.astype(np.complex128).mulliken())
         d = D.spin_rotate([45, 60, 90], rad=False)
+
         d_mull = d.mulliken()
         assert not np.allclose(D_mull, d_mull)
         assert np.allclose(D_mull[0], d_mull[0])

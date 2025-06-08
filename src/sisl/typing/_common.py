@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any, Tuple, Union
 
 import scipy.sparse as sps
 
@@ -12,7 +12,7 @@ import scipy.sparse as sps
 # and use a string literal forward reference to it in subsequent types
 # https://mypy.readthedocs.io/en/latest/common_issues.html#import-cycles
 if TYPE_CHECKING:
-    from sisl import Geometry, Lattice, SparseAtom, SparseCSR, SparseOrbital
+    from sisl import Geometry, Lattice, Quaternion, SparseAtom, SparseCSR, SparseOrbital
 
 __all__ = [
     "Coord",
@@ -29,6 +29,7 @@ __all__ = [
     "SparseMatrix",
     "SparseMatrixExt",
     "SparseMatrixGeometry",
+    "RotationType",
 ]
 
 
@@ -68,3 +69,12 @@ SparseMatrix = Union[
 ]
 
 SparseMatrixGeometry = Union["SparseAtom", "SparseOrbital"]
+
+# Specify a rotation around Cartesian lattice vectors
+RotationType = Union[
+    Tuple[float, Union[str, SeqFloat]],  # (ang, [x, y, z] | "x")
+    SeqFloat,  # (ang-x, ang-y, ang-z)
+    "Quaternion",  # Direct
+]
+RotationCartesian = Union[str, SeqFloat]
+RotationDirect = Tuple[float, Union[str, Coord]]
