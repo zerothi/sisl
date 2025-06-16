@@ -216,6 +216,14 @@ class Quaternion:
                 a - d i & -c - b i\\
                 c - b i & a + d i
             \end{bmatrix}
+
+        Examples
+        --------
+        Rotate a spin-block matrix
+        >>> q = Quaternion(...)
+        >>> m = np.random.rand(3, 2, 2)
+        >>> U = q.rotation_matrix_su2()
+        >>> m_rotated = U @ m @ U.T.conj()
         """
         from sisl.physics.spin import Spin
 
@@ -225,7 +233,16 @@ class Quaternion:
         return U
 
     def rotation_matrix(self) -> np.ndarray:
-        """Determine the Cartesian rotation matrix from the quaternion."""
+        """Determine the Cartesian rotation matrix from the quaternion
+
+        Examples
+        --------
+        Rotate a list of coordinates (same as `Quaternion.rotate(xyz)`)
+        >>> q = Quaternion(...)
+        >>> xyz = np.random.rand(4, 3)
+        >>> U = q.rotation_matrix()
+        >>> xyz_rotated = U @ xyz
+        """
         s = 2 / self.norm2()
         a, b, c, d = self._v
         _, bs, cs, ds = self._v * s
