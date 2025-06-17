@@ -39,6 +39,19 @@ def test_atom_simple(setup):
     assert setup.Au == setup.Au.copy()
 
 
+def test_atom_empty():
+    atom = Atom("C")
+    assert len(atom) == 0
+    assert atom.no == 0
+    for attr in ("orbitals", "R", "q0"):
+        assert len(getattr(atom, attr)) == 0
+    atoms = Atoms()
+    assert atoms.no == 0
+    assert atoms.nspecies == 0
+    for attr in ("lasto", "orbitals", "mass", "Z"):
+        assert getattr(atoms, attr).size == 0
+
+
 def test_atom_ghost():
     assert isinstance(Atom[1], Atom)
     assert isinstance(Atom[-1], AtomGhost)
@@ -107,8 +120,7 @@ def test4(setup):
 
 
 def test5(setup):
-    assert Atom(Z=1, mass=12).R < 0
-    assert Atom(Z=1, mass=12).R.size == 1
+    assert Atom(Z=1, mass=12).R.size == 0
     assert Atom(Z=1, mass=12).mass == 12
     assert Atom(Z=31, mass=12).mass == 12
     assert Atom(Z=31, mass=12).Z == 31
