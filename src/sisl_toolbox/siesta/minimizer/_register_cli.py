@@ -29,10 +29,11 @@ def basis_cli(subp=None, parser_kwargs={}):
     subp = p.add_subparsers(title="Commands")
 
     get_argparse_parser(
-        optimize_basis, name="optim", subp=subp, parser_kwargs=parser_kwargs
-    )
-    get_argparse_parser(
         write_basis_to_yaml, name="build", subp=subp, parser_kwargs=parser_kwargs
+    )
+    parser_kwargs["aliases"] = ("optim",)
+    get_argparse_parser(
+        optimize_basis, name="optimize", subp=subp, parser_kwargs=parser_kwargs
     )
 
 

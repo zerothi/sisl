@@ -9,6 +9,7 @@ from sisl_toolbox.cli import register_toolbox_cli
 
 from ._atom import atom_plot
 
+# TODO once 3.10 hits, use `sys.orig_argv[0]` which is non-writeable
 _script = Path(sys.argv[0]).name
 
 
