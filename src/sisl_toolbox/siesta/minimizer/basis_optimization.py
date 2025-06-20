@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import logging
+import os
 import subprocess
 from pathlib import Path
 from typing import Dict, List, Literal, Optional, Tuple, Union
@@ -10,6 +11,8 @@ import numpy as np
 import yaml as yaml_module
 
 import sisl
+from sisl._core.periodictable import PeriodicTable
+from sisl._help import has_module
 from sisl.messages import warn
 from sisl_toolbox.siesta.minimizer import (
     AtomBasis,
@@ -188,18 +191,20 @@ def get_valence_orbs_psf(psf: Union[str, Path]):
     return shells
 
 
+BoolOrTupleBool = Union[bool, Tuple[bool]]
+
+
 def generate_basis_config(
     atoms: List[sisl.Atom],
     basis_size: str = "atoms",
-    optimize_pol: bool = False,
-    pol_optimize_screening: bool = False,
-    pol_optimize_width: bool = False,
+    optimize_charge_conf: BoolOrTupleBool = False,
+    optimize_soft_conf: BoolOrTupleBool = False,
     initial_atoms_basis: bool = False,
     optimize_atoms_basis: bool = False,
     cutoff_upper_bound: float = 5.5,
     variable_delta: float = 0.05,
 ):
-    """Generates a basis configuration file to be fed to the optimizer.
+    r"""Generates a basis configuration file to be fed to the optimizer.
 
     Non-polarization orbitals are set to optimize their cutoff radii,
     while polarization orbitals are set to be optimized through the charge
@@ -220,18 +225,20 @@ def generate_basis_config(
         X can also be S, D, T, Q for 1, 2, 3, 4 zetas respectively. E.g. "DZ".
 
         It can also be "atoms", which exactly takes the orbitals present in the atoms object.
-    optimize_pol : bool, optional
-        If the basis contains polarization orbitals, whether they should be
-        explicitly optimized or not. If not, the default polarization orbitals
-        will be requested.
+    optimize_charge_conf : bool, tuple of bool, optional
+        Whether some orbitals will be optimized for charge-confinement.
+        If true, it will optimize, the charge (Q), the Yukawa screening parameter
+        :math:`\lambda`, and the singularity regularization parameter :math:`\delta`.
 
-        The polarization orbitals are optimized through the charge confinement.
-    pol_optimize_screening : bool, optional
-        If polarization orbitals are optimized, whether the screening length
-        of the charge confinement should be optimized or not.
-    pol_optimize_width : bool, optional
-        If polarization orbitals are optimized, whether the width of the charge confinement
-        should be optimized or not.
+        For multiple arguments, each can be fine-tuned on/off.
+
+        This will only optimize charge-confinement for *empty* orbitals (:math:`q=0`).
+    optimize_soft_conf : bool, tuple of bool, optional
+        Whether all orbitals will be optimized for soft-confinement.
+        If true, it will optimize, the potential (:math:`V_0`), and the inner
+        radius :math:`r_i`.
+
+        For multiple arguments, each can be fine-tuned on/off.
     initial_atoms_basis: bool, optional
         If True, the orbitals that are in the Atoms object are taken as the initial values for basis
         optimization.
@@ -257,11 +264,26 @@ def generate_basis_config(
 
         polarization = basis_size[-1] == "P"
 
-        optimize_pol = optimize_pol and polarization
     else:
         n_zetas = None
         polarization = False
-        optimize_pol = False
+
+    def _tuplilize(arg, n: int):
+        """Convert a string (comma-separated) to a list of entries"""
+        if isinstance(arg, str):
+            arg = [bool(o) for o in arg.split(",")]
+
+        if isinstance(arg, bool):
+            arg = [arg]
+
+        if len(arg) == 1:
+            arg = arg * n
+
+        assert len(arg) == n
+        return arg
+
+    optimize_charge_conf = _tuplilize(optimize_charge_conf, 3)
+    optimize_soft_conf = _tuplilize(optimize_soft_conf, 2)
 
     # Helper function to determine lower bounds for cutoff radii.
     def get_cutoff_lowerbound(orb_name, i_zeta):
@@ -269,11 +291,10 @@ def generate_basis_config(
 
         The lower bound depends on which orbital it is and for which zeta the cutoff is.
         """
-        if i_zeta > 0:
-            if i_zeta == 1:
-                return 1
-            else:
-                return 0
+        if i_zeta == 1:
+            return 1
+        elif i_zeta > 1:
+            return 0
         elif orb_name == "1s":
             return 2
         else:
@@ -281,6 +302,10 @@ def generate_basis_config(
 
     def _orbs_from_row_and_block(table_row, atom_block):
         """To be used if the orbitals to optimize can't be inferred from the pseudopotential."""
+        warn(
+            "The orbitals are pre-filled, but likely they are not correct. "
+            "Please check the basis before doing excessive optimizations!"
+        )
         if table_row == 0:
             orbs = ["1s"]
         elif table_row <= 2:
@@ -300,9 +325,75 @@ def generate_basis_config(
 
         return orbs
 
+    def _get_charge_conf():
+        r"""Return a dict with charge-confinement optimizations.
+
+        This is based on:
+
+        .. math:
+
+            V_Q(r) = \frac{Ze^{-\lambda r}}{\sqrt{r^2+\delta^2}}
+
+        """
+        charge_conf = {
+            "charge": {
+                "initial": 3.0,
+                "bounds": [1.0, 10.0],
+                "delta": variable_delta,
+            },
+            "yukawa": {
+                "initial": 0.0,
+                "bounds": [0.0, 3.0],
+                "delta": 0.5,
+            },
+            "width": {
+                "initial": 0.0053,
+                "bounds": [0.0, 0.5],
+                "delta": 0.05,
+            },
+        }
+        for key, optimize in zip(("charge", "yukawa", "width"), optimize_charge_conf):
+            if not optimize:
+                del charge_conf[key]
+        return charge_conf
+
+    def _get_soft_conf():
+        r"""Return a dict with soft-confinement optimizations.
+
+        This is based on:
+
+        .. math:
+
+            V(r) = V_0\frac{e^{-\frac{r_c - r_i}{r-r_i}}}{r_c-r}
+
+        """
+        soft_conf = {
+            "ri": {
+                # Negative numbers means it will be based on *rc*
+                "initial": -0.9,
+                "bounds": [-1.0, -0.5],
+                "delta": 0.08,
+            },
+            "V0": {
+                "initial": 10.0,
+                "bounds": [0.0, 1000.0],
+                "delta": 50.0,
+            },
+        }
+        for key, optimize in zip(("V0", "ri"), optimize_soft_conf):
+            if not optimize:
+                del soft_conf[key]
+        return soft_conf
+
+    PT = PeriodicTable()
+
     config_dict = {}
+
     # Loop through atoms and generate a basis config for each, adding it to config_dict.
     for atom in atoms:
+        table_row = PT.Z_row(abs(atom.Z))
+        atom_block = PT.Z_block(abs(atom.Z))
+        # TODO check these are equivalent
         table_row, atom_block = get_row(atom.Z)
 
         valence_n = table_row + 1
@@ -312,9 +403,14 @@ def generate_basis_config(
         tag = atom.tag
         if basis_size == "atoms":
             orbs = ["dummy"]
-        elif Path(f"{tag}.psml").exists():
+        elif (psml_path := Path(f"{tag}.psml")).exists():
             # From the psml pseudopotential
-            orbs = get_valence_orbs_psml(f"{tag}.psml")
+            orbs = get_valence_orbs_psml(psml_path)
+        elif (
+            psml_path := Path(os.environ.get("SIESTA_PS_PATH", "")) / f"{tag}.psml"
+        ).exists():
+            # From the psml pseudopotential
+            orbs = get_valence_orbs_psml(psml_path)
         else:
             # If we didn't find any psml file, we just generate the valence orbitals using
             # the row and block of the atom.
@@ -356,12 +452,15 @@ def generate_basis_config(
         }
 
         # Read in the initial basis if requested.
+
+        # The provided basis contains the ranges of the orbitals from the `Atoms`
+        # object passed.
         provided_basis = {}
         if initial_atoms_basis or basis_size == "atoms":
 
             for orbital in atom.orbitals:
-                name = orbital.name()
-                orb_name, zeta = name[:2], int(name.split("Z")[1][0])
+                orb_name = f"{orbital.n}{orbital.l}"
+                zeta = orbital.zeta
 
                 provided_basis[orb_name, zeta] = orbital.R
 
@@ -387,6 +486,15 @@ def generate_basis_config(
                     else:
                         basis[f"zeta{zeta}"] = orbital.R
 
+                    if abs(orbital.q0) < 1e-8 and any(optimize_charge_conf):
+                        # charge-confinement is typically only suitable for
+                        # 0-charge orbitals.
+                        basis["charge-confinement"] = _get_charge_conf()
+
+                    if any(optimize_soft_conf):
+                        # soft-confinement optimization
+                        basis["soft-confinement"] = _get_soft_conf()
+
             if basis_size == "atoms":
                 # We have already set up the basis from the atoms.
                 continue
@@ -394,30 +502,34 @@ def generate_basis_config(
         # If we are here, it means that the size of the basis is not determined by the provided
         # atoms object, that is, basis size is something like DZP.
 
-        def get_cutoff_upper_bound(orb_name, i_zeta):
-            if (orb_name, i_zeta) in provided_basis:
-                return provided_basis[(orb_name, i_zeta)] * 0.95
-            else:
+        def get_cutoff_upper_bound(orb_name, zeta):
+            cutoff = provided_basis.get((orb_name, zeta), None)
+            if cutoff is None:
                 return cutoff_upper_bound
+            return cutoff * 0.95
 
         # Loop through non-polarization orbitals and add them to the basis.
         for orb_name in orbs:
             orb_basis = {}
 
-            if polarization and not optimize_pol:
+            if polarization:
                 if orb_name == orb_to_polarize:
-                    orb_basis["pol"] = 1
+                    orb_basis["polarization"] = 1
 
-            for i_zeta in range(n_zetas):
-                orb_id = (orb_name, i_zeta + 1)
+            if any(optimize_soft_conf):
+                # soft-confinement optimization
+                orb_basis["soft-confinement"] = _get_soft_conf()
 
-                orb_basis[f"zeta{i_zeta + 1}"] = {
+            for i_zeta in range(1, n_zetas + 1):
+                orb_id = (orb_name, i_zeta)
+
+                orb_basis[f"zeta{i_zeta}"] = {
                     "initial": provided_basis.get(orb_id, 3.0),
                 }
 
                 if orb_id not in provided_basis:
                     # Orbital not provided, we need to optimize it from scratch.
-                    orb_basis[f"zeta{i_zeta + 1}"].update(
+                    orb_basis[f"zeta{i_zeta}"].update(
                         {
                             "bounds": [
                                 get_cutoff_lowerbound(orb_name, i_zeta),
@@ -428,7 +540,12 @@ def generate_basis_config(
                     )
                 else:
                     # Orbital provided, we don't need to optimize it.
-                    orb_basis[f"zeta{i_zeta + 1}"] = provided_basis[orb_id]
+                    orb_basis[f"zeta{i_zeta}"] = provided_basis[orb_id]
+
+            # In this case the orbitals are based on the valence configuration.
+            # I.e. all orbitals have charge. In this case it does not
+            # make sense to add charge-confinement optimizations.
+            # For this, only the polarization orbital would gain this.
 
             element_config[orb_name] = {"basis": orb_basis}
 
@@ -436,50 +553,28 @@ def generate_basis_config(
         if polarization:
             for orb_name in pol_orbs:
 
+                pol_orb_basis = {}
+
                 # Check if the polarization orbital is already in the provided basis.
                 if (orb_name, 1) in provided_basis:
                     # Orbital provided in the basis
-                    pol_orb_basis = {}
-
                     zeta = 1
                     while (orb_name, zeta) in provided_basis:
                         pol_orb_basis[f"zeta{zeta}"] = provided_basis[(orb_name, zeta)]
 
                         zeta += 1
 
-                elif optimize_pol:
+                elif any(optimize_charge_conf):
                     # Orbital not provided in the basis, and we need to optimize it.
-                    pol_orb_basis = {
-                        "polarizes": orb_to_polarize,
-                        "charge-confinement": {
-                            "charge": {
-                                "initial": 3.0,
-                                "bounds": [1.0, 10.0],
-                                "delta": variable_delta,
-                            },
-                        },
-                    }
-
-                    charge_confinement = pol_orb_basis["charge-confinement"]
-
-                    if pol_optimize_screening:
-                        # Screening length (Ang-1)
-                        charge_confinement["yukawa"] = {
-                            "initial": 0.0,
-                            "bounds": [0.0, 3.0],
-                            "delta": 0.5,
-                        }
-                    if pol_optimize_width:
-                        # Width for the potential (Ang)
-                        charge_confinement["width"] = {
-                            "initial": 0.0053,
-                            "bounds": [0.0, 0.5],
-                            "delta": 0.05,
-                        }
+                    pol_orb_basis["polarizes"] = orb_to_polarize
 
                 else:
                     continue
 
+                if any(optimize_charge_conf):
+                    pol_orb_basis["charge-confinement"] = _get_charge_conf()
+                if any(optimize_soft_conf):
+                    orb_basis["soft-confinement"] = _get_soft_conf()
                 element_config[orb_name] = {"basis": pol_orb_basis}
 
     return config_dict
@@ -542,7 +637,7 @@ def set_minimizer_variables(
 
                 # Remove the specification for a default polarized orbital, since we are going
                 # to explicitly include it.
-                atom_config[polarized_orb]["basis"].pop("pol")
+                atom_config[polarized_orb]["basis"].pop("polarization")
 
                 # Loop through all the zetas of the orbital that this one polarizes and
                 # copy the cutoffs.
@@ -563,11 +658,10 @@ def set_minimizer_variables(
             else:
                 # We are not optimizing the polarization orbitals, so we need to tell SIESTA
                 # to use its default polarization orbitals, for the polarized orbital.
-                atom_config[polarized_orb]["basis"]["pol"] = 1
+                atom_config[polarized_orb]["basis"]["polarization"] = 1
 
         # Modify the basis.
         basis[atom_key] = AtomBasis.from_dict(atom_config)
-
         atom_basis = basis[atom_key]
 
         # Now that we have the appropiate basis for our next minimization, gather the
@@ -618,7 +712,7 @@ def write_basis(basis: Dict[str, AtomBasis], fdf: Union[str, Path]):
         Path to the fdf file where to write the basis specification.
     """
     full_basis = []
-    for atom_key, atom_basis in basis.items():
+    for atom_basis in basis.values():
         full_basis.extend(atom_basis.basis())
 
     sisl.io.siesta.fdfSileSiesta(fdf, "w").set("PAO.Basis", full_basis)
@@ -627,9 +721,8 @@ def write_basis(basis: Dict[str, AtomBasis], fdf: Union[str, Path]):
 def write_basis_to_yaml(
     geometry: str,
     size: str = "DZP",
-    optimize_pol: bool = False,
-    pol_optimize_screening: bool = False,
-    pol_optimize_width: bool = False,
+    optimize_charge_conf: BoolOrTupleBool = False,
+    optimize_soft_conf: BoolOrTupleBool = False,
     variable_delta: float = 0.05,
     initial_basis: Optional[str] = None,
     optimize_initial_basis: bool = False,
@@ -641,7 +734,7 @@ def write_basis_to_yaml(
 
     The function looks at possible pseudopotential files (first psml, then psf) to
     determine which orbitals to include in the basis. Otherwise, it just generates
-    the valence orbitals for the usual conventions, without semicores.
+    the valence orbitals for the usual conventions, without semi-cores.
 
     Parameters
     ----------
@@ -655,16 +748,20 @@ def write_basis_to_yaml(
 
         It can also be "fdf" or "basis" to use the basis size as read from the `initial_basis` argument.
         This forces the `initial_basis` argument to be equal to the `size` argument.
-    optimize_pol : bool, optional
-        If the basis contains polarization orbitals, whether they should be
-        explicitly optimized or not. If not, the default polarization orbitals
-        will be requested.
-    pol_optimize_screening : bool, optional
-        If polarization orbitals are optimized, whether the screening length
-        of the charge confinement should be optimized or not.
-    pol_optimize_width : bool, optional
-        If polarization orbitals are optimized, whether the width of the charge confinement
-        should be optimized or not.
+    optimize_charge_conf : bool, tuple of bool, optional
+        Whether some orbitals will be optimized for charge-confinement.
+        If true, it will optimize, the charge (Q), the Yukawa screening parameter
+        :math:`\lambda`, and the singularity regularization parameter :math:`\delta`.
+
+        For multiple arguments, each can be fine-tuned on/off.
+
+        This will only optimize charge-confinement for *empty* orbitals (:math:`q=0`).
+    optimize_soft_conf : bool, tuple of bool, optional
+        Whether all orbitals will be optimized for soft-confinement.
+        If true, it will optimize, the potential (:math:`V_0`), and the inner
+        radius :math:`r_i`.
+
+        For multiple arguments, each can be fine-tuned on/off.
     variable_delta : float, optional
         Delta that specifies the step size in changes to the optimized variables.
         It is used differently depending on the optimizer.
@@ -698,9 +795,8 @@ def write_basis_to_yaml(
     basis_config = generate_basis_config(
         atoms,
         size,
-        optimize_pol=optimize_pol,
-        pol_optimize_screening=pol_optimize_screening,
-        pol_optimize_width=pol_optimize_width,
+        optimize_charge_conf=optimize_charge_conf,
+        optimize_soft_conf=optimize_soft_conf,
         variable_delta=variable_delta,
         initial_atoms_basis=initial_basis is not None,
         optimize_atoms_basis=optimize_initial_basis,
@@ -715,21 +811,29 @@ def write_basis_to_yaml(
     return dumps
 
 
+DEFAULT_OPTIMIZER: str = "local"
+if has_module("pyswarms"):
+    DEFAULT_OPTIMIZER = "swarms"
+if has_module("pybads"):
+    DEFAULT_OPTIMIZER = "bads"
+
+
 def optimize_basis(
     geometry: str,
     size: str = "DZP",
-    optimize_pol: bool = False,
+    optimize_charge_conf: BoolOrTupleBool = False,
+    optimize_soft_conf: BoolOrTupleBool = False,
     variable_delta: float = 0.05,
     basis_spec: dict = {},
     start: str = "z1",  # "z{x}" or pol
-    stop: str = "pol",  # "z{x}" or pol
+    stop: str = "polarization",  # "z{x}" or pol
     tol_fun: float = 1e-3,
     tol_stall_iters: int = 4,
     siesta_cmd: str = "siesta",
     out: str = "basisoptim.dat",
     out_fmt: str = "20.17e",
     logging_level: Literal["critical", "notset", "info", "debug"] = "notset",
-    optimizer: Literal["bads", "swarms", "local"] = "bads",
+    optimizer: Literal["bads", "swarms", "local"] = DEFAULT_OPTIMIZER,
     optimizer_kwargs: dict = {},
 ):
     """Optimizes a basis set for a given geometry.
@@ -752,7 +856,7 @@ def optimize_basis(
 
     - Finally, it optimizes the polarization orbitals (if requested).\n\n
 
-    Appropiate optimization bounds are set for each parameter.\n\n
+    Appropriate optimization bounds are set for each parameter.\n\n
 
     At each step, all corresponding parameters are optimized simultaneously.\n\n
 
@@ -766,7 +870,7 @@ def optimize_basis(
 
     To determine which orbitals to include in the basis, the function looks at possible
     pseudopotential files (first psml, then psf). If they are not there, it just generates
-    the valence orbitals for the usual conventions, without semicores.
+    the valence orbitals for the usual conventions, without semi-cores.
 
     This function only provides the simplest specification for basis shapes. If you need more
     customization control, first generate a basis specification and then provide it to this
@@ -790,10 +894,20 @@ def optimize_basis(
 
         It can also be "fdf" or "basis" to use the basis size as read from the `initial_basis` argument.
         This forces the `initial_basis` argument to be equal to the `size` argument.
-    optimize_pol :
-        If the basis contains polarization orbitals, whether they should be
-        explicitly optimized or not. If not, the default polarization orbitals
-        will be requested.
+    optimize_charge_conf : bool, tuple of bool, optional
+        Whether some orbitals will be optimized for charge-confinement.
+        If true, it will optimize, the charge (Q), the Yukawa screening parameter
+        :math:`\lambda`, and the singularity regularization parameter :math:`\delta`.
+
+        For multiple arguments, each can be fine-tuned on/off.
+
+        This will only optimize charge-confinement for *empty* orbitals (:math:`q=0`).
+    optimize_soft_conf : bool, tuple of bool, optional
+        Whether all orbitals will be optimized for soft-confinement.
+        If true, it will optimize, the potential (:math:`V_0`), and the inner
+        radius :math:`r_i`.
+
+        For multiple arguments, each can be fine-tuned on/off.
     variable_delta :
         Delta that specifies the step size in changes to the optimized variables.
         It is used differently depending on the optimizer.
@@ -804,9 +918,9 @@ def optimize_basis(
         You can use ``write_yaml`` to generate a template, and then tailor it to your needs.
     start :
         At which step to start optimizing. Previous steps will be read from previous runs.
-        Can be "z{x}" or "pol" where x is the zeta shell number.
+        Can be "z{x}" or "polarization" where x is the zeta shell number.
     stop :
-        At which step to stop optimizing. Can be "z{x}" or "pol" where x is the zeta shell number.
+        At which step to stop optimizing. Can be "z{x}" or "polarization" where x is the zeta shell number.
         The optimization is stopped AFTER optimizing this step.
     tol_fun :
         Tolerance for the optimization function value. If the function value changes less than this
@@ -827,10 +941,12 @@ def optimize_basis(
         Which optimizer to use. Can be:
 
             - "bads": Uses pybads to run the Bayesian Adaptive Direct Search (BADS) algorithm
-             for optimization. When benchmarking algorithms, BADS has proven to be the best at finding the
-             global minimum, this is why it is the default.
+              for optimization. When benchmarking algorithms, BADS has proven to be the best at finding the
+              global minimum, this is why it is the default (if available).
             - "swarms": Uses pyswarms to run a Particle Swarms optimization.
+              Is default if importable, and `pybads` is not available.
             - "local": Uses the scipy.optimize.minimize function.
+              Is default if neither of `pybads` or `pyswarms` are importable.
     optimizer_kwargs :
         Keyword arguments to pass to the optimizer.
     """
@@ -848,7 +964,8 @@ def optimize_basis(
         basis_yaml = write_basis_to_yaml(
             geometry=geometry,
             size=size,
-            optimize_pol=optimize_pol,
+            optimize_charge_conf=optimize_charge_conf,
+            optimize_soft_conf=optimize_soft_conf,
             variable_delta=variable_delta,
             out=None,
         )
@@ -935,7 +1052,7 @@ def optimize_basis(
         {
             "zeta": None,
             "polarization": True,
-            "out_prefix": "pol",
+            "out_prefix": "polarization",
             "skip": False,
             "stop": True,
             "get_hard_bounds": lambda bounds: bounds,

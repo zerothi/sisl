@@ -30,6 +30,9 @@ __all__ = [
 
 _log = logging.getLogger(__name__)
 
+# TODO we should have some kind of checks for the bounds, whether they
+# make sense or not.
+
 
 def _convert_optimize_result(minimizer, result):
     """Convert optimize result to conform to the scaling procedure performed"""
@@ -350,15 +353,13 @@ class BADSMinimize(BaseMinimize):
     It uses the pybads package to perform the minimization.
     """
 
-    def run(self, options={}, get_hard_bounds: Callable = lambda x: x, **kwargs):
+    def run(self, options={}, func_hard_bounds: Callable = lambda x: x, **kwargs):
         from pybads.bads import BADS
 
         bounds = self.normalize_bounds()
         bounds = np.array(bounds)
 
-        bounds[bounds == 0] = 0.5
-
-        hard_bounds = get_hard_bounds(bounds)
+        hard_bounds = func_hard_bounds(bounds)
 
         with self:
 

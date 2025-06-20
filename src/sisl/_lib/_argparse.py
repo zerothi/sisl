@@ -19,7 +19,12 @@ except ImportError:
 
 def is_optional(field):
     """Check whether the annotation for a parameter is an Optional type."""
-    return typing.get_origin(field) is Union and type(None) in typing.get_args(field)
+    return is_union(field) and type(None) in typing.get_args(field)
+
+
+def is_union(field):
+    """Check whether the annotation for a parameter is an Union type."""
+    return typing.get_origin(field) is Union
 
 
 def is_literal(field):
@@ -201,6 +206,11 @@ def get_argparse_parser(
         if is_literal(annotation):
             choices = get_literal_args(annotation)
             annotation = type(choices[0])
+
+        # If the annotation is some-kind of union, just replace
+        # it with a string...
+        if is_union(annotation):
+            annotation = str
 
         group.add_argument(
             *arg_names,

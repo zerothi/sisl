@@ -23,7 +23,7 @@ Then, one can directly run the optimization:
 
 .. code-block:: bash
 
-   stoolbox basis optim --geometry input.fdf
+   stoolbox basis optimize --geometry input.fdf
 
 with ``input.fdf`` being the input file for the calculation. This will use all the default
 values. Since there are many possible tweaks, we invite you to read carefully the help
@@ -56,7 +56,7 @@ Then, you can pass it directly to the optimization using the ``--config`` option
 
 .. code-block:: bash
 
-   stoolbox basis optim --geometry input.fdf --config my_config.yaml
+   stoolbox basis optimize --geometry input.fdf --config my_config.yaml
 
 **Installing the optimizers:** The default optimizer is BADS (https://github.com/acerbilab/bads)
 which is the one that we have found works best to optimize basis sets. The optimizer is however
