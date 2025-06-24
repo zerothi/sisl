@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -271,7 +271,7 @@ See <a class="reference internal" href="sisl.BoundaryCondition.html#sisl.Boundar
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.repeat" title="sisl.Lattice.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(reps, axis)</p></td>
 <td><p>Extend the unit-cell <em class="xref py py-obj">reps</em> times along the <em class="xref py py-obj">axis</em> lattice vector</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.rotate" title="sisl.Lattice.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(angle, v[, rad, what])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.rotate" title="sisl.Lattice.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(rotation[, rad, what])</p></td>
 <td><p>Rotates the supercell, in-place by the angle around the vector</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.sc_index" title="sisl.Lattice.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a>(sc_off)</p></td>
@@ -457,7 +457,7 @@ when projected onto the normal vector of the other two axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – length for cell vectors, if an array it corresponds to the individual
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – length for cell vectors, if an array it corresponds to the individual
 vectors and it must have length equal to <em class="xref py py-obj">axes</em></p></li>
 <li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>] </em><em>| </em><em>~typing.Literal</em><em>[</em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>] </em><em>| </em><em>~collections.abc.Sequence</em><em>[</em><em>~typing.Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em><em>]</em>) – which axes the <a class="reference internal" href="#sisl.Lattice.length" title="sisl.Lattice.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">length</span></code></a> variable refers too.</p></li>
 </ul>
@@ -466,7 +466,7 @@ vectors and it must have length equal to <em class="xref py py-obj">axes</em></p
 <dd class="field-even"><p>cell-vectors with prescribed length, same order as <em class="xref py py-obj">axes</em></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -483,7 +483,7 @@ vectors and it must have length equal to <em class="xref py py-obj">axes</em></p
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -495,7 +495,7 @@ vectors and it must have length equal to <em class="xref py py-obj">axes</em></p
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cell</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – the new cell parameters</p></li>
+<li><p><strong>cell</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – the new cell parameters</p></li>
 <li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
 </ul>
 </dd>
@@ -599,7 +599,7 @@ vectors will be considered non-zero.</p>
 <dd class="field-odd"><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>] </em><em>| </em><em>~typing.Literal</em><em>[</em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>] </em><em>| </em><em>~collections.abc.Sequence</em><em>[</em><em>~typing.Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em><em>]</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -663,8 +663,8 @@ has a Cartesian <span class="math notranslate nohighlight">\(x\)</span> componen
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>length</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – length of each lattice vector</p></li>
-<li><p><strong>angles</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – angles between the lattice vectors (in Voigt notation)
+<li><p><strong>length</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – length of each lattice vector</p></li>
+<li><p><strong>angles</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – angles between the lattice vectors (in Voigt notation)
 <code class="docutils literal notranslate"><span class="pre">[0]</span></code> is between 2nd and 3rd lattice vector, etc.</p></li>
 </ul>
 </p>
@@ -690,13 +690,13 @@ unit-cell.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>normal_V</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – planes normal vector (pointing outwards with regards to the cell)</p></li>
-<li><p><strong>p</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a point on the plane</p></li>
+<li><p><strong>normal_V</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – planes normal vector (pointing outwards with regards to the cell)</p></li>
+<li><p><strong>p</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a point on the plane</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -787,19 +787,28 @@ if it is a string it will create a new sile using <a class="reference internal" 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Lattice.rotate">
-<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'abc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice.rotate" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rotation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'abc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice.rotate" title="Link to this definition"></a></dt>
 <dd><p>Rotates the supercell, in-place by the angle around the vector</p>
 <p>One can control which cell vectors are rotated by designating them
 individually with <code class="docutils literal notranslate"><span class="pre">only='[abc]'</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the angle of which the geometry should be rotated</p></li>
-<li><p><strong>v</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference internal" href="sisl.typing.Coord.html#sisl.typing.Coord" title="sisl.typing.Coord"><em>Coord</em></a><em>]</em>) – the vector around the rotation is going to happen
-<code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> will rotate in the <code class="docutils literal notranslate"><span class="pre">yz</span></code> plane</p></li>
+<li><p><strong>rotations</strong> – <p>A specification of multiple rotations in a single list of arguments.</p>
+<ul>
+<li><p>3 floats: Euler angles around Cartesian coordinates</p></li>
+<li><p>(float, str): angle + Cartesian/lattice vector name</p></li>
+<li><p>(float, 3 floats): angle + vector of rotation</p></li>
+<li><p>Quaternion: direct used rotation</p></li>
+<li><p>or a sequence of the above.
+The resulting rotation matrix will be constructed as
+<code class="docutils literal notranslate"><span class="pre">U[n]</span> <span class="pre">&#64;</span> <span class="pre">U[n-1]</span> <span class="pre">&#64;</span> <span class="pre">...</span> <span class="pre">&#64;</span> <span class="pre">U[0]</span></code>.</p></li>
+</ul>
+</p></li>
 <li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether the angle is in radians (True) or in degrees (False)</p></li>
 <li><p><strong>what</strong> (<em>Literal</em><em>[</em><em>'abc'</em><em>, </em><em>'a'</em><em>, </em><em>...</em><em>]</em>) – only rotate the designated cell vectors.</p></li>
 <li><p><strong>lattice</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>)</p></li>
+<li><p><strong>rotation</strong> (<a class="reference internal" href="sisl.typing.RotationType.html#sisl.typing.RotationType" title="sisl.typing.RotationType"><em>RotationType</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1202,7 +1211,7 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.boundary_condition">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">boundary_condition</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.boundary_condition" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">boundary_condition</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.boundary_condition" title="Link to this definition"></a></dt>
 <dd><p>Boundary conditions for each lattice vector (lower/upper) sides <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">2)</span></code></p>
 </dd></dl>
 
@@ -1213,7 +1222,7 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.icell">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">icell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.icell" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">icell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.icell" title="Link to this definition"></a></dt>
 <dd><p>Returns the reciprocal (inverse) cell for the <a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a>.</p>
 <p>Note: The returned vectors are still in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">:]</span></code> format
 and not as returned by an inverse LAPACK algorithm.</p>
@@ -1221,13 +1230,13 @@ and not as returned by an inverse LAPACK algorithm.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.isc_off">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.isc_off" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.isc_off" title="Link to this definition"></a></dt>
 <dd><p>Internal indexed supercell <code class="docutils literal notranslate"><span class="pre">[ia,</span> <span class="pre">ib,</span> <span class="pre">ic]</span> <span class="pre">==</span> <span class="pre">i</span></code></p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.length">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.length" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.length" title="Link to this definition"></a></dt>
 <dd><p>Length of each lattice vector</p>
 </dd></dl>
 
@@ -1256,19 +1265,19 @@ and not as returned by an inverse LAPACK algorithm.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.origin">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.origin" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.origin" title="Link to this definition"></a></dt>
 <dd><p>Origin for the cell</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.pbc">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pbc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.pbc" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pbc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.pbc" title="Link to this definition"></a></dt>
 <dd><p>Boolean array to specify whether the boundary conditions are periodic`</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.rcell">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rcell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.rcell" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rcell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.rcell" title="Link to this definition"></a></dt>
 <dd><p>Returns the reciprocal cell for the <a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a> with <code class="docutils literal notranslate"><span class="pre">2*np.pi</span></code></p>
 <p>Note: The returned vectors are still in [0, :] format
 and not as returned by an inverse LAPACK algorithm.</p>
@@ -1276,7 +1285,7 @@ and not as returned by an inverse LAPACK algorithm.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.sc_off">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.sc_off" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.sc_off" title="Link to this definition"></a></dt>
 <dd><p>Integer supercell offsets</p>
 </dd></dl>
 

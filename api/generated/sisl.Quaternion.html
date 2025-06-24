@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -152,6 +152,18 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">Quaternion</span></span><a class="headerlink" href="#sisl.Quaternion" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Quaternion object to enable easy rotational quantities.</p>
+<p>The rotation using quaternions amounts to a rotation around a vector <span class="math notranslate nohighlight">\(v\)</span>
+by an angle <span class="math notranslate nohighlight">\(\phi\)</span>.</p>
+<p>The rotation follows the Euler-Rodrigues formula.</p>
+<p>The components of the quaternion will be referenced as:</p>
+<div class="math notranslate nohighlight">
+\[a + b\mathbf i + c\mathbf j + d\mathbf k\]</div>
+<p>The general way this gets translated is the complex matrix:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+    a + b i &amp; c + d i\\
+    -c + d i &amp; a - b i
+\end{bmatrix}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -178,7 +190,7 @@ instantiate it directly without having to consider angles:</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.angle" title="sisl.Quaternion.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a>([in_rad])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.angle" title="sisl.Quaternion.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a>([rad])</p></td>
 <td><p>Return the angle of this quaternion, in requested unit</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.conj" title="sisl.Quaternion.conj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conj</span></code></a>()</p></td>
@@ -190,8 +202,20 @@ instantiate it directly without having to consider angles:</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.norm" title="sisl.Quaternion.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a>()</p></td>
 <td><p>Returns the norm of this quaternion</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.rotate" title="sisl.Quaternion.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(v)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.norm2" title="sisl.Quaternion.norm2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm2</span></code></a>()</p></td>
+<td><p>Returns the squared norm of this quaternion</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.rotate" title="sisl.Quaternion.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(v)</p></td>
 <td><p>Rotate a vector <em class="xref py py-obj">v</em> by this quaternion</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.rotation_matrix" title="sisl.Quaternion.rotation_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotation_matrix</span></code></a>()</p></td>
+<td><p>Determine the Cartesian rotation matrix from the quaternion</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Quaternion.rotation_matrix_su2" title="sisl.Quaternion.rotation_matrix_su2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotation_matrix_su2</span></code></a>()</p></td>
+<td><p>Returns the special unitary group 2 rotation matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Quaternion.rotation_vector" title="sisl.Quaternion.rotation_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotation_vector</span></code></a>()</p></td>
+<td><p>Retrieve the vector the rotation rotates about</p></td>
 </tr>
 </tbody>
 </table>
@@ -208,11 +232,11 @@ instantiate it directly without having to consider angles:</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Quaternion.angle">
-<span class="sig-name descname"><span class="pre">angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.angle" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.angle" title="Link to this definition"></a></dt>
 <dd><p>Return the angle of this quaternion, in requested unit</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>in_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p>
+<dd class="field-odd"><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a></p>
@@ -254,6 +278,17 @@ instantiate it directly without having to consider angles:</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.Quaternion.norm2">
+<span class="sig-name descname"><span class="pre">norm2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.norm2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.norm2" title="Link to this definition"></a></dt>
+<dd><p>Returns the squared norm of this quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.Quaternion.rotate">
 <span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.rotate" title="Link to this definition"></a></dt>
 <dd><p>Rotate a vector <em class="xref py py-obj">v</em> by this quaternion</p>
@@ -268,7 +303,68 @@ this relation:</p>
 \mathbf v' = \mathbf v + q_w \mathbf t + \mathbf q \cross \mathbf t\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Quaternion.rotation_matrix">
+<span class="sig-name descname"><span class="pre">rotation_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.rotation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.rotation_matrix" title="Link to this definition"></a></dt>
+<dd><p>Determine the Cartesian rotation matrix from the quaternion</p>
+<p class="rubric">Examples</p>
+<p>Rotate a list of coordinates (same as <em class="xref py py-obj">Quaternion.rotate(xyz)</em>)
+&gt;&gt;&gt; q = Quaternion(…)
+&gt;&gt;&gt; xyz = np.random.rand(4, 3)
+&gt;&gt;&gt; U = q.rotation_matrix()
+&gt;&gt;&gt; xyz_rotated = U &#64; xyz</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Quaternion.rotation_matrix_su2">
+<span class="sig-name descname"><span class="pre">rotation_matrix_su2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.rotation_matrix_su2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.rotation_matrix_su2" title="Link to this definition"></a></dt>
+<dd><p>Returns the special unitary group 2 rotation matrix.</p>
+<p>The SU(2) group defines the unitary group encompassing spin
+matrices enables one to rotate the spin-block-matrices.</p>
+<p>The quaternion can directly be translated to the 2x2 matrix
+defining the rotation of the spin-block matrix:</p>
+<div class="math notranslate nohighlight">
+\[U = a \mathbf I
+- ib\sigma_x - ic\sigma_y -id\sigma_z\]</div>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>This implementation uses the <em>alternate</em> representation.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+    a - d i &amp; -c - b i\\
+    c - b i &amp; a + d i
+\end{bmatrix}\end{split}\]</div>
+</div>
+<p class="rubric">Examples</p>
+<p>Rotate a spin-block matrix
+&gt;&gt;&gt; q = Quaternion(…)
+&gt;&gt;&gt; m = np.random.rand(3, 2, 2)
+&gt;&gt;&gt; U = q.rotation_matrix_su2()
+&gt;&gt;&gt; m_rotated = U &#64; m &#64; U.T.conj()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Quaternion.rotation_vector">
+<span class="sig-name descname"><span class="pre">rotation_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/quaternion.html#Quaternion.rotation_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Quaternion.rotation_vector" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the vector the rotation rotates about</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>

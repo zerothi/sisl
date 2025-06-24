@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -172,9 +172,9 @@ S^2_{\beta,j} &amp;= \sum_i |\langle \psi_i^\alpha | \mathbf S | \psi_j^\beta \r
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>state_alpha</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – vectors describing the electronic states of spin-channel <span class="math notranslate nohighlight">\(\alpha\)</span>, 2nd dimension contains the states</p></li>
-<li><p><strong>state_beta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – vectors describing the electronic states of spin-channel <span class="math notranslate nohighlight">\(\beta\)</span>, 2nd dimension contains the states</p></li>
-<li><p><strong>S</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – overlap matrix used in the <span class="math notranslate nohighlight">\(\langle\psi|\mathbf S|\psi\rangle\)</span> calculation. If <em class="xref py py-obj">None</em> the identity
+<li><p><strong>state_alpha</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – vectors describing the electronic states of spin-channel <span class="math notranslate nohighlight">\(\alpha\)</span>, 2nd dimension contains the states</p></li>
+<li><p><strong>state_beta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – vectors describing the electronic states of spin-channel <span class="math notranslate nohighlight">\(\beta\)</span>, 2nd dimension contains the states</p></li>
+<li><p><strong>S</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – overlap matrix used in the <span class="math notranslate nohighlight">\(\langle\psi|\mathbf S|\psi\rangle\)</span> calculation. If <em class="xref py py-obj">None</em> the identity
 matrix is assumed. The overlap matrix should correspond to the system and <span class="math notranslate nohighlight">\(\mathbf k\)</span> point the eigenvectors
 have been evaluated at.</p></li>
 <li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the spin-contamination should be summed for all states (a single number returned).

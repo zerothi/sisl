@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -309,10 +309,10 @@
     <span class="n">next_triangle</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">geom</span> <span class="k">if</span> <span class="n">single_atom_type</span> <span class="k">else</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">atoms</span><span class="p">)[</span><span class="n">types</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="p">)</span>
-    <span class="n">geom</span> <span class="o">+=</span> <span class="n">next_triangle</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">geom</span> <span class="o">+=</span> <span class="n">next_triangle</span><span class="o">.</span><span class="n">rotate</span><span class="p">((</span><span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">),</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># Then just rotate the two triangles by 120 and 240 degrees to get the full hexagon.</span>
-    <span class="n">geom</span> <span class="o">+=</span> <span class="n">geom</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">geom</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">geom</span> <span class="o">+=</span> <span class="n">geom</span><span class="o">.</span><span class="n">rotate</span><span class="p">((</span><span class="mi">120</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">),</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="n">geom</span><span class="o">.</span><span class="n">rotate</span><span class="p">((</span><span class="mi">240</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">),</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># Set the cell according to the requested vacuum</span>
     <span class="n">xyz</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">xyz</span>

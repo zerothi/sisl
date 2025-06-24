@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,15 +125,35 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Quaternion&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Quaternion</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Quaternion object to enable easy rotational quantities.</span>
+
+<span class="sd">    The rotation using quaternions amounts to a rotation around a vector :math:`v`</span>
+<span class="sd">    by an angle :math:`\phi`.</span>
+
+<span class="sd">    The rotation follows the Euler-Rodrigues formula.</span>
+
+<span class="sd">    The components of the quaternion will be referenced as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        a + b\mathbf i + c\mathbf j + d\mathbf k</span>
+
+<span class="sd">    The general way this gets translated is the complex matrix:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \begin{bmatrix}</span>
+<span class="sd">            a + b i &amp; c + d i\\</span>
+<span class="sd">            -c + d i &amp; a - b i</span>
+<span class="sd">        \end{bmatrix}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -204,13 +224,15 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Stringify this quaternion object&quot;&quot;&quot;</span>
-        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">in_rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">θ=</span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, v=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_vector</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">θ=</span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, v=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Representation of this quaternion object&quot;&quot;&quot;</span>
-        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">in_rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> θ=</span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, v=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_vector</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> θ=</span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, v=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
 <div class="viewcode-block" id="Quaternion.copy">
 <a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.copy">[docs]</a>
@@ -223,38 +245,61 @@
 <a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.conj">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the conjugate of the quaternion&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="Quaternion.norm">
 <a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.norm">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the norm of this quaternion&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span></div>
+
+
+<div class="viewcode-block" id="Quaternion.norm2">
+<a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.norm2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">norm2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the squared norm of this quaternion&quot;&quot;&quot;</span>
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Quaternion.angle">
 <a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.angle">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span>
+        <span class="s2">&quot;in_rad&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;rad&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;argument in_rad has been deprecated in favor of rad, please update your code.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.16.3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;0.18&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the angle of this quaternion, in requested unit&quot;&quot;&quot;</span>
         <span class="n">angle</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span>
-        <span class="k">if</span> <span class="n">in_rad</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rad</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">angle</span>
         <span class="k">return</span> <span class="n">angle</span> <span class="o">/</span> <span class="n">m</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;Use .angle(in_rad=False) instead of .degree&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15.3&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;Use .angle(rad=False) instead of .degree&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15.3&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the angle associated with this quaternion (in degrees)&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">in_rad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;Use .angle(in_rad=True) instead of .degree&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15.3&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span><span class="p">)</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;Use .angle(rad=True) instead of .radian&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15.3&quot;</span><span class="p">,</span> <span class="s2">&quot;0.17&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">radian</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the angle associated with this quaternion (in radians)&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">in_rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Quaternion.rotation_vector">
+<a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.rotation_vector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotation_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the vector the rotation rotates about&quot;&quot;&quot;</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sh</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">/</span> <span class="n">sh</span></div>
+
 
 <div class="viewcode-block" id="Quaternion.rotate">
 <a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.rotate">[docs]</a>
@@ -283,6 +328,75 @@
         <span class="n">t</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="n">vp</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="n">qw</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">vp</span></div>
+
+
+<div class="viewcode-block" id="Quaternion.rotation_matrix_su2">
+<a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.rotation_matrix_su2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotation_matrix_su2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the special unitary group 2 rotation matrix.</span>
+
+<span class="sd">        The SU(2) group defines the unitary group encompassing spin</span>
+<span class="sd">        matrices enables one to rotate the spin-block-matrices.</span>
+
+<span class="sd">        The quaternion can directly be translated to the 2x2 matrix</span>
+<span class="sd">        defining the rotation of the spin-block matrix:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            U = a \mathbf I</span>
+<span class="sd">            - ib\sigma_x - ic\sigma_y -id\sigma_z</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This implementation uses the *alternate* representation.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \begin{bmatrix}</span>
+<span class="sd">                a - d i &amp; -c - b i\\</span>
+<span class="sd">                c - b i &amp; a + d i</span>
+<span class="sd">            \end{bmatrix}</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Rotate a spin-block matrix</span>
+<span class="sd">        &gt;&gt;&gt; q = Quaternion(...)</span>
+<span class="sd">        &gt;&gt;&gt; m = np.random.rand(3, 2, 2)</span>
+<span class="sd">        &gt;&gt;&gt; U = q.rotation_matrix_su2()</span>
+<span class="sd">        &gt;&gt;&gt; m_rotated = U @ m @ U.T.conj()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sisl.physics.spin</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spin</span>
+
+        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">Spin</span><span class="o">.</span><span class="n">X</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">Spin</span><span class="o">.</span><span class="n">Y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">Spin</span><span class="o">.</span><span class="n">Z</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">U</span></div>
+
+
+<div class="viewcode-block" id="Quaternion.rotation_matrix">
+<a class="viewcode-back" href="../../../api/generated/sisl.Quaternion.html#sisl.Quaternion.rotation_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotation_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the Cartesian rotation matrix from the quaternion</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Rotate a list of coordinates (same as `Quaternion.rotate(xyz)`)</span>
+<span class="sd">        &gt;&gt;&gt; q = Quaternion(...)</span>
+<span class="sd">        &gt;&gt;&gt; xyz = np.random.rand(4, 3)</span>
+<span class="sd">        &gt;&gt;&gt; U = q.rotation_matrix()</span>
+<span class="sd">        &gt;&gt;&gt; xyz_rotated = U @ xyz</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">()</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">cs</span><span class="p">,</span> <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span> <span class="o">*</span> <span class="n">s</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">cs</span> <span class="o">-</span> <span class="n">d</span> <span class="o">*</span> <span class="n">ds</span><span class="p">,</span> <span class="n">b</span> <span class="o">*</span> <span class="n">cs</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">ds</span><span class="p">,</span> <span class="n">b</span> <span class="o">*</span> <span class="n">ds</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">cs</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">cs</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">ds</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">bs</span> <span class="o">-</span> <span class="n">d</span> <span class="o">*</span> <span class="n">ds</span><span class="p">,</span> <span class="n">c</span> <span class="o">*</span> <span class="n">ds</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">bs</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">b</span> <span class="o">*</span> <span class="n">ds</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">cs</span><span class="p">,</span> <span class="n">c</span> <span class="o">*</span> <span class="n">ds</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">bs</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">bs</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">cs</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">R</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>

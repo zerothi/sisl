@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -156,18 +156,18 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – An object with associated <em class="xref py py-obj">parent.cell</em> and <em class="xref py py-obj">parent.rcell</em> or
+<li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – An object with associated <em class="xref py py-obj">parent.cell</em> and <em class="xref py py-obj">parent.rcell</em> or
 an array of floats which may be turned into a <em class="xref py py-obj">Lattice</em></p></li>
-<li><p><strong>points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – a list of points that are the <em>corners</em> of the path.
+<li><p><strong>points</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – a list of points that are the <em>corners</em> of the path.
 Define a discontinuity in the points by adding a <em class="xref py py-obj">None</em> in the list.</p></li>
-<li><p><strong>divisions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – number of divisions in each segment.
+<li><p><strong>divisions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – number of divisions in each segment.
 If a single integer is passed it is the total number
 of points on the path (equally separated).
 If it is an array_like input it must have length one
 less than <em class="xref py py-obj">point</em>, in this case the total number of points
 will be <code class="docutils literal notranslate"><span class="pre">sum(divisions)</span> <span class="pre">+</span> <span class="pre">1</span></code> due to the end-point constraint.</p></li>
-<li><p><strong>names</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – the associated names of the points on the Brillouin Zone path</p></li>
-<li><p><strong>jump_dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – Percentage of <code class="docutils literal notranslate"><span class="pre">self.lineark()[-1]</span></code> that is used as separation between discontinued
+<li><p><strong>names</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – the associated names of the points on the Brillouin Zone path</p></li>
+<li><p><strong>jump_dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – Percentage of <code class="docutils literal notranslate"><span class="pre">self.lineark()[-1]</span></code> that is used as separation between discontinued
 jumps in the band-structure.
 For band-structures with disconnected jumps the <a class="reference internal" href="#sisl.physics.BandStructure.lineark" title="sisl.physics.BandStructure.lineark"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lineark</span></code></a> and <a class="reference internal" href="#sisl.physics.BandStructure.lineartick" title="sisl.physics.BandStructure.lineartick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lineartick</span></code></a> methods
 returns a separation between the disconnected points according to this percentage.
@@ -404,13 +404,13 @@ Such a band-structure may be useful when one is interested in a discontinuous ba
 <dd><p>Move the k-point into the primitive point(s) ]-0.5 ; 0.5]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – k-point(s) to move into the primitive cell</p>
+<dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – k-point(s) to move into the primitive cell</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>all k-points moved into the primitive cell</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -429,13 +429,13 @@ in the graph thus removing connections between the segments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*arrays</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – arrays will get <em class="xref py py-obj">value</em> inserted where there are jumps in the band structure</p></li>
+<li><p><strong>*arrays</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – arrays will get <em class="xref py py-obj">value</em> inserted where there are jumps in the band structure</p></li>
 <li><p><strong>value</strong> (<em>optional</em>) – the value to be inserted at the jump points in the data array</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Create a bandrstructure with a discontinuity.</p>
+<p>Create a bandstructure with a discontinuity.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gr</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bs</span> <span class="o">=</span> <span class="n">BandStructure</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">bs</span><span class="p">),</span> <span class="mi">10</span><span class="p">])</span>
@@ -500,8 +500,8 @@ distances in the reciprocal lattice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p><strong>linear_k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the positions in reciprocal space determined by the distance between points</p></li>
-<li><p><strong>ticks</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – linear k-positions of the points, only returned if <em class="xref py py-obj">ticks</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>linear_k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the positions in reciprocal space determined by the distance between points</p></li>
+<li><p><strong>ticks</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – linear k-positions of the points, only returned if <em class="xref py py-obj">ticks</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 <li><p><strong>ticklabels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – labels at <em class="xref py py-obj">ticks</em>, only returned if <em class="xref py py-obj">ticks</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 </ul>
 </p>
@@ -521,7 +521,7 @@ distances in the reciprocal lattice.</p>
 <dd class="field-odd"><p>the positions in reciprocal space determined by the distance between points</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -544,7 +544,7 @@ Information retained in the merged objects will not be stored.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bzs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list-like</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">BrillouinZone</span> <span class="pre">objects</span></code>) – each element is a BrillouinZone object with <code class="docutils literal notranslate"><span class="pre">bzs[i].k</span></code> and <code class="docutils literal notranslate"><span class="pre">bzs[i].weight</span></code>
 fields.</p></li>
-<li><p><strong>weight_scale</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list-like</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – these are matched item-wise with <em class="xref py py-obj">bzs</em> and applied to.
+<li><p><strong>weight_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – these are matched item-wise with <em class="xref py py-obj">bzs</em> and applied to.
 Internally <code class="docutils literal notranslate"><span class="pre">itertools.zip_longest(fillvalue=weight_scale[-1])</span></code> will be
 used to extend for all <em class="xref py py-obj">bzs</em>.</p></li>
 <li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>, <em>optional</em>) – Associated parent in the returned object, will default to <code class="docutils literal notranslate"><span class="pre">bzs[0].parent</span></code></p></li>
@@ -577,8 +577,8 @@ otherwise it specifies the discretization length on the circle (in 1/Ang),
 If the latter case will use less than 2 points a warning will be raised and
 the number of points increased to 2.</p></li>
 <li><p><strong>kR</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – radius of the k-point. In 1/Ang</p></li>
-<li><p><strong>normal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – normal vector to determine the circle plane</p></li>
-<li><p><strong>origin</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – origin of the circle used to generate the circular parameterization</p></li>
+<li><p><strong>normal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – normal vector to determine the circle plane</p></li>
+<li><p><strong>origin</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – origin of the circle used to generate the circular parameterization</p></li>
 <li><p><strong>loop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the first and last point are equal</p></li>
 </ul>
 </dd>
@@ -606,6 +606,8 @@ the number of points increased to 2.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>N_or_dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
 <li><p><strong>kR</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
+<li><p><strong>normal</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+<li><p><strong>origin</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
 <li><p><strong>loop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
@@ -628,7 +630,7 @@ list.</p>
 3. <code class="docutils literal notranslate"><span class="pre">i</span></code>: current index of the k-point (starting from 0)</p>
 <p>the function must return a k-point in 3 dimensions.</p>
 </p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – number of k-points generated using the parameterization,
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – number of k-points generated using the parameterization,
 or a list of integers that will be looped over.
 In this case arguments <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">i</span></code> in <em class="xref py py-obj">func</em> will be
 lists accordingly.</p></li>
@@ -838,7 +840,7 @@ If None, the default colorscale is used for each backend.</p></li>
 <dd><p>Update the parent associated to this object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – an object containing cell vectors</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – an object containing cell vectors</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
@@ -852,13 +854,13 @@ If None, the default colorscale is used for each backend.</p></li>
 <dd><p>Transfer a k-point in reduced coordinates to the Cartesian coordinates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> (<em>Optional</em><em>[</em><em>npt.ArrayLike</em><em>]</em>) – k-point in reduced coordinates, defaults to this objects k-points.</p>
+<dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike" title="(in NumPy v2.3)"><em>ArrayLike</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – k-point in reduced coordinates, defaults to this objects k-points.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>in units of 1/Ang</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -873,7 +875,7 @@ The returned value is then the equivalent index in <a class="reference internal"
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the k-point(s) to locate in the linear values</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – the k-point(s) to locate in the linear values</p></li>
 <li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the indices are also returned</p></li>
 <li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – when the found k-point has a distance (in Cartesian coordinates)
 is differing by more than <em class="xref py py-obj">tol</em> a warning will be issued.
@@ -895,7 +897,7 @@ The tolerance is in units 1/Ang.</p></li>
 <dd class="field-even"><p>in units of reciprocal lattice vectors ]-0.5 ; 0.5] (if k is in the primitive cell)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -975,19 +977,19 @@ and passing <a class="reference internal" href="#sisl.physics.BandStructure.k" t
 <li><p><code class="docutils literal notranslate"><span class="pre">apply.none</span></code>, specialized method that is mainly useful when wrapping methods</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">apply.list</span></code> same as <code class="docutils literal notranslate"><span class="pre">apply.array</span></code> but using Python list as return value</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">apply.oplist</span></code> using <a class="reference internal" href="sisl.oplist.html#sisl.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.oplist</span></code></a> allows greater flexibility for mathematical operations element wise</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">apply.datarray</span></code> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2025.4.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2025.4.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply.datarray</span></code> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2025.6.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2025.6.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
 </ul>
 <p>Please see <a class="reference internal" href="../physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a> for further examples.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.BandStructure.cell">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.physics.BandStructure.cell" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.physics.BandStructure.cell" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.BandStructure.k">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">k</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.physics.BandStructure.k" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">k</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.physics.BandStructure.k" title="Link to this definition"></a></dt>
 <dd><p>A list of all k-points (if available)</p>
 </dd></dl>
 
@@ -999,12 +1001,12 @@ and passing <a class="reference internal" href="#sisl.physics.BandStructure.k" t
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.BandStructure.rcell">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rcell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.physics.BandStructure.rcell" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rcell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.physics.BandStructure.rcell" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.BandStructure.weight">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.physics.BandStructure.weight" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.physics.BandStructure.weight" title="Link to this definition"></a></dt>
 <dd><p>Weight of the k-points in the <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object</p>
 </dd></dl>
 

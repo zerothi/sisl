@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -155,7 +155,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – state vectors <code class="docutils literal notranslate"><span class="pre">state[i,</span> <span class="pre">:]</span></code> containing the i’th state vector</p></li>
+<li><p><strong>state</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – state vectors <code class="docutils literal notranslate"><span class="pre">state[i,</span> <span class="pre">:]</span></code> containing the i’th state vector</p></li>
 <li><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">obj</span></code>, <em>optional</em>) – a parent object that defines the origin of the state.</p></li>
 <li><p><strong>**info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – an info dictionary that turns into an attribute on the object.
 This <a class="reference internal" href="#sisl.physics.State.info" title="sisl.physics.State.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a> may contain anything that may be relevant for the state.</p></li>
@@ -321,7 +321,7 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>) – specify the new gauge for the mode coefficients</p></li>
-<li><p><strong>offset</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether the coordinates should be offset by another phase-factor</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether the coordinates should be offset by another phase-factor</p></li>
 </ul>
 </dd>
 </dl>
@@ -372,7 +372,7 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ket</strong> (<a class="reference internal" href="#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a>, <em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
-<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
 1D arrays will be treated as a diagonal matrix.</p></li>
 <li><p><strong>projection</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.ProjectionType.html#sisl.typing.ProjectionType" title="sisl.typing.ProjectionType"><em>ProjectionType</em></a><em>, </em><a class="reference internal" href="sisl.typing.ProjectionTypeHadamard.html#sisl.typing.ProjectionTypeHadamard" title="sisl.typing.ProjectionTypeHadamard"><em>ProjectionTypeHadamard</em></a><em>, </em><a class="reference internal" href="sisl.typing.ProjectionTypeHadamardAtoms.html#sisl.typing.ProjectionTypeHadamardAtoms" title="sisl.typing.ProjectionTypeHadamardAtoms"><em>ProjectionTypeHadamardAtoms</em></a><em>]</em>) – <p>how to perform the final projection.
 This can be used to sum specific sub-elements, return the diagonal, or the
@@ -405,7 +405,7 @@ One have to add the overlap matrix in the <em class="xref py py-obj">matrix</em>
 <dd class="field-even"><p>a matrix with the sum of inner state products</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>projection</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.ProjectionType.html#sisl.typing.ProjectionType" title="sisl.typing.ProjectionType"><em>ProjectionType</em></a><em>, </em><a class="reference internal" href="sisl.typing.ProjectionTypeHadamard.html#sisl.typing.ProjectionTypeHadamard" title="sisl.typing.ProjectionTypeHadamard"><em>ProjectionTypeHadamard</em></a><em>, </em><a class="reference internal" href="sisl.typing.ProjectionTypeHadamardAtoms.html#sisl.typing.ProjectionTypeHadamardAtoms" title="sisl.typing.ProjectionTypeHadamardAtoms"><em>ProjectionTypeHadamardAtoms</em></a><em>]</em>)</p>
@@ -456,7 +456,7 @@ Otherwise an equivalent object is yielded.</p>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>state</strong> (<a class="reference internal" href="#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is false</p></li>
-<li><p><strong>state</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is true</p></li>
+<li><p><strong>state</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is true</p></li>
 </ul>
 </dd>
 </dl>
@@ -471,7 +471,7 @@ Otherwise an equivalent object is yielded.</p>
 <dd class="field-odd"><p>the Euclidean norm for each state</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -498,7 +498,7 @@ basis dimension.</p>
 <dd class="field-odd"><p>the squared norm for each state</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>projection</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.ProjectionType.html#sisl.typing.ProjectionType" title="sisl.typing.ProjectionType"><em>ProjectionType</em></a><em>, </em><a class="reference internal" href="sisl.typing.ProjectionTypeHadamard.html#sisl.typing.ProjectionTypeHadamard" title="sisl.typing.ProjectionTypeHadamard"><em>ProjectionTypeHadamard</em></a><em>, </em><a class="reference internal" href="sisl.typing.ProjectionTypeHadamardAtoms.html#sisl.typing.ProjectionTypeHadamardAtoms" title="sisl.typing.ProjectionTypeHadamardAtoms"><em>ProjectionTypeHadamardAtoms</em></a><em>]</em>)</p>
@@ -539,7 +539,7 @@ basis dimension.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ket</strong> (<a class="reference internal" href="#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a>, <em>optional</em>) – the ket object to calculate the outer product of, if not passed it will do the outer
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(|\psi_\alpha\rangle\)</span></p></li>
-<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
 1D arrays will be treated as a diagonal matrix.</p></li>
 </ul>
 </dd>
@@ -553,7 +553,7 @@ product with itself. The object itself will always be the bra <span class="math 
 <dd class="field-odd"><p>a matrix with the sum of outer state products</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

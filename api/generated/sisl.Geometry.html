@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -246,7 +246,7 @@ sisl’s dispatch functionality</p>
 <td><p>Conversion of <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> to an <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.to.dataframe" title="sisl.Geometry.to.dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to.dataframe</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Convert the geometry to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with values stored in columns</p></td>
+<td><p>Convert the geometry to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with values stored in columns</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.to.pymatgen" title="sisl.Geometry.to.pymatgen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to.pymatgen</span></code></a>(**kwargs)</p></td>
 <td><p>Conversion of <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> to a <em class="xref py py-obj">pymatgen</em> object.</p></td>
@@ -438,7 +438,7 @@ sisl’s dispatch functionality</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.rij" title="sisl.Geometry.rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rij</span></code></a>(ia, ja)</p></td>
 <td><p>Distance between atom <em class="xref py py-obj">ia</em> and <em class="xref py py-obj">ja</em>, atoms can be in super-cell indices</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.rotate" title="sisl.Geometry.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(angle, v[, origin, atoms, rad, what])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.rotate" title="sisl.Geometry.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(rotation[, origin, atoms, rad, what])</p></td>
 <td><p>Rotate geometry around vector and return a new geometry</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.rotate_miller" title="sisl.Geometry.rotate_miller"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate_miller</span></code></a>(m, v)</p></td>
@@ -607,7 +607,7 @@ sisl’s dispatch functionality</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -624,7 +624,7 @@ Any multi-dimensional input will be flattened before return.</p>
 <dd class="field-odd"><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><em>GenericCategory</em><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – atom indices to extract the supercell locations of</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -645,7 +645,7 @@ TB models with more than one orbital per atom.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -659,7 +659,7 @@ TB models with more than one orbital per atom.</p>
 <dd class="field-odd"><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><em>GenericCategory</em><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – atom indices to extract the supercell offsets of</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -693,13 +693,13 @@ If not present then only <em class="xref py py-obj">atoms1</em> will be returned
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>atoms2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transposed indices for atoms2 (only returned if <em class="xref py py-obj">atoms2</em> is not None)</p></li>
-<li><p><strong>atoms1</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transposed indices for atoms1</p></li>
+<li><p><strong>atoms2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transposed indices for atoms2 (only returned if <em class="xref py py-obj">atoms2</em> is not None)</p></li>
+<li><p><strong>atoms1</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transposed indices for atoms1</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -793,7 +793,7 @@ An integer specifies an atomic index.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -965,7 +965,7 @@ note that <code class="docutils literal notranslate"><span class="pre">iter(g)</
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -983,7 +983,7 @@ between <code class="xref py py-obj docutils literal notranslate"><span class="p
 <li><p><strong>other</strong> (<a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code></a>) – the other Geometry to attach at the given point. In this case <em class="xref py py-obj">dist</em> from
 <code class="xref py py-obj docutils literal notranslate"><span class="pre">atom</span></code>.</p></li>
 <li><p><strong>other_atom</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the index of the atom in <em class="xref py py-obj">other</em> that is inserted at <code class="xref py py-obj docutils literal notranslate"><span class="pre">atom</span></code>.</p></li>
-<li><p><strong>dist</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – the distance (in <em class="xref py py-obj">Ang</em>) between the attached coordinates.
+<li><p><strong>dist</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – the distance (in <em class="xref py py-obj">Ang</em>) between the attached coordinates.
 If <em class="xref py py-obj">dist</em> is <em class="xref py py-obj">array_like</em> it should be the vector between
 the atoms;
 if <em class="xref py py-obj">dist</em> is <em class="xref py py-obj">float</em> the argument <em class="xref py py-obj">axis</em> is required
@@ -1013,7 +1013,7 @@ Not used if <em class="xref py py-obj">dist</em> is an array-like argument.</p><
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1028,12 +1028,12 @@ Not used if <em class="xref py py-obj">dist</em> is an array-like argument.</p><
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><em>GenericCategory</em><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – atom(s) from which we should return the coordinates, the atomic indices
 may be in supercell format.</p></li>
-<li><p><strong>isc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – Returns the atomic coordinates shifted according to the integer
+<li><p><strong>isc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – Returns the atomic coordinates shifted according to the integer
 parts of the cell. Defaults to the unit-cell</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1131,7 +1131,7 @@ in the ranges:</p>
 </div>
 </p></li>
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><em>GenericCategory</em><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – List of indices for atoms that are to be considered</p></li>
-<li><p><strong>atoms_xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
+<li><p><strong>atoms_xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
 <li><p><strong>ret_xyz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If true this method will return the coordinates
 for each of the couplings.</p></li>
 <li><p><strong>ret_rij</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If true this method will return the distances from the <em class="xref py py-obj">xyz_ia</em>
@@ -1166,18 +1166,18 @@ in the ranges:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xyz_ia</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">floats</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Either a point in space or an index of an atom.
+<li><p><strong>xyz_ia</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">floats</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Either a point in space or an index of an atom.
 If an index is passed it is the equivalent of passing
 the atomic coordinate <code class="docutils literal notranslate"><span class="pre">close_sc(self.xyz[xyz_ia,:])</span></code>.</p></li>
 <li><p><strong>isc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span></code>, <em>optional</em>) – Integer super-cell offsets in which the coordinates are checked in.
 I.e. <code class="docutils literal notranslate"><span class="pre">isc=[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> is the primary cell (default).</p></li>
-<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The radii parameter to where the atomic connections are found.
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The radii parameter to where the atomic connections are found.
 If <em class="xref py py-obj">R</em> is an array it will return the indices:
 in the ranges <code class="docutils literal notranslate"><span class="pre">(</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">R[0]</span> <span class="pre">,</span> <span class="pre">R[0]</span> <span class="pre">&lt;</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">R[1],</span> <span class="pre">R[1]</span> <span class="pre">&lt;</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">R[2]</span> <span class="pre">)</span></code>.
 If a single float it will return <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">R</span></code>.</p></li>
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><em>GenericCategory</em><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – List of atoms that will be considered. This can
 be used to only take out a certain atom.</p></li>
-<li><p><strong>atoms_xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
+<li><p><strong>atoms_xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
 <li><p><strong>ret_xyz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True this method will return the coordinates
 for each of the couplings.</p></li>
 <li><p><strong>ret_rij</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True this method will return the distance
@@ -1239,7 +1239,7 @@ The last 3 atoms define the second.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a> | <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1254,7 +1254,7 @@ The last 3 atoms define the second.</p>
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – only create list of distances from the given atoms, default to all atoms</p></li>
 <li><p><strong>R</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – the maximum radius to consider, default to <code class="docutils literal notranslate"><span class="pre">self.maxR()</span></code>.
 To retrieve all distances for atoms within the supercell structure
-you can pass <a class="reference external" href="https://numpy.org/doc/stable/reference/constants.html#numpy.inf" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.inf</span></code></a>.</p></li>
+you can pass <a class="reference external" href="https://numpy.org/doc/stable/reference/constants.html#numpy.inf" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.inf</span></code></a>.</p></li>
 <li><p><strong>atol</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – <p>the tolerance for grouping a set of atoms.
 This parameter sets the shell radius for each shell.
 I.e. the returned distances between two shells will be maximally
@@ -1266,7 +1266,7 @@ If this is a list, the shells will be of unequal size.</p>
 A list of distances within each shell is gathered and the equivalent
 method will be used to extract a single quantity from the list of
 distances in the shell.
-If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.15.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
+If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.16.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
 If another string is given it will correspond to <code class="docutils literal notranslate"><span class="pre">getattr(numpy,</span> <span class="pre">method)</span></code>,
 while any callable function may be passed. The passed function
 will only be passed a list of unsorted distances that needs to be
@@ -1298,7 +1298,7 @@ processed.</p></li>
 <dd class="field-odd"><p>an array of positive numbers yielding the distances from the atoms in reduced form</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1497,12 +1497,12 @@ Possible values are:</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – current list of atoms currently searched</p></li>
-<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – atoms that needs searching</p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – current list of atoms currently searched</p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – atoms that needs searching</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1520,7 +1520,7 @@ Possible values are:</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1537,7 +1537,7 @@ Possible values are:</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.13)"><em>Iterator</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1702,7 +1702,7 @@ and this point</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1717,7 +1717,7 @@ and this point</p></li>
 <dd class="field-odd"><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1731,7 +1731,7 @@ and this point</p></li>
 <dd class="field-odd"><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1765,13 +1765,13 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>orb2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transposed indices for orb2 (only returned if <em class="xref py py-obj">orb2</em> is not None)</p></li>
-<li><p><strong>orb1</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transposed indices for orb1</p></li>
+<li><p><strong>orb2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transposed indices for orb2 (only returned if <em class="xref py py-obj">orb2</em> is not None)</p></li>
+<li><p><strong>orb1</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – transposed indices for orb1</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1791,7 +1791,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1811,7 +1811,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1831,7 +1831,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1848,7 +1848,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1865,7 +1865,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1907,8 +1907,8 @@ of more than 1 atom in <em class="xref py py-obj">other</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p><strong>idx_self</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – indices in <em class="xref py py-obj">self</em> that are equivalent with <em class="xref py py-obj">idx_other</em></p></li>
-<li><p><strong>idx_other</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – indices in <em class="xref py py-obj">other</em> that are equivalent with <em class="xref py py-obj">idx_self</em></p></li>
+<li><p><strong>idx_self</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – indices in <em class="xref py py-obj">self</em> that are equivalent with <em class="xref py py-obj">idx_other</em></p></li>
+<li><p><strong>idx_other</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – indices in <em class="xref py py-obj">other</em> that are equivalent with <em class="xref py py-obj">idx_self</em></p></li>
 </ul>
 </p>
 </dd>
@@ -2089,8 +2089,8 @@ if it is a string it will create a new sile using <code class="xref py py-obj do
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <a class="reference internal" href="#sisl.Geometry.orbitals" title="sisl.Geometry.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></li>
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code></a>) – indices of the orbitals on <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> that are removed from the geometry.</p></li>
+<li><p><strong>atoms</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <a class="reference internal" href="#sisl.Geometry.orbitals" title="sisl.Geometry.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></li>
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code></a>) – indices of the orbitals on <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> that are removed from the geometry.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2240,14 +2240,14 @@ atoms will be reversed</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.rotate">
-<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.rotate" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rotation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.rotate" title="Link to this definition"></a></dt>
 <dd><p>Rotate geometry around vector and return a new geometry</p>
 <p>Per default will the entire geometry be rotated, such that everything
 is aligned as before rotation.</p>
@@ -2256,9 +2256,9 @@ part of the geometry that will be rotated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the angle in degrees to rotate the geometry. Set the <code class="docutils literal notranslate"><span class="pre">rad</span></code>
+<li><p><strong>angle</strong> – the angle in degrees to rotate the geometry. Set the <code class="docutils literal notranslate"><span class="pre">rad</span></code>
 argument to use radians.</p></li>
-<li><p><strong>v</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference internal" href="sisl.typing.Coord.html#sisl.typing.Coord" title="sisl.typing.Coord"><em>Coord</em></a><em>]</em>) – the normal vector to the rotated plane, i.e.
+<li><p><strong>v</strong> – the normal vector to the rotated plane, i.e.
 <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> will rotate around the <span class="math notranslate nohighlight">\(yz\)</span> plane.
 If a str it refers to the Cartesian direction (xyz), or the
 lattice vectors (abc). Providing several is the combined direction.</p></li>
@@ -2274,6 +2274,7 @@ if any of <code class="docutils literal notranslate"><span class="pre">xyz</span
 If <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> is None, this defaults to “abc+xyz”, otherwise it defaults
 to “xyz”. See Examples.</p></li>
 <li><p><strong>geometry</strong> (<a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>)</p></li>
+<li><p><strong>rotation</strong> (<a class="reference internal" href="sisl.typing.RotationType.html#sisl.typing.RotationType" title="sisl.typing.RotationType"><em>RotationType</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2322,7 +2323,7 @@ points along the Cartesian vector <code class="docutils literal notranslate"><sp
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2429,16 +2430,16 @@ Default, all atoms will be sorted.</p></li>
 <li><p><strong>ret_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – return a list of list for the groups of atoms that have been sorted.</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – sort coordinates according to Cartesian coordinates, if a tuple of
 ints is passed it will be equivalent to <code class="docutils literal notranslate"><span class="pre">sort(axes=axes)</span> <span class="pre">==</span> <span class="pre">sort(axis0=axes[0],</span> <span class="pre">axis1=axes[1])</span></code>.
-This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
+This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
 <li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – sort coordinates according to Cartesian coordinates, if a tuple of
 ints is passed it will be equivalent to <code class="docutils literal notranslate"><span class="pre">sort(axes=axes)</span> <span class="pre">==</span> <span class="pre">sort(axis0=axes[0],</span> <span class="pre">axis1=axes[1])</span></code>.
-This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
+This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
 <li><p><strong>lattice</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – sort coordinates according to lattice vectors, if a tuple of
 ints is passed it will be equivalent to <code class="docutils literal notranslate"><span class="pre">sort(lattice0=lattice[0],</span> <span class="pre">lattice1=lattice[1])</span></code>.
 Note that before sorting we multiply the fractional coordinates by the length of the
 lattice vector. This ensures that <em class="xref py py-obj">atol</em> is meaningful for both <em class="xref py py-obj">axes</em> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code> since
 they will be on the same order of magnitude.
-This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
+This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
 <li><p><strong>vector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Coord</span></code>, <em>optional</em>) – sort along a user defined vector, similar to <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code> but with a user defined
 direction. Note that <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code> sorting and <em class="xref py py-obj">vector</em> sorting are <em>only</em> equivalent
 when the lattice vector is orthogonal to the other lattice vectors.</p></li>
@@ -2632,7 +2633,7 @@ orbitals overlapping with other atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float64</span></code>) – the data-type of the sparse matrix</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float64</span></code>) – the data-type of the sparse matrix</p></li>
 <li><p><strong>na_iR</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of atoms within the sphere for speeding
 up the <a class="reference internal" href="#sisl.Geometry.iter_block" title="sisl.Geometry.iter_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_block</span></code></a> loop.</p></li>
 <li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – see <a class="reference internal" href="#sisl.Geometry.iter_block" title="sisl.Geometry.iter_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_block</span></code></a> for details</p></li>
@@ -2922,10 +2923,10 @@ The <em>only</em> difference between the two is the final ordering of the atoms.
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.to.dataframe">
 <span class="sig-prename descclassname"><span class="pre">to.</span></span><span class="sig-name descname"><span class="pre">dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.to.dataframe" title="Link to this definition"></a></dt>
-<dd><p>Convert the geometry to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with values stored in columns</p>
+<dd><p>Convert the geometry to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with values stored in columns</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.2.3)"><em>DataFrame</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><em>DataFrame</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3031,7 +3032,7 @@ directions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3086,8 +3087,8 @@ if this is not the case.</p>
 <li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – returns the i’th segment of the untiled structure
 Currently the atomic coordinates are not translated,
 this may change in the future.</p></li>
-<li><p><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – directly passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.allclose.html#numpy.allclose" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.allclose</span></code></a></p></li>
-<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – directly passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.allclose.html#numpy.allclose" title="(in NumPy v2.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.allclose</span></code></a></p></li>
+<li><p><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – directly passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.allclose.html#numpy.allclose" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.allclose</span></code></a></p></li>
+<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – directly passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.allclose.html#numpy.allclose" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.allclose</span></code></a></p></li>
 <li><p><strong>geometry</strong> (<a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>)</p></li>
 </ul>
 </dd>
@@ -3132,7 +3133,7 @@ This allows one to decipher super-cell atoms from unit-cell atoms.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shapes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code>)</p></li>
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><em>GenericCategory</em><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – List of indices for atoms that are to be considered</p></li>
-<li><p><strong>atoms_xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
+<li><p><strong>atoms_xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
 <li><p><strong>ret_xyz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If true this method will return the coordinates
 for each of the couplings.</p></li>
 <li><p><strong>ret_rij</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If true this method will return the distances from the <em class="xref py py-obj">xyz_ia</em>
@@ -3182,14 +3183,14 @@ cell.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – unit-cell atomic indices which are inside the <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code> cell</p></li>
-<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – atomic coordinates for the <em class="xref py py-obj">ia</em> atoms (including supercell offsets)</p></li>
-<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – integer supercell offsets for <em class="xref py py-obj">ia</em> atoms</p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – unit-cell atomic indices which are inside the <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code> cell</p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – atomic coordinates for the <em class="xref py py-obj">ia</em> atoms (including supercell offsets)</p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – integer supercell offsets for <em class="xref py py-obj">ia</em> atoms</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>ndarray</em></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3215,10 +3216,10 @@ It is vital that:</p>
 </pre></div>
 </div>
 </p></li>
-<li><p><strong>isc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The super-cell which the coordinates are checked in. Defaults to <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code></p></li>
+<li><p><strong>isc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The super-cell which the coordinates are checked in. Defaults to <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code></p></li>
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><em>GenericCategory</em><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – List of atoms that will be considered. This can
 be used to only take out a certain atoms.</p></li>
-<li><p><strong>atoms_xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The atomic coordinates of the equivalent <em class="xref py py-obj">idx</em> variable (<em class="xref py py-obj">idx</em> must also be passed)</p></li>
+<li><p><strong>atoms_xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – The atomic coordinates of the equivalent <em class="xref py py-obj">idx</em> variable (<em class="xref py py-obj">idx</em> must also be passed)</p></li>
 <li><p><strong>ret_xyz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True this method will return the coordinates
 for each of the couplings.</p></li>
 <li><p><strong>ret_rij</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True this method will return the distance to the center of the shapes</p></li>
@@ -3274,12 +3275,12 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.boundary_condition">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">boundary_condition</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.boundary_condition" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">boundary_condition</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.boundary_condition" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.cell">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.cell" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.cell" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.cell" title="sisl.Lattice.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.cell</span></code></a></p>
 </dd></dl>
 
@@ -3297,13 +3298,13 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.icell">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">icell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.icell" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">icell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.icell" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.icell" title="sisl.Lattice.icell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.icell</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.isc_off">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.isc_off" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.isc_off" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.isc_off" title="sisl.Lattice.isc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.isc_off</span></code></a></p>
 </dd></dl>
 
@@ -3321,7 +3322,7 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.mass">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.mass" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.mass" title="Link to this definition"></a></dt>
 <dd><p>The mass of all atoms as an array</p>
 </dd></dl>
 
@@ -3376,7 +3377,7 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.nsc">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nsc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.nsc" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nsc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.nsc" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.nsc" title="sisl.Lattice.nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.nsc</span></code></a></p>
 </dd></dl>
 
@@ -3388,13 +3389,13 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.origin">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.origin" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.origin" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.origin" title="sisl.Lattice.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.origin</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.pbc">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pbc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.pbc" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pbc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.pbc" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3411,7 +3412,7 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.rcell">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rcell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.rcell" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rcell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.rcell" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.rcell" title="sisl.Lattice.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.rcell</span></code></a></p>
 </dd></dl>
 
@@ -3423,7 +3424,7 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Geometry.sc_off">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.sc_off" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Geometry.sc_off" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.sc_off" title="sisl.Lattice.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.sc_off</span></code></a></p>
 </dd></dl>
 

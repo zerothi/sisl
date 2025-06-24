@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -166,7 +166,7 @@ R, one needs to create another finder or call <a class="reference internal" href
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geometry</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code>) – the geometry to find neighbors in</p></li>
-<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(geometry.na)</span></code>, <em>optional</em>) – <p>The radius to consider two atoms neighbors.
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(geometry.na)</span></code>, <em>optional</em>) – <p>The radius to consider two atoms neighbors.
 If it is a single float, the same radius is used for all atoms.
 If it is an array, it should contain the radius for each atom.</p>
 <p>If not provided, an array is constructed, where the radius for
@@ -275,7 +275,7 @@ the parameters of the search (<em class="xref py py-obj">geometry</em>, <em clas
 are defined when the finder is initialized or by calling <a class="reference internal" href="#sisl.geom.NeighborFinder.setup" title="sisl.geom.NeighborFinder.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">([npoints]</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code>) – the coordinates for which neighbors are desired.</p>
+<dd class="field-odd"><p><strong>xyz</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">([npoints]</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code>) – the coordinates for which neighbors are desired.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.geom.CoordsNeighborList.html#sisl.geom.CoordsNeighborList" title="sisl.geom.CoordsNeighborList"><em>CoordsNeighborList</em></a></p>
@@ -343,7 +343,7 @@ this is called internally already!</p>
 <li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – <p>the geometry to find neighbors in.</p>
 <p>If not provided, the current geometry is kept.</p>
 </p></li>
-<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(geometry.na)</span></code>, <em>optional</em>) – <p>The radius to consider two atoms neighbors.
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(geometry.na)</span></code>, <em>optional</em>) – <p>The radius to consider two atoms neighbors.
 If it is a single float, the same radius is used for all atoms.
 If it is an array, it should contain the radius for each atom.</p>
 <p>If not provided, an array is constructed, where the radius for

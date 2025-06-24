@@ -21,7 +21,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=c2762048"></script>
+      <script src="_static/documentation_options.js?v=fcefe123"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -5601,6 +5601,8 @@
 </li>
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.norm2">(sisl.physics.StateC method)</a>
 </li>
+        <li><a href="api/generated/sisl.Quaternion.html#sisl.Quaternion.norm2">(sisl.Quaternion method)</a>
+</li>
       </ul></li>
       <li><a href="api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.normalize">normalize() (sisl.physics.electron.EigenstateElectron method)</a>
 
@@ -7512,6 +7514,14 @@
       </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.rotate_miller">rotate_miller() (sisl.Geometry method)</a>
 </li>
+      <li><a href="api/generated/sisl.Quaternion.html#sisl.Quaternion.rotation_matrix">rotation_matrix() (sisl.Quaternion method)</a>
+</li>
+      <li><a href="api/generated/sisl.Quaternion.html#sisl.Quaternion.rotation_matrix_su2">rotation_matrix_su2() (sisl.Quaternion method)</a>
+</li>
+      <li><a href="api/generated/sisl.Quaternion.html#sisl.Quaternion.rotation_vector">rotation_vector() (sisl.Quaternion method)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.RotationType.html#sisl.typing.RotationType">RotationType (in module sisl.typing)</a>
+</li>
       <li><a href="api/generated/sisl.Atom.html#sisl.Atom.row">row (sisl.Atom property)</a>
 </li>
   </ul></td>
@@ -7663,6 +7673,18 @@
       <li><a href="api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy">SelfEnergy (class in sisl.physics)</a>
 </li>
       <li><a href="api/generated/sisl.physics.SemiInfinite.html#sisl.physics.SemiInfinite">SemiInfinite (class in sisl.physics)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.SeqBool.html#sisl.typing.SeqBool">SeqBool (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.SeqFloat.html#sisl.typing.SeqFloat">SeqFloat (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.SeqInt.html#sisl.typing.SeqInt">SeqInt (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.SeqOrScalarBool.html#sisl.typing.SeqOrScalarBool">SeqOrScalarBool (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.SeqOrScalarFloat.html#sisl.typing.SeqOrScalarFloat">SeqOrScalarFloat (in module sisl.typing)</a>
+</li>
+      <li><a href="api/generated/sisl.typing.SeqOrScalarInt.html#sisl.typing.SeqOrScalarInt">SeqOrScalarInt (in module sisl.typing)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.set">set() (sisl.io.siesta.fdfSileSiesta method)</a>
 </li>
@@ -8125,6 +8147,8 @@
         <li><a href="api/utilities.html#module-sisl.utils">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl.viz
 
@@ -8139,8 +8163,6 @@
         <li><a href="toolbox/index.html#module-sisl_toolbox">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl_toolbox.btd
 
@@ -9166,6 +9188,30 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.uc2sc">uc2sc() (sisl.Geometry method)</a>
 </li>
+      <li><a href="api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.um">um (sisl.physics.DensityMatrix attribute)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.physics.densitymatrix._densitymatrix.html#sisl.physics.densitymatrix._densitymatrix.um">(sisl.physics.densitymatrix._densitymatrix attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.um">(sisl.physics.DynamicalMatrix attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.um">(sisl.physics.EnergyDensityMatrix attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.um">(sisl.physics.Hamiltonian attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.Overlap.html#sisl.physics.Overlap.um">(sisl.physics.Overlap attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.um">(sisl.physics.SparseOrbitalBZ attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.um">(sisl.physics.SparseOrbitalBZSpin attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.SparseAtom.html#sisl.SparseAtom.um">(sisl.SparseAtom attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.SparseCSR.html#sisl.SparseCSR.um">(sisl.SparseCSR attribute)</a>
+</li>
+        <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.um">(sisl.SparseOrbital attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch.unfold">unfold() (sisl.physics.Bloch method)</a>
 </li>
       <li><a href="api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch.unfold_points">unfold_points() (sisl.physics.Bloch method)</a>
@@ -9216,6 +9262,8 @@
         <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.unrepeat">(sisl.SparseOrbital method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.untile.html#sisl.untile">untile() (in module sisl)</a>
 
       <ul>
@@ -9244,8 +9292,6 @@
         <li><a href="api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.untile">(sisl.SparseOrbital method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict.update">update() (sisl.utils.PropertyDict method)</a>
 </li>
       <li><a href="api/viz/generated/sisl.viz.FatbandsPlot.html#sisl.viz.FatbandsPlot.update_groups">update_groups() (sisl.viz.FatbandsPlot method)</a>

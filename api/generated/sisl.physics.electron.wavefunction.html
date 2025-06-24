@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=c2762048"></script>
+      <script src="../../_static/documentation_options.js?v=fcefe123"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -192,7 +192,7 @@ you are passing a <em class="xref py py-obj">v</em> with the incorrect gauge you
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>v</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – coefficients for the orbital expansion on the real-space grid.
+<li><p><strong>v</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – coefficients for the orbital expansion on the real-space grid.
 If <em class="xref py py-obj">v</em> is a complex array then the <em class="xref py py-obj">grid</em> <em>must</em> be complex as well. The coefficients
 must be using the <em>lattice</em> gauge.</p></li>
 <li><p><strong>grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code>) – grid on which the wavefunction will be plotted.
@@ -200,7 +200,7 @@ If multiple eigenstates are in this object, they will be summed.</p></li>
 <li><p><strong>geometry</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code>, <em>optional</em>) – geometry where the orbitals are defined. This geometry’s orbital count must match
 the number of elements in <em class="xref py py-obj">v</em>.
 If this is <code class="docutils literal notranslate"><span class="pre">None</span></code> the geometry associated with <em class="xref py py-obj">grid</em> will be used instead.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – k-point associated with wavefunction, by default the inherent k-point used
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – k-point associated with wavefunction, by default the inherent k-point used
 to calculate the eigenstate will be used (generally shouldn’t be used unless the <a class="reference internal" href="sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron" title="sisl.physics.electron.EigenstateElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenstateElectron</span></code></a> object
 has not been created via <a class="reference internal" href="sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenstate" title="sisl.physics.Hamiltonian.eigenstate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eigenstate</span></code></a>).</p></li>
 <li><p><strong>spinor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spinor for non-colinear/spin-orbit calculations. This is only used if the
