@@ -72,6 +72,9 @@ jobs:
         run: |
           python -m pip install --progress-bar=off --upgrade pip
           python -m pip install --progress-bar=off .[analysis,viz,docs]
+          # So since kaleido does not install chrome, we have to do it
+          # This is only necessary when it works, otherwise, skip it!
+          kaleido_get_chrome || true
 
       - name: Build the documentation using the sisl-files as well
         env:

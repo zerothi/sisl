@@ -148,6 +148,9 @@ jobs:
           ${{ github.event.inputs.install_args }} \
           .[${{ steps.info.outputs.sisl_extras }}] \
           ${{ steps.info.outputs.sisl_install_packages }}
+        # So since kaleido does not install chrome, we have to do it
+        # This is only necessary when it works, otherwise, skip it!
+        kaleido_get_chrome || true
 
     - name: sisl debug info
       run: |
