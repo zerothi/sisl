@@ -203,7 +203,7 @@ test = [
 
 docs = [
     "sphinx<8",
-    "plotly<6",
+    "plotly", # won't work with 6.0 or 6.1, it creates too many things.
     "nbsphinx",
     "sphinx-rtd-theme",
     "sphinx-design",
