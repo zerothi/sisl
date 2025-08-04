@@ -25,6 +25,8 @@ from datetime import date
 from functools import wraps
 from textwrap import indent
 
+import sphinx
+
 _log = logging.getLogger("sisl_doc")
 
 _doc_root = pathlib.Path(__file__).absolute().parent
@@ -41,6 +43,7 @@ sys.path.insert(1, str(_doc_root))
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
 print("sys.path:", sys.path)
+print(f"sphinx: {sphinx.__version__}, {sphinx.__file__}")
 
 import numpy as np
 
