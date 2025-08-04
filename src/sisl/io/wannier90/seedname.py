@@ -98,12 +98,15 @@ class winSileWannier90(SileWannier90):
         """Setup `winSileWannier90` after initialization"""
         super()._setup(*args, **kwargs)
         self._comment = ["!", "#"]
-        self._seed = str(self.file).replace(".win", "")
+        self._seed = self.file.name.replace(".win", "")
+
+    def associated_file(self, suffix: str) -> Path:
+        return self.dir_file(f"{self._seed}{suffix}")
 
     def _r_lattice_tb(self, *args, **kwargs):
-        """Defered routine"""
+        """Deferred routine"""
 
-        f = self.dir_file(self._seed + "_tb.dat")
+        f = self.associated_file("_tb.dat")
         lattice = None
         if f.exists():
             lattice = tbSileWannier90(f).read_lattice(*args, **kwargs)
@@ -121,7 +124,8 @@ class winSileWannier90(SileWannier90):
 
         l = self.readline()
         lines = []
-        while not l.startswith("end"):
+        # see GH-936 for lstrip
+        while not l.lstrip().startswith("end"):
             lines.append(l)
             l = self.readline()
 
@@ -163,9 +167,9 @@ class winSileWannier90(SileWannier90):
         return None
 
     def _r_geometry_centres(self, *args, **kwargs):
-        """Defered routine"""
+        """Deferred routine"""
 
-        f = self.dir_file(self._seed + "_centres.xyz")
+        f = self.associated_file("_centres.xyz")
         geometry = None
         if f.exists():
             geometry = centresSileWannier90(f).read_geometry(*args, **kwargs)
@@ -173,7 +177,7 @@ class winSileWannier90(SileWannier90):
 
     @sile_fh_open()
     def _r_geometry_win(self, lattice: Lattice, *args, **kwargs):
-        """Defered routine"""
+        """Deferred routine"""
 
         is_frac = True
         f, _ = self.step_to("atoms_frac", case=False)
@@ -232,7 +236,7 @@ class winSileWannier90(SileWannier90):
             form the fdf file (False).
         order: list of str, optional
             the order of which to try and read the geometry information.
-            Depedns on `output`.
+            Depends on `output`.
 
         Notes
         -----
@@ -320,7 +324,7 @@ class winSileWannier90(SileWannier90):
 
     def _r_hamiltonian_tb(self, *args, **kwargs):
         """Read Hamiltonian from the ``<>_tb.dat`` file"""
-        f = self.dir_file(self._seed + "_tb.dat")
+        f = self.associated_file("_tb.dat")
         H = None
         if f.exists():
             H = tbSileWannier90(f).read_hamiltonian(*args, **kwargs)
@@ -328,7 +332,7 @@ class winSileWannier90(SileWannier90):
 
     def _r_hamiltonian_hr(self, *args, **kwargs):
         """Reads a Hamiltonian model from the ``<>_hr.dat`` file"""
-        f = self.dir_file(self._seed + "_hr.dat")
+        f = self.associated_file("_hr.dat")
         H = None
         if f.exists():
             H = hrSileWannier90(f).read_hamiltonian(*args, **kwargs)
