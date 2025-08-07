@@ -900,7 +900,7 @@ class PeriodicTable:
             return ""
 
         if row.ndim == 0:
-            return conv(row[()], col[()])
+            return np.asarray(conv(row, col), dtype=str)
         return np.asarray(list(map(conv, row, col)), dtype=str)
 
     @classmethod
@@ -939,7 +939,7 @@ class PeriodicTable:
             return -1
 
         if Z.ndim == 0:
-            return conv(Z[()])
+            return np.asarray(conv(Z[()]), dtype=int)
         return np.asarray(list(map(conv, Z)), dtype=int)
 
     @classmethod

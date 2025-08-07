@@ -51,6 +51,7 @@ keywords = [
 # Now all dependencies that were released around the same time should be the
 # lower bound of dependencies.
 dependencies = [
+    "pyyaml",
     # We need npt.NDArray
     "numpy>=1.21",
     "scipy>=1.6",

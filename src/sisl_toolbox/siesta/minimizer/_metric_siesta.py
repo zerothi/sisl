@@ -31,12 +31,13 @@ _log = logging.getLogger(__name__)
 def _siesta_out_accept(out):
     if not isinstance(out, io_siesta.stdoutSileSiesta):
         out = io_siesta.stdoutSileSiesta(out)
-    accept = out.completed()
+    accept = out.info.completed
     if accept:
         with out:
             # We do not accept:
             # KBproj: WARNING: KB projector does not decay to zero
             accept = not out.step_to("KB projector does not decay to zero")[0]
+
     if accept:
         for l in (0, 1, 2):
             with out:
