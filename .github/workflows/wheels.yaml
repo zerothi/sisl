@@ -75,7 +75,7 @@ jobs:
         with:
           platforms: arm64
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Ensure fortran
         uses: fortran-lang/setup-fortran@v1
@@ -132,7 +132,7 @@ jobs:
     name: Build source dist
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
