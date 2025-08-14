@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl_toolbox.btd._electrode &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=87890c72"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
+      <script src="../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl_toolbox.btd._electrode</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl_toolbox.btd._electrode</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="sd">&quot;&quot;&quot;Block-tri-diagonal electrode handling&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">si</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl.io.siesta.binaries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl.io.tbtrans</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._indices</span><span class="w"> </span><span class="kn">import</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indices_only</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl._internal</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KPoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">PropertyDict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">._help</span><span class="w"> </span><span class="kn">import</span> <span class="n">expand_btd</span><span class="p">,</span> <span class="n">expand_orbs</span><span class="p">,</span> <span class="n">get_expand</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PivotSelfEnergy&quot;</span><span class="p">,</span> <span class="s2">&quot;DownfoldSelfEnergy&quot;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PivotSelfEnergy</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">SelfEnergy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for the self-energy object</span>
+
+<span class="sd">    This may either be a</span>
+
+<span class="sd">    - `tbtsencSileTBtrans`</span>
+<span class="sd">    - `tbtgfSileTBtrans`</span>
+<span class="sd">    - `sisl.physics.SelfEnergy`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">se</span><span class="p">,</span>
+        <span class="n">pivot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">bloch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">si</span><span class="o">.</span><span class="n">Bloch</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="c1"># Name of electrode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="c1"># File containing the self-energy</span>
+        <span class="c1"># This may be either of:</span>
+        <span class="c1">#  tbtsencSileTBtrans</span>
+        <span class="c1">#  tbtgfSileTBtrans</span>
+        <span class="c1">#  SelfEnergy object (for direct calculation)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_se</span> <span class="o">=</span> <span class="n">se</span>
+
+        <span class="c1"># Store the pivoting for faster indexing</span>
+        <span class="c1"># Ensure we have a correct `pivot` argument</span>
+        <span class="k">if</span> <span class="n">pivot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">tbtrans</span><span class="o">.</span><span class="n">tbtsencSileTBtrans</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be passed a sisl.io.tbtrans.tbtsencSileTBtrans. &quot;</span>
+                    <span class="s2">&quot;Otherwise use the DownfoldSelfEnergy object with appropriate arguments.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">pivot</span> <span class="o">=</span> <span class="n">se</span>
+
+        <span class="k">if</span> <span class="n">bloch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># necessary to get bloch-expansion of the electrode</span>
+            <span class="c1"># In case the `pivot` holds that information, lets use it</span>
+            <span class="n">bloch</span> <span class="o">=</span> <span class="n">pivot</span><span class="o">.</span><span class="n">bloch</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bloch</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">Bloch</span><span class="p">):</span>
+            <span class="n">bloch</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Bloch</span><span class="p">(</span><span class="n">bloch</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bloch</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">_bloch</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Simple no-up wrapper&quot;&quot;&quot;</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_bloch</span> <span class="o">=</span> <span class="n">bloch</span>
+
+        <span class="c1"># Store the Bloch-expansion function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span> <span class="o">=</span> <span class="n">_bloch</span>
+
+        <span class="c1"># Recall that device region geometries uses the Bloch-expanded</span>
+        <span class="c1"># electrodes. So we have to also figure out the full matrix</span>
+        <span class="c1"># for the electrode calculation.</span>
+        <span class="c1"># So we take out the number of orbitals in the electrode.</span>
+        <span class="c1"># The electrode atoms for a pivoting matrix is the *actual*</span>
+        <span class="c1"># number of orbitals *after* Bloch-expansion.</span>
+        <span class="n">n_orbs</span> <span class="o">=</span> <span class="n">pivot</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">a_elec</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="o">.</span><span class="n">no</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">tbtrans</span><span class="o">.</span><span class="n">tbtsencSileTBtrans</span><span class="p">):</span>
+            <span class="c1"># We can&#39;t figure out what it is.</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">siesta</span><span class="o">.</span><span class="n">binaries</span><span class="o">.</span><span class="n">_gfSileSiesta</span><span class="p">):</span>
+            <span class="c1"># The GF files automatically handle the bloch expansion</span>
+            <span class="c1"># *AND* it also doubles based on spin-configuration</span>
+            <span class="c1"># It likely shouldn&#39;t</span>
+            <span class="n">len_H</span> <span class="o">=</span> <span class="n">se</span><span class="o">.</span><span class="n">_no_u</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">SelfEnergy</span><span class="p">):</span>
+            <span class="n">len_H</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">se</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">bloch</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown &#39;se&#39; argument.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Determine whether the pivoting elements should be accounted for</span>
+        <span class="c1"># by the spin-dimensions.</span>
+        <span class="c1"># E.g. if this is a non-collinear spin configuration, we should double</span>
+        <span class="c1"># everything.</span>
+        <span class="n">expand</span> <span class="o">=</span> <span class="n">get_expand</span><span class="p">(</span><span class="n">len_H</span><span class="p">,</span> <span class="n">n_orbs</span><span class="p">)</span>
+
+        <span class="c1"># Pivoting indices for the self-energy in the full system</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvt</span> <span class="o">=</span> <span class="n">expand_orbs</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">expand</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Pivoting indices for the self-energy in the device region</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvt_dev</span> <span class="o">=</span> <span class="n">expand_orbs</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">in_device</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">expand</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Retrieve BTD matrices for the corresponding electrode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btd</span> <span class="o">=</span> <span class="n">expand_btd</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">btd</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">expand</span><span class="p">)</span>
+
+        <span class="c1"># Get the individual matrices</span>
+        <span class="n">cbtd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span>
+        <span class="c1"># self.pvt_btd = np.concatenate(pvt_btd).reshape(-1, 1)</span>
+        <span class="c1"># self.pvt_btd_sort = _a.arangei(o)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">tbtrans</span><span class="o">.</span><span class="n">tbtsencSileTBtrans</span><span class="p">):</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">se_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">broad_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">se_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">broad_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">broadening_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_se_func</span> <span class="o">=</span> <span class="n">se_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_broad_func</span> <span class="o">=</span> <span class="n">broad_func</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">no: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Length of the self-energy once it has been downfolded into the device.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pvt_dev</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PivotSelfEnergy.self_energy">
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.self_energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return self-energy for given parameters.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_se_func</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PivotSelfEnergy.broadening_matrix">
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return broadening matrix for given parameters.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_broad_func</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownfoldSelfEnergy</span><span class="p">(</span><span class="n">PivotSelfEnergy</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">se</span><span class="p">,</span>
+        <span class="n">pivot</span><span class="p">,</span>
+        <span class="n">Hdevice</span><span class="p">:</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">,</span>
+        <span class="n">eta_device</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">bulk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">bloch</span><span class="p">:</span> <span class="n">Optional</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="c1"># Default initialize from the super (PivotSelfEnergy)</span>
+        <span class="c1"># This also determines whether the thing requires expansion</span>
+        <span class="c1"># due to pivoting stemming from a diagonal spin calculation.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">se</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">bloch</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_eta_device</span> <span class="o">=</span> <span class="n">eta_device</span>
+
+        <span class="c1"># To re-create the downfoldable self-energies we need a few things:</span>
+        <span class="c1"># pivot == for pivoting indices and BTD downfolding region</span>
+        <span class="c1"># se == SelfEnergy for calculating self-energies and broadening matrix</span>
+        <span class="c1"># Hdevice == device H for downfolding the electrode self-energy</span>
+        <span class="c1"># bulk == whether the electrode self-energy argument should be passed bulk</span>
+        <span class="c1">#         or not</span>
+        <span class="c1"># name == just the name</span>
+
+        <span class="c1"># storage data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">bulk</span> <span class="o">=</span> <span class="n">bulk</span>
+
+        <span class="c1"># Create BTD indices</span>
+        <span class="c1"># Necessary for the down-folding</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">btd_cum0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">))</span>
+
+        <span class="c1"># Now figure out all the atoms in the downfolding region</span>
+        <span class="c1"># pivot is the orbitals reaching into the device</span>
+        <span class="n">pvt</span> <span class="o">=</span> <span class="n">pivot</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># TODO , this kind-of makes PivotSelfEnergy obsolete...</span>
+        <span class="c1"># We cheat here, the super class does the calculation.</span>
+        <span class="c1"># The parent calls &#39;pivot.pivot&#39; and stores it in &#39;pvt&#39; (after</span>
+        <span class="c1"># expanding). So here we can get the exact expansion</span>
+        <span class="n">expand</span> <span class="o">=</span> <span class="n">get_expand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pvt</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">pvt</span><span class="p">))</span>
+        <span class="c1"># note that the last orbitals in pivot_down is the returned self-energies</span>
+        <span class="c1"># that we want to calculate in this class</span>
+
+        <span class="c1"># The orbital indices in self.H.device.geometry</span>
+        <span class="c1"># which transfers the orbitals to the downfolding region</span>
+
+        <span class="c1"># Now we need to figure out the pivoting indices from the sub-set</span>
+        <span class="c1"># geometry</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+        <span class="c1"># Store the electrode Hamiltonian used for creating the bulk part</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">electrode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">spgeom0</span>
+
+        <span class="c1"># The *device* is now the shrunk Hamiltonian, only containing the</span>
+        <span class="c1"># down-folding atoms for the electrode + the device part.</span>
+        <span class="c1"># NOTE, this geometry/Hamiltonian, is *not* sorted according</span>
+        <span class="c1"># to the down-folding scheme (unique=True).</span>
+        <span class="n">atoms_down</span> <span class="o">=</span> <span class="n">Hdevice</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span>
+            <span class="n">expand_orbs</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">pivot_down</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">expand</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">Hdevice</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">atoms_down</span><span class="p">)</span>
+
+        <span class="n">orbitals_down</span> <span class="o">=</span> <span class="n">Hdevice</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms_down</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">orbitals_elec</span> <span class="o">=</span> <span class="n">Hdevice</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">a_elec</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Store the place of the self-energies in `data.H.device`</span>
+        <span class="c1"># I.e. before any pivoting!</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">elec</span> <span class="o">=</span> <span class="n">indices_only</span><span class="p">(</span><span class="n">orbitals_down</span><span class="p">,</span> <span class="n">orbitals_elec</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># the pivoting in the downfolding, in [0:len(pivot_down)]</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">pvt_down_down</span> <span class="o">=</span> <span class="n">expand_orbs</span><span class="p">(</span>
+            <span class="n">pivot</span><span class="o">.</span><span class="n">pivot_down</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">in_down</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">expand</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">eta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">eta</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">se</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">no: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">, blocks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span><span class="si">}</span><span class="s2">, eta: </span><span class="si">{</span><span class="n">eta</span><span class="si">}</span><span class="s2">, eta_device: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_eta_device</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">se</span><span class="si">}</span><span class="se">\n}}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether we have already runned this exact energy point.</span>
+
+<span class="sd">        If not, then setup the data set for the next iteration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                <span class="c1"># we have already prepared the calculation</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="n">E</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">Ed</span> <span class="o">=</span> <span class="n">E</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">Eb</span> <span class="o">=</span> <span class="n">E</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isrealobj</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">Ed</span> <span class="o">=</span> <span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eta_device</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">Eb</span> <span class="o">=</span> <span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_se</span><span class="o">.</span><span class="n">eta</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_Ek</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Prepare the matrices</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">H</span>
+
+        <span class="n">Ed</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Ed</span>
+        <span class="n">Eb</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Eb</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">SeH</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="n">Ed</span> <span class="o">-</span> <span class="n">H</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">Pk</span><span class="p">(</span>
+            <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">bulk</span><span class="p">:</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">hsk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">Helec</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">electrode</span>
+                <span class="c1"># constructor for the H and S part</span>
+                <span class="k">return</span> <span class="n">Helec</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="n">Eb</span> <span class="o">-</span> <span class="n">Helec</span><span class="o">.</span><span class="n">Hk</span><span class="p">(</span>
+                    <span class="n">k</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+
+            <span class="n">old</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">SeH</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="o">.</span><span class="n">T</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">SeH</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="o">.</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span><span class="p">(</span><span class="n">hsk</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DownfoldSelfEnergy.self_energy">
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">self_energy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="n">se</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># now put it in the matrix</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">SeH</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># the electrode, is not pivoted, i.e. the indices are not changed.</span>
+        <span class="n">M</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="o">.</span><span class="n">T</span><span class="p">]</span> <span class="o">-=</span> <span class="n">se</span>
+        <span class="c1"># Pivot the matrix to the downfolding order</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">pvt_down_down</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">pvt_down_down</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">gM</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="n">idx1</span><span class="p">,</span> <span class="p">:][:,</span> <span class="n">idx2</span><span class="p">]</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+        <span class="n">Mr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cbtd</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">btd_cum0</span>
+        <span class="n">sli</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">cbtd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cbtd</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)):</span>
+            <span class="n">sli1</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">cbtd</span><span class="p">[</span><span class="n">b</span><span class="p">],</span> <span class="n">cbtd</span><span class="p">[</span><span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1"># Do the downfolding of the self-energies</span>
+            <span class="n">Mr</span> <span class="o">=</span> <span class="n">gM</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">sli1</span><span class="p">,</span> <span class="n">sli</span><span class="p">)</span> <span class="o">@</span> <span class="n">solve</span><span class="p">(</span>
+                <span class="n">gM</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">sli</span><span class="p">,</span> <span class="n">sli</span><span class="p">)</span> <span class="o">-</span> <span class="n">Mr</span><span class="p">,</span>
+                <span class="n">gM</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">sli</span><span class="p">,</span> <span class="n">sli1</span><span class="p">),</span>
+                <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">overwrite_b</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">sli</span> <span class="o">=</span> <span class="n">sli1</span>
+        <span class="k">return</span> <span class="n">Mr</span></div>
+
+
+<div class="viewcode-block" id="DownfoldSelfEnergy.broadening_matrix">
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.html#sisl_toolbox.btd.DownfoldSelfEnergy.broadening_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">se2broadening</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

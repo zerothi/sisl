@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=fcefe123"></script>
+      <script src="../../../_static/documentation_options.js?v=87890c72"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -197,7 +197,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.a2p" title="sisl.io.tbtrans.phtncSilePHtrans.a2p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2p</span></code></a>(atoms)</p></td>
 <td><p>Return the pivoting orbital indices (0-based) for the atoms, possibly on an electrode</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.a_down" title="sisl.io.tbtrans.phtncSilePHtrans.a_down"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a_down</span></code></a>(elec[, bulk])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.a_down" title="sisl.io.tbtrans.phtncSilePHtrans.a_down"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a_down</span></code></a>(elec)</p></td>
 <td><p>Down-folding atomic indices for a given electrode</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.a_elec" title="sisl.io.tbtrans.phtncSilePHtrans.a_elec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a_elec</span></code></a>(elec)</p></td>
@@ -264,13 +264,13 @@
 <td><p>Number of blocks in the BTD partioning</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.na_down" title="sisl.io.tbtrans.phtncSilePHtrans.na_down"><code class="xref py py-obj docutils literal notranslate"><span class="pre">na_down</span></code></a>(elec)</p></td>
-<td><p>Number of atoms in the downfolding region (without device downfolded region)</p></td>
+<td><p>Number of atoms the electrode occupies in the downfolded device region</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.no_down" title="sisl.io.tbtrans.phtncSilePHtrans.no_down"><code class="xref py py-obj docutils literal notranslate"><span class="pre">no_down</span></code></a>(elec)</p></td>
-<td><p>Number of orbitals in the downfolding region (plus device downfolded region)</p></td>
+<td><p>Number of orbitals in the downfolding region (including device downfolded region)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.no_e" title="sisl.io.tbtrans.phtncSilePHtrans.no_e"><code class="xref py py-obj docutils literal notranslate"><span class="pre">no_e</span></code></a>(elec)</p></td>
-<td><p>Number of orbitals in the downfolded region of the electrode in the device</p></td>
+<td><p>Number of orbitals the electrode occupies in the downfolded device region</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.norm" title="sisl.io.tbtrans.phtncSilePHtrans.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a>([atoms, orbitals, norm])</p></td>
 <td><p>Normalization factor depending on the input</p></td>
@@ -299,7 +299,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.pivot" title="sisl.io.tbtrans.phtncSilePHtrans.pivot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pivot</span></code></a>([elec, in_device, sort])</p></td>
 <td><p>Return the pivoting indices for a specific electrode (in the device region) or the device</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.pivot_down" title="sisl.io.tbtrans.phtncSilePHtrans.pivot_down"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pivot_down</span></code></a>(elec)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.pivot_down" title="sisl.io.tbtrans.phtncSilePHtrans.pivot_down"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pivot_down</span></code></a>(elec[, in_down])</p></td>
 <td><p>Pivoting orbitals for the downfolding region of a given electrode</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.read" title="sisl.io.tbtrans.phtncSilePHtrans.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
@@ -547,7 +547,7 @@ in real-space.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -692,15 +692,11 @@ For a <em class="xref py py-obj">str</em> it will be parsed to a float and treat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.a_down">
-<span class="sig-name descname"><span class="pre">a_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.a_down" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">a_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.a_down" title="Link to this definition"></a></dt>
 <dd><p>Down-folding atomic indices for a given electrode</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – electrode to retrieve indices for</p></li>
-<li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the returned indices are <em>only</em> in the pristine electrode,
-or the down-folding region (electrode + downfolding region, not in device)</p></li>
-</ul>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – electrode to retrieve indices for</p>
 </dd>
 </dl>
 </dd></dl>
@@ -739,7 +735,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -790,7 +786,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -839,7 +835,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -888,7 +884,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1103,7 +1099,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1183,7 +1179,7 @@ in real-space.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1376,7 +1372,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.na_down">
 <span class="sig-name descname"><span class="pre">na_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.na_down" title="Link to this definition"></a></dt>
-<dd><p>Number of atoms in the downfolding region (without device downfolded region)</p>
+<dd><p>Number of atoms the electrode occupies in the downfolded device region</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of downfolding atoms for electrode <em class="xref py py-obj">elec</em></p>
@@ -1390,7 +1386,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.no_down">
 <span class="sig-name descname"><span class="pre">no_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.no_down" title="Link to this definition"></a></dt>
-<dd><p>Number of orbitals in the downfolding region (plus device downfolded region)</p>
+<dd><p>Number of orbitals in the downfolding region (including device downfolded region)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of downfolding orbitals for electrode <em class="xref py py-obj">elec</em></p>
@@ -1404,7 +1400,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.no_e">
 <span class="sig-name descname"><span class="pre">no_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.no_e" title="Link to this definition"></a></dt>
-<dd><p>Number of orbitals in the downfolded region of the electrode in the device</p>
+<dd><p>Number of orbitals the electrode occupies in the downfolded device region</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Specify the electrode to query number of downfolded orbitals</p>
@@ -1472,7 +1468,7 @@ device pivoting indices).</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.orbital_ACOHP">
 <span class="sig-name descname"><span class="pre">orbital_ACOHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.orbital_ACOHP" title="Link to this definition"></a></dt>
 <dd><p>Orbital resolved COHP analysis of the spectral function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COHP of the
 underlying geometry.</p>
 <p>The COHP analysis can be written as:</p>
@@ -1494,7 +1490,7 @@ other are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1522,7 +1518,7 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.orbital_ACOOP">
 <span class="sig-name descname"><span class="pre">orbital_ACOOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.orbital_ACOOP" title="Link to this definition"></a></dt>
 <dd><p>Orbital COOP analysis of the spectral function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COOP of the
 underlying geometry.</p>
 <p>The COOP analysis can be written as:</p>
@@ -1553,7 +1549,7 @@ other are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1589,7 +1585,7 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.orbital_COHP">
 <span class="sig-name descname"><span class="pre">orbital_COHP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.orbital_COHP" title="Link to this definition"></a></dt>
 <dd><p>Orbital resolved COHP analysis of the Green function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COHP of the
 underlying geometry.</p>
 <p>The COHP analysis can be written as:</p>
@@ -1610,7 +1606,7 @@ other are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1643,7 +1639,7 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.orbital_COOP">
 <span class="sig-name descname"><span class="pre">orbital_COOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.orbital_COOP" title="Link to this definition"></a></dt>
 <dd><p>Orbital COOP analysis of the Green function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COOP of the
 underlying geometry.</p>
 <p>The COOP analysis can be written as:</p>
@@ -1674,7 +1670,7 @@ other are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1730,7 +1726,7 @@ the correct physics is obtained.</p>
 fields. With <span class="math notranslate nohighlight">\(\mathbf B\)</span> fields local transmission loops may form and the pathways does
 not necessarily flow along the transport direction.</p>
 <p>For correct interpretation of the orbital transmissions it is vital that one integrates the full
-Brillouin zone without any symmetry operations, see Section 5.4 in <span id="id1">[<a class="reference internal" href="../../../references.html#id16" title="Nick Rübner Papior. Computational Tools and Studies of Graphene Nanostructures. PhD thesis, Technical University of Denmark, 2016. URL: http://orbit.dtu.dk/en/publications/computational-tools-and-studies-of-graphene-nanostructures(46f34e1c-5f0c-46cb-be32-fff5f37881aa).html, doi:10.11581/DTU:00000025.">10</a>]</span>.</p>
+Brillouin zone without any symmetry operations, see Section 5.4 in <span id="id1">[<a class="reference internal" href="../../../references.html#id17" title="Nick Rübner Papior. Computational Tools and Studies of Graphene Nanostructures. PhD thesis, Technical University of Denmark, 2016. URL: http://orbit.dtu.dk/en/publications/computational-tools-and-studies-of-graphene-nanostructures(46f34e1c-5f0c-46cb-be32-fff5f37881aa).html, doi:10.11581/DTU:00000025.">10</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1753,7 +1749,7 @@ To only get unit cell transmissions, pass <code class="docutils literal notransl
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1847,13 +1843,32 @@ the device in a non-pivoted order.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtncSilePHtrans.pivot_down">
-<span class="sig-name descname"><span class="pre">pivot_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.pivot_down" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pivot_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_down</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtncSilePHtrans.pivot_down" title="Link to this definition"></a></dt>
 <dd><p>Pivoting orbitals for the downfolding region of a given electrode</p>
+<p>This pivoting table includes the electrode + the downfolding region +
+the resulting orbitals in the device region.</p>
+<p>Essentially this is equivalent to (but not in the same order):
+&gt;&gt;&gt; pvt = tbt.geometry.a2o(tbt.a_down(elec))
+&gt;&gt;&gt; pvt_down = np.append(pvt, tbt.pivot(elec))</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the corresponding electrode to get the pivoting indices for</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the corresponding electrode to get the pivoting indices for</p></li>
+<li><p><strong>in_down</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> the pivoting table will be translated to the down-folding region
+orbitals.</p></li>
+</ul>
 </dd>
 </dl>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>This does <em>not</em> correspond to the atoms of the downfolding region from
+the atomic indices:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tbt</span><span class="o">.</span><span class="n">pivot_down</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">tbt</span><span class="o">.</span><span class="n">a_down</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The point for this is that <a class="reference internal" href="#sisl.io.tbtrans.phtncSilePHtrans.pivot_down" title="sisl.io.tbtrans.phtncSilePHtrans.pivot_down"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pivot_down</span></code></a> is not guaranteed to fully
+encapsulate all orbitals of the atoms in the device region.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2051,7 +2066,7 @@ be a generic routine usable for other parts of <a class="reference internal" hre
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Dab</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix in atomic indices</p>
+<dd class="field-odd"><p><strong>Dab</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix in atomic indices</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
@@ -2073,7 +2088,7 @@ be a generic routine usable for other parts of <a class="reference internal" hre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix in orbital format</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix in orbital format</p></li>
 <li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the returned data are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
@@ -2084,7 +2099,7 @@ multi-orbital systems.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><em>csr_matrix</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><em>csr_matrix</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2109,7 +2124,7 @@ idea of <em>how much</em> this atom is governing the data in the matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the orbital sparse matrix.</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the orbital sparse matrix.</p></li>
 <li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the atomic activity, see explanation above</p></li>
 </ul>
 </dd>
@@ -2142,7 +2157,7 @@ be a generic routine usable for other parts of <a class="reference internal" hre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix</p></li>
+<li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>) – the input sparse matrix</p></li>
 <li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the returned data are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.

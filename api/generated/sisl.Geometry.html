@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=fcefe123"></script>
+      <script src="../../_static/documentation_options.js?v=87890c72"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -208,7 +208,7 @@ sisl’s dispatch functionality</p>
 <span class="go">Atoms(...)</span>
 </pre></div>
 </div>
-<p>converts to an ASE <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object.</p>
+<p>converts to an ASE <a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -243,10 +243,10 @@ sisl’s dispatch functionality</p>
 <td><p>Writes the geometry to a sile with any optional arguments.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.to.ase" title="sisl.Geometry.to.ase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to.ase</span></code></a>(**kwargs)</p></td>
-<td><p>Conversion of <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> to an <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object</p></td>
+<td><p>Conversion of <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> to an <a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.to.dataframe" title="sisl.Geometry.to.dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to.dataframe</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Convert the geometry to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with values stored in columns</p></td>
+<td><p>Convert the geometry to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with values stored in columns</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.to.pymatgen" title="sisl.Geometry.to.pymatgen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to.pymatgen</span></code></a>(**kwargs)</p></td>
 <td><p>Conversion of <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> to a <em class="xref py py-obj">pymatgen</em> object.</p></td>
@@ -1266,7 +1266,7 @@ If this is a list, the shells will be of unequal size.</p>
 A list of distances within each shell is gathered and the equivalent
 method will be used to extract a single quantity from the list of
 distances in the shell.
-If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.16.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
+If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.16.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
 If another string is given it will correspond to <code class="docutils literal notranslate"><span class="pre">getattr(numpy,</span> <span class="pre">method)</span></code>,
 while any callable function may be passed. The passed function
 will only be passed a list of unsorted distances that needs to be
@@ -2912,10 +2912,10 @@ The <em>only</em> difference between the two is the final ordering of the atoms.
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.to.ase">
 <span class="sig-prename descclassname"><span class="pre">to.</span></span><span class="sig-name descname"><span class="pre">ase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.to.ase" title="Link to this definition"></a></dt>
-<dd><p>Conversion of <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> to an <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object</p>
+<dd><p>Conversion of <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> to an <a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>Atoms</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><em>Atoms</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2923,10 +2923,10 @@ The <em>only</em> difference between the two is the final ordering of the atoms.
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.to.dataframe">
 <span class="sig-prename descclassname"><span class="pre">to.</span></span><span class="sig-name descname"><span class="pre">dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Geometry.to.dataframe" title="Link to this definition"></a></dt>
-<dd><p>Convert the geometry to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with values stored in columns</p>
+<dd><p>Convert the geometry to a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with values stored in columns</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.0)"><em>DataFrame</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.1)"><em>DataFrame</em></a></p>
 </dd>
 </dl>
 </dd></dl>

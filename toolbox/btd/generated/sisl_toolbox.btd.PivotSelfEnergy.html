@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=fcefe123"></script>
+      <script src="../../../_static/documentation_options.js?v=87890c72"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,57 +141,38 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.btd.</span></span><span class="sig-name descname"><span class="pre">PivotSelfEnergy</span></span><a class="headerlink" href="#sisl_toolbox.btd.PivotSelfEnergy" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy" title="sisl.physics.SelfEnergy"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelfEnergy</span></code></a></p>
 <p>Container for the self-energy object</p>
-<p>This may either be a <em class="xref py py-obj">tbtsencSileTBtrans</em>, a <em class="xref py py-obj">tbtgfSileTBtrans</em> or a sisl.SelfEnergy objectfile</p>
+<p>This may either be a</p>
+<ul class="simple">
+<li><p><em class="xref py py-obj">tbtsencSileTBtrans</em></p></li>
+<li><p><em class="xref py py-obj">tbtgfSileTBtrans</em></p></li>
+<li><p><a class="reference internal" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy" title="sisl.physics.SelfEnergy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics.SelfEnergy</span></code></a></p></li>
+</ul>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix" title="sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broadening_matrix</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Calculate the broadening matrix by first calculating the self-energy</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix" title="sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broadening_matrix</span></code></a>(E[, k])</p></td>
+<td><p>Return broadening matrix for given parameters.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.se2broadening" title="sisl_toolbox.btd.PivotSelfEnergy.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a>(SE)</p></td>
 <td><p>Calculate the broadening matrix from the self-energy</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.self_energy" title="sisl_toolbox.btd.PivotSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>(*args, **kwargs)</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.self_energy" title="sisl_toolbox.btd.PivotSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>(E[, k])</p></td>
+<td><p>Return self-energy for given parameters.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix">
-<span class="sig-name descname"><span class="pre">broadening_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#PivotSelfEnergy.broadening_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix" title="Link to this definition"></a></dt>
-<dd><p>Calculate the broadening matrix by first calculating the self-energy</p>
-<p>Any arguments that is passed to this method is directly passed to <a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.self_energy" title="sisl_toolbox.btd.PivotSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>.</p>
-<p>See <a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.self_energy" title="sisl_toolbox.btd.PivotSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a> for details.</p>
-<p>This corresponds to:</p>
-<div class="math notranslate nohighlight">
-\[\boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)\]</div>
-<p class="rubric">Examples</p>
-<p>Calculating both the self-energy and the broadening matrix.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">self_energy</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">broadening_matrix</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>For a huge performance boost, please do:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">self_energy</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">se2broadening</span><span class="p">(</span><span class="n">self_energy</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition-notes admonition">
-<p class="admonition-title">Notes</p>
-<p>When using <em>both</em> the self-energy <em>and</em> the broadening matrix please use <a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.se2broadening" title="sisl_toolbox.btd.PivotSelfEnergy.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a> after having
-calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.se2broadening" title="sisl_toolbox.btd.PivotSelfEnergy.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a></dt><dd><p>converting the self-energy to the broadening matrix</p>
-</dd>
-<dt><a class="reference internal" href="#sisl_toolbox.btd.PivotSelfEnergy.self_energy" title="sisl_toolbox.btd.PivotSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a></dt><dd><p>the used routine to calculate the self-energy before calculating the broadening matrix</p>
+<span class="sig-name descname"><span class="pre">broadening_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_electrode.html#PivotSelfEnergy.broadening_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.PivotSelfEnergy.broadening_matrix" title="Link to this definition"></a></dt>
+<dd><p>Return broadening matrix for given parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+</ul>
 </dd>
 </dl>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -212,8 +193,17 @@ calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.PivotSelfEnergy.self_energy">
-<span class="sig-name descname"><span class="pre">self_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#PivotSelfEnergy.self_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.PivotSelfEnergy.self_energy" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">self_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_electrode.html#PivotSelfEnergy.self_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.PivotSelfEnergy.self_energy" title="Link to this definition"></a></dt>
+<dd><p>Return self-energy for given parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>)</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

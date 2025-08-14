@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=fcefe123"></script>
+      <script src="../../../_static/documentation_options.js?v=87890c72"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,12 +120,11 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="nb">abs</span> <span class="k">as</span> <span class="n">_abs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">complex128</span><span class="p">,</span>
     <span class="n">conjugate</span><span class="p">,</span>
     <span class="n">delete</span><span class="p">,</span>
     <span class="n">empty</span><span class="p">,</span>
@@ -309,7 +308,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
 
-        <span class="n">broad</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+        <span class="n">broad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
                 <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">)</span>
@@ -399,11 +398,13 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Representation of the RecursiveSI model&quot;&quot;&quot;</span>
         <span class="n">direction</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;+&quot;</span><span class="p">}</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">}</span>
+        <span class="c1"># TODO, fix the nonzero elements when writing</span>
+        <span class="c1"># It should be sum of spgeom[01]</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">{{direction: </span><span class="si">{1}{2}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> </span><span class="si">{3}</span><span class="se">\n</span><span class="s2">}}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
             <span class="n">direction</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">semi_inf_dir</span><span class="p">],</span>
             <span class="n">axis</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">semi_inf</span><span class="p">],</span>
-            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -500,7 +501,6 @@
 
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="n">sp0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span>
         <span class="n">sp1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span>
@@ -622,7 +622,6 @@
 
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="n">sp0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span>
         <span class="n">sp1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span>
@@ -744,7 +743,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Get k-point</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
@@ -1203,7 +1201,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Calculate the real-space Green function</span>
         <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -1291,7 +1288,6 @@
         <span class="c1"># Now we are to calculate the real-space self-energy</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Retrieve integration k-grid</span>
         <span class="n">bz</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;bz&quot;</span><span class="p">]</span>
@@ -1987,7 +1983,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Calculate the real-space Green function</span>
         <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -2067,7 +2062,6 @@
         <span class="c1"># Now we are to calculate the real-space self-energy</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;eta&quot;</span><span class="p">]</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># Retrieve integration k-grid</span>
         <span class="n">bz</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;bz&quot;</span><span class="p">]</span>

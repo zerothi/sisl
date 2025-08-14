@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=fcefe123"></script>
+      <script src="../../../_static/documentation_options.js?v=87890c72"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -202,34 +202,37 @@ quantity may be read.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.base_directory" title="sisl.io.wannier90.winSileWannier90.base_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_directory</span></code></a>([relative_to])</p></td>
-<td><p>Retrieve the base directory of the file, relative to the path <em class="xref py py-obj">relative_to</em></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.close" title="sisl.io.wannier90.winSileWannier90.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.associated_file" title="sisl.io.wannier90.winSileWannier90.associated_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">associated_file</span></code></a>(suffix)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.dir_file" title="sisl.io.wannier90.winSileWannier90.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.base_directory" title="sisl.io.wannier90.winSileWannier90.base_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_directory</span></code></a>([relative_to])</p></td>
+<td><p>Retrieve the base directory of the file, relative to the path <em class="xref py py-obj">relative_to</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.close" title="sisl.io.wannier90.winSileWannier90.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.dir_file" title="sisl.io.wannier90.winSileWannier90.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.read" title="sisl.io.wannier90.winSileWannier90.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.read" title="sisl.io.wannier90.winSileWannier90.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.read_geometry" title="sisl.io.wannier90.winSileWannier90.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([output])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.read_geometry" title="sisl.io.wannier90.winSileWannier90.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([output])</p></td>
 <td><p>Reads a <em class="xref py py-obj">Geometry</em> and creates the Wannier90 cell</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.read_hamiltonian" title="sisl.io.wannier90.winSileWannier90.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>([cutoff])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.read_hamiltonian" title="sisl.io.wannier90.winSileWannier90.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>([cutoff])</p></td>
 <td><p>Read the electronic structure of the Wannier90 output by reading the <code class="docutils literal notranslate"><span class="pre">&lt;&gt;_tb.dat</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;&gt;_hr.dat</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.read_lattice" title="sisl.io.wannier90.winSileWannier90.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>([output])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.read_lattice" title="sisl.io.wannier90.winSileWannier90.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>([output])</p></td>
 <td><p>Reads a <em class="xref py py-obj">Lattice</em> and creates the Wannier90 cell</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.write" title="sisl.io.wannier90.winSileWannier90.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.write" title="sisl.io.wannier90.winSileWannier90.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.write_geometry" title="sisl.io.wannier90.winSileWannier90.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.write_geometry" title="sisl.io.wannier90.winSileWannier90.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt])</p></td>
 <td><p>Writes the geometry to the contained file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.write_lattice" title="sisl.io.wannier90.winSileWannier90.write_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_lattice</span></code></a>(lattice[, fmt])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.wannier90.winSileWannier90.write_lattice" title="sisl.io.wannier90.winSileWannier90.write_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_lattice</span></code></a>(lattice[, fmt])</p></td>
 <td><p>Writes the supercell to the contained file</p></td>
 </tr>
 </tbody>
@@ -245,6 +248,19 @@ quantity may be read.</p>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.wannier90.winSileWannier90.associated_file">
+<span class="sig-name descname"><span class="pre">associated_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/wannier90/seedname.html#winSileWannier90.associated_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.wannier90.winSileWannier90.associated_file" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.wannier90.winSileWannier90.base_directory">
 <span class="sig-name descname"><span class="pre">base_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.wannier90.winSileWannier90.base_directory" title="Link to this definition"></a></dt>
@@ -272,7 +288,7 @@ quantity may be read.</p>
 <li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to read supercell from output files (True), or
 form the fdf file (False).</p></li>
 <li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – the order of which to try and read the geometry information.
-Depedns on <em class="xref py py-obj">output</em>.</p></li>
+Depends on <em class="xref py py-obj">output</em>.</p></li>
 <li><p><strong>axes</strong> (<em>Axes</em>) – The axes to project the geometry to.</p></li>
 <li><p><strong>atoms</strong> (<a class="reference internal" href="../../generated/sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – The atoms to plot. If None, all atoms are plotted.</p></li>
 <li><p><strong>atoms_style</strong> (<em>Sequence</em><em>[</em><em>AtomsStyleSpec</em><em>]</em>) – List of style specifications for the atoms. See the showcase notebooks for examples.</p></li>
@@ -336,7 +352,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to read supercell from output files (True), or
 form the fdf file (False).</p></li>
 <li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – the order of which to try and read the geometry information.
-Depedns on <em class="xref py py-obj">output</em>.</p></li>
+Depends on <em class="xref py py-obj">output</em>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>

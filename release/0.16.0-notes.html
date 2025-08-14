@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fcefe123"></script>
+      <script src="../_static/documentation_options.js?v=87890c72"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -181,7 +181,7 @@ implemented for various methods.</p>
 </pre></div>
 </div>
 <p>will all work, the first and last will return a <em class="xref py py-obj">Geometry</em>, while
-the middle one will return an <a class="reference external" href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object.</p>
+the middle one will return an <a class="reference external" href="https://ase-lib.org/ase/atoms.html#ase.Atoms" title="(in ASE)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ase.Atoms</span></code></a> object.</p>
 <p>To forcefully return the <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> object, use the latter form with <code class="docutils literal notranslate"><span class="pre">ret_sisl</span></code>.</p>
 <p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/898">PR898</a>)</p>
 </li>
@@ -227,7 +227,7 @@ spectrum.</p>
 <p>(<a class="extlink-pull reference external" href="https://github.com/zerothi/sisl/pull/896">PR896</a>)</p>
 </li>
 <li><p>Enabled creating Hamiltonian matrices from other Hamiltonians</p>
-<p>Previously, <em class="xref py py-obj">Hamiltonian.fromsp</em> would only parse <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>
+<p>Previously, <em class="xref py py-obj">Hamiltonian.fromsp</em> would only parse <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></a>
 objects. This was limiting the functionality.</p>
 <p>Now, all sparse matrices can be converted through any <em class="xref py py-obj">fromsp</em> matrices.
 When the passed object is a SparseGeometry it will decide whether
