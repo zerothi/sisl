@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=87890c72"></script>
+      <script src="../../../_static/documentation_options.js?v=06714eb5"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -121,7 +121,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Self</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ssp</span>
@@ -362,7 +362,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">btd_cum0</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">no: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">, blocks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span><span class="si">}</span><span class="s2">, eta: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="si">:</span><span class="s2">.3e</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">elec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elecs</span><span class="p">:</span>
             <span class="n">e</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="p">)</span>
@@ -378,7 +378,8 @@
         <span class="n">prefix</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;TBT&quot;</span><span class="p">,</span> <span class="s2">&quot;TS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;TBT&quot;</span><span class="p">,</span>
         <span class="n">use_tbt_se</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">eta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new `DeviceGreen` using information gathered from the fdf file.</span>
 
 <span class="sd">        Parameters</span>
@@ -394,6 +395,8 @@
 <span class="sd">           or calculate them on the fly.</span>
 <span class="sd">        eta :</span>
 <span class="sd">            force a specific eta value</span>
+<span class="sd">        kwargs :</span>
+<span class="sd">            passed to the class instantiation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fdf</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">BaseSile</span><span class="p">):</span>
             <span class="n">fdf</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">siesta</span><span class="o">.</span><span class="n">fdfSileSiesta</span><span class="p">(</span><span class="n">fdf</span><span class="p">)</span>
@@ -645,7 +648,7 @@
 
             <span class="n">elecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elec_se</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Hdev</span><span class="p">,</span> <span class="n">elecs</span><span class="p">,</span> <span class="n">tbt</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta_dev</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Hdev</span><span class="p">,</span> <span class="n">elecs</span><span class="p">,</span> <span class="n">tbt</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta_dev</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DeviceGreen.clear">
@@ -979,7 +982,7 @@
         <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">BlockMatrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Green function for a given `E` and `k` point</span>
 
 <span class="sd">        The Green function is calculated as:</span>
@@ -1004,6 +1007,11 @@
 <span class="sd">            - sparse: a sparse-csr matrix for the sparse elements as found in the Hamiltonian</span>
 <span class="sd">        dtype :</span>
 <span class="sd">            the data-type of the array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray or BlockMatrix</span>
+<span class="sd">            the Green function matrix, the format depends on `format`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
@@ -1377,7 +1385,7 @@
         <span class="n">herm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">BlockMatrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the spectral function for a given `E` and `k` point from a given electrode</span>
 
 <span class="sd">        The spectral function is calculated as:</span>
@@ -1411,6 +1419,13 @@
 <span class="sd">           that can utilize the Hermitian property only calculates the lower triangular</span>
 <span class="sd">           part of :math:`\mathbf A`, and then copies the Hermitian to the upper part.</span>
 <span class="sd">           By setting this to `False` the entire matrix is explicitly calculated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray or BlockMatrix</span>
+<span class="sd">            the spectral function for a given electrode in the format</span>
+<span class="sd">            as specified by `format`. Note that some formats does not calculate</span>
+<span class="sd">            the entire spectral function matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># the herm flag is considered useful for testing, there is no need to</span>
         <span class="c1"># play with it. So it isn&#39;t documented.</span>
@@ -1823,7 +1838,7 @@
         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the scattering states for a given `E` and `k` point from a given electrode</span>
 
 <span class="sd">        The scattering states are the eigen states of the spectral function:</span>
@@ -1865,7 +1880,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        scat : StateCElectron</span>
+<span class="sd">        sisl.physics.electron.StateCElectron</span>
 <span class="sd">           the scattering states from the spectral function. The ``scat.state`` contains</span>
 <span class="sd">           the scattering state vectors (eigenvectors of the spectral function).</span>
 <span class="sd">           ``scat.c`` contains the DOS of the scattering states scaled by :math:`1/(2\pi)`</span>
@@ -2044,7 +2059,7 @@
         <span class="n">elec_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the transmission between an electrode, and one or more other electrodes</span>
 
 <span class="sd">        The transmission function is calculated as:</span>
@@ -2106,16 +2121,16 @@
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateElectron</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateElectron</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix (S-matrix) between `elec_from` and `elec_to`</span>
 
 <span class="sd">        The scattering matrix is calculated as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">               \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }(E, \mathbf) = -\delta_{\alpha\beta} + i</span>
-<span class="sd">               \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{to}}}</span>
+<span class="sd">               \mathbf S_{\mathfrak e&#39;\mathfrak e}(E, \mathbf) = -\delta_{\alpha\beta} + i</span>
+<span class="sd">               \tilde{\boldsymbol\Gamma}_{\mathfrak e&#39;}</span>
 <span class="sd">               \mathbf G</span>
-<span class="sd">               \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{from}}}</span>
+<span class="sd">               \tilde{\boldsymbol\Gamma}_{\mathfrak e}</span>
 
 <span class="sd">        Here :math:`\tilde{\boldsymbol\Gamma}` is defined as:</span>
 
@@ -2128,12 +2143,12 @@
 <span class="sd">        function</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">              T_{\mathfrak e_{\mathrm{from}}\mathfrak e_{\mathrm{to}} }(E, \mathbf k) = \operatorname{Tr}\big[</span>
-<span class="sd">              \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }^\dagger</span>
-<span class="sd">              \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }\big]</span>
+<span class="sd">              \mathcal T_{\mathfrak e\to\mathfrak e&#39;}(E, \mathbf k) = \operatorname{Tr}\big[</span>
+<span class="sd">              \mathbf S_{\mathfrak e&#39;\mathfrak e }^\dagger</span>
+<span class="sd">              \mathbf S_{\mathfrak e&#39;\mathfrak e }\big]</span>
 
 <span class="sd">        The scattering matrix approach can be found in details in</span>
-<span class="sd">        :cite:`Sanz2023-qv`.</span>
+<span class="sd">        :cite:`Sanz2023-gv`.</span>
 
 
 <span class="sd">        Parameters</span>
@@ -2159,7 +2174,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        scat_matrix : numpy.ndarray or tuple of numpy.ndarray</span>
+<span class="sd">        sisl.physics.electron.StateElectron or tuple[sisl.physics.electron.StateElectron]</span>
 <span class="sd">           for each `elec_to` a scattering matrix will be returned. Its dimensions will be</span>
 <span class="sd">           depending on the `cutoff` value at the cost of precision.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2177,6 +2192,9 @@
         <span class="c1"># the \tilde \Gamma functions</span>
         <span class="n">tG</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma</span>
 
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">elec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_elec_name</span><span class="p">(</span><span class="n">elec_from</span><span class="p">),</span> <span class="n">E</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">)</span>
+
         <span class="c1"># Now calculate the S matrices</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">calc</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">jtgam_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">tgam_to</span><span class="p">,</span> <span class="n">G</span><span class="p">):</span>
             <span class="n">pvt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elecs</span><span class="p">[</span><span class="n">elec_to</span><span class="p">]</span><span class="o">.</span><span class="n">pvt_dev</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -2185,7 +2203,9 @@
             <span class="k">if</span> <span class="n">elec_from</span> <span class="o">==</span> <span class="n">elec_to</span><span class="p">:</span>
                 <span class="n">min_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="p">(</span><span class="n">min_n</span><span class="p">,</span> <span class="n">min_n</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">ret</span>
+            <span class="k">return</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateElectron</span><span class="p">(</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_elec_name</span><span class="p">(</span><span class="n">elec_to</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="n">jtgam_from</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">tG</span><span class="p">[</span><span class="n">elec_from</span><span class="p">]</span>
         <span class="n">S</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">calc</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">jtgam_from</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">tG</span><span class="p">[</span><span class="n">elec</span><span class="p">],</span> <span class="n">G</span><span class="p">)</span> <span class="k">for</span> <span class="n">elec</span> <span class="ow">in</span> <span class="n">elec_to</span><span class="p">)</span>
@@ -2197,7 +2217,12 @@
 
 <div class="viewcode-block" id="DeviceGreen.eigenchannel">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.eigenchannel">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">eigenchannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_coeff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigenchannel</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_coeff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span>
+        <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">,</span>
+        <span class="nb">tuple</span><span class="p">[</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateElectron</span><span class="p">],</span>
+    <span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the eigenchannel from scattering states entering electrodes `elec_to`</span>
 
 <span class="sd">        The energy and k-point is inferred from the `state` object as returned from</span>
@@ -2217,7 +2242,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        state : sisl.physics.StateCElectron</span>
+<span class="sd">        state :</span>
 <span class="sd">            the scattering states as obtained from `scattering_state`</span>
 <span class="sd">        elec_to : str or int (list or not)</span>
 <span class="sd">            which electrodes to consider for the transmission eigenchannel</span>
@@ -2228,10 +2253,10 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        T_eig : sisl.physics.StateCElectron</span>
+<span class="sd">        T_eig : sisl.physics.electron.StateCElectron</span>
 <span class="sd">            the transmission eigenchannels, the ``T_eig.c`` contains the transmission</span>
 <span class="sd">            eigenvalues.</span>
-<span class="sd">        coeff : sisl.physics.StateElectron</span>
+<span class="sd">        coeff : sisl.physics.electron.StateElectron</span>
 <span class="sd">            coefficients of `state` that creates the transmission eigenchannels</span>
 <span class="sd">            Only returned if `ret_coeff` is True. There is a one-to-one correspondance</span>
 <span class="sd">            between ``coeff`` and ``T_eig`` (with a prefactor of :math:`\sqrt{2\pi}`).</span>

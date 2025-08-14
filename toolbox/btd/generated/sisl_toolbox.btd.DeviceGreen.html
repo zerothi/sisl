@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=87890c72"></script>
+      <script src="../../../_static/documentation_options.js?v=06714eb5"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,6 +85,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../transiesta/ts_fft.html">TranSiesta Hartree correction for FFT Poisson solver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../siesta/atom_plot.html">Plotting <em class="xref py py-obj">atom</em> output</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../btd.html">Block-tri-diagonal inversion algorithms</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sisl_toolbox.btd.BlockMatrix.html">sisl_toolbox.btd.BlockMatrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl_toolbox.btd.BlockMatrixIndexer.html">sisl_toolbox.btd.BlockMatrixIndexer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sisl_toolbox.btd.PivotSelfEnergy.html">sisl_toolbox.btd.PivotSelfEnergy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sisl_toolbox.btd.DownfoldSelfEnergy.html">sisl_toolbox.btd.DownfoldSelfEnergy</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">sisl_toolbox.btd.DeviceGreen</a><ul>
@@ -313,7 +315,7 @@ The eigenvalues are the transmission eigenvalues. Further details may be found i
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.StateCElectron</span></code>) – the scattering states as obtained from <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="sisl_toolbox.btd.DeviceGreen.scattering_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_state</span></code></a></p></li>
+<li><p><strong>state</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>) – the scattering states as obtained from <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="sisl_toolbox.btd.DeviceGreen.scattering_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_state</span></code></a></p></li>
 <li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span> <span class="pre">(list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">not)</span></code>) – which electrodes to consider for the transmission eigenchannel
 decomposition (the sum in the above equation).
 Defaults to all but the origin electrode.</p></li>
@@ -322,21 +324,24 @@ Defaults to all but the origin electrode.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>T_eig</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.StateCElectron</span></code>) – the transmission eigenchannels, the <code class="docutils literal notranslate"><span class="pre">T_eig.c</span></code> contains the transmission
+<li><p><strong>T_eig</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.electron.StateCElectron</span></code></a>) – the transmission eigenchannels, the <code class="docutils literal notranslate"><span class="pre">T_eig.c</span></code> contains the transmission
 eigenvalues.</p></li>
-<li><p><strong>coeff</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.StateElectron</span></code>) – coefficients of <em class="xref py py-obj">state</em> that creates the transmission eigenchannels
+<li><p><strong>coeff</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.electron.StateElectron</span></code></a>) – coefficients of <em class="xref py py-obj">state</em> that creates the transmission eigenchannels
 Only returned if <em class="xref py py-obj">ret_coeff</em> is True. There is a one-to-one correspondance
 between <code class="docutils literal notranslate"><span class="pre">coeff</span></code> and <code class="docutils literal notranslate"><span class="pre">T_eig</span></code> (with a prefactor of <span class="math notranslate nohighlight">\(\sqrt{2\pi}\)</span>).
 This is equivalent to the <code class="docutils literal notranslate"><span class="pre">T_eig</span></code> states in the scattering state basis.</p></li>
 </ul>
 </p>
 </dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>, <a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><em>StateElectron</em></a>]</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.from_fdf">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TBT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tbt_se</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_green.html#DeviceGreen.from_fdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.from_fdf" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TBT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tbt_se</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_green.html#DeviceGreen.from_fdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.from_fdf" title="Link to this definition"></a></dt>
 <dd><p>Return a new <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen" title="sisl_toolbox.btd.DeviceGreen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviceGreen</span></code></a> using information gathered from the fdf file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -348,7 +353,11 @@ If TS, only these prefixes will be used.</p></li>
 <li><p><strong>use_tbt_se</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to use the TBT.SE.nc files for self-energies
 or calculate them on the fly.</p></li>
 <li><p><strong>eta</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – force a specific eta value</p></li>
+<li><p><strong>kwargs</strong> – passed to the class instantiation.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Self</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -378,6 +387,12 @@ or calculate them on the fly.</p></li>
 <li><p><strong>dtype</strong> – the data-type of the array.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the Green function matrix, the format depends on <em class="xref py py-obj">format</em>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference internal" href="sisl_toolbox.btd.BlockMatrix.html#sisl_toolbox.btd.BlockMatrix" title="sisl_toolbox.btd.BlockMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockMatrix</span></code></a></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -387,10 +402,10 @@ or calculate them on the fly.</p></li>
 <dd><p>Calculate the scattering matrix (S-matrix) between <em class="xref py py-obj">elec_from</em> and <em class="xref py py-obj">elec_to</em></p>
 <p>The scattering matrix is calculated as</p>
 <div class="math notranslate nohighlight">
-\[\mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }(E, \mathbf) = -\delta_{\alpha\beta} + i
-\tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{to}}}
+\[\mathbf S_{\mathfrak e'\mathfrak e}(E, \mathbf) = -\delta_{\alpha\beta} + i
+\tilde{\boldsymbol\Gamma}_{\mathfrak e'}
 \mathbf G
-\tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{from}}}\]</div>
+\tilde{\boldsymbol\Gamma}_{\mathfrak e}\]</div>
 <p>Here <span class="math notranslate nohighlight">\(\tilde{\boldsymbol\Gamma}\)</span> is defined as:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\boldsymbol\Gamma(E,\mathbf k) \mathbf u_i &amp;= \lambda_i \mathbf u_i
@@ -399,11 +414,11 @@ or calculate them on the fly.</p></li>
 <p>Once the scattering matrices have been calculated one can calculate the full transmission
 function</p>
 <div class="math notranslate nohighlight">
-\[T_{\mathfrak e_{\mathrm{from}}\mathfrak e_{\mathrm{to}} }(E, \mathbf k) = \operatorname{Tr}\big[
-\mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }^\dagger
-\mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }\big]\]</div>
+\[\mathcal T_{\mathfrak e\to\mathfrak e'}(E, \mathbf k) = \operatorname{Tr}\big[
+\mathbf S_{\mathfrak e'\mathfrak e }^\dagger
+\mathbf S_{\mathfrak e'\mathfrak e }\big]\]</div>
 <p>The scattering matrix approach can be found in details in
-<span id="id2">[]</span>.</p>
+<span id="id2">[<a class="reference internal" href="../../../references.html#id2" title="Sofia Sanz, Nick Papior, Géza Giedke, Daniel Sánchez-Portal, Mads Brandbyge, and Thomas Frederiksen. Mach-Zehnder-like interferometry with graphene nanoribbon networks. J. Phys. Condens. Matter, 35(37):374001, June 2023.">12</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -423,11 +438,11 @@ to positive definite.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>scat_matrix</strong> – for each <em class="xref py py-obj">elec_to</em> a scattering matrix will be returned. Its dimensions will be
+<dd class="field-even"><p>for each <em class="xref py py-obj">elec_to</em> a scattering matrix will be returned. Its dimensions will be
 depending on the <em class="xref py py-obj">cutoff</em> value at the cost of precision.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.electron.StateElectron</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple[sisl.physics.electron.StateElectron]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -467,14 +482,14 @@ also applies here.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>scat</strong> – the scattering states from the spectral function. The <code class="docutils literal notranslate"><span class="pre">scat.state</span></code> contains
+<dd class="field-even"><p>the scattering states from the spectral function. The <code class="docutils literal notranslate"><span class="pre">scat.state</span></code> contains
 the scattering state vectors (eigenvectors of the spectral function).
 <code class="docutils literal notranslate"><span class="pre">scat.c</span></code> contains the DOS of the scattering states scaled by <span class="math notranslate nohighlight">\(1/(2\pi)\)</span>
 so ensure correct density of states.
 One may recreate the spectral function with <code class="docutils literal notranslate"><span class="pre">scat.outer(matrix=scat.c</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">pi)</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">StateCElectron</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.electron.StateCElectron</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -511,6 +526,14 @@ part of <span class="math notranslate nohighlight">\(\mathbf A\)</span>, and the
 By setting this to <em class="xref py py-obj">False</em> the entire matrix is explicitly calculated.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the spectral function for a given electrode in the format
+as specified by <em class="xref py py-obj">format</em>. Note that some formats does not calculate
+the entire spectral function matrix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference internal" href="sisl_toolbox.btd.BlockMatrix.html#sisl_toolbox.btd.BlockMatrix" title="sisl_toolbox.btd.BlockMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlockMatrix</span></code></a></p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -533,6 +556,9 @@ By setting this to <em class="xref py py-obj">False</em> the entire matrix is ex
 <li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span> <span class="pre">of</span></code>) – the electrode(s) to calculate the transmission <em>to</em>.</p></li>
 <li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – k-point to calculate the transmission at.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
