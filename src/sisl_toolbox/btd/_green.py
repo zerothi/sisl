@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal, Optional, Tuple, Union
+from typing import Literal, Optional, Self, Tuple, Union
 
 import numpy as np
 import scipy.sparse as ssp
@@ -245,7 +245,7 @@ class DeviceGreen:
         self.btd_cum0[1:] = np.cumsum(self.btd)
         self.clear()
 
-    def __str__(self):
+    def __str__(self) -> str:
         ret = f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.btd)}, eta: {self.eta:.3e}"
         for elec in self.elecs:
             e = str(elec).replace("\n", "\n  ")
@@ -259,7 +259,8 @@ class DeviceGreen:
         prefix: Literal["TBT", "TS"] = "TBT",
         use_tbt_se: bool = False,
         eta: Optional[float] = None,
-    ):
+        **kwargs,
+    ) -> Self:
         """Return a new `DeviceGreen` using information gathered from the fdf file.
 
         Parameters
@@ -275,6 +276,8 @@ class DeviceGreen:
            or calculate them on the fly.
         eta :
             force a specific eta value
+        kwargs :
+            passed to the class instantiation.
         """
         if not isinstance(fdf, si.BaseSile):
             fdf = si.io.siesta.fdfSileSiesta(fdf)
@@ -526,7 +529,7 @@ class DeviceGreen:
 
             elecs.append(elec_se)
 
-        return cls(Hdev, elecs, tbt, eta=eta_dev)
+        return cls(Hdev, elecs, tbt, eta=eta_dev, **kwargs)
 
     def clear(self, *keys) -> None:
         """Clean any memory used by this object"""
@@ -848,7 +851,7 @@ class DeviceGreen:
         format="array",
         dtype=np.complex128,
         **kwargs,
-    ):
+    ) -> Union[np.ndarray, BlockMatrix]:
         r"""Calculate the Green function for a given `E` and `k` point
 
         The Green function is calculated as:
@@ -873,6 +876,11 @@ class DeviceGreen:
             - sparse: a sparse-csr matrix for the sparse elements as found in the Hamiltonian
         dtype :
             the data-type of the array.
+
+        Returns
+        -------
+        np.ndarray or BlockMatrix
+            the Green function matrix, the format depends on `format`.
         """
         self._prepare(E, k, dtype, **kwargs)
         format = format.lower()
@@ -1243,7 +1251,7 @@ class DeviceGreen:
         herm: bool = True,
         dtype=np.complex128,
         **kwargs,
-    ):
+    ) -> Union[np.ndarray, BlockMatrix]:
         r"""Calculate the spectral function for a given `E` and `k` point from a given electrode
 
         The spectral function is calculated as:
@@ -1277,6 +1285,13 @@ class DeviceGreen:
            that can utilize the Hermitian property only calculates the lower triangular
            part of :math:`\mathbf A`, and then copies the Hermitian to the upper part.
            By setting this to `False` the entire matrix is explicitly calculated.
+
+        Returns
+        -------
+        np.ndarray or BlockMatrix
+            the spectral function for a given electrode in the format
+            as specified by `format`. Note that some formats does not calculate
+            the entire spectral function matrix.
         """
         # the herm flag is considered useful for testing, there is no need to
         # play with it. So it isn't documented.
@@ -1686,7 +1701,7 @@ class DeviceGreen:
         dtype=np.complex128,
         *args,
         **kwargs,
-    ):
+    ) -> si.physics.StateCElectron:
         r"""Calculate the scattering states for a given `E` and `k` point from a given electrode
 
         The scattering states are the eigen states of the spectral function:
@@ -1728,7 +1743,7 @@ class DeviceGreen:
 
         Returns
         -------
-        scat : StateCElectron
+        sisl.physics.electron.StateCElectron
            the scattering states from the spectral function. The ``scat.state`` contains
            the scattering state vectors (eigenvectors of the spectral function).
            ``scat.c`` contains the DOS of the scattering states scaled by :math:`1/(2\pi)`
@@ -1904,7 +1919,7 @@ class DeviceGreen:
         elec_to=None,
         k: KPoint = (0, 0, 0),
         dtype=np.complex128,
-    ):
+    ) -> Union[float, tuple[float]]:
         r"""Calculate the transmission between an electrode, and one or more other electrodes
 
         The transmission function is calculated as:
@@ -1963,16 +1978,16 @@ class DeviceGreen:
         k: KPoint = (0, 0, 0),
         cutoff: float = 1e-4,
         dtype=np.complex128,
-    ):
+    ) -> Union[si.physics.StateElectron, si.physics.StateElectron]:
         r""" Calculate the scattering matrix (S-matrix) between `elec_from` and `elec_to`
 
         The scattering matrix is calculated as
 
         .. math::
-               \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }(E, \mathbf) = -\delta_{\alpha\beta} + i
-               \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{to}}}
+               \mathbf S_{\mathfrak e'\mathfrak e}(E, \mathbf) = -\delta_{\alpha\beta} + i
+               \tilde{\boldsymbol\Gamma}_{\mathfrak e'}
                \mathbf G
-               \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{from}}}
+               \tilde{\boldsymbol\Gamma}_{\mathfrak e}
 
         Here :math:`\tilde{\boldsymbol\Gamma}` is defined as:
 
@@ -1985,12 +2000,12 @@ class DeviceGreen:
         function
 
         .. math::
-              T_{\mathfrak e_{\mathrm{from}}\mathfrak e_{\mathrm{to}} }(E, \mathbf k) = \operatorname{Tr}\big[
-              \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }^\dagger
-              \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }\big]
+              \mathcal T_{\mathfrak e\to\mathfrak e'}(E, \mathbf k) = \operatorname{Tr}\big[
+              \mathbf S_{\mathfrak e'\mathfrak e }^\dagger
+              \mathbf S_{\mathfrak e'\mathfrak e }\big]
 
         The scattering matrix approach can be found in details in
-        :cite:`Sanz2023-qv`.
+        :cite:`Sanz2023-gv`.
 
 
         Parameters
@@ -2016,7 +2031,7 @@ class DeviceGreen:
 
         Returns
         -------
-        scat_matrix : numpy.ndarray or tuple of numpy.ndarray
+        sisl.physics.electron.StateElectron or tuple[sisl.physics.electron.StateElectron]
            for each `elec_to` a scattering matrix will be returned. Its dimensions will be
            depending on the `cutoff` value at the cost of precision.
         """
@@ -2034,6 +2049,9 @@ class DeviceGreen:
         # the \tilde \Gamma functions
         tG = self._data.tgamma
 
+        data = self._data
+        info = dict(elec=self._elec_name(elec_from), E=data.E, k=data.k, cutoff=cutoff)
+
         # Now calculate the S matrices
         def calc(elec_from, jtgam_from, elec_to, tgam_to, G):
             pvt = self.elecs[elec_to].pvt_dev.ravel()
@@ -2042,7 +2060,9 @@ class DeviceGreen:
             if elec_from == elec_to:
                 min_n = np.arange(min(ret.shape))
                 np.add.at(ret, (min_n, min_n), -1)
-            return ret
+            return si.physics.StateElectron(
+                ret.T, self, **info, elec_to=self._elec_name(elec_to)
+            )
 
         jtgam_from = 1j * tG[elec_from]
         S = tuple(calc(elec_from, jtgam_from, elec, tG[elec], G) for elec in elec_to)
@@ -2051,7 +2071,12 @@ class DeviceGreen:
             return S[0]
         return S
 
-    def eigenchannel(self, state, elec_to=None, ret_coeff: bool = False):
+    def eigenchannel(
+        self, state: si.physics.StateCElectron, elec_to=None, ret_coeff: bool = False
+    ) -> Union[
+        si.physics.StateCElectron,
+        tuple[si.physics.StateCElectron, si.physics.StateElectron],
+    ]:
         r""" Calculate the eigenchannel from scattering states entering electrodes `elec_to`
 
         The energy and k-point is inferred from the `state` object as returned from
@@ -2071,7 +2096,7 @@ class DeviceGreen:
 
         Parameters
         ----------
-        state : sisl.physics.StateCElectron
+        state :
             the scattering states as obtained from `scattering_state`
         elec_to : str or int (list or not)
             which electrodes to consider for the transmission eigenchannel
@@ -2082,10 +2107,10 @@ class DeviceGreen:
 
         Returns
         -------
-        T_eig : sisl.physics.StateCElectron
+        T_eig : sisl.physics.electron.StateCElectron
             the transmission eigenchannels, the ``T_eig.c`` contains the transmission
             eigenvalues.
-        coeff : sisl.physics.StateElectron
+        coeff : sisl.physics.electron.StateElectron
             coefficients of `state` that creates the transmission eigenchannels
             Only returned if `ret_coeff` is True. There is a one-to-one correspondance
             between ``coeff`` and ``T_eig`` (with a prefactor of :math:`\sqrt{2\pi}`).
