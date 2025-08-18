@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=06714eb5"></script>
+      <script src="../../../_static/documentation_options.js?v=dd57b077"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,8 +120,9 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Self</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Self</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ssp</span>
@@ -178,6 +179,8 @@
     <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
         <span class="n">A</span> <span class="o">*=</span> <span class="n">scale</span>
 
+    <span class="n">ret_uv</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ret_uv&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
     <span class="c1"># Numerous accounts of SVD algorithms using gesdd results</span>
     <span class="c1"># in poor results when min(M, N) &gt;= 26 (block size).</span>
     <span class="c1"># This may be an error in the D&amp;C algorithm.</span>
@@ -192,7 +195,7 @@
             <span class="n">key</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;ncv&quot;</span><span class="p">,</span> <span class="s2">&quot;tol&quot;</span><span class="p">,</span> <span class="s2">&quot;v0&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span>
         <span class="p">}</span>
         <span class="c1"># do not calculate vt</span>
-        <span class="n">svds_kwargs</span><span class="p">[</span><span class="s2">&quot;return_singular_vectors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;u&quot;</span>
+        <span class="n">svds_kwargs</span><span class="p">[</span><span class="s2">&quot;return_singular_vectors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">ret_uv</span> <span class="k">else</span> <span class="s2">&quot;u&quot;</span>
         <span class="n">svds_kwargs</span><span class="p">[</span><span class="s2">&quot;solver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">driver</span>
         <span class="k">if</span> <span class="s2">&quot;k&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">svds_kwargs</span><span class="p">:</span>
             <span class="n">k</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
@@ -200,12 +203,16 @@
                 <span class="n">k</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="n">svds_kwargs</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
 
-        <span class="n">A</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">svds</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">svds_kwargs</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">svds</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">svds_kwargs</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># it must be a lapack driver:</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">svd_destroy</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lapack_driver</span><span class="o">=</span><span class="n">driver</span><span class="p">)</span>
-    <span class="k">del</span> <span class="n">_</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">svd_destroy</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lapack_driver</span><span class="o">=</span><span class="n">driver</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ret_uv&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">B</span>
 
     <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
         <span class="n">DOS</span> <span class="o">/=</span> <span class="n">scale</span>
@@ -288,32 +295,26 @@
 <span class="sd">    Sometimes one wishes to investigate more details in the calculation process</span>
 <span class="sd">    to discern importance of the eigenvalue separations.</span>
 
-<span class="sd">    When calculating scattering states, using cutoff&#39;s, one can store the</span>
-<span class="sd">    eigenvalues/svd-values to figure out if the cutoff values are too high.</span>
-<span class="sd">    So, if the class is created with `DeviceGreen(..., debug=True)`, the class will</span>
-<span class="sd">    store values in these keys (associated with the method):</span>
+<span class="sd">    When calculating scattering states/matrices one can</span>
+<span class="sd">    reduce the complexity by removing eigen/singular values.</span>
+<span class="sd">    By default we use the `cutoff` values as a relative cutoff value for</span>
+<span class="sd">    the values. I.e. keeping ``value / value.max() &gt; cutoff``.</span>
+<span class="sd">    However, sometimes the relative value is a bad metric since there are</span>
+<span class="sd">    still important values close to unity value. Consider e.g. an array of</span>
+<span class="sd">    values of ``[1e5, 1e4, 1, 0.5, 1e-4]``. In this case we would require the</span>
+<span class="sd">    ``[1, 0.5]`` values as important, but this would only be grabbed by a relative</span>
+<span class="sd">    cutoff value of ``1e-6`` which in some other cases are a too high value.</span>
 
-<span class="sd">    - ``self._data[&quot;svd:Gamma&quot;][&lt;electrode-index&gt;]``</span>
-<span class="sd">        For ``scattering_state(..., method=&quot;svd:Gamma&quot;)`` where it</span>
-<span class="sd">        refers to the eigenvalues of the full :math:`\mathbf A`.</span>
-<span class="sd">    - ``self._data[&quot;eig&quot;][&lt;electrode-index&gt;]``</span>
-<span class="sd">        For ``scattering_state(..., method=&quot;eig&quot;)`` where it</span>
-<span class="sd">        refers to the eigenvalues of the full :math:`\mathbf A`.</span>
-<span class="sd">    - ``self._data[&quot;svd:A:diag&quot;][&lt;electrode-index&gt;]``</span>
-<span class="sd">        For ``scattering_state(..., method=&quot;svd:A&quot;)`` where it</span>
-<span class="sd">        refers to the diagonalization of the diagonal part of</span>
-<span class="sd">        :math:`\mathbf A` (before propagating the eigenspectrum.</span>
-<span class="sd">    - ``self._data[&quot;svd:A&quot;][&lt;electrode-index&gt;]``</span>
-<span class="sd">        For ``scattering_state(..., method=&quot;svd:A&quot;)`` where it</span>
-<span class="sd">        refers to the eigenvalues of the full :math:`\mathbf A` (after</span>
-<span class="sd">        having propagated the eigenspectrum).</span>
-<span class="sd">    - ``self._data[&quot;gamma_eig&quot;][&lt;electrode-index&gt;]``</span>
-<span class="sd">        For `scattering_matrix` where it</span>
-<span class="sd">        refers to the eigenvalues of the :math:`\boldsymbol\Gamma` used</span>
-<span class="sd">        to calculate the :math:`\sqrt{\mbox{}}` of the broadening matrix.</span>
+<span class="sd">    Instead of providing `cutoff` values as `float` values, one can also</span>
+<span class="sd">    pass a function that takes in an array of values. It should return the</span>
+<span class="sd">    indices of the values it wishes to retain.</span>
 
-<span class="sd">    These keys are not used for anything but for information, so only do</span>
-<span class="sd">    it to investigate how the routines reduces the search space.</span>
+<span class="sd">    The below is equivalent to a cutoff value of ``1e-3``.</span>
+<span class="sd">    &gt;&gt;&gt; def cutoff_func(V):</span>
+<span class="sd">    &gt;&gt;&gt;     return (V / V.max() &gt; 1e-3).nonzero()[0]</span>
+
+<span class="sd">    Passing functions for cutting off values can be useful because one</span>
+<span class="sd">    can also debug the values and see what&#39;s happening.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># TODO we should speed this up by overwriting A with the inverse once</span>
@@ -321,9 +322,7 @@
     <span class="c1">#      That would probably require us to use a method to retrieve</span>
     <span class="c1">#      the elements which determines if it has been calculated or not.</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">:</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">elecs</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">:</span> <span class="n">si</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">elecs</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Green function with Hamiltonian and BTD matrix elements&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span>
 
@@ -351,10 +350,6 @@
 
         <span class="c1"># global device eta</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
-
-        <span class="c1"># In order to retrieve the eigenspectrum etc. from the calculations.</span>
-        <span class="c1"># This can sometimes be necessary to know about difficult use cases.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
 
         <span class="c1"># Create BTD indices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btd_cum0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -396,7 +391,7 @@
 <span class="sd">        eta :</span>
 <span class="sd">            force a specific eta value</span>
 <span class="sd">        kwargs :</span>
-<span class="sd">            passed to the class instantiation.</span>
+<span class="sd">            passed to the class instantiating.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fdf</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">BaseSile</span><span class="p">):</span>
             <span class="n">fdf</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">siesta</span><span class="o">.</span><span class="n">fdfSileSiesta</span><span class="p">(</span><span class="n">fdf</span><span class="p">)</span>
@@ -712,6 +707,31 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Pivot&#39;s a (full) matrix, i.e. not one that is already reduced.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pvt</span><span class="p">,</span> <span class="p">:][:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pvt</span><span class="p">]</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_as_cutoff_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure the cutoff value is transformed into a cut-off function&quot;&quot;&quot;</span>
+
+        <span class="c1"># Removing values is hard, because there may be loads</span>
+        <span class="c1"># of values very close to each other.</span>
+        <span class="c1"># I.e. a list of:</span>
+        <span class="c1"># [1.1e-4, 1.0e-4, 1e-5]</span>
+        <span class="c1"># Then they are *all* important to capture the physics.</span>
+        <span class="c1"># Hence, the cutoff is a *relative* cutoff to the highest value.</span>
+        <span class="c1"># I.e. if the cutoff is 1e-3.</span>
+        <span class="c1"># Then all values which are within a factor of 1000 from the highest</span>
+        <span class="c1"># value (absolute), will be retained.</span>
+        <span class="c1"># This is much more stable for things with low DOS.</span>
+        <span class="c1"># Perhaps there should be some way to retrieve these values, to</span>
+        <span class="c1"># actually check if it makes physical sense.</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">cutoff</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">cutoff</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">cutoff_func</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">cutoff</span>
+            <span class="n">rel_v</span> <span class="o">=</span> <span class="n">v</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">rel_v</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">cutoff_func</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether the stored quantities has already been calculated</span>
 
@@ -760,12 +780,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">se</span> <span class="o">=</span> <span class="n">se</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_tgamma</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_tgamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_Ek</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="s2">&quot;tgamma&quot;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cutoff</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma_cutoff</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-13</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hash</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma_cutoff</span><span class="p">:</span>
                     <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;se&quot;</span><span class="p">)</span>
@@ -774,29 +792,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">tgamma</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">gamma_eig</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># See Sanz, Mach-Zender paper</span>
         <span class="c1"># Get the sqrt of the level broadening matrix</span>
-        <span class="k">def</span><span class="w"> </span><span class="nf">eigh_sqrt</span><span class="p">(</span><span class="n">gam</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">eigh_sqrt</span><span class="p">(</span><span class="n">gam</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">cutoff</span>
             <span class="n">eig</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">gam</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
-                <span class="n">gamma_eig</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eig</span><span class="p">)</span>
-            <span class="n">rel_eig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">eig</span><span class="p">)</span> <span class="o">/</span> <span class="n">eig</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel_eig</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">(</span><span class="n">eig</span><span class="p">)</span>
             <span class="n">eig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">emath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">eig</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
             <span class="n">U</span> <span class="o">=</span> <span class="n">U</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">eig</span> <span class="o">*</span> <span class="n">U</span>
 
         <span class="k">for</span> <span class="n">gam</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">gamma</span><span class="p">:</span>
-            <span class="n">tgamma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eigh_sqrt</span><span class="p">(</span><span class="n">gam</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">))</span>
+            <span class="n">tgamma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eigh_sqrt</span><span class="p">(</span><span class="n">gam</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma</span> <span class="o">=</span> <span class="n">tgamma</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">gamma_eig</span> <span class="o">=</span> <span class="n">gamma_eig</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma_cutoff</span> <span class="o">=</span> <span class="n">cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tgamma_cutoff</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pre-calculate the needed quantities for Green function calculation</span>
 
 <span class="sd">        It calculates:</span>
@@ -1786,45 +1799,31 @@
 
         <span class="k">return</span> <span class="n">BM</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_scattering_state_reduce</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">U</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">debug_key</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;U on input is a fortran-index as returned from eigh or svd&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_coefficient_state_reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">U</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;U on input is a fortran-index as returned from eigh or svd</span>
+
+<span class="sd">        Also sorts&quot;&quot;&quot;</span>
         <span class="c1"># Select only the first N components where N is the</span>
         <span class="c1"># number of orbitals in the electrode (there can&#39;t be</span>
         <span class="c1"># any more propagating states anyhow).</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">gamma</span><span class="p">[</span><span class="n">elec</span><span class="p">])</span>
 
-        <span class="c1"># sort and take N highest values</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">DOS</span><span class="p">)[:</span><span class="n">N</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">debug_key</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">debug_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">debug_key</span><span class="p">][</span><span class="n">elec</span><span class="p">]</span> <span class="o">=</span> <span class="n">DOS</span>
-
-        <span class="k">if</span> <span class="n">cutoff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># Removing values is hard, because there may be loads</span>
-            <span class="c1"># of values very close to each other.</span>
-            <span class="c1"># I.e. a list of:</span>
-            <span class="c1"># [1.1e-4, 1.0e-4, 1e-5]</span>
-            <span class="c1"># Then they are *all* important to capture the physics.</span>
-            <span class="c1"># Hence, the cutoff is a *relative* cutoff to the highest value.</span>
-            <span class="c1"># I.e. if the cutoff is 1e-3.</span>
-            <span class="c1"># Then all values which are within a factor of 1000 from the highest</span>
-            <span class="c1"># value (absolute), will be retained.</span>
-            <span class="c1"># This is much more stable for things with low DOS.</span>
-            <span class="c1"># Perhaps there should be some way to retrieve these values, to</span>
-            <span class="c1"># actually check if it makes physical sense.</span>
-            <span class="n">rel_DOS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">DOS</span> <span class="o">/</span> <span class="n">DOS</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">idx1</span> <span class="o">=</span> <span class="p">(</span><span class="n">rel_DOS</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">cutoff</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># always retain at least 2 eigen-values</span>
                 <span class="c1"># Otherwise we will sometimes get 0 states...</span>
-                <span class="n">idx1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">DOS</span><span class="p">[</span><span class="n">idx</span><span class="p">]))[:</span> <span class="nb">min</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">idx1</span><span class="p">]</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">coeff</span><span class="p">))[:</span> <span class="nb">min</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
 
-        <span class="k">return</span> <span class="n">DOS</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">U</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">]</span>
+            <span class="c1"># sort it</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">coeff</span><span class="p">[</span><span class="n">idx</span><span class="p">])]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">coeff</span><span class="p">)</span>
+
+        <span class="c1"># reduce idx to max N elements</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">coeff</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">U</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">]</span>
 
 <div class="viewcode-block" id="DeviceGreen.scattering_state">
 <a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.scattering_state">[docs]</a>
@@ -1833,7 +1832,7 @@
         <span class="n">E</span><span class="p">:</span> <span class="nb">complex</span><span class="p">,</span>
         <span class="n">elec</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">KPoint</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="n">cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">cutoff</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;svd:gamma&quot;</span><span class="p">,</span> <span class="s2">&quot;svd:A&quot;</span><span class="p">,</span> <span class="s2">&quot;eig&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;svd:gamma&quot;</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
@@ -1862,6 +1861,7 @@
 <span class="sd">           with relative eigenvalues (to the largest eigenvalue), lower than `cutoff` are discarded.</span>
 <span class="sd">           For example, we keep according to :math:`\epsilon_i/\max(\epsilon_i) &gt; \mathrm{cutoff}`.</span>
 <span class="sd">           Values above or close to 0.1 should be used with care.</span>
+<span class="sd">           Can be a function, see the details of this class.</span>
 <span class="sd">        method :</span>
 <span class="sd">           which method to use for calculating the scattering states.</span>
 <span class="sd">           Use only the ``eig`` method for testing purposes as it is extremely slow</span>
@@ -1877,6 +1877,7 @@
 <span class="sd">           ``&gt;=cutoff_elec`` are retained.</span>
 <span class="sd">           thus reducing the initial propagated modes. The normalization explained for `cutoff`</span>
 <span class="sd">           also applies here.</span>
+<span class="sd">           Can be a function, see the details of this class.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1901,6 +1902,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_scattering_state_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_method</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># We know that scattering_state has called prepare!</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_cutoff_func</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
 
         <span class="c1"># add something to the diagonal (improves diag precision for small states)</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
@@ -1914,7 +1916,7 @@
         <span class="n">DOS</span> <span class="o">-=</span> <span class="n">CONST</span>
         <span class="c1"># TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)</span>
         <span class="n">DOS</span> <span class="o">/=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-        <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scattering_state_reduce</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="s2">&quot;eig&quot;</span><span class="p">)</span>
+        <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coefficient_state_reduce</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
         <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
@@ -1926,6 +1928,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_scattering_state_svd_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_method</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_green_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elecs</span><span class="p">[</span><span class="n">elec</span><span class="p">]</span><span class="o">.</span><span class="n">pvt_dev</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_cutoff_func</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
 
         <span class="c1"># This calculation uses the cholesky decomposition of Gamma</span>
         <span class="c1"># combined with SVD of the A column</span>
@@ -1945,7 +1948,7 @@
 
         <span class="c1"># Perform svd</span>
         <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="n">_scat_state_svd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scattering_state_reduce</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="s2">&quot;svd:Gamma&quot;</span><span class="p">)</span>
+        <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coefficient_state_reduce</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
         <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
@@ -1965,12 +1968,12 @@
         <span class="c1"># Parse the cutoff value</span>
         <span class="c1"># Here we may use 2 values, one for cutting off the initial space</span>
         <span class="c1"># and one for the returned space.</span>
-        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">cutoff</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">cutoff0</span> <span class="o">=</span> <span class="n">cutoff1</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">cutoff0</span><span class="p">,</span> <span class="n">cutoff1</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+            <span class="n">cutoff</span> <span class="o">=</span> <span class="p">(</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
+        <span class="n">cutoff0</span><span class="p">,</span> <span class="n">cutoff1</span> <span class="o">=</span> <span class="n">cutoff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cutoff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">cutoff0</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cutoff_elec&quot;</span><span class="p">,</span> <span class="n">cutoff0</span><span class="p">)</span>
+        <span class="n">cutoff0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_cutoff_func</span><span class="p">(</span><span class="n">cutoff0</span><span class="p">)</span>
+        <span class="n">cutoff1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_cutoff_func</span><span class="p">(</span><span class="n">cutoff1</span><span class="p">)</span>
 
         <span class="c1"># First we need to calculate diagonal blocks of the spectral matrix</span>
         <span class="c1"># This is basically the same thing as calculating the Gf column</span>
@@ -1999,7 +2002,7 @@
         <span class="c1"># This will greatly increase performance for very wide systems</span>
         <span class="c1"># since the number of contributing states is generally a fraction</span>
         <span class="c1"># of the total electrode space.</span>
-        <span class="n">DOS</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scattering_state_reduce</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">cutoff0</span><span class="p">,</span> <span class="s2">&quot;svd:A:diag&quot;</span><span class="p">)</span>
+        <span class="n">DOS</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coefficient_state_reduce</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">cutoff0</span><span class="p">)</span>
         <span class="c1"># Back-convert to retain scale of the vectors before SVD</span>
         <span class="c1"># and also take the sqrt to ensure u u^dagger returns</span>
         <span class="c1"># a sensible value, the 2*pi factor ensures the *original* scale.</span>
@@ -2036,7 +2039,7 @@
         <span class="c1"># Perform svd</span>
         <span class="c1"># TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)</span>
         <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="n">_scat_state_svd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scattering_state_reduce</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">cutoff1</span><span class="p">,</span> <span class="s2">&quot;svd:A&quot;</span><span class="p">)</span>
+        <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coefficient_state_reduce</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">cutoff1</span><span class="p">)</span>
 
         <span class="c1"># Now we have the full u, create it and transpose to get it in C indexing</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
@@ -2182,6 +2185,7 @@
         <span class="n">elec_from</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec_from</span><span class="p">)</span>
         <span class="n">is_single</span><span class="p">,</span> <span class="n">elec_to</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serialize_elecs</span><span class="p">(</span><span class="n">elec_to</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">)</span>
 
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_cutoff_func</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
         <span class="c1"># Prepare calculation @ E and k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_tgamma</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
@@ -2201,8 +2205,8 @@
             <span class="n">g</span> <span class="o">=</span> <span class="n">G</span><span class="p">[</span><span class="n">pvt</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">dagger</span><span class="p">(</span><span class="n">tgam_to</span><span class="p">)</span> <span class="o">@</span> <span class="n">g</span> <span class="o">@</span> <span class="n">jtgam_from</span>
             <span class="k">if</span> <span class="n">elec_from</span> <span class="o">==</span> <span class="n">elec_to</span><span class="p">:</span>
-                <span class="n">min_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="p">(</span><span class="n">min_n</span><span class="p">,</span> <span class="n">min_n</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateElectron</span><span class="p">(</span>
                 <span class="n">ret</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_elec_name</span><span class="p">(</span><span class="n">elec_to</span><span class="p">)</span>
             <span class="p">)</span>
@@ -2213,6 +2217,51 @@
         <span class="k">if</span> <span class="n">is_single</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">S</span></div>
+
+
+<div class="viewcode-block" id="DeviceGreen.eigenchannel_from_scattering_matrix">
+<a class="viewcode-back" href="../../../toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.eigenchannel_from_scattering_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigenchannel_from_scattering_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">state_matrix</span><span class="p">:</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateElectron</span><span class="p">,</span>
+        <span class="n">ret_out</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the eigenchannel from a scattering matrix</span>
+
+<span class="sd">        The energy and k-point is inferred from the `state_matrix` object as returned from</span>
+<span class="sd">        `scattering_matrix`.</span>
+
+<span class="sd">        The eigenchannels are the SVD of the scattering matrix in the</span>
+<span class="sd">        DOS weighted scattering states:</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state_matrix :</span>
+<span class="sd">            the scattering matrix as obtained from `scattering_matrix`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        T_eig_in : sisl.physics.electron.StateCElectron</span>
+<span class="sd">            the transmission eigenchannels as seen from the incoming state, the ``T_eig.c`` contains the transmission</span>
+<span class="sd">            eigenvalues.</span>
+<span class="sd">        T_eig_out: sisl.physics.electron.StateCElectron</span>
+<span class="sd">            the transmission eigenchannels as seen from the outgoing state, the ``T_eig.c`` contains the transmission</span>
+<span class="sd">            eigenvalues.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tt_eig</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">_scat_state_svd</span><span class="p">(</span><span class="n">state_matrix</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">ret_uv</span><span class="o">=</span><span class="n">ret_out</span><span class="p">)</span>
+        <span class="c1"># Here there is a wrong pre-factor of 2pi</span>
+        <span class="n">tt_eig</span> <span class="o">*=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">state_matrix</span><span class="o">.</span><span class="n">info</span><span class="p">}</span>
+        <span class="n">SCE</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span>
+        <span class="k">if</span> <span class="n">ret_out</span><span class="p">:</span>
+            <span class="n">U_in</span> <span class="o">=</span> <span class="n">SCE</span><span class="p">(</span><span class="n">U</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">tt_eig</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
+            <span class="c1"># note: V^dagger is returned from svd, so only conj</span>
+            <span class="n">U_out</span> <span class="o">=</span> <span class="n">SCE</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">U</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">tt_eig</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">U_in</span><span class="p">,</span> <span class="n">U_out</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">U</span> <span class="o">=</span> <span class="n">SCE</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">tt_eig</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">U</span></div>
 
 
 <div class="viewcode-block" id="DeviceGreen.eigenchannel">
@@ -2297,16 +2346,16 @@
         <span class="c1">#      The state.c contains a factor /(2pi) meaning</span>
         <span class="c1">#      that we should remove that factor here.</span>
         <span class="c1"># diagonalise the transmission matrix tt to get the eigenchannels</span>
-        <span class="n">tt</span><span class="p">,</span> <span class="n">Ut</span> <span class="o">=</span> <span class="n">eigh_destroy</span><span class="p">(</span><span class="n">Ut</span><span class="p">)</span>
+        <span class="n">teig</span><span class="p">,</span> <span class="n">Ut</span> <span class="o">=</span> <span class="n">eigh_destroy</span><span class="p">(</span><span class="n">Ut</span><span class="p">)</span>
         <span class="c1"># Reorder Ut to have them descending</span>
         <span class="n">Ut</span> <span class="o">=</span> <span class="n">Ut</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="c1"># remove factor /2pi</span>
-        <span class="n">tt</span> <span class="o">=</span> <span class="n">tt</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">teig</span> <span class="o">=</span> <span class="n">teig</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
         <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="s2">&quot;elec_to&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elec_name</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">elec_to</span><span class="p">)}</span>
 
         <span class="c1"># Backtransform A in the basis of Ut to form the eigenchannels</span>
-        <span class="n">teig</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">((</span><span class="n">A</span> <span class="o">@</span> <span class="n">Ut</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">tt</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">teig</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateCElectron</span><span class="p">((</span><span class="n">A</span> <span class="o">@</span> <span class="n">Ut</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">teig</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ret_coeff</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">teig</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">StateElectron</span><span class="p">(</span><span class="n">Ut</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">teig</span></div>

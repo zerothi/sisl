@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=06714eb5"></script>
+      <script src="../../../_static/documentation_options.js?v=dd57b077"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -334,7 +334,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 For non-collinear calculations the returned values are sum/x/y/z, orbitals, energy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>as_dataarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – If True the returned PDOS is a <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2025.7.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> with energy, spin
+<dd class="field-odd"><p><strong>as_dataarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – If True the returned PDOS is a <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2025.8.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> with energy, spin
 and orbital information as coordinates in the data.
 The geometry, unit and Fermi level are stored as attributes in the
 DataArray.</p>
@@ -344,7 +344,7 @@ DataArray.</p>
 <li><p><strong>geom</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code>) – instance with positions, atoms and orbitals.</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – the energies at which the PDOS has been evaluated at (if Fermi-level present in file energies are shifted to <span class="math notranslate nohighlight">\(E - E_F = 0\)</span>).</p></li>
 <li><p><strong>PDOS</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – an array of DOS with dimensions <code class="docutils literal notranslate"><span class="pre">(nspin,</span> <span class="pre">geom.no,</span> <span class="pre">len(E))</span></code> (with different spin-components) or <code class="docutils literal notranslate"><span class="pre">(geom.no,</span> <span class="pre">len(E))</span></code> (spin-symmetric).</p></li>
-<li><p><strong>all</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2025.7.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a>) – if <em class="xref py py-obj">as_dataarray</em> is True, only this data array is returned, in this case all data can be post-processed using the <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2025.7.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> selection routines.</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2025.8.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a>) – if <em class="xref py py-obj">as_dataarray</em> is True, only this data array is returned, in this case all data can be post-processed using the <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2025.8.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> selection routines.</p></li>
 </ul>
 </p>
 </dd>

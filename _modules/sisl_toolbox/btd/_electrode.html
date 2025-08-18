@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=06714eb5"></script>
+      <script src="../../../_static/documentation_options.js?v=dd57b077"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -139,6 +139,36 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PivotSelfEnergy&quot;</span><span class="p">,</span> <span class="s2">&quot;DownfoldSelfEnergy&quot;</span><span class="p">]</span>
 
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">In the following code sections the comments</span>
+<span class="sd">will be referring to systems of varying details.</span>
+
+<span class="sd">Imagine a system of atoms:</span>
+
+<span class="sd">       Device</span>
+<span class="sd">       ⌜   ⌝</span>
+<span class="sd">[1 2 3 4 5 6 7 8]</span>
+<span class="sd"> ⌞ ⌟         ⌞ ⌟</span>
+<span class="sd">  |           |</span>
+<span class="sd">  E1          E2</span>
+
+<span class="sd">We will use these terms:</span>
+
+<span class="sd">- full system: atoms 1-8</span>
+<span class="sd">- device: atoms 4-6</span>
+<span class="sd">- downfolding of E1: 1-3</span>
+<span class="sd">- downfolding of E1 and device: 1-4</span>
+<span class="sd">- pure electrode E1 in full: 1-2</span>
+<span class="sd">- electrode E1 in device: 4</span>
+<span class="sd">- downfolding in device: 4 (assuming only NN interactions)</span>
+
+<span class="sd">&quot;indices of the downfolding of E1 in the device region&quot;:</span>
+<span class="sd">    would be index 1 (because 4 is the first atom in the cut-out device.</span>
+<span class="sd">So &quot;indices of the downfolding of E1 in the device region&quot; would be</span>
+<span class="sd">index 1 (because 4 is the first atom in the cut-out device.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl_toolbox.btd&quot;</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">PivotSelfEnergy</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">SelfEnergy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for the self-energy object</span>
@@ -225,7 +255,9 @@
         <span class="c1"># everything.</span>
         <span class="n">expand</span> <span class="o">=</span> <span class="n">get_expand</span><span class="p">(</span><span class="n">len_H</span><span class="p">,</span> <span class="n">n_orbs</span><span class="p">)</span>
 
-        <span class="c1"># Pivoting indices for the self-energy in the full system</span>
+        <span class="c1"># Pivoting indices for the self-energy in a system if one does</span>
+        <span class="c1"># not remove anything. So for a system</span>
+        <span class="c1"># I.e. where self.self_energy is placed in self.Hk()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pvt</span> <span class="o">=</span> <span class="n">expand_orbs</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">expand</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># Pivoting indices for the self-energy in the device region</span>
@@ -319,8 +351,8 @@
         <span class="c1"># Necessary for the down-folding</span>
         <span class="n">data</span><span class="o">.</span><span class="n">btd_cum0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btd</span><span class="p">))</span>
 
-        <span class="c1"># Now figure out all the atoms in the downfolding region</span>
-        <span class="c1"># pivot is the orbitals reaching into the device</span>
+        <span class="c1"># These are the:</span>
+        <span class="c1">#  pivoting indices for the electrode in the full system</span>
         <span class="n">pvt</span> <span class="o">=</span> <span class="n">pivot</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="c1"># TODO , this kind-of makes PivotSelfEnergy obsolete...</span>
         <span class="c1"># We cheat here, the super class does the calculation.</span>
@@ -344,18 +376,25 @@
         <span class="c1"># down-folding atoms for the electrode + the device part.</span>
         <span class="c1"># NOTE, this geometry/Hamiltonian, is *not* sorted according</span>
         <span class="c1"># to the down-folding scheme (unique=True).</span>
+        <span class="c1"># This is:</span>
+        <span class="c1">#  atoms of the downfolding and device in the full system</span>
         <span class="n">atoms_down</span> <span class="o">=</span> <span class="n">Hdevice</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span>
             <span class="n">expand_orbs</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">pivot_down</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">expand</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
+        <span class="c1"># This is:</span>
+        <span class="c1">#  the downfolding and device</span>
         <span class="n">data</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">Hdevice</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">atoms_down</span><span class="p">)</span>
 
         <span class="n">orbitals_down</span> <span class="o">=</span> <span class="n">Hdevice</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms_down</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">orbitals_elec</span> <span class="o">=</span> <span class="n">Hdevice</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">pivot</span><span class="o">.</span><span class="n">a_elec</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># Store the place of the self-energies in `data.H.device`</span>
-        <span class="c1"># I.e. before any pivoting!</span>
+        <span class="c1"># These are the:</span>
+        <span class="c1">#  indices for the self-energy of the electrode in the downfolding and device</span>
+        <span class="c1">#  (before pivoting!)</span>
         <span class="n">data</span><span class="o">.</span><span class="n">elec</span> <span class="o">=</span> <span class="n">indices_only</span><span class="p">(</span><span class="n">orbitals_down</span><span class="p">,</span> <span class="n">orbitals_elec</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># the pivoting in the downfolding, in [0:len(pivot_down)]</span>
+        <span class="c1"># The:</span>
+        <span class="c1">#  pivoting table in the downfolding region only</span>
         <span class="n">data</span><span class="o">.</span><span class="n">pvt_down_down</span> <span class="o">=</span> <span class="n">expand_orbs</span><span class="p">(</span>
             <span class="n">pivot</span><span class="o">.</span><span class="n">pivot_down</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">in_down</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">expand</span>
         <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -416,7 +455,6 @@
                     <span class="n">k</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                 <span class="p">)</span>
 
-            <span class="n">old</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">SeH</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="o">.</span><span class="n">T</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">data</span><span class="o">.</span><span class="n">SeH</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">elec</span><span class="o">.</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span><span class="p">(</span><span class="n">hsk</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DownfoldSelfEnergy.self_energy">
