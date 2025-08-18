@@ -78,6 +78,7 @@ class Spin:
 
         kind = {
             "": Spin.UNPOLARIZED,
+            "unpol": Spin.UNPOLARIZED,
             "unpolarized": Spin.UNPOLARIZED,
             Spin.UNPOLARIZED: Spin.UNPOLARIZED,
             "colinear": Spin.POLARIZED,

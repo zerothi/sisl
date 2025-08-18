@@ -3,8 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Literal, Optional, Self, Tuple, Union
+from typing import Callable, Literal, Optional, Self, Tuple, Union
 
 import numpy as np
 import scipy.sparse as ssp
@@ -61,6 +62,8 @@ def _scat_state_svd(A, **kwargs):
     if scale:
         A *= scale
 
+    ret_uv = kwargs.get("ret_uv", False)
+
     # Numerous accounts of SVD algorithms using gesdd results
     # in poor results when min(M, N) >= 26 (block size).
     # This may be an error in the D&C algorithm.
@@ -75,7 +78,7 @@ def _scat_state_svd(A, **kwargs):
             key: kwargs[key] for key in ("k", "ncv", "tol", "v0") if key in kwargs
         }
         # do not calculate vt
-        svds_kwargs["return_singular_vectors"] = "u"
+        svds_kwargs["return_singular_vectors"] = True if ret_uv else "u"
         svds_kwargs["solver"] = driver
         if "k" not in svds_kwargs:
             k = A.shape[1] // 2
@@ -83,12 +86,16 @@ def _scat_state_svd(A, **kwargs):
                 k = A.shape[1] - 1
             svds_kwargs["k"] = k
 
-        A, DOS, _ = svds(A, **svds_kwargs)
+        A, DOS, B = svds(A, **svds_kwargs)
 
     else:
         # it must be a lapack driver:
-        A, DOS, _ = svd_destroy(A, full_matrices=False, lapack_driver=driver)
-    del _
+        A, DOS, B = svd_destroy(A, full_matrices=False, lapack_driver=driver)
+
+    if kwargs.get("ret_uv", False):
+        A = (A, B)
+    else:
+        del B
 
     if scale:
         DOS /= scale
@@ -171,32 +178,26 @@ class DeviceGreen:
     Sometimes one wishes to investigate more details in the calculation process
     to discern importance of the eigenvalue separations.
 
-    When calculating scattering states, using cutoff's, one can store the
-    eigenvalues/svd-values to figure out if the cutoff values are too high.
-    So, if the class is created with `DeviceGreen(..., debug=True)`, the class will
-    store values in these keys (associated with the method):
+    When calculating scattering states/matrices one can
+    reduce the complexity by removing eigen/singular values.
+    By default we use the `cutoff` values as a relative cutoff value for
+    the values. I.e. keeping ``value / value.max() > cutoff``.
+    However, sometimes the relative value is a bad metric since there are
+    still important values close to unity value. Consider e.g. an array of
+    values of ``[1e5, 1e4, 1, 0.5, 1e-4]``. In this case we would require the
+    ``[1, 0.5]`` values as important, but this would only be grabbed by a relative
+    cutoff value of ``1e-6`` which in some other cases are a too high value.
 
-    - ``self._data["svd:Gamma"][<electrode-index>]``
-        For ``scattering_state(..., method="svd:Gamma")`` where it
-        refers to the eigenvalues of the full :math:`\mathbf A`.
-    - ``self._data["eig"][<electrode-index>]``
-        For ``scattering_state(..., method="eig")`` where it
-        refers to the eigenvalues of the full :math:`\mathbf A`.
-    - ``self._data["svd:A:diag"][<electrode-index>]``
-        For ``scattering_state(..., method="svd:A")`` where it
-        refers to the diagonalization of the diagonal part of
-        :math:`\mathbf A` (before propagating the eigenspectrum.
-    - ``self._data["svd:A"][<electrode-index>]``
-        For ``scattering_state(..., method="svd:A")`` where it
-        refers to the eigenvalues of the full :math:`\mathbf A` (after
-        having propagated the eigenspectrum).
-    - ``self._data["gamma_eig"][<electrode-index>]``
-        For `scattering_matrix` where it
-        refers to the eigenvalues of the :math:`\boldsymbol\Gamma` used
-        to calculate the :math:`\sqrt{\mbox{}}` of the broadening matrix.
+    Instead of providing `cutoff` values as `float` values, one can also
+    pass a function that takes in an array of values. It should return the
+    indices of the values it wishes to retain.
 
-    These keys are not used for anything but for information, so only do
-    it to investigate how the routines reduces the search space.
+    The below is equivalent to a cutoff value of ``1e-3``.
+    >>> def cutoff_func(V):
+    >>>     return (V / V.max() > 1e-3).nonzero()[0]
+
+    Passing functions for cutting off values can be useful because one
+    can also debug the values and see what's happening.
     """
 
     # TODO we should speed this up by overwriting A with the inverse once
@@ -204,9 +205,7 @@ class DeviceGreen:
     #      That would probably require us to use a method to retrieve
     #      the elements which determines if it has been calculated or not.
 
-    def __init__(
-        self, H: si.Hamiltonian, elecs, pivot, eta: float = 0.0, debug: bool = False
-    ):
+    def __init__(self, H: si.Hamiltonian, elecs, pivot, eta: float = 0.0):
         """Create Green function with Hamiltonian and BTD matrix elements"""
         self.H = H
 
@@ -234,10 +233,6 @@ class DeviceGreen:
 
         # global device eta
         self.eta = eta
-
-        # In order to retrieve the eigenspectrum etc. from the calculations.
-        # This can sometimes be necessary to know about difficult use cases.
-        self.debug = debug
 
         # Create BTD indices
         self.btd_cum0 = np.empty([len(self.btd) + 1], dtype=self.btd.dtype)
@@ -277,7 +272,7 @@ class DeviceGreen:
         eta :
             force a specific eta value
         kwargs :
-            passed to the class instantiation.
+            passed to the class instantiating.
         """
         if not isinstance(fdf, si.BaseSile):
             fdf = si.io.siesta.fdfSileSiesta(fdf)
@@ -589,6 +584,31 @@ class DeviceGreen:
         """Pivot's a (full) matrix, i.e. not one that is already reduced."""
         return M[self.pvt, :][:, self.pvt]
 
+    def _as_cutoff_func(self, cutoff):
+        """Ensure the cutoff value is transformed into a cut-off function"""
+
+        # Removing values is hard, because there may be loads
+        # of values very close to each other.
+        # I.e. a list of:
+        # [1.1e-4, 1.0e-4, 1e-5]
+        # Then they are *all* important to capture the physics.
+        # Hence, the cutoff is a *relative* cutoff to the highest value.
+        # I.e. if the cutoff is 1e-3.
+        # Then all values which are within a factor of 1000 from the highest
+        # value (absolute), will be retained.
+        # This is much more stable for things with low DOS.
+        # Perhaps there should be some way to retrieve these values, to
+        # actually check if it makes physical sense.
+        if callable(cutoff):
+            return cutoff
+
+        def cutoff_func(v):
+            nonlocal cutoff
+            rel_v = v / np.max(v)
+            return (rel_v >= cutoff).nonzero()[0]
+
+        return cutoff_func
+
     def _check_Ek(self, E: complex, k: KPoint, **kwargs) -> bool:
         """Check whether the stored quantities has already been calculated
 
@@ -637,12 +657,10 @@ class DeviceGreen:
         self._data.se = se
         self._data.gamma = gamma
 
-    def _prepare_tgamma(
-        self, E: complex, k: KPoint, dtype, cutoff: float, **kwargs
-    ) -> None:
+    def _prepare_tgamma(self, E: complex, k: KPoint, dtype, cutoff, **kwargs) -> None:
         if self._check_Ek(E, k, **kwargs):
             if hasattr(self._data, "tgamma"):
-                if abs(cutoff - self._data.tgamma_cutoff) < 1e-13:
+                if hash(cutoff) == self._data.tgamma_cutoff:
                     return
         else:
             self.clear("A", "se")
@@ -651,29 +669,24 @@ class DeviceGreen:
         self._prepare(E, k, dtype, **kwargs)
 
         tgamma = []
-        gamma_eig = []
 
         # See Sanz, Mach-Zender paper
         # Get the sqrt of the level broadening matrix
-        def eigh_sqrt(gam, cutoff):
+        def eigh_sqrt(gam):
+            nonlocal cutoff
             eig, U = eigh(gam)
-            if self.debug:
-                gamma_eig.append(eig)
-            rel_eig = np.fabs(eig) / eig.max()
-            idx = (rel_eig >= cutoff).nonzero()[0]
+            idx = cutoff(eig)
             eig = np.emath.sqrt(eig[idx])
             U = U[:, idx]
             return eig * U
 
         for gam in self._data.gamma:
-            tgamma.append(eigh_sqrt(gam, cutoff))
+            tgamma.append(eigh_sqrt(gam))
 
         self._data.tgamma = tgamma
-        if self.debug:
-            self._data.gamma_eig = gamma_eig
-        self._data.tgamma_cutoff = cutoff
+        self._data.tgamma_cutoff = hash(cutoff)
 
-    def _prepare(self, E: complex, k: KPoint, dtype=np.complex128, **kwargs) -> None:
+    def _prepare(self, E: complex, k: KPoint, dtype, **kwargs) -> None:
         r"""Pre-calculate the needed quantities for Green function calculation
 
         It calculates:
@@ -1651,52 +1664,38 @@ class DeviceGreen:
 
         return BM
 
-    def _scattering_state_reduce(
-        self, elec, DOS: np.ndarray, U: np.ndarray, cutoff: float, debug_key: str
-    ):
-        """U on input is a fortran-index as returned from eigh or svd"""
+    def _coefficient_state_reduce(self, elec, coeff: np.ndarray, U: np.ndarray, cutoff):
+        """U on input is a fortran-index as returned from eigh or svd
+
+        Also sorts"""
         # Select only the first N components where N is the
         # number of orbitals in the electrode (there can't be
         # any more propagating states anyhow).
         N = len(self._data.gamma[elec])
 
-        # sort and take N highest values
-        idx = np.argsort(-DOS)[:N]
-
-        if self.debug:
-            if not hasattr(self._data, debug_key):
-                self._data[debug_key] = {}
-            self._data[debug_key][elec] = DOS
-
-        if cutoff > 0:
-            # Removing values is hard, because there may be loads
-            # of values very close to each other.
-            # I.e. a list of:
-            # [1.1e-4, 1.0e-4, 1e-5]
-            # Then they are *all* important to capture the physics.
-            # Hence, the cutoff is a *relative* cutoff to the highest value.
-            # I.e. if the cutoff is 1e-3.
-            # Then all values which are within a factor of 1000 from the highest
-            # value (absolute), will be retained.
-            # This is much more stable for things with low DOS.
-            # Perhaps there should be some way to retrieve these values, to
-            # actually check if it makes physical sense.
-            rel_DOS = np.fabs(DOS / DOS[0])
-            idx1 = (rel_DOS[idx] >= cutoff).nonzero()[0]
-            if len(idx1) == 0:
+        if callable(cutoff):
+            idx = cutoff(coeff)
+            if len(idx) == 0:
                 # always retain at least 2 eigen-values
                 # Otherwise we will sometimes get 0 states...
-                idx1 = np.argsort(np.fabs(DOS[idx]))[: min(N, 2)]
-            idx = idx[idx1]
+                idx = np.argsort(-np.fabs(coeff))[: min(N, 2)]
 
-        return DOS[idx], U[:, idx]
+            # sort it
+            idx = idx[np.argsort(-coeff[idx])]
+        else:
+            idx = np.argsort(-coeff)
+
+        # reduce idx to max N elements
+        idx = idx[:N]
+
+        return coeff[idx], U[:, idx]
 
     def scattering_state(
         self,
         E: complex,
         elec,
         k: KPoint = (0, 0, 0),
-        cutoff: float = 0.0,
+        cutoff: Union[float, Callable] = 0.0,
         method: Literal["svd:gamma", "svd:A", "eig"] = "svd:gamma",
         dtype=np.complex128,
         *args,
@@ -1725,6 +1724,7 @@ class DeviceGreen:
            with relative eigenvalues (to the largest eigenvalue), lower than `cutoff` are discarded.
            For example, we keep according to :math:`\epsilon_i/\max(\epsilon_i) > \mathrm{cutoff}`.
            Values above or close to 0.1 should be used with care.
+           Can be a function, see the details of this class.
         method :
            which method to use for calculating the scattering states.
            Use only the ``eig`` method for testing purposes as it is extremely slow
@@ -1740,6 +1740,7 @@ class DeviceGreen:
            ``>=cutoff_elec`` are retained.
            thus reducing the initial propagated modes. The normalization explained for `cutoff`
            also applies here.
+           Can be a function, see the details of this class.
 
         Returns
         -------
@@ -1763,6 +1764,7 @@ class DeviceGreen:
     def _scattering_state_eig(self, _method, elec, cutoff, **kwargs):
         # We know that scattering_state has called prepare!
         A = self.spectral(elec, self._data.E, self._data.k, **kwargs)
+        cutoff = self._as_cutoff_func(cutoff)
 
         # add something to the diagonal (improves diag precision for small states)
         idx = np.arange(len(A))
@@ -1776,7 +1778,7 @@ class DeviceGreen:
         DOS -= CONST
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
         DOS /= 2 * np.pi
-        DOS, A = self._scattering_state_reduce(elec, DOS, A, cutoff, "eig")
+        DOS, A = self._coefficient_state_reduce(elec, DOS, A, cutoff)
 
         data = self._data
         info = dict(
@@ -1788,6 +1790,7 @@ class DeviceGreen:
 
     def _scattering_state_svd_gamma(self, _method, elec, cutoff, **kwargs):
         A = self._green_column(self.elecs[elec].pvt_dev.ravel())
+        cutoff = self._as_cutoff_func(cutoff)
 
         # This calculation uses the cholesky decomposition of Gamma
         # combined with SVD of the A column
@@ -1807,7 +1810,7 @@ class DeviceGreen:
 
         # Perform svd
         DOS, A = _scat_state_svd(A, **kwargs)
-        DOS, A = self._scattering_state_reduce(elec, DOS, A, cutoff, "svd:Gamma")
+        DOS, A = self._coefficient_state_reduce(elec, DOS, A, cutoff)
 
         data = self._data
         info = dict(
@@ -1827,12 +1830,12 @@ class DeviceGreen:
         # Parse the cutoff value
         # Here we may use 2 values, one for cutting off the initial space
         # and one for the returned space.
-        cutoff = np.array(cutoff).ravel()
-        if cutoff.size != 2:
-            cutoff0 = cutoff1 = cutoff[0]
-        else:
-            cutoff0, cutoff1 = cutoff[0], cutoff[1]
+        if not isinstance(cutoff, Sequence):
+            cutoff = (cutoff, cutoff)
+        cutoff0, cutoff1 = cutoff[0], cutoff[1]
         cutoff0 = kwargs.get("cutoff_elec", cutoff0)
+        cutoff0 = self._as_cutoff_func(cutoff0)
+        cutoff1 = self._as_cutoff_func(cutoff1)
 
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
@@ -1861,7 +1864,7 @@ class DeviceGreen:
         # This will greatly increase performance for very wide systems
         # since the number of contributing states is generally a fraction
         # of the total electrode space.
-        DOS, u = self._scattering_state_reduce(elec, DOS, u, cutoff0, "svd:A:diag")
+        DOS, u = self._coefficient_state_reduce(elec, DOS, u, cutoff0)
         # Back-convert to retain scale of the vectors before SVD
         # and also take the sqrt to ensure u u^dagger returns
         # a sensible value, the 2*pi factor ensures the *original* scale.
@@ -1898,7 +1901,7 @@ class DeviceGreen:
         # Perform svd
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
         DOS, A = _scat_state_svd(A, **kwargs)
-        DOS, A = self._scattering_state_reduce(elec, DOS, A, cutoff1, "svd:A")
+        DOS, A = self._coefficient_state_reduce(elec, DOS, A, cutoff1)
 
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
@@ -2039,6 +2042,7 @@ class DeviceGreen:
         elec_from = self._elec(elec_from)
         is_single, elec_to = self._serialize_elecs(elec_to, elec_from)
 
+        cutoff = self._as_cutoff_func(cutoff)
         # Prepare calculation @ E and k
         self._prepare(E, k, dtype)
         self._prepare_tgamma(E, k, dtype, cutoff)
@@ -2058,8 +2062,8 @@ class DeviceGreen:
             g = G[pvt, :]
             ret = dagger(tgam_to) @ g @ jtgam_from
             if elec_from == elec_to:
-                min_n = np.arange(min(ret.shape))
-                np.add.at(ret, (min_n, min_n), -1)
+                idx = np.arange(min(ret.shape))
+                np.add.at(ret, (idx, idx), -1)
             return si.physics.StateElectron(
                 ret.T, self, **info, elec_to=self._elec_name(elec_to)
             )
@@ -2070,6 +2074,48 @@ class DeviceGreen:
         if is_single:
             return S[0]
         return S
+
+    def eigenchannel_from_scattering_matrix(
+        self,
+        state_matrix: si.physics.StateElectron,
+        ret_out: bool = False,
+    ) -> Union[si.physics.StateCElectron, tuple[si.physics.StateCElectron]]:
+        r"""Calculate the eigenchannel from a scattering matrix
+
+        The energy and k-point is inferred from the `state_matrix` object as returned from
+        `scattering_matrix`.
+
+        The eigenchannels are the SVD of the scattering matrix in the
+        DOS weighted scattering states:
+
+        Parameters
+        ----------
+        state_matrix :
+            the scattering matrix as obtained from `scattering_matrix`
+
+        Returns
+        -------
+        T_eig_in : sisl.physics.electron.StateCElectron
+            the transmission eigenchannels as seen from the incoming state, the ``T_eig.c`` contains the transmission
+            eigenvalues.
+        T_eig_out: sisl.physics.electron.StateCElectron
+            the transmission eigenchannels as seen from the outgoing state, the ``T_eig.c`` contains the transmission
+            eigenvalues.
+        """
+        tt_eig, U = _scat_state_svd(state_matrix.state.T, ret_uv=ret_out)
+        # Here there is a wrong pre-factor of 2pi
+        tt_eig *= 2 * np.pi
+
+        info = {**state_matrix.info}
+        SCE = si.physics.StateCElectron
+        if ret_out:
+            U_in = SCE(U[0].T, tt_eig, self, **info)
+            # note: V^dagger is returned from svd, so only conj
+            U_out = SCE(np.conj(U[1]), tt_eig, self, **info)
+            return U_in, U_out
+        else:
+            U = SCE(U.T, tt_eig, self, **info)
+            return U
 
     def eigenchannel(
         self, state: si.physics.StateCElectron, elec_to=None, ret_coeff: bool = False
@@ -2151,16 +2197,16 @@ class DeviceGreen:
         #      The state.c contains a factor /(2pi) meaning
         #      that we should remove that factor here.
         # diagonalise the transmission matrix tt to get the eigenchannels
-        tt, Ut = eigh_destroy(Ut)
+        teig, Ut = eigh_destroy(Ut)
         # Reorder Ut to have them descending
         Ut = Ut[:, ::-1]
         # remove factor /2pi
-        tt = tt[::-1] * 2 * np.pi
+        teig = teig[::-1] * 2 * np.pi
 
         info = {**state.info, "elec_to": tuple(self._elec_name(e) for e in elec_to)}
 
         # Backtransform A in the basis of Ut to form the eigenchannels
-        teig = si.physics.StateCElectron((A @ Ut).T, tt, self, **info)
+        teig = si.physics.StateCElectron((A @ Ut).T, teig, self, **info)
         if ret_coeff:
             return teig, si.physics.StateElectron(Ut.T, self, **info)
         return teig

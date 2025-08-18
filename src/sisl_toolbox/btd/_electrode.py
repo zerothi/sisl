@@ -22,6 +22,36 @@ from ._help import expand_btd, expand_orbs, get_expand
 __all__ = ["PivotSelfEnergy", "DownfoldSelfEnergy"]
 
 
+"""
+In the following code sections the comments
+will be referring to systems of varying details.
+
+Imagine a system of atoms:
+
+       Device
+       ⌜   ⌝
+[1 2 3 4 5 6 7 8]
+ ⌞ ⌟         ⌞ ⌟
+  |           |
+  E1          E2
+
+We will use these terms:
+
+- full system: atoms 1-8
+- device: atoms 4-6
+- downfolding of E1: 1-3
+- downfolding of E1 and device: 1-4
+- pure electrode E1 in full: 1-2
+- electrode E1 in device: 4
+- downfolding in device: 4 (assuming only NN interactions)
+
+"indices of the downfolding of E1 in the device region":
+    would be index 1 (because 4 is the first atom in the cut-out device.
+So "indices of the downfolding of E1 in the device region" would be
+index 1 (because 4 is the first atom in the cut-out device.
+"""
+
+
 @set_module("sisl_toolbox.btd")
 class PivotSelfEnergy(si.physics.SelfEnergy):
     """Container for the self-energy object
@@ -108,7 +138,9 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         # everything.
         expand = get_expand(len_H, n_orbs)
 
-        # Pivoting indices for the self-energy in the full system
+        # Pivoting indices for the self-energy in a system if one does
+        # not remove anything. So for a system
+        # I.e. where self.self_energy is placed in self.Hk()
         self.pvt = expand_orbs(pivot.pivot(name), expand).reshape(-1, 1)
 
         # Pivoting indices for the self-energy in the device region
@@ -196,8 +228,8 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         # Necessary for the down-folding
         data.btd_cum0 = np.append(0, np.cumsum(self.btd))
 
-        # Now figure out all the atoms in the downfolding region
-        # pivot is the orbitals reaching into the device
+        # These are the:
+        #  pivoting indices for the electrode in the full system
         pvt = pivot.pivot(self.name)
         # TODO , this kind-of makes PivotSelfEnergy obsolete...
         # We cheat here, the super class does the calculation.
@@ -221,18 +253,25 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         # down-folding atoms for the electrode + the device part.
         # NOTE, this geometry/Hamiltonian, is *not* sorted according
         # to the down-folding scheme (unique=True).
+        # This is:
+        #  atoms of the downfolding and device in the full system
         atoms_down = Hdevice.o2a(
             expand_orbs(pivot.pivot_down(name), expand), unique=True
         )
+        # This is:
+        #  the downfolding and device
         data.H.device = Hdevice.sub(atoms_down)
 
         orbitals_down = Hdevice.a2o(atoms_down, all=True)
         orbitals_elec = Hdevice.a2o(pivot.a_elec(name), all=True)
-        # Store the place of the self-energies in `data.H.device`
-        # I.e. before any pivoting!
+        # These are the:
+        #  indices for the self-energy of the electrode in the downfolding and device
+        #  (before pivoting!)
         data.elec = indices_only(orbitals_down, orbitals_elec).reshape(-1, 1)
 
         # the pivoting in the downfolding, in [0:len(pivot_down)]
+        # The:
+        #  pivoting table in the downfolding region only
         data.pvt_down_down = expand_orbs(
             pivot.pivot_down(name, in_down=True), expand
         ).reshape(-1, 1)
@@ -293,7 +332,6 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
                     k, format="array", dtype=dtype, **kwargs
                 )
 
-            old = data.SeH[data.elec, data.elec.T].copy()
             data.SeH[data.elec, data.elec.T] = self._bloch(hsk, k, **kwargs)
 
     def self_energy(
