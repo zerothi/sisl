@@ -192,9 +192,10 @@ class DeviceGreen:
     pass a function that takes in an array of values. It should return the
     indices of the values it wishes to retain.
 
-    The below is equivalent to a cutoff value of ``1e-3``.
+    The below is equivalent to a cutoff value of ``1e-4``, or values
+    above 0.01.
     >>> def cutoff_func(V):
-    >>>     return (V / V.max() > 1e-3).nonzero()[0]
+    >>>     return np.logical_or(V / V.max() > 1e-4, V > 1e-2).nonzero()[0]
 
     Passing functions for cutting off values can be useful because one
     can also debug the values and see what's happening.
@@ -212,8 +213,6 @@ class DeviceGreen:
         # Store electrodes (for easy retrieval of the SE)
         # There may be no electrodes
         self.elecs = elecs
-        # self.elecs_pvt = [pivot.pivot(el.name).reshape(-1, 1)
-        #                  for el in elecs]
 
         # In case the pivot scheme does match the spin-orbit case
         # We should fix things
@@ -541,7 +540,7 @@ class DeviceGreen:
         """Length of Green function matrix."""
         return len(self.pvt)
 
-    def _elec(self, elec):
+    def _elec(self, elec) -> Union[int, Sequence[int]]:
         """Convert a string electrode to the proper linear index"""
         if isinstance(elec, str):
             for iel, el in enumerate(self.elecs):
@@ -1922,7 +1921,7 @@ class DeviceGreen:
         elec_to=None,
         k: KPoint = (0, 0, 0),
         dtype=np.complex128,
-    ) -> Union[float, tuple[float]]:
+    ) -> Union[float, tuple[float, ...]]:
         r"""Calculate the transmission between an electrode, and one or more other electrodes
 
         The transmission function is calculated as:
@@ -1981,7 +1980,7 @@ class DeviceGreen:
         k: KPoint = (0, 0, 0),
         cutoff: float = 1e-4,
         dtype=np.complex128,
-    ) -> Union[si.physics.StateElectron, si.physics.StateElectron]:
+    ) -> Union[si.physics.StateElectron, tuple[si.physics.StateElectron, ...]]:
         r""" Calculate the scattering matrix (S-matrix) between `elec_from` and `elec_to`
 
         The scattering matrix is calculated as
@@ -2034,7 +2033,7 @@ class DeviceGreen:
 
         Returns
         -------
-        sisl.physics.electron.StateElectron or tuple[sisl.physics.electron.StateElectron]
+        sisl.physics.electron.StateElectron or tuple[sisl.physics.electron.StateElectron,...]
            for each `elec_to` a scattering matrix will be returned. Its dimensions will be
            depending on the `cutoff` value at the cost of precision.
         """
@@ -2077,9 +2076,9 @@ class DeviceGreen:
 
     def eigenchannel_from_scattering_matrix(
         self,
-        state_matrix: si.physics.StateElectron,
+        scat_matrix: si.physics.StateElectron,
         ret_out: bool = False,
-    ) -> Union[si.physics.StateCElectron, tuple[si.physics.StateCElectron]]:
+    ) -> Union[si.physics.StateCElectron, tuple[si.physics.StateCElectron, ...]]:
         r"""Calculate the eigenchannel from a scattering matrix
 
         The energy and k-point is inferred from the `state_matrix` object as returned from
@@ -2101,6 +2100,7 @@ class DeviceGreen:
         T_eig_out: sisl.physics.electron.StateCElectron
             the transmission eigenchannels as seen from the outgoing state, the ``T_eig.c`` contains the transmission
             eigenvalues.
+            Only returned if `ret_out` is true.
         """
         tt_eig, U = _scat_state_svd(state_matrix.state.T, ret_uv=ret_out)
         # Here there is a wrong pre-factor of 2pi
