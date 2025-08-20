@@ -44,8 +44,7 @@ class SToolBoxCLI:
         """
         self._cmds.append(setup)
 
-    def __call__(self, argv=None):
-
+    def get_parser(self):
         # Create command-line
         cmd = Path(sys.argv[0])
         p = argparse.ArgumentParser(
@@ -69,6 +68,12 @@ class SToolBoxCLI:
 
         for cmd in self._cmds:
             cmd(subp, parser_kwargs=dict(formatter_class=p.formatter_class))
+
+        return p
+
+    def __call__(self, argv=None):
+
+        p = self.get_parser()
 
         args = p.parse_args(argv)
         args.runner(args)

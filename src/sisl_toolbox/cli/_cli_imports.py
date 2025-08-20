@@ -8,5 +8,6 @@ from __future__ import annotations
 __all__ = []
 
 
-import sisl_toolbox.siesta.atom  # noqa: F401
+import sisl_toolbox.siesta.atom._register_cli  # noqa: F401
+import sisl_toolbox.siesta.minimizer._register_cli  # noqa: F401
 import sisl_toolbox.transiesta.poisson  # noqa: F401

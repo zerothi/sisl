@@ -202,6 +202,7 @@ rst_epilog = """
 .. _cmake: https://cmake.org
 .. _scikit-build-core: https://scikit-build-core.readthedocs.io/en/latest/
 .. _netcdf4-py: https://github.com/Unidata/netcdf4-python
+.. _pyyaml: https://pyyaml.org/wiki/PyYAMLDocumentation
 .. _numpy: https://www.numpy.org/
 .. _scipy: https://docs.scipy.org/doc/scipy
 .. _pyparsing: https://github.com/pyparsing/pyparsing

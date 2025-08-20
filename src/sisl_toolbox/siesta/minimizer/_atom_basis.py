@@ -8,6 +8,7 @@ from functools import partial
 
 import sisl as si
 from sisl._internal import set_module
+from sisl.messages import info
 from sisl.utils import NotNonePropertyDict
 
 from ._variable import Variable
@@ -323,6 +324,7 @@ class AtomBasis:
 
             # get options for this shell
             opts = self.opts[(n, l)]
+
             line = f"n={n} {l} {len(orbs)}"
             for key, value in opts.items():
                 if key == "pol":
@@ -342,6 +344,8 @@ class AtomBasis:
                                 # explicit radius, convert to Bohr
                                 ri *= _Ang2Bohr
                             line += f" {ri:.10f}"
+                    else:
+                        info("Omitting soft-confinement due to V0 < 0.001 eV")
 
                 elif key == "split":
                     # split-norm value
@@ -363,6 +367,8 @@ class AtomBasis:
                             line += f" {yukawa/_Ang2Bohr:.10f}"
                         if not width is None:
                             line += f" {width*_Ang2Bohr:.10f}"
+                    else:
+                        info("Omitting charge-confinement due to Z < 0.005 e")
                 else:
                     raise ValueError(f"Unknown option for n={n} l={l}: {key}")
             block.append(line)

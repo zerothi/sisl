@@ -9,6 +9,7 @@ from abc import abstractmethod
 from hashlib import sha256
 from numbers import Real
 from pathlib import Path
+from typing import Callable
 
 import numpy as np
 from scipy.optimize import dual_annealing, minimize
@@ -22,10 +23,15 @@ __all__ = [
     "BaseMinimize",
     "LocalMinimize",
     "DualAnnealingMinimize",
+    "BADSMinimize",
     "MinimizeToDispatcher",
+    "ParticleSwarmsMinimize",
 ]
 
 _log = logging.getLogger(__name__)
+
+# TODO we should have some kind of checks for the bounds, whether they
+# make sense or not.
 
 
 def _convert_optimize_result(minimizer, result):
@@ -54,12 +60,15 @@ class BaseMinimize:
     # Basic minimizer basically used for figuring out whether
     # to use a local or global minimization strategy
 
-    def __init__(self, variables=(), out="minimize.dat", norm="identity"):
+    def __init__(
+        self, variables=(), out="minimize.dat", norm="identity", out_fmt="20.17e"
+    ):
         # ensure we have an ordered dict, for one reason or the other
         self.variables = []
         if variables is not None:
             for v in variables:
                 self.add_variable(v)
+        self.out_fmt = out_fmt
         self.reset(out, norm)
 
     def reset(self, out=None, norm=None):
@@ -221,7 +230,9 @@ class BaseMinimize:
             comment += f" The first {len(self.data)} lines contains prior content."
             data = np.column_stack((self.data.x, self.data.y))
             self._fh = tableSile(self.out, "w").__enter__()
-            self._fh.write_data(data.T, comment=comment, header=header, fmt="20.17e")
+            self._fh.write_data(
+                data.T, comment=comment, header=header, fmt=self.out_fmt
+            )
             self._fh.flush()
 
         return self
@@ -288,15 +299,18 @@ class BaseMinimize:
             pass
 
         # Else we have to call minimize
-        metric = np.array(self(variables, *args))
-        # add the data to the output file and hash it
-        self._fh.write_data(
-            variables.reshape(-1, 1), metric.reshape(-1, 1), fmt="20.17e"
-        )
-        self._fh.flush()
-        self.data.x.append(variables)
-        self.data.y.append(metric)
-        self.data.hash.append(current_hash)
+        metric = self(variables, *args)
+
+        if metric is not None:
+            metric = np.array(metric)
+            # add the data to the output file and hash it
+            self._fh.write_data(
+                variables.reshape(-1, 1), metric.reshape(-1, 1), fmt=self.out_fmt
+            )
+            self._fh.flush()
+            self.data.x.append(variables)
+            self.data.y.append(metric)
+            self.data.hash.append(current_hash)
 
         return metric
 
@@ -330,6 +344,75 @@ class DualAnnealingMinimize(BaseMinimize):
                 self._minimize_func, x0=norm_v0, args=args, bounds=bounds, **kwargs
             )
         return _convert_optimize_result(self, opt)
+
+
+@set_module("sisl_toolbox.siesta.minimizer")
+class BADSMinimize(BaseMinimize):
+    """Bayesian Adaptive Direct Search (BADS) minimizer.
+
+    It uses the pybads package to perform the minimization.
+    """
+
+    def run(self, options={}, func_hard_bounds: Callable = lambda x: x, **kwargs):
+        from pybads.bads import BADS
+
+        bounds = self.normalize_bounds()
+        bounds = np.array(bounds)
+
+        hard_bounds = func_hard_bounds(bounds)
+
+        with self:
+
+            bads = BADS(
+                fun=self._minimize_func,
+                lower_bounds=hard_bounds[:, 0],
+                upper_bounds=hard_bounds[:, 1],
+                plausible_lower_bounds=bounds[:, 0],
+                plausible_upper_bounds=bounds[:, 1],
+                options=options,
+            )
+
+            # They do a deep copy of the arguments at the end, when generating the result.
+            # This might be a problem if the arguments are not pickleable. E.g. the minimizer function
+            # is associated with the minimizer object, which might contain siles.
+            try:
+                opt = bads.optimize()
+            except TypeError:
+                pass
+
+        # return _convert_optimize_result(self, opt)
+
+
+@set_module("sisl_toolbox.siesta.minimizer")
+class ParticleSwarmsMinimize(BaseMinimize):
+    """Particle swarms optimizer.
+
+    It uses the pyswarms package to perform the minimization."""
+
+    def run(self, options: dict = {}, n_particles: int = 4, n_calls=100, **kwargs):
+        from pyswarms.single.global_best import GlobalBestPSO
+
+        bounds = self.normalize_bounds()
+        bounds = np.array(bounds).T
+
+        options = {"c1": 0.5, "c2": 0.3, "w": 0.9, **options}
+
+        # We will receive as many inputs as there are particles in the algorithm.
+        # Run them sequentially for now, although this could be parallelized.
+        def func(points):
+            return [self._minimize_func(point) for point in points]
+
+        with self:
+            optimizer = GlobalBestPSO(
+                n_particles=n_particles,
+                dimensions=len(self.variables),
+                options=options,
+                bounds=bounds,
+            )
+
+            optimizer.optimize(func, iters=n_calls)
+
+        # return _convert_optimize_result(self, opt)
 
 
 @set_module("sisl_toolbox.siesta.minimizer")

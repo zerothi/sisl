@@ -75,6 +75,7 @@ to run sisl, so generally one shouldn't worry about getting correct
 packages etc. Here the more detailed requirements are listed.
 
 - `Python`_ 3.9 or above
+- `pyyaml`_
 - `numpy`_
 - `scipy`_
 - `xarray`_
