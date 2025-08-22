@@ -3132,7 +3132,7 @@ class Geometry(
         return _a.array_arange(ob, oe)
 
     def o2a(self, orbitals: OrbitalsIndex, unique: bool = False) -> ndarray:
-        """Atomic index corresponding to the orbital indicies.
+        """Atomic index corresponding to the orbital indices.
 
         Note that this will preserve the super-cell offsets.
 
@@ -3166,6 +3166,16 @@ class Geometry(
            the atomic unit-cell indices to be converted to supercell indices
         unique :
            If True the returned indices are unique and sorted.
+
+        See Also
+        --------
+        a2sc : converts atomic indices to supercell offsets
+        o2sc : converts atomic indices to supercell offsets
+        o2isc : convert orbital indices to integer supercell locations
+        a2isc : convert atomic indices to integer supercell locations
+        asc2uc : converts atomic supercell indices to unitcell indices
+        ouc2sc : determine *all* supercell indices of passed atomic indices
+        osc2uc : converts orbital supercell indices to unitcell indices
         """
         atoms = self._sanitize_atoms(atoms) % self.na
         atoms = (atoms[..., None] + _a.arangei(self.n_s) * self.na).reshape(
@@ -3182,14 +3192,24 @@ class Geometry(
     )(auc2sc)
 
     def asc2uc(self, atoms: AtomsIndex, unique: bool = False) -> ndarray:
-        """Returns atoms from supercell indices to unit-cell indices, possibly removing duplicates
+        """Converts atomic supercell indices into their corresponding unit-cell indices
 
         Parameters
         ----------
         atoms :
-           the atomic supercell indices to be converted to unit-cell indices
+            the atomic indices to determine *all* supercell indices of
         unique :
-           If True the returned indices are unique and sorted.
+            If True the returned indices are unique and sorted.
+
+        See Also
+        --------
+        a2sc : converts atomic indices to supercell offsets
+        o2sc : converts atomic indices to supercell offsets
+        o2isc : convert orbital indices to integer supercell locations
+        a2isc : convert atomic indices to integer supercell locations
+        auc2sc : determine *all* supercell indices of passed atomic indices
+        ouc2sc : determine *all* supercell indices of passed atomic indices
+        osc2uc : converts orbital supercell indices to unitcell indices
         """
         atoms = self._sanitize_atoms(atoms) % self.na
         if unique:
@@ -3203,14 +3223,24 @@ class Geometry(
     )(asc2uc)
 
     def osc2uc(self, orbitals: OrbitalsIndex, unique: bool = False) -> ndarray:
-        """Orbitals from supercell indices to unit-cell indices, possibly removing duplicates
+        """Converts orbital supercell indices into their corresponding unit-cell indices
 
         Parameters
         ----------
         orbitals :
-           the orbital supercell indices to be converted to unit-cell indices
+            the orbital supercell indices to be converted to unit-cell indices
         unique :
-           If True the returned indices are unique and sorted.
+            If True the returned indices are unique and sorted.
+
+        See Also
+        --------
+        a2sc : converts atomic indices to supercell offsets
+        o2sc : converts atomic indices to supercell offsets
+        o2isc : convert orbital indices to integer supercell locations
+        a2isc : convert atomic indices to integer supercell locations
+        auc2sc : determine *all* supercell indices of passed atomic indices
+        asc2uc : converts atomic supercell indices to unitcell indices
+        ouc2sc : determine *all* supercell indices of passed atomic indices
         """
         orbitals = self._sanitize_orbs(orbitals) % self.no
         if unique:
@@ -3218,14 +3248,24 @@ class Geometry(
         return orbitals
 
     def ouc2sc(self, orbitals: OrbitalsIndex, unique: bool = False) -> ndarray:
-        """Orbitals from unit-cell indices to supercell indices, possibly removing duplicates
+        """Return all supercell indices of any orbital indices
 
         Parameters
         ----------
         orbitals :
-           the orbital unit-cell indices to be converted to supercell indices
+            the orbital indices to determine *all* supercell indices of
         unique :
-           If True the returned indices are unique and sorted.
+            If True the returned indices are unique and sorted.
+
+        See Also
+        --------
+        a2sc : converts atomic indices to supercell offsets
+        o2sc : converts atomic indices to supercell offsets
+        o2isc : convert orbital indices to integer supercell locations
+        a2isc : convert atomic indices to integer supercell locations
+        auc2sc : determine *all* supercell indices of passed atomic indices
+        asc2uc : converts atomic supercell indices to unitcell indices
+        osc2uc : converts orbital supercell indices to unitcell indices
         """
         orbitals = self._sanitize_orbs(orbitals) % self.no
         orbitals = (orbitals[..., None] + _a.arangei(self.n_s) * self.no).reshape(
@@ -3236,31 +3276,50 @@ class Geometry(
         return orbitals
 
     def a2isc(self, atoms: AtomsIndex) -> ndarray:
-        """Super-cell indices for a specific/list atom
+        """Returns the supercell indices for some atom(s).
 
         Returns a vector of 3 numbers with integers.
-        Any multi-dimensional input will be flattened before return.
-
-        The returned indices will thus always be a 2D matrix or a 1D vector.
 
         Parameters
         ----------
         atoms :
-            atom indices to extract the supercell locations of
+            atomic indices to extract the supercell locations of
+
+        Notes
+        -----
+        Any multi-dimensional input will be flattened before return.
+        Hence it will always return a 1D (single atom) or 2D (multiple atoms).
+
+        See Also
+        --------
+        a2sc : converts atomic indices to supercell offsets
+        o2sc : converts atomic indices to supercell offsets
+        o2isc : convert orbital indices to integer supercell locations
+        auc2sc : determine *all* supercell indices of passed atomic indices
+        asc2uc : converts atomic supercell indices to unitcell indices
+        ouc2sc : determine *all* supercell indices of passed atomic indices
+        osc2uc : converts orbital supercell indices to unitcell indices
         """
         atoms = self._sanitize_atoms(atoms) // self.na
         return self.lattice.sc_off[atoms, :]
 
-    # This function is a bit weird, it returns a real array,
-    # however, there should be no ambiguity as it corresponds to th
-    # offset and "what else" is there to query?
     def a2sc(self, atoms: AtomsIndex) -> ndarray:
         """Returns the super-cell offset for a specific atom
 
         Parameters
         ----------
         atoms :
-            atom indices to extract the supercell offsets of
+            atomic indices to extract the supercell offsets of
+
+        See Also
+        --------
+        o2sc : converts atomic indices to supercell offsets
+        o2isc : convert orbital indices to integer supercell locations
+        a2isc : convert atomic indices to integer supercell locations
+        auc2sc : determine *all* supercell indices of passed atomic indices
+        asc2uc : converts atomic supercell indices to unitcell indices
+        ouc2sc : determine *all* supercell indices of passed atomic indices
+        osc2uc : converts orbital supercell indices to unitcell indices
         """
         return self.lattice.offset(self.a2isc(atoms))
 
@@ -3269,13 +3328,42 @@ class Geometry(
         Returns the super-cell index for a specific orbital.
 
         Returns a vector of 3 numbers with integers.
+
+        Parameters
+        ----------
+        orbitals :
+            orbital indices to extract the supercell locations of
+
+        See Also
+        --------
+        a2sc : converts atomic indices to supercell offsets
+        o2sc : converts atomic indices to supercell offsets
+        a2isc : convert atomic indices to integer supercell locations
+        auc2sc : determine *all* supercell indices of passed atomic indices
+        asc2uc : converts atomic supercell indices to unitcell indices
+        ouc2sc : determine *all* supercell indices of passed atomic indices
+        osc2uc : converts orbital supercell indices to unitcell indices
         """
         orbitals = self._sanitize_orbs(orbitals) // self.no
         return self.lattice.sc_off[orbitals, :]
 
     def o2sc(self, orbitals: OrbitalsIndex) -> ndarray:
-        """
-        Returns the super-cell offset for a specific orbital.
+        """Determine the super-cell offset for a specific orbital.
+
+        Parameters
+        ----------
+        orbitals :
+            orbital indices to extract the supercell offsets of
+
+        See Also
+        --------
+        a2sc : converts atomic indices to supercell offsets
+        o2isc : convert orbital indices to integer supercell locations
+        a2isc : convert atomic indices to integer supercell locations
+        auc2sc : determine *all* supercell indices of passed atomic indices
+        asc2uc : converts atomic supercell indices to unitcell indices
+        ouc2sc : determine *all* supercell indices of passed atomic indices
+        osc2uc : converts orbital supercell indices to unitcell indices
         """
         return self.lattice.offset(self.o2isc(orbitals))
 
