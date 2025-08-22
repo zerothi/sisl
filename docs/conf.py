@@ -924,20 +924,30 @@ from docutils.parsers.rst import directives
 from sphinx.ext.autosummary import Autosummary
 
 
-class RemovePrefixAutosummary(Autosummary):
+class RemoveFixesAutosummary(Autosummary):
     """Wrapper around the autosummary directive to allow for custom display names.
 
-    Adds a new option `:removeprefix:` which removes a prefix from the display names.
+    Adds a new option `:removeprefix:`/`:removesuffix:` which removes a prefix/suffix
+    from the display names.
     """
 
-    option_spec = {**Autosummary.option_spec, "removeprefix": directives.unchanged}
+    option_spec = {
+        **Autosummary.option_spec,
+        "removeprefix": directives.unchanged,
+        "removesuffix": directives.unchanged,
+    }
 
     def get_items(self, *args, **kwargs):
         items = super().get_items(*args, **kwargs)
 
-        remove_prefix = self.options.get("removeprefix")
-        if remove_prefix is not None:
-            items = [(item[0].removeprefix(remove_prefix), *item[1:]) for item in items]
+        for fix in ("prefix", "suffix"):
+            remove_attr = f"remove{fix}"
+            remove_fix = self.options.get(remove_attr)
+            if remove_fix is not None:
+                items = [
+                    (getattr(item[0], remove_attr)(remove_fix), *item[1:])
+                    for item in items
+                ]
 
         return items
 
@@ -1020,4 +1030,4 @@ def setup(app):
     _setup_autodoc(app)
 
     app.connect("autodoc-skip-member", sisl_skip)
-    app.add_directive("autosummary", RemovePrefixAutosummary, override=True)
+    app.add_directive("autosummary", RemoveFixesAutosummary, override=True)
