@@ -15,7 +15,7 @@ import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, namedtuple
 from functools import update_wrapper
-from typing import Any, Callable, Union
+from typing import Any, Callable, Self
 
 from sisl.utils._search_mro import find_implementation
 
@@ -118,7 +118,7 @@ class AbstractDispatch(metaclass=ABCMeta):
 
         return type(name, (cls,), things)
 
-    def copy(self):
+    def copy(self) -> Self:
         """Create a copy of this object (will not copy `obj`)"""
         _log.debug(f"copy {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(self._obj, **self._attrs)
@@ -128,18 +128,18 @@ class AbstractDispatch(metaclass=ABCMeta):
         _log.debug(f"renew {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(self._obj, **{**self._attrs, **attrs})
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Any:
         _log.debug(f"call {self.__class__.__name__}{args}", extra={"obj": self})
         return self.dispatch(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         obj = str(self._obj).replace("\n", "\n ")
         attrs = _dict_to_str("attrs", self._attrs)
         if len(attrs) == 0:
             return f"{self.__class__.__name__}{{{obj}}}"
         return f"{self.__class__.__name__}{{{obj}, {attrs}\n}}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         nattrs = len(self._attrs)
         return f"<{self.__class__.__name__}{{{self._obj!r}, nattrs={nattrs}}}>"
 
@@ -153,7 +153,7 @@ class AbstractDispatch(metaclass=ABCMeta):
             raise ValueError(f"Dispatcher on {obj} must not be called on the class.")
         return obj
 
-    def _get_class(self, allow_instance=False):
+    def _get_class(self, allow_instance: bool = False):
         """Retrieves the object (self._obj) but also checks that the object is a class (not an instance, `type`)
 
         This will fail if the dispatch method has been called on an instance (not a class).
@@ -166,7 +166,7 @@ class AbstractDispatch(metaclass=ABCMeta):
         raise ValueError(f"Dispatcher on {obj} must not be called on the instance.")
 
     @abstractmethod
-    def dispatch(self, method):
+    def dispatch(self, method) -> Any:
         """Create dispatched method with correctly wrapped documentation
 
         This should return a function that mimics method but wraps it
@@ -226,12 +226,12 @@ class AbstractDispatcher(metaclass=ABCMeta):
         self._attrs = attrs
         _log.debug(f"__init__ {self.__class__.__name__}", extra={"obj": self})
 
-    def copy(self):
+    def copy(self) -> Self:
         """Create a copy of this object (making a new child for the dispatch lookup)"""
         _log.debug(f"copy {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(self._dispatchs.new_child(), self._default, **self._attrs)
 
-    def renew(self, **attrs):
+    def renew(self, **attrs) -> Self:
         """Create a new class with updated attributes"""
         _log.debug(
             f"renew {self.__class__.__name__}{tuple(attrs.keys())}", extra={"obj": self}
@@ -240,15 +240,15 @@ class AbstractDispatcher(metaclass=ABCMeta):
             self._dispatchs, self._default, **{**self._attrs, **attrs}
         )
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._dispatchs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         ndispatchs = len(self._dispatchs)
         nattrs = len(self._attrs)
         return f"<{self.__name__}{{ndispatchs={ndispatchs}, nattrs={nattrs}}}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         def toline(kv):
             k, v = kv
             v = str(v("<self>")).replace("\n", "\n ")
@@ -264,7 +264,7 @@ class AbstractDispatcher(metaclass=ABCMeta):
             return f"{self.__name__}{{{dispatchs}\n}}"
         return f"{self.__name__}{{{dispatchs},\n {attrs}\n}}"
 
-    def __setitem__(self, key, dispatch):
+    def __setitem__(self, key, dispatch) -> None:
         """Registers a dispatch method (using `register` with default values)
 
         Parameters
@@ -280,7 +280,9 @@ class AbstractDispatcher(metaclass=ABCMeta):
         """Return instances belonging to this object"""
         return list(self._dispatchs.keys()) + ["renew", "register"]
 
-    def register(self, key, dispatch, default=False, overwrite=True):
+    def register(
+        self, key, dispatch, default: bool = False, overwrite: bool = True
+    ) -> None:
         """Register a dispatch class to this container
 
         Parameter
@@ -289,9 +291,9 @@ class AbstractDispatcher(metaclass=ABCMeta):
             key used in the dictionary look-up for the dispatch class
         dispatch : AbstractDispatch
             dispatch class to be registered
-        default : bool, optional
+        default :
             if true, `dispatch` will be the default when requesting it
-        overwrite : bool, optional
+        overwrite :
             if true and `key` already exists in the list of dispatchs, then
             it will be overwritten, otherwise a `LookupError` is raised.
         """
@@ -335,7 +337,7 @@ class MethodDispatcher(AbstractDispatcher):
 
         _log.debug(f"__init__ {self.__class__.__name__}", extra={"obj": self})
 
-    def copy(self):
+    def copy(self) -> Self:
         """Create a copy of this object (making a new child for the dispatch lookup)"""
         _log.debug(f"copy {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(
@@ -346,7 +348,7 @@ class MethodDispatcher(AbstractDispatcher):
             **self._attrs,
         )
 
-    def renew(self, **attrs):
+    def renew(self, **attrs) -> Self:
         """Create a new class with updated attributes"""
         _log.debug(f"renew {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(
@@ -357,7 +359,7 @@ class MethodDispatcher(AbstractDispatcher):
             **{**self._attrs, **attrs},
         )
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Any:
         _log.debug(f"call {self.__class__.__name__}{args}", extra={"obj": self})
         if self._default is None:
             return self.__wrapped__(*args, **kwargs)
@@ -434,7 +436,7 @@ class ObjectDispatcher(AbstractDispatcher):
         self._attr_name = attr_name
         _log.debug(f"__init__ {self.__class__.__name__}", extra={"obj": self})
 
-    def copy(self):
+    def copy(self) -> Self:
         """Create a copy of this object (making a new child for the dispatch lookup)"""
         _log.debug(f"copy {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(
@@ -446,7 +448,7 @@ class ObjectDispatcher(AbstractDispatcher):
             **self._attrs,
         )
 
-    def renew(self, **attrs):
+    def renew(self, **attrs) -> Self:
         """Create a new class with updated attributes"""
         _log.debug(f"renew {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(
@@ -458,22 +460,29 @@ class ObjectDispatcher(AbstractDispatcher):
             **{**self._attrs, **attrs},
         )
 
-    def __call__(self, obj, *args, **kwargs):
+    def __call__(self, obj, *args, **kwargs) -> Any:
         _log.debug(
             f"call {self.__class__.__name__}{{obj={obj!s}}}", extra={"obj": self}
         )
         return self[obj](*args, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self.__class__.__name__}{{obj={self._obj!r}}}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         obj = str(self._obj).replace("\n", "\n ")
         # super() returns the super class, not the super-instance.
         # Hence we need to call the explicit function
         return super().__str__().replace("{", f"{{\n {obj},\n ", 1)
 
-    def register(self, key, dispatch, default=False, overwrite=True, to_class=True):
+    def register(
+        self,
+        key,
+        dispatch,
+        default: bool = False,
+        overwrite: bool = True,
+        to_class: bool = True,
+    ) -> None:
         """Register a dispatch class to this object and to the object class instance (if existing)
 
         Parameter
@@ -508,7 +517,7 @@ class ObjectDispatcher(AbstractDispatcher):
     def __exit__(self, exc_type, exc_value, traceback):
         pass
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         r"""Retrieve dispatched dispatchs by hash (allows functions to be dispatched)"""
         _log.debug(
             f"__getitem__ {self.__class__.__name__},key={key}", extra={"obj": self}
@@ -516,8 +525,9 @@ class ObjectDispatcher(AbstractDispatcher):
         dispatch = _get_dispatch(self, key)
         return dispatch(self._obj, **self._attrs)
 
-    def __getattr__(self, key):
-        """Retrieve dispatched method by name, or if the name does not exist return a MethodDispatcher"""
+    def __getattr__(self, key: Any) -> Any:
+        """Retrieve dispatched method by name, or if the name does not exist return a
+        MethodDispatcher of the attached object"""
         # Attribute retrieval will never be a class, so this will be directly
         # inferable in the dictionary.
         if key in self._dispatchs:
@@ -560,7 +570,14 @@ class TypeDispatcher(ObjectDispatcher):
     hello world
     """
 
-    def register(self, key, dispatch, default=False, overwrite=True, to_class=True):
+    def register(
+        self,
+        key,
+        dispatch,
+        default: bool = False,
+        overwrite: bool = True,
+        to_class: bool = True,
+    ) -> None:
         """Register a dispatch class to this object and to the object class instance (if existing)
 
         Parameter
@@ -569,14 +586,14 @@ class TypeDispatcher(ObjectDispatcher):
             key used in the dictionary look-up for the dispatch class
         dispatch : AbstractDispatch
             dispatch class to be registered
-        default : bool, optional
+        default :
             this dispatch class will be the default on this object _only_.
             To register a class as the default class-wide, do this on the class
             variable.
-        overwrite : bool, optional
+        overwrite :
             if true and `key` already exists in the list of dispatchs, then
             it will be overwritten, otherwise a `LookupError` is raised.
-        to_class : bool, optional
+        to_class :
             whether the dispatch class will also be registered with the
             contained object's class instance
         """
@@ -662,7 +679,7 @@ class ClassDispatcher(AbstractDispatcher):
         self._obj_getattr = _parse_obj_getattr(obj_getattr)
         _log.debug(f"__init__ {self.__class__.__name__}", extra={"obj": self})
 
-    def copy(self):
+    def copy(self) -> Self:
         """Create a copy of this object (making a new child for the dispatch lookup)"""
         _log.debug(f"copy {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(
@@ -675,7 +692,7 @@ class ClassDispatcher(AbstractDispatcher):
             **self._attrs,
         )
 
-    def renew(self, **attrs):
+    def renew(self, **attrs) -> Self:
         """Create a new class with updated attributes"""
         _log.debug(f"renew {self.__class__.__name__}", extra={"obj": self})
         return self.__class__(

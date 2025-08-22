@@ -4480,7 +4480,7 @@ class GeometryNewDispatch(AbstractDispatch):
 # Bypass regular Geometry to be returned as is
 class GeometryNewGeometryDispatch(GeometryNewDispatch):
     def dispatch(self, geometry, copy: bool = False) -> Geometry:
-        """Return Geometry, for sanitization purposes"""
+        """Ensure the object is a Geometry class, for sanitation purposes"""
         cls = self._get_class()
         if cls != geometry.__class__:
             geometry = cls(
