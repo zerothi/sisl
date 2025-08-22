@@ -15,7 +15,7 @@ import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, namedtuple
 from functools import update_wrapper
-from typing import Any, Callable, Self
+from typing import Any, Callable
 
 from sisl.utils._search_mro import find_implementation
 
