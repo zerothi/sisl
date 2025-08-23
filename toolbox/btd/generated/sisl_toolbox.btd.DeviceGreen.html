@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=dd57b077"></script>
+      <script src="../../../_static/documentation_options.js?v=5d6eebe0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -209,9 +209,10 @@ cutoff value of <code class="docutils literal notranslate"><span class="pre">1e-
 <p>Instead of providing <em class="xref py py-obj">cutoff</em> values as <em class="xref py py-obj">float</em> values, one can also
 pass a function that takes in an array of values. It should return the
 indices of the values it wishes to retain.</p>
-<p>The below is equivalent to a cutoff value of <code class="docutils literal notranslate"><span class="pre">1e-3</span></code>.
+<p>The below is equivalent to a cutoff value of <code class="docutils literal notranslate"><span class="pre">1e-4</span></code>, or values
+above 0.01.
 &gt;&gt;&gt; def cutoff_func(V):
-&gt;&gt;&gt;     return (V / V.max() &gt; 1e-3).nonzero()[0]</p>
+&gt;&gt;&gt;     return np.logical_or(V / V.max() &gt; 1e-4, V &gt; 1e-2).nonzero()[0]</p>
 <p>Passing functions for cutting off values can be useful because one
 can also debug the values and see what’s happening.</p>
 </div>
@@ -230,7 +231,7 @@ can also debug the values and see what’s happening.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel" title="sisl_toolbox.btd.DeviceGreen.eigenchannel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenchannel</span></code></a>(state[, elec_to, ret_coeff])</p></td>
 <td><p>Calculate the eigenchannel from scattering states entering electrodes <em class="xref py py-obj">elec_to</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel_from_scattering_matrix" title="sisl_toolbox.btd.DeviceGreen.eigenchannel_from_scattering_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenchannel_from_scattering_matrix</span></code></a>(state_matrix)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel_from_scattering_matrix" title="sisl_toolbox.btd.DeviceGreen.eigenchannel_from_scattering_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenchannel_from_scattering_matrix</span></code></a>(scat_matrix)</p></td>
 <td><p>Calculate the eigenchannel from a scattering matrix</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.from_fdf" title="sisl_toolbox.btd.DeviceGreen.from_fdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_fdf</span></code></a>(fdf[, prefix, use_tbt_se, eta])</p></td>
@@ -320,7 +321,7 @@ This is equivalent to the <code class="docutils literal notranslate"><span class
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.eigenchannel_from_scattering_matrix">
-<span class="sig-name descname"><span class="pre">eigenchannel_from_scattering_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_green.html#DeviceGreen.eigenchannel_from_scattering_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel_from_scattering_matrix" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eigenchannel_from_scattering_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scat_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_green.html#DeviceGreen.eigenchannel_from_scattering_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel_from_scattering_matrix" title="Link to this definition"></a></dt>
 <dd><p>Calculate the eigenchannel from a scattering matrix</p>
 <p>The energy and k-point is inferred from the <em class="xref py py-obj">state_matrix</em> object as returned from
 <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_matrix" title="sisl_toolbox.btd.DeviceGreen.scattering_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_matrix</span></code></a>.</p>
@@ -329,7 +330,8 @@ DOS weighted scattering states:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>state_matrix</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><em>StateElectron</em></a>) – the scattering matrix as obtained from <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_matrix" title="sisl_toolbox.btd.DeviceGreen.scattering_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_matrix</span></code></a></p></li>
+<li><p><strong>state_matrix</strong> – the scattering matrix as obtained from <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_matrix" title="sisl_toolbox.btd.DeviceGreen.scattering_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_matrix</span></code></a></p></li>
+<li><p><strong>scat_matrix</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><em>StateElectron</em></a>)</p></li>
 <li><p><strong>ret_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
@@ -338,12 +340,13 @@ DOS weighted scattering states:</p>
 <li><p><strong>T_eig_in</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.electron.StateCElectron</span></code></a>) – the transmission eigenchannels as seen from the incoming state, the <code class="docutils literal notranslate"><span class="pre">T_eig.c</span></code> contains the transmission
 eigenvalues.</p></li>
 <li><p><strong>T_eig_out</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.electron.StateCElectron</span></code></a>) – the transmission eigenchannels as seen from the outgoing state, the <code class="docutils literal notranslate"><span class="pre">T_eig.c</span></code> contains the transmission
-eigenvalues.</p></li>
+eigenvalues.
+Only returned if <em class="xref py py-obj">ret_out</em> is true.</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>]</p>
+<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>, …]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -451,7 +454,7 @@ to positive definite.</p></li>
 depending on the <em class="xref py py-obj">cutoff</em> value at the cost of precision.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.electron.StateElectron</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple[sisl.physics.electron.StateElectron]</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.electron.StateElectron</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple[sisl.physics.electron.StateElectron,...]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -569,7 +572,7 @@ the entire spectral function matrix.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>, …]</p>
 </dd>
 </dl>
 </dd></dl>

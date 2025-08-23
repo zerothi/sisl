@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=dd57b077"></script>
+      <script src="../../../_static/documentation_options.js?v=5d6eebe0"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -3374,7 +3374,7 @@
 <div class="viewcode-block" id="Geometry.o2a">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.o2a">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">o2a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">:</span> <span class="n">OrbitalsIndex</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Atomic index corresponding to the orbital indicies.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Atomic index corresponding to the orbital indices.</span>
 
 <span class="sd">        Note that this will preserve the super-cell offsets.</span>
 
@@ -3411,6 +3411,16 @@
 <span class="sd">           the atomic unit-cell indices to be converted to supercell indices</span>
 <span class="sd">        unique :</span>
 <span class="sd">           If True the returned indices are unique and sorted.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
@@ -3430,14 +3440,24 @@
 <div class="viewcode-block" id="Geometry.asc2uc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.asc2uc">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">asc2uc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns atoms from supercell indices to unit-cell indices, possibly removing duplicates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts atomic supercell indices into their corresponding unit-cell indices</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atoms :</span>
-<span class="sd">           the atomic supercell indices to be converted to unit-cell indices</span>
+<span class="sd">            the atomic indices to determine *all* supercell indices of</span>
 <span class="sd">        unique :</span>
-<span class="sd">           If True the returned indices are unique and sorted.</span>
+<span class="sd">            If True the returned indices are unique and sorted.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
@@ -3454,14 +3474,24 @@
 <div class="viewcode-block" id="Geometry.osc2uc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.osc2uc">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">osc2uc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">:</span> <span class="n">OrbitalsIndex</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Orbitals from supercell indices to unit-cell indices, possibly removing duplicates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts orbital supercell indices into their corresponding unit-cell indices</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        orbitals :</span>
-<span class="sd">           the orbital supercell indices to be converted to unit-cell indices</span>
+<span class="sd">            the orbital supercell indices to be converted to unit-cell indices</span>
 <span class="sd">        unique :</span>
-<span class="sd">           If True the returned indices are unique and sorted.</span>
+<span class="sd">            If True the returned indices are unique and sorted.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
@@ -3472,14 +3502,24 @@
 <div class="viewcode-block" id="Geometry.ouc2sc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.ouc2sc">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">ouc2sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">:</span> <span class="n">OrbitalsIndex</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Orbitals from unit-cell indices to supercell indices, possibly removing duplicates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all supercell indices of any orbital indices</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        orbitals :</span>
-<span class="sd">           the orbital unit-cell indices to be converted to supercell indices</span>
+<span class="sd">            the orbital indices to determine *all* supercell indices of</span>
 <span class="sd">        unique :</span>
-<span class="sd">           If True the returned indices are unique and sorted.</span>
+<span class="sd">            If True the returned indices are unique and sorted.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
+<span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="p">(</span><span class="n">orbitals</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
@@ -3493,25 +3533,34 @@
 <div class="viewcode-block" id="Geometry.a2isc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.a2isc">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">a2isc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Super-cell indices for a specific/list atom</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the supercell indices for some atom(s).</span>
 
 <span class="sd">        Returns a vector of 3 numbers with integers.</span>
-<span class="sd">        Any multi-dimensional input will be flattened before return.</span>
-
-<span class="sd">        The returned indices will thus always be a 2D matrix or a 1D vector.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atoms :</span>
-<span class="sd">            atom indices to extract the supercell locations of</span>
+<span class="sd">            atomic indices to extract the supercell locations of</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Any multi-dimensional input will be flattened before return.</span>
+<span class="sd">        Hence it will always return a 1D (single atom) or 2D (multiple atoms).</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">atoms</span><span class="p">,</span> <span class="p">:]</span></div>
 
 
-    <span class="c1"># This function is a bit weird, it returns a real array,</span>
-    <span class="c1"># however, there should be no ambiguity as it corresponds to th</span>
-    <span class="c1"># offset and &quot;what else&quot; is there to query?</span>
 <div class="viewcode-block" id="Geometry.a2sc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.a2sc">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">a2sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -3520,7 +3569,17 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atoms :</span>
-<span class="sd">            atom indices to extract the supercell offsets of</span>
+<span class="sd">            atomic indices to extract the supercell offsets of</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a2isc</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span></div>
 
@@ -3532,6 +3591,21 @@
 <span class="sd">        Returns the super-cell index for a specific orbital.</span>
 
 <span class="sd">        Returns a vector of 3 numbers with integers.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        orbitals :</span>
+<span class="sd">            orbital indices to extract the supercell locations of</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">orbitals</span><span class="p">,</span> <span class="p">:]</span></div>
@@ -3540,8 +3614,22 @@
 <div class="viewcode-block" id="Geometry.o2sc">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.o2sc">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">o2sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">:</span> <span class="n">OrbitalsIndex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the super-cell offset for a specific orbital.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the super-cell offset for a specific orbital.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        orbitals :</span>
+<span class="sd">            orbital indices to extract the supercell offsets of</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2isc</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span></div>
 
@@ -4759,7 +4847,7 @@
 <span class="c1"># Bypass regular Geometry to be returned as is</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">GeometryNewGeometryDispatch</span><span class="p">(</span><span class="n">GeometryNewDispatch</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return Geometry, for sanitization purposes&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure the object is a Geometry class, for sanitation purposes&quot;&quot;&quot;</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_class</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">cls</span> <span class="o">!=</span> <span class="n">geometry</span><span class="o">.</span><span class="vm">__class__</span><span class="p">:</span>
             <span class="n">geometry</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
