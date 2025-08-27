@@ -704,6 +704,12 @@ class Geometry(
            atomic index of first atom
         ja :
            atomic indices
+
+        See Also
+        --------
+        orij : distance between two orbitals
+        oRij : vector between two orbitals
+        Rij : vector between two atoms
         """
         R = self.Rij(ia, ja)
 
@@ -726,6 +732,12 @@ class Geometry(
            atomic index of first atom
         ja :
            atomic indices
+
+        See Also
+        --------
+        orij : distance between two orbitals
+        oRij : vector between two orbitals
+        rij : distance between two atoms
         """
         xi = self.axyz(ia)
         xj = self.axyz(ja)
@@ -751,6 +763,12 @@ class Geometry(
            orbital index of first orbital
         orbitals2 :
            orbital indices
+
+        See Also
+        --------
+        oRij : vector between two orbitals
+        rij : distance between two atoms
+        Rij : vector between two atoms
         """
         return self.rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
@@ -768,6 +786,12 @@ class Geometry(
            orbital index of first orbital
         orbitals2 :
            orbital indices
+
+        See Also
+        --------
+        orij : distance between two orbitals
+        rij : distance between two atoms
+        Rij : vector between two atoms
         """
         return self.Rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
