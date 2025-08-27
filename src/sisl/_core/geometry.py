@@ -2251,7 +2251,7 @@ class Geometry(
         return g
 
     def axyz(self, atoms: AtomsIndex = None, isc=None) -> ndarray:
-        """Return the atomic coordinates in the supercell of a given atom.
+        """Return the atomic coordinates in the supercell from an atomic index.
 
         The ``Geometry[...]`` slicing is calling this function with appropriate options.
 
@@ -2262,7 +2262,7 @@ class Geometry(
           may be in supercell format.
         isc : array_like, optional
             Returns the atomic coordinates shifted according to the integer
-            parts of the cell. Defaults to the unit-cell
+            parts of the cell. Defaults to the unit-cell.
 
         Examples
         --------
@@ -2275,6 +2275,9 @@ class Geometry(
         >>> print(geom.axyz(0))
         [0.  0.  0.]
 
+        See Also
+        --------
+        oxyz : orbital coordinates in supercell from an orbital index.
         """
         if atoms is None and isc is None:
             return self.xyz
@@ -2289,6 +2292,37 @@ class Geometry(
 
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
         return self.axyz(atoms) + self.lattice.offset(isc)
+
+    def oxyz(self, orbitals: OrbitalsIndex = None, isc=None) -> ndarray:
+        """Return the orbital coordinates in the supercell from an orbital index.
+
+        Parameters
+        ----------
+        orbitals :
+          orbital(s) from which we should return the coordinates, the orbital indices
+          may be in supercell format.
+        isc : array_like, optional
+            Returns the orbital coordinates shifted according to the integer
+            parts of the cell. Defaults to the unit-cell.
+
+        See Also
+        --------
+        axyz : atomic coordinates in supercell from an atomic index.
+        """
+        if orbitals is None and isc is None:
+            orbitals = range(self.no)
+        orbitals = self._sanitize_atoms(orbitals)
+
+        # If only atoms has been specified
+        if isc is None:
+            # get offsets from atomic indices (note that this will be per atom)
+            atoms = self.o2a(orbitals)
+            isc = self.o2isc(orbitals)
+            offset = self.lattice.offset(isc)
+            return self.xyz[self.asc2uc(atoms)] + offset
+
+        # Neither of atoms, or isc are `None`, we add the offset to all coordinates
+        return self.oxyz(orbitals) + self.lattice.offset(isc)
 
     def within_sc(
         self,
