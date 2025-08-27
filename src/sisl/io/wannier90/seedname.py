@@ -527,14 +527,13 @@ class tbSileWannier90(hamSileWannier90):
                 r, c = map(int, l[:2])
 
                 # Scale matrix elements
-                hr = float(l[2]) * w
                 if is_complex:
-                    h = hr + 1j * float(l[3]) * w
+                    h = float(l[2]) + 1j * float(l[3])
                 else:
-                    h = hr
+                    h = float(l[2])
 
                 if abs(h) > cutoff:
-                    Hr[r - 1, c - 1] = h
+                    Hr[r - 1, c - 1] = h * w
 
         return _construct_hamiltonian(geometry, Hsc)
 
@@ -615,14 +614,13 @@ class hrSileWannier90(hamSileWannier90):
             w = ws[iws]
 
             # Scale matrix elements
-            hr = float(l[5]) * w
             if is_complex:
-                h = hr + 1j * float(l[6]) * w
+                h = float(l[5]) + 1j * float(l[6])
             else:
-                h = hr
+                h = float(l[5])
 
             if abs(h) > cutoff:
-                Hsc[tuple(isc)][r - 1, c - 1] = h
+                Hsc[tuple(isc)][r - 1, c - 1] = h * w
 
         return _construct_hamiltonian(geometry, Hsc)
 
