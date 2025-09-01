@@ -24,7 +24,7 @@ build-backend = "scikit_build_core.build"
 
 # Top most items are probably changed the most
 [project]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 name = "sisl"
 description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
@@ -73,9 +73,9 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
     "Programming Language :: C",
+    "Programming Language :: Cython",
     "Programming Language :: Fortran",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",

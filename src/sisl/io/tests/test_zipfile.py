@@ -11,21 +11,7 @@ import pytest
 import sisl
 from sisl.io._zipfile import ZipPath
 
-# We will xfail all tests if the python version is <=3.9,
-# this is because sisl is expected to raise a RuntimeError
-# explaining that zipfile functionality requires Python 3.10 or newer.
-_is_old_python = sys.version_info < (3, 10)
-# 3.9 also prints very ugly errors when deleting a zipfile which make
-# it difficult to read the test output. So we patch the __del__ method.
-if _is_old_python:
-    zipfile.ZipFile.__del__ = lambda self: None
 
-
-@pytest.mark.xfail(
-    _is_old_python,
-    reason="Zip file functionality requires Python 3.10 or newer",
-    raises=RuntimeError,
-)
 def test_zipfile_preserved():
     """Test that the zipfile is preserved through the sile framework
 
@@ -48,11 +34,6 @@ def test_zipfile_preserved():
     assert fdf.file.root is f
 
 
-@pytest.mark.xfail(
-    _is_old_python,
-    reason="Zip file functionality requires Python 3.10 or newer",
-    raises=RuntimeError,
-)
 @pytest.mark.parametrize("specify_class", [True, False])
 @pytest.mark.parametrize("external_zip", [True, False])
 def test_zipfile_write_read(external_zip: bool, specify_class: bool):
@@ -97,11 +78,6 @@ def test_zipfile_write_read(external_zip: bool, specify_class: bool):
     assert np.allclose(read_geometry.cell, geometry.cell)
 
 
-@pytest.mark.xfail(
-    _is_old_python,
-    reason="Zip file functionality requires Python 3.10 or newer",
-    raises=RuntimeError,
-)
 @pytest.mark.parametrize("external_zip", [True, False])
 @pytest.mark.parametrize("from_fdf", [True, False])
 def test_zipfile_write_read_binary(external_zip: bool, from_fdf: bool):
@@ -145,11 +121,6 @@ def test_zipfile_write_read_binary(external_zip: bool, from_fdf: bool):
     assert np.allclose(H.tocsr().toarray(), read_H.tocsr().toarray())
 
 
-@pytest.mark.xfail(
-    _is_old_python,
-    reason="Zip file functionality requires Python 3.10 or newer",
-    raises=RuntimeError,
-)
 @pytest.mark.parametrize("external_zip", [True, False])
 @pytest.mark.parametrize("from_fdf", [True, False])
 def test_zipfile_write_read_cdf(external_zip: bool, from_fdf: bool):

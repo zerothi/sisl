@@ -56,7 +56,7 @@ jobs:
         uses: fortran-lang/setup-fortran@v1
         with:
           compiler: gcc
-          version: 11
+          version: 12
 
       - name: Setup python environment
         uses: actions/setup-python@v5
