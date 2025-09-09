@@ -100,7 +100,7 @@ jobs:
       uses: fortran-lang/setup-fortran@v1
       with:
         compiler: gcc
-        version: 11
+        version: 12
 
     - name: Print-out commit information
       id: info
