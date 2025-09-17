@@ -97,7 +97,7 @@ class EllipticalCylinder(PureShape):
         self._h = h
 
     def copy(self) -> Self:
-        return self.__class__(self.radial_vector, self.height, self.center)
+        return self.__class__(self.radial_vector, self.height, center=self.center)
 
     @property
     def volume(self) -> float:
@@ -140,7 +140,7 @@ class EllipticalCylinder(PureShape):
         else:
             v = self._v * scale
             h = self._h * scale
-        return self.__class__(v, h, self.center)
+        return self.__class__(v, h, center=self.center)
 
     def expand(self, radius: SeqOrScalarFloat) -> Self:
         """Expand elliptical cylinder by a constant value along each vector and height
@@ -163,7 +163,7 @@ class EllipticalCylinder(PureShape):
             raise ValueError(
                 f"{self.__class__.__name__}.expand requires the radius to be either (1,) or (3,)"
             )
-        return self.__class__([v0, v1], h, self.center)
+        return self.__class__([v0, v1], h, center=self.center)
 
     @deprecate_argument(
         "tol",

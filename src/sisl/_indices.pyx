@@ -145,7 +145,7 @@ def indices(ints_st[::1] element, ints_st[::1] test_element, ints_st offset=0,
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-def indices_in_cylinder(floats_st[:, ::1] dxyz, const floats_st R, const floats_st h):
+def indices_in_cylinder(floats_st[:, ::1] dxyz, R, const floats_st h):
     """ Indices for all coordinates that are within a cylinde radius `R` and height `h`
 
     Parameters
@@ -168,25 +168,35 @@ def indices_in_cylinder(floats_st[:, ::1] dxyz, const floats_st R, const floats_
     cdef ndarray[int32_t] IDX = np.empty([n], dtype=np.int32)
     cdef int[::1] idx = IDX
 
-    cdef floats_st R2 = R * R
+    cdef floats_st Rx, Ry
     cdef floats_st L2
     cdef Py_ssize_t i, j, m
-    cdef bint skip
+
+    # Handle radius input
+    if isinstance(R, (float, int)):
+        Rx = Ry = R
+    else:
+        R = np.asarray(R, dtype=np.float64)
+        if R.shape == (2,):
+            Rx, Ry = R[0], R[1]
+        elif R.shape == (2,3):
+            from sisl._core._dtypes import fnorm
+            Rx = fnorm(R[0])
+            Ry = fnorm(R[1])
+        else:
+            raise ValueError(f"Unsupported radius shape: {R.shape}")
+
+    cdef floats_st Rx2 = Rx * Rx
+    cdef floats_st Ry2 = Ry * Ry
 
     # Reset number of elements
     m = 0
 
     with nogil:
         for i in range(n):
-            skip = 0
-            for j in range(nxyz):
-                skip |= dxyz[i, j] > R
-            if skip or dxyz[i, nxyz] > h: continue
-
-            L2 = 0.
-            for j in range(nxyz):
-                L2 += dxyz[i, j] * dxyz[i, j]
-            if L2 > R2: continue
+            if dxyz[i,nxyz] > 0.5*h or dxyz[i,nxyz] < -0.5*h: continue
+            L2 = (dxyz[i, 0]*dxyz[i, 0])/Rx2 + (dxyz[i, 1]*dxyz[i, 1])/Ry2
+            if L2 > 1.0: continue
             idx[m] = <int> i
             m += 1
 
