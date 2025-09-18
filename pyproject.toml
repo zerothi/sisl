@@ -52,8 +52,8 @@ keywords = [
 # lower bound of dependencies.
 dependencies = [
     # We need npt.NDArray
-    "numpy>=1.21",
-    "scipy>=1.6",
+    "numpy>=1.22",
+    "scipy>=1.8",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
     # xarray fixes get_loc in 0.21
