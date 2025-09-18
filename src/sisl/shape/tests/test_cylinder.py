@@ -39,10 +39,24 @@ def test_create_ellipticalcylinder():
 
 def test_ellipticalcylinder_within():
     el = EllipticalCylinder(1.0, 1.0)
-    # center of cylinder
-    assert el.within_index([0, 0, 0])[0] == 0
+    # points in an ellipsis
+    points = [
+        [0, 0, 0],
+        [0, 0, 0.5],
+        [0, 0, -0.5],
+        [1, 0, -0.5],
+        [0, 1, -0.5],
+    ]
+    assert len(el.within_index(points)) == len(points)
+
     # should not be in a circle
-    assert el.within_index([0.2, 0.2, 0.9])[0] == 0
+    points = [
+        [0, 0, 0.6],
+        [0, 0, -0.6],
+        [0.2, 0.2, 0.9],
+        [0.2, 0.2, -0.9],
+    ]
+    assert len(el.within_index(points)) == 0
 
 
 def test_tosphere():

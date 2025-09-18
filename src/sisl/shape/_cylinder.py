@@ -191,7 +191,7 @@ class EllipticalCylinder(PureShape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        return indices_in_cylinder(tmp, 1.0 + rtol, 1.0 + rtol)
+        return indices_in_cylinder(tmp, 1.0 + rtol)
 
     @deprecation(
         "toSphere is deprecated, use shape.to.Sphere(...) instead.", "0.15", "0.17"
