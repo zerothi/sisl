@@ -452,7 +452,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         for ia, ia_xyz, isc in zip(IA, XYZ, ISC):
             # Get current atom
             ia_atom = atoms[ia]
-            IO = a2o(ia)
+            IO = a2o(ia, all=False)
             IO_range = range(ia_atom.no)
             cell_offset = (cell * isc.reshape(3, 1)).sum(0) - origin
 
@@ -502,7 +502,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
             for ja in a_col[a_ptr[ia] : a_ptr[ia + 1]]:
                 # Retrieve atom (which contains the orbitals)
                 ja_atom = atoms[ja % na]
-                JO = a2o(ja)
+                JO = a2o(ja, all=False)
                 jR = ja_atom.maxR()
                 # Get actual coordinate of the atom
                 ja_xyz = axyz(ja) + cell_offset

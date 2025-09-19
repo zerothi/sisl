@@ -112,22 +112,22 @@ class TestGeometryReturn:
         assert d.shape == (len(setup.g),)
 
     def test_a2o(self, setup):
-        d = setup.g.a2o(1)
+        d = setup.g.a2o(1, all=False)
         assert isinstance(d, Integral)
-        d = setup.g.a2o([0, 1])
+        d = setup.g.a2o([0, 1], all=False)
         assert len(d) == 2
-        d = setup.g2.a2o(1)
+        d = setup.g2.a2o(1, all=False)
         assert isinstance(d, Integral)
-        d = setup.g2.a2o([0, 1])
+        d = setup.g2.a2o([0, 1], all=False)
         assert len(d) == 2
 
-        d = setup.g.a2o(1, True)
+        d = setup.g.a2o(1, all=True)
         assert len(d) == 1
-        d = setup.g.a2o([0, 1], True)
+        d = setup.g.a2o([0, 1], all=True)
         assert len(d) == 2
-        d = setup.g2.a2o(1, True)
+        d = setup.g2.a2o(1, all=True)
         assert len(d) == 2
-        d = setup.g2.a2o([0, 1], True)
+        d = setup.g2.a2o([0, 1], all=True)
         assert len(d) == 4
 
     def test_o2a(self, setup):

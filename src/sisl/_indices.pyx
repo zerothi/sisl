@@ -185,9 +185,9 @@ def indices_in_cylinder(floats_st[:, ::1] dxyz, const floats_st R, const floats_
             if dxyz[i,nxyz] > hhalve or dxyz[i,nxyz] < -hhalve: continue
             # Calculate the distance of the circle
             L2 = (dxyz[i, 0]*dxyz[i, 0])/R2 + (dxyz[i, 1]*dxyz[i, 1])/R2
-            if L2 > 1.0: continue
-            idx[m] = <int> i
-            m += 1
+            if L2 <= 1.0:
+                idx[m] = <int> i
+                m += 1
 
     if m == 0:
         return np.empty([0], dtype=np.int32)
@@ -680,7 +680,7 @@ def list_index_le(ints_st[::1] a, ints_st[::1] b):
     Parameters
     ----------
     a :
-        values to check indicies of
+        values to check indices of
     b :
         sorted array to check against
 

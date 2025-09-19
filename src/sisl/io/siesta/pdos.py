@@ -535,7 +535,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
             for atoms in ranges:
                 if isinstance(atoms, list):
                     # Get atoms and orbitals
-                    ob = geom.a2o(atoms[0] - 1, True)
+                    ob = geom.a2o(atoms[0] - 1, all=True)
                     # We normalize for the total number of orbitals
                     # on the requested atoms.
                     # In this way the user can compare directly the DOS
@@ -544,7 +544,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                     no += len(ob)
                     ob = ob[asarrayi(atoms[1]) - 1]
                 else:
-                    ob = geom.a2o(atoms - 1, True)
+                    ob = geom.a2o(atoms - 1, all=True)
                     no += len(ob)
                 orbs.append(ob)
 

@@ -973,7 +973,7 @@ class RealSpaceSE(SelfEnergy):
         P0 = self.real_space_parent()
 
         V_atoms = self.real_space_coupling(True)[1]
-        orbs = P0.a2o(V_atoms, True)
+        orbs = P0.a2o(V_atoms, all=True)
         try:
             if P0.spin.is_nambu:
                 # expand in case we have a non-colinear|spin-orbit
@@ -1488,7 +1488,7 @@ class RealSpaceSI(SelfEnergy):
             )
 
         # Surface orbitals to put in the semi-infinite self-energy into.
-        orbs = self.surface.geometry.a2o(atoms, True)
+        orbs = self.surface.geometry.a2o(atoms, all=True)
         try:
             if self.surface.spin.is_nambu:
                 # expand in case we have a non-colinear|spin-orbit
@@ -1734,7 +1734,7 @@ class RealSpaceSI(SelfEnergy):
         P0 = self.real_space_parent()
 
         V_atoms = self.real_space_coupling(True)[1]
-        orbs = P0.a2o(V_atoms, True)
+        orbs = P0.a2o(V_atoms, all=True)
         try:
             if P0.spin.is_nambu:
                 # expand in case we have a non-colinear|spin-orbit

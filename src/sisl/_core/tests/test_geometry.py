@@ -234,9 +234,9 @@ class TestGeometry:
         assert np.allclose(t.xyz[::4, :], setup.g.xyz)
 
     def test_a2o1(self, setup):
-        assert 0 == setup.g.a2o(0)
-        assert setup.g.atoms[0].no == setup.g.a2o(1)
-        assert setup.g.no == setup.g.a2o(setup.g.na)
+        assert 0 == setup.g.a2o(0, all=False)
+        assert setup.g.atoms[0].no == setup.g.a2o(1, all=False)
+        assert setup.g.no == setup.g.a2o(setup.g.na, all=False)
 
     def test_sub1(self, setup):
         assert len(setup.g.sub([0])) == 1
@@ -726,8 +726,8 @@ class TestGeometry:
 
     def test_a2o(self, setup):
         # There are 2 orbitals per C atom
-        assert setup.g.a2o(1) == setup.g.atoms[0].no
-        assert np.all(setup.g.a2o(1, True) == [2, 3])
+        assert setup.g.a2o(1, all=False) == setup.g.atoms[0].no
+        assert np.all(setup.g.a2o(1, all=True) == [2, 3])
         setup.g.reorder()
 
     def test_o2a(self, setup):

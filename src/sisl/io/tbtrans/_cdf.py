@@ -562,7 +562,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         the resulting orbitals in the device region.
 
         Essentially this is equivalent to (but not in the same order):
-        >>> pvt = tbt.geometry.a2o(tbt.a_down(elec))
+        >>> pvt = tbt.geometry.a2o(tbt.a_down(elec), all=True)
         >>> pvt_down = np.append(pvt, tbt.pivot(elec))
 
         Parameters
@@ -578,7 +578,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         This does *not* correspond to the atoms of the downfolding region from
         the atomic indices:
 
-        >>> tbt.pivot_down("Left") != tbt.geometry.a2o(tbt.a_down("Left"))
+        >>> tbt.pivot_down("Left") != tbt.geometry.a2o(tbt.a_down("Left"), all=True)
 
         The point for this is that `pivot_down` is not guaranteed to fully
         encapsulate all orbitals of the atoms in the device region.
@@ -669,7 +669,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
         This is equivalent to:
 
-        >>> p = self.o2p(self.geometry.a2o(atom, True))
+        >>> p = self.o2p(self.geometry.a2o(atom, all=True))
 
         Will warn if an atom requested is not in the device list of atoms.
 
@@ -678,7 +678,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         atoms : array_like or int
            atomic indices (0-based)
         """
-        return self.o2p(self.geometry.a2o(atoms, True))
+        return self.o2p(self.geometry.a2o(atoms, all=True))
 
     def o2p(self, orbitals, elec: Optional[ElecType] = None):
         """Return the pivoting indices (0-based) for the orbitals, possibly on an electrode

@@ -121,7 +121,7 @@ class hamiltonianSile(Sile):
                 # ia[o]
                 # atom ia and the orbital o
                 j = i.replace("[", " ").replace("]", " ").split()
-                return geom.a2o(int(j[0])) + int(j[1])
+                return geom.a2o(int(j[0]), all=False) + int(j[1])
 
         # Start reading in the supercell
         while True:
@@ -363,7 +363,7 @@ class hamiltonianSile(Sile):
                 for io, jo, hh in ispmatrixd(Hsub):
                     o = np.array([io, jo], np.int32)
                     a = geom.o2a(o)
-                    o = o - geom.a2o(a)
+                    o = o - geom.a2o(a, all=False)
 
                     s = 0.0
                     if not is_orthogonal:

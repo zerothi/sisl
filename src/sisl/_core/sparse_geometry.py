@@ -1496,7 +1496,7 @@ class SparseOrbital(_SparseGeometry):
             (not compatible with the `atoms` keyword)
         """
         if atoms is not None:
-            orbitals = self.geometry.a2o(atoms, True)
+            orbitals = self.geometry.a2o(atoms, all=True)
         elif not orbitals is None:
             orbitals = _a.asarrayi(orbitals)
         if orbitals is None:
@@ -1580,7 +1580,7 @@ class SparseOrbital(_SparseGeometry):
 
         Notes
         -----
-        Future implementations may allow one to re-arange orbitals using this method.
+        Future implementations may allow one to re-arrange orbitals using this method.
 
         When using this method the internal species list will be populated by another species
         that is named after the orbitals removed. This is to distinguish different atoms.
@@ -1657,7 +1657,7 @@ class SparseOrbital(_SparseGeometry):
 
         rem_orbs = delete(_a.arangei(old_atom.no), orbitals)
         # Find orbitals to remove (note this HAS to be from the original array)
-        rem_orbs = np.add.outer(self.geometry.a2o(atoms), rem_orbs).ravel()
+        rem_orbs = np.add.outer(self.geometry.a2o(atoms, all=False), rem_orbs).ravel()
 
         # Generate a list of orbitals to retain
         sub_idx = delete(_a.arangei(self.no), rem_orbs)
@@ -2708,7 +2708,7 @@ depending on your use case. Note indices in the following are supercell indices.
 
         # this is where other.sub(other_atoms) gets inserted
         ainsert_idx = atoms.min()
-        oinsert_idx = sgeom.a2o(ainsert_idx)
+        oinsert_idx = sgeom.a2o(ainsert_idx, all=False)
         # this is the indices of the new atoms in the new geometry
         # self_other_atoms = _a.arangei(ainsert_idx, ainsert_idx + len(other_atoms))
 
@@ -2961,7 +2961,7 @@ depending on your use case. Note indices in the following are supercell indices.
         ptr[0] = 0
         col = [None] * geom.na
         for ia in range(geom.na):
-            o1, o2 = geom.a2o([ia, ia + 1])
+            o1, o2 = geom.a2o([ia, ia + 1], all=False)
             # Get current atomic elements
             idx = array_arange(csr.ptr[o1:o2], n=csr.ncol[o1:o2])
 

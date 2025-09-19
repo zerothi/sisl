@@ -1884,14 +1884,14 @@ class TestHamiltonian:
     def test_tile4(self, setup):
         def func(self, ia, atoms, atoms_xyz=None):
             idx = self.geometry.close(ia, R=[0.1, 1.43], atoms=atoms)
-            io = self.geometry.a2o(ia)
+            io = self.geometry.a2o(ia, all=False)
             # Set on-site on first and second orbital
-            odx = self.geometry.a2o(idx[0])
+            odx = self.geometry.a2o(idx[0], all=False)
             self[io, odx] = -1.0
             self[io + 1, odx + 1] = 1.0
 
             # Set connecting
-            odx = self.geometry.a2o(idx[1])
+            odx = self.geometry.a2o(idx[1], all=False)
             self[io, odx] = 0.2
             self[io, odx + 1] = 0.01
             self[io + 1, odx] = 0.01
@@ -1968,14 +1968,14 @@ class TestHamiltonian:
     def test_repeat4(self, setup):
         def func(self, ia, atoms, atoms_xyz=None):
             idx = self.geometry.close(ia, R=[0.1, 1.43], atoms=atoms)
-            io = self.geometry.a2o(ia)
+            io = self.geometry.a2o(ia, all=False)
             # Set on-site on first and second orbital
-            odx = self.geometry.a2o(idx[0])
+            odx = self.geometry.a2o(idx[0], all=False)
             self[io, odx] = -1.0
             self[io + 1, odx + 1] = 1.0
 
             # Set connecting
-            odx = self.geometry.a2o(idx[1])
+            odx = self.geometry.a2o(idx[1], all=False)
             self[io, odx] = 0.2
             self[io, odx + 1] = 0.01
             self[io + 1, odx] = 0.01
@@ -2133,14 +2133,14 @@ class TestHamiltonian:
     def test_edges3(self, setup):
         def func(self, ia, atoms, atoms_xyz=None):
             idx = self.geometry.close(ia, R=[0.1, 1.43], atoms=atoms)
-            io = self.geometry.a2o(ia)
+            io = self.geometry.a2o(ia, all=False)
             # Set on-site on first and second orbital
-            odx = self.geometry.a2o(idx[0])
+            odx = self.geometry.a2o(idx[0], all=False)
             self[io, odx] = -1.0
             self[io + 1, odx + 1] = 1.0
 
             # Set connecting
-            odx = self.geometry.a2o(idx[1])
+            odx = self.geometry.a2o(idx[1], all=False)
             self[io, odx] = 0.2
             self[io, odx + 1] = 0.01
             self[io + 1, odx] = 0.01
