@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=5d6eebe0"></script>
+      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -577,7 +577,7 @@
         <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">ia_xyz</span><span class="p">,</span> <span class="n">isc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">IA</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">ISC</span><span class="p">):</span>
             <span class="c1"># Get current atom</span>
             <span class="n">ia_atom</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span>
-            <span class="n">IO</span> <span class="o">=</span> <span class="n">a2o</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span>
+            <span class="n">IO</span> <span class="o">=</span> <span class="n">a2o</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">IO_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">ia_atom</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
             <span class="n">cell_offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell</span> <span class="o">*</span> <span class="n">isc</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">origin</span>
 
@@ -627,7 +627,7 @@
             <span class="k">for</span> <span class="n">ja</span> <span class="ow">in</span> <span class="n">a_col</span><span class="p">[</span><span class="n">a_ptr</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="p">:</span> <span class="n">a_ptr</span><span class="p">[</span><span class="n">ia</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]:</span>
                 <span class="c1"># Retrieve atom (which contains the orbitals)</span>
                 <span class="n">ja_atom</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="n">ja</span> <span class="o">%</span> <span class="n">na</span><span class="p">]</span>
-                <span class="n">JO</span> <span class="o">=</span> <span class="n">a2o</span><span class="p">(</span><span class="n">ja</span><span class="p">)</span>
+                <span class="n">JO</span> <span class="o">=</span> <span class="n">a2o</span><span class="p">(</span><span class="n">ja</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="n">jR</span> <span class="o">=</span> <span class="n">ja_atom</span><span class="o">.</span><span class="n">maxR</span><span class="p">()</span>
                 <span class="c1"># Get actual coordinate of the atom</span>
                 <span class="n">ja_xyz</span> <span class="o">=</span> <span class="n">axyz</span><span class="p">(</span><span class="n">ja</span><span class="p">)</span> <span class="o">+</span> <span class="n">cell_offset</span>

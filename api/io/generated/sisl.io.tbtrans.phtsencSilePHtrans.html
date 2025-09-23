@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=5d6eebe0"></script>
+      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -390,7 +390,7 @@ For a <em class="xref py py-obj">str</em> it will be parsed to a float and treat
 <span class="sig-name descname"><span class="pre">a2p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtsencSilePHtrans.a2p" title="Link to this definition"></a></dt>
 <dd><p>Return the pivoting orbital indices (0-based) for the atoms, possibly on an electrode</p>
 <p>This is equivalent to:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Will warn if an atom requested is not in the device list of atoms.</p>
@@ -760,7 +760,7 @@ the device in a non-pivoted order.</p></li>
 <p>This pivoting table includes the electrode + the downfolding region +
 the resulting orbitals in the device region.</p>
 <p>Essentially this is equivalent to (but not in the same order):
-&gt;&gt;&gt; pvt = tbt.geometry.a2o(tbt.a_down(elec))
+&gt;&gt;&gt; pvt = tbt.geometry.a2o(tbt.a_down(elec), all=True)
 &gt;&gt;&gt; pvt_down = np.append(pvt, tbt.pivot(elec))</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -775,7 +775,7 @@ orbitals.</p></li>
 <p class="admonition-title">Notes</p>
 <p>This does <em>not</em> correspond to the atoms of the downfolding region from
 the atomic indices:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tbt</span><span class="o">.</span><span class="n">pivot_down</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">tbt</span><span class="o">.</span><span class="n">a_down</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tbt</span><span class="o">.</span><span class="n">pivot_down</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">tbt</span><span class="o">.</span><span class="n">a_down</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">),</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The point for this is that <a class="reference internal" href="#sisl.io.tbtrans.phtsencSilePHtrans.pivot_down" title="sisl.io.tbtrans.phtsencSilePHtrans.pivot_down"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pivot_down</span></code></a> is not guaranteed to fully

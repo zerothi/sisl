@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=5d6eebe0"></script>
+      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -841,6 +841,12 @@
 <span class="sd">           atomic index of first atom</span>
 <span class="sd">        ja :</span>
 <span class="sd">           atomic indices</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        orij : distance between two orbitals</span>
+<span class="sd">        oRij : vector between two orbitals</span>
+<span class="sd">        Rij : vector between two atoms</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rij</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">ja</span><span class="p">)</span>
 
@@ -866,6 +872,12 @@
 <span class="sd">           atomic index of first atom</span>
 <span class="sd">        ja :</span>
 <span class="sd">           atomic indices</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        orij : distance between two orbitals</span>
+<span class="sd">        oRij : vector between two orbitals</span>
+<span class="sd">        rij : distance between two atoms</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">xi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span>
         <span class="n">xj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">ja</span><span class="p">)</span>
@@ -894,6 +906,12 @@
 <span class="sd">           orbital index of first orbital</span>
 <span class="sd">        orbitals2 :</span>
 <span class="sd">           orbital indices</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        oRij : vector between two orbitals</span>
+<span class="sd">        rij : distance between two atoms</span>
+<span class="sd">        Rij : vector between two atoms</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rij</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals2</span><span class="p">))</span></div>
 
@@ -914,6 +932,12 @@
 <span class="sd">           orbital index of first orbital</span>
 <span class="sd">        orbitals2 :</span>
 <span class="sd">           orbital indices</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        orij : distance between two orbitals</span>
+<span class="sd">        rij : distance between two atoms</span>
+<span class="sd">        Rij : vector between two atoms</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rij</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals2</span><span class="p">))</span></div>
 
@@ -2442,7 +2466,7 @@
 <div class="viewcode-block" id="Geometry.axyz">
 <a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.axyz">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">axyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">AtomsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the atomic coordinates in the supercell of a given atom.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the atomic coordinates in the supercell from an atomic index.</span>
 
 <span class="sd">        The ``Geometry[...]`` slicing is calling this function with appropriate options.</span>
 
@@ -2453,7 +2477,7 @@
 <span class="sd">          may be in supercell format.</span>
 <span class="sd">        isc : array_like, optional</span>
 <span class="sd">            Returns the atomic coordinates shifted according to the integer</span>
-<span class="sd">            parts of the cell. Defaults to the unit-cell</span>
+<span class="sd">            parts of the cell. Defaults to the unit-cell.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -2466,6 +2490,9 @@
 <span class="sd">        &gt;&gt;&gt; print(geom.axyz(0))</span>
 <span class="sd">        [0.  0.  0.]</span>
 
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        oxyz : orbital coordinates in supercell from an orbital index.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">isc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span>
@@ -2480,6 +2507,40 @@
 
         <span class="c1"># Neither of atoms, or isc are `None`, we add the offset to all coordinates</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Geometry.oxyz">
+<a class="viewcode-back" href="../../../api/generated/sisl.Geometry.html#sisl.Geometry.oxyz">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">oxyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">:</span> <span class="n">OrbitalsIndex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the orbital coordinates in the supercell from an orbital index.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        orbitals :</span>
+<span class="sd">          orbital(s) from which we should return the coordinates, the orbital indices</span>
+<span class="sd">          may be in supercell format.</span>
+<span class="sd">        isc : array_like, optional</span>
+<span class="sd">            Returns the orbital coordinates shifted according to the integer</span>
+<span class="sd">            parts of the cell. Defaults to the unit-cell.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        axyz : atomic coordinates in supercell from an atomic index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">orbitals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">isc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">orbitals</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
+
+        <span class="c1"># If only atoms has been specified</span>
+        <span class="k">if</span> <span class="n">isc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># get offsets from atomic indices (note that this will be per atom)</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
+            <span class="n">isc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2isc</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">asc2uc</span><span class="p">(</span><span class="n">atoms</span><span class="p">)]</span> <span class="o">+</span> <span class="n">offset</span>
+
+        <span class="c1"># Neither of atoms, or isc are `None`, we add the offset to all coordinates</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">oxyz</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Geometry.within_sc">
@@ -3415,12 +3476,12 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        o2sc : converts orbital indices to supercell offsets</span>
 <span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
 <span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
-<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
 <span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed orbital indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
@@ -3452,11 +3513,11 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        o2sc : converts orbital indices to supercell offsets</span>
 <span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
 <span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
-<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed orbital indices</span>
 <span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
@@ -3486,12 +3547,12 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        o2sc : converts orbital indices to supercell offsets</span>
 <span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
 <span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
 <span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
-<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed orbital indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
@@ -3514,9 +3575,9 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        o2sc : converts orbital indices to supercell offsets</span>
 <span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
 <span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
 <span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
 <span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
@@ -3550,11 +3611,11 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2sc : converts orbital indices to supercell offsets</span>
 <span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
 <span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed orbital indices</span>
 <span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
-<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
 <span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
@@ -3573,12 +3634,12 @@
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
+<span class="sd">        o2sc : converts orbital indices to supercell offsets</span>
 <span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
 <span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed orbital indices</span>
 <span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
-<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
 <span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a2isc</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span></div>
@@ -3600,11 +3661,11 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2sc : converts atomic indices to supercell offsets</span>
+<span class="sd">        o2sc : converts orbital indices to supercell offsets</span>
 <span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
 <span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed orbital indices</span>
 <span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
-<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
 <span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
@@ -3624,11 +3685,11 @@
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        a2sc : converts atomic indices to supercell offsets</span>
-<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
 <span class="sd">        a2isc : convert atomic indices to integer supercell locations</span>
+<span class="sd">        o2isc : convert orbital indices to integer supercell locations</span>
 <span class="sd">        auc2sc : determine *all* supercell indices of passed atomic indices</span>
+<span class="sd">        ouc2sc : determine *all* supercell indices of passed orbital indices</span>
 <span class="sd">        asc2uc : converts atomic supercell indices to unitcell indices</span>
-<span class="sd">        ouc2sc : determine *all* supercell indices of passed atomic indices</span>
 <span class="sd">        osc2uc : converts orbital supercell indices to unitcell indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2isc</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span></div>

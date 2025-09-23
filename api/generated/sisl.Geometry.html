@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=5d6eebe0"></script>
+      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -316,7 +316,7 @@ sisl’s dispatch functionality</p>
 <td><p>Returns atom from unit-cell indices to supercell indices, possibly removing duplicates</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.axyz" title="sisl.Geometry.axyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axyz</span></code></a>([atoms, isc])</p></td>
-<td><p>Return the atomic coordinates in the supercell of a given atom.</p></td>
+<td><p>Return the atomic coordinates in the supercell from an atomic index.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.bond_correct" title="sisl.Geometry.bond_correct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bond_correct</span></code></a>(ia, atoms[, method])</p></td>
 <td><p>Corrects the bond between <em class="xref py py-obj">ia</em> and the <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a>.</p></td>
@@ -408,106 +408,109 @@ sisl’s dispatch functionality</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.overlap" title="sisl.Geometry.overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlap</span></code></a>(other[, atol, offset, offset_other])</p></td>
 <td><p>Calculate the overlapping indices between two geometries</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.prepend" title="sisl.Geometry.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(other, axis[, offset])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.oxyz" title="sisl.Geometry.oxyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oxyz</span></code></a>([orbitals, isc])</p></td>
+<td><p>Return the orbital coordinates in the supercell from an orbital index.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.prepend" title="sisl.Geometry.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(other, axis[, offset])</p></td>
 <td><p>Prepend two structures along <em class="xref py py-obj">axis</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.read" title="sisl.Geometry.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(sile, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.read" title="sisl.Geometry.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(sile, *args, **kwargs)</p></td>
 <td><p>Reads geometry from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> using <em class="xref py py-obj">Sile.read_geometry</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.reduce" title="sisl.Geometry.reduce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.reduce" title="sisl.Geometry.reduce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a>()</p></td>
 <td><p>Remove all atoms not currently used in the <code class="docutils literal notranslate"><span class="pre">self.atoms</span></code> object</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.remove" title="sisl.Geometry.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(atoms)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.remove" title="sisl.Geometry.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(atoms)</p></td>
 <td><p>Remove atoms from the geometry.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.remove_orbital" title="sisl.Geometry.remove_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_orbital</span></code></a>(atoms, orbitals)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.remove_orbital" title="sisl.Geometry.remove_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_orbital</span></code></a>(atoms, orbitals)</p></td>
 <td><p>Remove a subset of orbitals on <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> according to <a class="reference internal" href="#sisl.Geometry.orbitals" title="sisl.Geometry.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.reorder" title="sisl.Geometry.reorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reorder</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.reorder" title="sisl.Geometry.reorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reorder</span></code></a>()</p></td>
 <td><p>Reorders atoms according to first occurence in the geometry</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.repeat" title="sisl.Geometry.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(reps, axis)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.repeat" title="sisl.Geometry.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(reps, axis)</p></td>
 <td><p>Create a repeated geometry</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.replace" title="sisl.Geometry.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(atoms, other[, offset])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.replace" title="sisl.Geometry.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(atoms, other[, offset])</p></td>
 <td><p>Create a new geometry from <em class="xref py py-obj">self</em> and replace <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> with <em class="xref py py-obj">other</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.reverse" title="sisl.Geometry.reverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code></a>([atoms])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.reverse" title="sisl.Geometry.reverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code></a>([atoms])</p></td>
 <td><p>Returns a reversed geometry</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.rij" title="sisl.Geometry.rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rij</span></code></a>(ia, ja)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.rij" title="sisl.Geometry.rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rij</span></code></a>(ia, ja)</p></td>
 <td><p>Distance between atom <em class="xref py py-obj">ia</em> and <em class="xref py py-obj">ja</em>, atoms can be in super-cell indices</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.rotate" title="sisl.Geometry.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(rotation[, origin, atoms, rad, what])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.rotate" title="sisl.Geometry.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(rotation[, origin, atoms, rad, what])</p></td>
 <td><p>Rotate geometry around vector and return a new geometry</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.rotate_miller" title="sisl.Geometry.rotate_miller"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate_miller</span></code></a>(m, v)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.rotate_miller" title="sisl.Geometry.rotate_miller"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate_miller</span></code></a>(m, v)</p></td>
 <td><p>Align Miller direction along <code class="docutils literal notranslate"><span class="pre">v</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.sc2uc" title="sisl.Geometry.sc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc2uc</span></code></a>(atoms[, unique])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.sc2uc" title="sisl.Geometry.sc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc2uc</span></code></a>(atoms[, unique])</p></td>
 <td><p>Converts atomic supercell indices into their corresponding unit-cell indices</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.sc_index" title="sisl.Geometry.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.sc_index" title="sisl.Geometry.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Call local <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.sc_index" title="sisl.Lattice.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.sc_index</span></code></a> function</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.scale" title="sisl.Geometry.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale[, what, scale_basis])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.scale" title="sisl.Geometry.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale[, what, scale_basis])</p></td>
 <td><p>Scale coordinates and unit-cell to get a new geometry with proper scaling</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.set_lattice" title="sisl.Geometry.set_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_lattice</span></code></a>(lattice)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.set_lattice" title="sisl.Geometry.set_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_lattice</span></code></a>(lattice)</p></td>
 <td><p>Overwrites the local lattice.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.set_nsc" title="sisl.Geometry.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.set_nsc" title="sisl.Geometry.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Set the number of super-cells in the <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a> object</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.set_supercell" title="sisl.Geometry.set_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_supercell</span></code></a>(lattice)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.set_supercell" title="sisl.Geometry.set_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_supercell</span></code></a>(lattice)</p></td>
 <td><p>Overwrites the local lattice.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.sort" title="sisl.Geometry.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a>(**kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.sort" title="sisl.Geometry.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a>(**kwargs)</p></td>
 <td><p>Sort atoms in a nested fashion according to various criteria</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.sparserij" title="sisl.Geometry.sparserij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparserij</span></code></a>([dtype, na_iR, method])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.sparserij" title="sisl.Geometry.sparserij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparserij</span></code></a>([dtype, na_iR, method])</p></td>
 <td><p>Return the sparse matrix with all distances in the matrix The sparse matrix will only be defined for the elements which have orbitals overlapping with other atoms.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.sub" title="sisl.Geometry.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(atoms)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.sub" title="sisl.Geometry.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(atoms)</p></td>
 <td><p>Create a new <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> with a subset of this <a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.sub_orbital" title="sisl.Geometry.sub_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_orbital</span></code></a>(atoms, orbitals)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.sub_orbital" title="sisl.Geometry.sub_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_orbital</span></code></a>(atoms, orbitals)</p></td>
 <td><p>Retain only a subset of the orbitals on <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> according to <a class="reference internal" href="#sisl.Geometry.orbitals" title="sisl.Geometry.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.swap" title="sisl.Geometry.swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swap</span></code></a>(atoms1, atoms2)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.swap" title="sisl.Geometry.swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swap</span></code></a>(atoms1, atoms2)</p></td>
 <td><p>Swap a set of atoms in the geometry and return a new one</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.swapaxes" title="sisl.Geometry.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(axes1, axes2[, what])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.swapaxes" title="sisl.Geometry.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(axes1, axes2[, what])</p></td>
 <td><p>Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
 <td><p>Tile the geometry to create a bigger one</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.translate" title="sisl.Geometry.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(v[, atoms])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.translate" title="sisl.Geometry.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(v[, atoms])</p></td>
 <td><p>Translates the geometry by <em class="xref py py-obj">v</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.translate2uc" title="sisl.Geometry.translate2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate2uc</span></code></a>([atoms, axes])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.translate2uc" title="sisl.Geometry.translate2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate2uc</span></code></a>([atoms, axes])</p></td>
 <td><p>Translates atoms in the geometry into the unit cell</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.uc2sc" title="sisl.Geometry.uc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uc2sc</span></code></a>(atoms[, unique])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.uc2sc" title="sisl.Geometry.uc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uc2sc</span></code></a>(atoms[, unique])</p></td>
 <td><p>Returns atom from unit-cell indices to supercell indices, possibly removing duplicates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.unrepeat" title="sisl.Geometry.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis, *args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.unrepeat" title="sisl.Geometry.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis, *args, **kwargs)</p></td>
 <td><p>Unrepeats the geometry similarly as <a class="reference internal" href="sisl.untile.html#sisl.untile" title="sisl.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis[, segment, rtol, atol])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis[, segment, rtol, atol])</p></td>
 <td><p>A subset of atoms from the geometry by cutting the geometry into <em class="xref py py-obj">reps</em> parts along the direction <em class="xref py py-obj">axis</em>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.within" title="sisl.Geometry.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a>(shapes[, atoms, atoms_xyz, ret_xyz, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.within" title="sisl.Geometry.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a>(shapes[, atoms, atoms_xyz, ret_xyz, ...])</p></td>
 <td><p>Indices of atoms in the entire supercell within a given shape from a given coordinate</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.within_inf" title="sisl.Geometry.within_inf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_inf</span></code></a>(lattice[, periodic, atol, origin])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.within_inf" title="sisl.Geometry.within_inf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_inf</span></code></a>(lattice[, periodic, atol, origin])</p></td>
 <td><p>Find all atoms within a provided supercell</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.within_sc" title="sisl.Geometry.within_sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_sc</span></code></a>(shapes[, isc, atoms, atoms_xyz, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.within_sc" title="sisl.Geometry.within_sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_sc</span></code></a>(shapes[, isc, atoms, atoms_xyz, ...])</p></td>
 <td><p>Indices of atoms in a given supercell within a given shape from a given coordinate</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.write" title="sisl.Geometry.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.write" title="sisl.Geometry.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
 <td><p>Writes geometry to the <em class="xref py py-obj">sile</em> using <em class="xref py py-obj">sile.write_geometry</em></p></td>
 </tr>
 </tbody>
@@ -610,6 +613,17 @@ sisl’s dispatch functionality</p>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Geometry.orij" title="sisl.Geometry.orij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orij</span></code></a></dt><dd><p>distance between two orbitals</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.oRij" title="sisl.Geometry.oRij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oRij</span></code></a></dt><dd><p>vector between two orbitals</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.rij" title="sisl.Geometry.rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rij</span></code></a></dt><dd><p>distance between two atoms</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -635,15 +649,15 @@ Hence it will always return a 1D (single atom) or 2D (multiple atoms).</p>
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a></dt><dd><p>converts orbital supercell indices to unitcell indices</p>
 </dd>
@@ -687,17 +701,17 @@ TB models with more than one orbital per atom.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
 </dd>
+<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+</dd>
 <dt><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a></dt><dd><p>converts orbital supercell indices to unitcell indices</p>
 </dd>
@@ -1014,15 +1028,15 @@ note that <code class="docutils literal notranslate"><span class="pre">iter(g)</
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
 </dd>
+<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+</dd>
 <dt><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a></dt><dd><p>converts orbital supercell indices to unitcell indices</p>
 </dd>
@@ -1081,17 +1095,17 @@ Not used if <em class="xref py py-obj">dist</em> is an array-like argument.</p><
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
 </dd>
+<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+</dd>
 <dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
-</dd>
 <dt><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a></dt><dd><p>converts orbital supercell indices to unitcell indices</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
 </dl>
 </div>
@@ -1100,7 +1114,7 @@ Not used if <em class="xref py py-obj">dist</em> is an array-like argument.</p><
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.axyz">
 <span class="sig-name descname"><span class="pre">axyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/geometry.html#Geometry.axyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.axyz" title="Link to this definition"></a></dt>
-<dd><p>Return the atomic coordinates in the supercell of a given atom.</p>
+<dd><p>Return the atomic coordinates in the supercell from an atomic index.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">Geometry[...]</span></code> slicing is calling this function with appropriate options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1108,7 +1122,7 @@ Not used if <em class="xref py py-obj">dist</em> is an array-like argument.</p><
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><em>GenericCategory</em><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – atom(s) from which we should return the coordinates, the atomic indices
 may be in supercell format.</p></li>
 <li><p><strong>isc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – Returns the atomic coordinates shifted according to the integer
-parts of the cell. Defaults to the unit-cell</p></li>
+parts of the cell. Defaults to the unit-cell.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1126,6 +1140,13 @@ parts of the cell. Defaults to the unit-cell</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">axyz</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 <span class="go">[0.  0.  0.]</span>
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Geometry.oxyz" title="sisl.Geometry.oxyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oxyz</span></code></a></dt><dd><p>orbital coordinates in supercell from an orbital index.</p>
+</dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -1345,7 +1366,7 @@ If this is a list, the shells will be of unequal size.</p>
 A list of distances within each shell is gathered and the equivalent
 method will be used to extract a single quantity from the list of
 distances in the shell.
-If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.16.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
+If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.16.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
 If another string is given it will correspond to <code class="docutils literal notranslate"><span class="pre">getattr(numpy,</span> <span class="pre">method)</span></code>,
 while any callable function may be passed. The passed function
 will only be passed a list of unsorted distances that needs to be
@@ -1819,15 +1840,15 @@ and this point</p></li>
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a></dt><dd><p>converts orbital supercell indices to unitcell indices</p>
 </dd>
@@ -1852,15 +1873,15 @@ and this point</p></li>
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
-</dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a></dt><dd><p>converts orbital supercell indices to unitcell indices</p>
 </dd>
@@ -1926,6 +1947,17 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Geometry.orij" title="sisl.Geometry.orij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orij</span></code></a></dt><dd><p>distance between two orbitals</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.rij" title="sisl.Geometry.rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rij</span></code></a></dt><dd><p>distance between two atoms</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.Rij" title="sisl.Geometry.Rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rij</span></code></a></dt><dd><p>vector between two atoms</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1966,6 +1998,17 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Geometry.oRij" title="sisl.Geometry.oRij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oRij</span></code></a></dt><dd><p>vector between two orbitals</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.rij" title="sisl.Geometry.rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rij</span></code></a></dt><dd><p>distance between two atoms</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.Rij" title="sisl.Geometry.Rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rij</span></code></a></dt><dd><p>vector between two atoms</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1988,17 +2031,17 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
 </dl>
 </div>
@@ -2024,11 +2067,11 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
 </dd>
@@ -2094,6 +2137,32 @@ of more than 1 atom in <em class="xref py py-obj">other</em>.</p>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[ndarray, ndarray]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Geometry.oxyz">
+<span class="sig-name descname"><span class="pre">oxyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/_core/geometry.html#Geometry.oxyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.oxyz" title="Link to this definition"></a></dt>
+<dd><p>Return the orbital coordinates in the supercell from an orbital index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em> | </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a><em> | </em><a class="reference internal" href="../geom/generated/sisl.geom.AtomCategory.html#sisl.geom.AtomCategory" title="sisl.geom.AtomCategory"><em>AtomCategory</em></a><em> | </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a><em> | </em><em>ellipsis</em>) – orbital(s) from which we should return the coordinates, the orbital indices
+may be in supercell format.</p></li>
+<li><p><strong>isc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – Returns the orbital coordinates shifted according to the integer
+parts of the cell. Defaults to the unit-cell.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Geometry.axyz" title="sisl.Geometry.axyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axyz</span></code></a></dt><dd><p>atomic coordinates in supercell from an atomic index.</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2413,6 +2482,17 @@ atoms will be reversed</p>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a></p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Geometry.orij" title="sisl.Geometry.orij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orij</span></code></a></dt><dd><p>distance between two orbitals</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.oRij" title="sisl.Geometry.oRij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oRij</span></code></a></dt><dd><p>vector between two orbitals</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.Rij" title="sisl.Geometry.Rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rij</span></code></a></dt><dd><p>vector between two atoms</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2501,15 +2581,15 @@ points along the Cartesian vector <code class="docutils literal notranslate"><sp
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
 </dd>
+<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+</dd>
 <dt><a class="reference internal" href="#sisl.Geometry.auc2sc" title="sisl.Geometry.auc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a></dt><dd><p>converts orbital supercell indices to unitcell indices</p>
 </dd>
@@ -3229,17 +3309,17 @@ directions.</p></li>
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Geometry.a2sc" title="sisl.Geometry.a2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts atomic indices to supercell offsets</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+<dt><a class="reference internal" href="#sisl.Geometry.o2sc" title="sisl.Geometry.o2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2sc</span></code></a></dt><dd><p>converts orbital indices to supercell offsets</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a></dt><dd><p>convert atomic indices to integer supercell locations</p>
 </dd>
+<dt><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a></dt><dd><p>convert orbital indices to integer supercell locations</p>
+</dd>
 <dt><a class="reference internal" href="#sisl.Geometry.asc2uc" title="sisl.Geometry.asc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asc2uc</span></code></a></dt><dd><p>converts atomic supercell indices to unitcell indices</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed atomic indices</p>
-</dd>
 <dt><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a></dt><dd><p>converts orbital supercell indices to unitcell indices</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a></dt><dd><p>determine <em>all</em> supercell indices of passed orbital indices</p>
 </dd>
 </dl>
 </div>

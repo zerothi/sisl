@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=5d6eebe0"></script>
+      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -216,7 +216,7 @@
 <div class="viewcode-block" id="EllipticalCylinder.copy">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radial_vector</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radial_vector</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -262,7 +262,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span> <span class="o">*</span> <span class="n">scale</span>
             <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_h</span> <span class="o">*</span> <span class="n">scale</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EllipticalCylinder.expand">
@@ -288,7 +288,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.expand requires the radius to be either (1,) or (3,)&quot;</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">],</span> <span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">],</span> <span class="n">h</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EllipticalCylinder.within_index">

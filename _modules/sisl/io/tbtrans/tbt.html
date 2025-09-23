@@ -21,7 +21,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=5d6eebe0"></script>
+      <script src="../../../../_static/documentation_options.js?v=e6894c64"></script>
       <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -3333,7 +3333,7 @@
                             <span class="k">continue</span>
 
                         <span class="c1"># Get atoms and orbitals</span>
-                        <span class="n">ob</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                        <span class="n">ob</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                         <span class="c1"># We normalize for the total number of orbitals</span>
                         <span class="c1"># on the requested atoms.</span>
                         <span class="c1"># In this way the user can compare directly the DOS</span>
@@ -3344,7 +3344,7 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">a_dev</span><span class="p">:</span>
                             <span class="k">continue</span>
-                        <span class="n">ob</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                        <span class="n">ob</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                         <span class="n">no</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
                     <span class="n">orbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
 
