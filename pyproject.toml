@@ -395,6 +395,11 @@ orphan_prefix = "orphan."
     name = "Bugfixes"
     showcontent = true
 
+    [[tool.towncrier.type]]
+    directory = "doc"
+    name = "Documentation"
+    showcontent = true
+
 [tool.rstcheck]
 ignore_directives = [
     "autosummary",

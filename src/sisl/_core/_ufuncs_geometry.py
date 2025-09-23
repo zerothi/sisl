@@ -1648,7 +1648,7 @@ def scale(
     what: Literal["abc", "xyz"] = "abc",
     scale_basis: bool = True,
 ) -> Geometry:
-    """Scale coordinates and unit-cell to get a new geometry with proper scaling
+    """Scale coordinates and lattice vectors.
 
     Parameters
     ----------
@@ -1661,7 +1661,7 @@ def scale(
          Is applied on the corresponding lattice vector and the fractional coordinates.
 
        ``xyz``
-         Is applied *only* to the atomic coordinates.
+         Is applied *only* to the Cartesian coordinates (both atomic and lattice vectors).
 
        If three different scale factors are provided, each will correspond to the
        Cartesian direction/lattice vector.
