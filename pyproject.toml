@@ -201,9 +201,11 @@ test = [
     "pytest-faulthandler",
 ]
 
-docs = [
+
+[dependency-groups]
+
+sphinx = [
     "sphinx<8",
-    "plotly", # won't work with 6.0 or 6.1, it creates too many things.
     "nbsphinx",
     "sphinx-rtd-theme",
     "sphinx-design",
@@ -213,6 +215,10 @@ docs = [
     "sphinx-inline-tabs",
     "sphinxcontrib-bibtex",
     "sphinxext-rediraffe",
+]
+
+docs = [
+    "plotly", # won't work with 6.0 or 6.1, it creates too many things.
     "importlib-metadata",
     "ipykernel",
     "ipywidgets",
@@ -224,6 +230,7 @@ docs = [
     "pyvis",
     "pybtex",
     "pandoc",
+    {include-group = "sphinx"},
 ]
 
 

@@ -189,9 +189,11 @@ To contribute to the documentation one needs to install `pandoc`_ first (see
 
 #. Sitting inside the `sisl` tree, install the `sisl` documentation via:
 
+   (requires ``pip > 25.1``)
+
    .. code:: bash
 
-      pip install -e .[docs]
+      pip install -e . --group docs
 
 #. Download tutorial files accompanying the `sisl` repository:
 
