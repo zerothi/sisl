@@ -1,0 +1,4 @@
+Improved performance of real-space self-energies
+
+Now there is only a single copy at the end of
+the integration, so it should be much faster.

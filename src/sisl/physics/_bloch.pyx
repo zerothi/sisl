@@ -20,7 +20,8 @@ __all__ = ['bloch_unfold', 'bloch_unfold_finalize']
 @cython.initializedcheck(True)
 def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
                  np.ndarray[np.float64_t, ndim=2, mode='c'] k,
-                 np.ndarray[complexs_st, ndim=3, mode='c'] M):
+                 np.ndarray[complexs_st, ndim=3, mode='c'] m,
+                 const bint finalize):
     """ Exposed unfolding method using the TILING method
 
     Parameters
@@ -29,30 +30,101 @@ def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
       the number of unfolds per direction
     k : [product(B), 3]
       k-points where M has been evaluated at
-    M : [B[2], B[1], B[0], :, :]
+    m : [B[2], B[1], B[0], :, :]
        matrix at given k-points
-    dtype : dtype
-       resulting unfolded matrix dtype
-    """
-    # Reshape M and check for layout
-    if not M.flags.c_contiguous:
-        raise ValueError('bloch_unfold: requires M to be C-contiguous.')
+    finalize :
+        whether the matrix should be finalized
 
+    Returns
+    -------
+    the Bloch-expanded matrix from `m`.
+    """
     # Quick return for all B == 1
     if B[0] == B[1] == B[2] == 1:
         # the array should still be (:, :, :)
-        return M[0]
+        return m[0]
+
+    # Reshape M and check for layout
+    if not m.flags.c_contiguous:
+        raise ValueError('bloch_unfold: requires m to be C-contiguous.')
+
+    # handle different data-types
+    if m.dtype not in (np.complex64, np.complex128):
+        raise ValueError('bloch_unfold: requires dtype to be either complex64 or complex128.')
+
+    cdef:
+        int[::1] b = B
+        Py_ssize_t n0 = m.shape[1]
+        Py_ssize_t n1 = m.shape[2]
+
+        # Allocate the output matrix
+        complexs_st[:, ::1] M = _unfold_allocate(b, n0, n1, m)
+
+    _unfold(b, (k * (2 * pi)).reshape(B[2], B[1], B[0], 3), m, M)
+    if finalize:
+        _unfold_copy(b, M)
+    return M.base
+
+
+@cython.boundscheck(True)
+@cython.initializedcheck(True)
+def bloch_unfold_finalize(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
+                          np.ndarray[complexs_st, ndim=2] M):
+    """Copy out the Toeplitz solved matrix elements.
+
+    Parameters
+    ----------
+    B : [x, y, z]
+      the number of unfolds per direction
+    M : [:, :]
+       full matrix only with the Toeplitz matrix elements.
+
+    Returns
+    -------
+    the Bloch-expanded matrix from `m`.
+    """
+    if B[0] == B[1] == B[2] == 1:
+        return M
 
     # handle different data-types
     if M.dtype not in (np.complex64, np.complex128):
-        raise ValueError('bloch_unfold: requires dtype to be either complex64 or complex128.')
+        raise ValueError('bloch_unfold_finalize: requires dtype to be either complex64 or complex128.')
 
-    m = _unfold(B, (k * 2 * pi).reshape(B[2], B[1], B[0], 3), M)
-    return m
+    cdef:
+        int[::1] b = B
+        complexs_st[:, ::1] MM
+
+    # Get the correct view
+    # For both C and F contiguous we can use the same algorithm. A transpose
+    # Still works for the Toeplitz structure.
+    if M.flags.c_contiguous:
+        MM = M
+    else:
+        MM = M.T
+
+    _unfold_copy(b, MM)
+    return M
 
 
+cdef complexs_st[:, ::1] _unfold_allocate(const int[::1] B,
+                                          const Py_ssize_t n0,
+                                          const Py_ssize_t n1,
+                                          # unused m argument (only for deciding dtype)
+                                          np.ndarray[complexs_st, ndim=3, mode='c'] m
+                                          ):
+    cdef Py_ssize_t N = B[0] * B[1] * B[2]
+    cdef object dtype = type2dtype[complexs_st](1)
+    cdef np.ndarray[complexs_st, ndim=2, mode='c'] M = np.zeros([N * n0, N * n1],
+                                                                dtype=dtype)
+    cdef complexs_st[:, ::1] MM = M
+    return MM
+
+
+@cython.initializedcheck(False)
 def _unfold(const int[::1] B, const double[:, :, :, ::1] k2pi,
-            const complexs_st[:, :, ::1] m):
+            const complexs_st[:, :, ::1] m,
+            complexs_st[:, ::1] M,
+            ):
     """ Main unfolding routine for a matrix `m`. """
 
     # N should now equal K.shape[0]
@@ -62,14 +134,11 @@ def _unfold(const int[::1] B, const double[:, :, :, ::1] k2pi,
     cdef Py_ssize_t N = B0 * B1 * B2
     cdef Py_ssize_t n0 = m.shape[1]
     cdef Py_ssize_t n1 = m.shape[2]
-    cdef object dtype = type2dtype[complexs_st](1)
-    cdef np.ndarray[complexs_st, ndim=2, mode='c'] M = np.zeros([N * n0, N * n1],
-                                                                dtype=dtype)
-    cdef complexs_st[:, :, :, ::1] M4 = M.reshape(N, n0, N, n1)
-    cdef complexs_st[:, ::1] M2 = M
+    cdef complexs_st[:, :, :, ::1] M4 = <complexs_st[:N, :n0, :N, :n1]> &M[0, 0]
 
     # Apparently, if we don't have a temporary, it fails... :(
-    # When slicing a mem-view, it creates a copy.
+    # When slicing a mem-view, it seems to create a copy, i.e. k2pi0.base is k2pi
+    # fails... :(
     cdef const double[:] k2pi0, k2pi1, k2pi2
 
     # Split calculations into single expansion (easy to abstract)
@@ -101,9 +170,7 @@ def _unfold(const int[::1] B, const double[:, :, :, ::1] k2pi,
         _unfold_2(B0, k2pi0, B1, k2pi1, n0, n1, m, M4)
 
     else:
-        _unfold_3(B0, B1, B2, k2pi, n0, n1, m, M2)
-
-    return M
+        _unfold_3(B0, B1, B2, k2pi, n0, n1, m, M)
 
 
 cdef void _unfold_matrix(const double w,
@@ -238,8 +305,6 @@ cdef void _unfold_1(const Py_ssize_t NA, const double[:] kA2pi,
             # Increment phases
             ph = ph * pha
 
-    _unfold_copy_1(NA, n0, n1, M)
-
 
 cdef void _unfold_2(const Py_ssize_t NA, const double[:] kA2pi,
                     const Py_ssize_t NB, const double[:] kB2pi,
@@ -345,8 +410,6 @@ cdef void _unfold_2(const Py_ssize_t NA, const double[:] kA2pi,
                 # Increment phases
                 phb = phb * phb_step
 
-    _unfold_copy_2(NA, NB, n0, n1, M)
-
 
 cdef void _unfold_copy(const int[::1] B, complexs_st[:, ::1] M):
     """ Finalize an unfolding by copying data around for the Toeplitz matrix `m`. """
@@ -358,7 +421,7 @@ cdef void _unfold_copy(const int[::1] B, complexs_st[:, ::1] M):
     cdef Py_ssize_t N = B0 * B1 * B2
     cdef Py_ssize_t n0 = M.shape[0] // N
     cdef Py_ssize_t n1 = M.shape[1] // N
-    cdef complexs_st[:, :, :, ::1] M4 = M.reshape(N, n0, N, n1)
+    cdef complexs_st[:, :, :, ::1] M4 = <complexs_st[:N, :n0, :N, :n1]> &M[0, 0]
 
     # Split calculations into single expansion (easy to abstract)
     # and full calculation (which is too heavy!)
