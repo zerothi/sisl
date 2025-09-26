@@ -1168,7 +1168,7 @@ class RealSpaceSE(SelfEnergy):
         unfold = self._unfold.copy()
         tile = unfold[s_ax]
         unfold[s_ax] = 1
-        bloch = Bloch(unfold)
+        bloch = Bloch(unfold, finalize=False)
 
         # We always need the inverse
         getrf = linalg_info("getrf", dtype)
@@ -1323,6 +1323,8 @@ class RealSpaceSE(SelfEnergy):
         G = bz.apply.renew(**apply_kwargs).average(_func_bloch)(
             dtype=dtype, no=no, tile=tile, idx0=idx0
         )
+        if not bloch.finalize:
+            bloch.unfold_finalize(G)
 
         if is_k:
             # Revert k-points
@@ -1967,7 +1969,7 @@ class RealSpaceSI(SelfEnergy):
         # to filter out unused arguments.
 
         # Define Bloch unfolding routine and number of tiles along the semi-inf direction
-        bloch = Bloch(self._unfold)
+        bloch = Bloch(self._unfold, finalize=False)
 
         # If using Bloch's theorem we need to wrap the Green function calculation
         # as the method call.
@@ -1989,6 +1991,9 @@ class RealSpaceSI(SelfEnergy):
         G = bz.apply.average(_func_bloch)(
             dtype=dtype, surf_orbs=self._surface_orbs, semi_bulk=opt["semi_bulk"]
         )
+
+        if not bloch.finalize:
+            bloch.unfold_finalize(G)
 
         if is_k:
             # Restore Brillouin zone k-points

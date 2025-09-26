@@ -169,6 +169,8 @@ if(WITH_ANNOTATE)
 endif()
 if(WITH_LINE_DIRECTIVES)
   list(APPEND CYTHON_FLAGS --line-directives)
+  # Ensure some traceback on the CYTHON traceback
+  add_compile_definitions(CYTHON_CLINE_IN_TRACEBACK=1)
 endif()
 if(WITH_GDB)
   list(APPEND CYTHON_FLAGS --gdb)

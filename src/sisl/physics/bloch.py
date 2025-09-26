@@ -19,7 +19,7 @@ from sisl._help import dtype_float_to_complex
 from sisl._internal import set_module
 from sisl.typing import KPoint
 
-from ._bloch import bloch_unfold
+from ._bloch import bloch_unfold, bloch_unfold_finalize
 
 __all__ = ["Bloch"]
 
@@ -54,22 +54,43 @@ class Bloch:
         \mathbf M_{k_j}^1.
 
 
+    Notes
+    -----
+    When doing a Brillouin-zone average of Bloch-expansions (e.g.
+    self-energies) one can get better performance by using
+    ``finalize=False`` and then call a subsequent ``bloch.unfold_finalize(M)``.
+
+
     Parameters
     ----------
     bloch : (3,) int
-       Bloch repetitions along each direction
+        Bloch repetitions along each direction
+    finalize :
+        whether the unfold routine also copies out the
+        Toeplitz matrix. If false, the user should call
+        ``bloch.unfold_finalize(M)`` on the returned matrix
+        to ensure it is complete, see examples.
 
     Examples
     --------
+    Auto-use finalize of the Toeplitz matrix.
     >>> bloch = Bloch([2, 1, 2])
     >>> k_unfold = bloch.unfold_points([0] * 3)
     >>> M = [func(*args, k=k) for k in k_unfold]
-    >>> bloch.unfold(M, k_unfold)
+    >>> M = bloch.unfold(M, k_unfold)
+
+    Manual finalization of the Toeplitz matrix.
+    >>> bloch = Bloch([2, 1, 2], finalize=False)
+    >>> k_unfold = bloch.unfold_points([0] * 3)
+    >>> M = [func(*args, k=k) for k in k_unfold]
+    >>> M = bloch.unfold(M, k_unfold)
+    >>> if not bloch.finalize:
+    ...    bloch.unfold_finalize(M)
     """
 
-    def __init__(self, *bloch):
+    def __init__(self, *bloch, finalize: bool = True):
         """Create `Bloch` object"""
-        self._bloch = _a.arrayi(bloch).ravel()
+        self._bloch = _a.arrayi(bloch).ravel()  # ensure 1D
         self._bloch = np.where(self._bloch < 1, 1, self._bloch).astype(
             np.int32, copy=False
         )
@@ -79,6 +100,7 @@ class Bloch:
             raise ValueError(
                 self.__class__.__name__ + " requires all unfoldings to be larger than 0"
             )
+        self.finalize = finalize
 
     def __len__(self):
         """Return unfolded size"""
@@ -109,7 +131,7 @@ class Bloch:
 
         Parameters
         ----------
-        k : (3,) of float
+        k :
            k-point evaluation corresponding to the unfolded unit-cell
 
         Returns
@@ -150,11 +172,11 @@ class Bloch:
         ----------
         func : callable
            method called which returns a matrix.
-        k : (3, ) of float
+        k :
            k-point to be unfolded
-        *args : list
+        *args :
            arguments passed directly to `func`
-        **kwargs : dict
+        **kwargs :
            keyword arguments passed directly to `func`
 
         Returns
@@ -170,7 +192,7 @@ class Bloch:
         del M0
         for i in range(1, K_unfold.shape[0]):
             M[i] = func(*args, k=K_unfold[i, :], **kwargs)
-        return bloch_unfold(self._bloch, K_unfold, M)
+        return bloch_unfold(self._bloch, K_unfold, M, self.finalize)
 
     def unfold(self, M, k_unfold: Sequence[KPoint]):
         r"""Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)
@@ -179,7 +201,7 @@ class Bloch:
         ----------
         M : (:, :, :)
             an ``*``-N-M matrix used for unfolding
-        k_unfold : (:, 3) of float
+        k_unfold :
             unfolding k-points as returned by `Bloch.unfold_points`
 
         Returns
@@ -189,4 +211,22 @@ class Bloch:
         """
         if isinstance(M, (list, tuple)):
             M = np.stack(M)
-        return bloch_unfold(self._bloch, k_unfold, M)
+        return bloch_unfold(self._bloch, k_unfold, M, self.finalize)
+
+    def unfold_finalize(self, M):
+        """Copy out the Toeplitz matrix from the sub-calculated elements.
+
+        This is necessary to be called if the `Bloch` object has
+        been initialized with ``Bloch(..., finalize=False)``.
+        Otherwise it should not be used.
+
+        Parameters
+        ----------
+        M :
+            the full matrix, where only the Toeplitz elements are filled.
+
+        Returns
+        -------
+        the full matrix with copied out elements.
+        """
+        return bloch_unfold_finalize(self._bloch, M)
