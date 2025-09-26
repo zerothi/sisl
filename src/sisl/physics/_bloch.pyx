@@ -112,9 +112,10 @@ cdef complexs_st[:, ::1] _unfold_allocate(const int[::1] B,
                                           # unused m argument (only for deciding dtype)
                                           np.ndarray[complexs_st, ndim=3, mode='c'] m
                                           ):
-    cdef Py_ssize_t N = B[0] * B[1] * B[2]
-    cdef object dtype = type2dtype[complexs_st](1)
-    cdef np.ndarray[complexs_st, ndim=2, mode='c'] M = np.zeros([N * n0, N * n1],
+    cdef:
+        Py_ssize_t N = B[0] * B[1] * B[2]
+        object dtype = type2dtype[complexs_st](1)
+        np.ndarray[complexs_st, ndim=2, mode='c'] M = np.zeros([N * n0, N * n1],
                                                                 dtype=dtype)
     cdef complexs_st[:, ::1] MM = M
     return MM
@@ -128,18 +129,18 @@ def _unfold(const int[::1] B, const double[:, :, :, ::1] k2pi,
     """ Main unfolding routine for a matrix `m`. """
 
     # N should now equal K.shape[0]
-    cdef Py_ssize_t B0 = B[0]
-    cdef Py_ssize_t B1 = B[1]
-    cdef Py_ssize_t B2 = B[2]
-    cdef Py_ssize_t N = B0 * B1 * B2
-    cdef Py_ssize_t n0 = m.shape[1]
-    cdef Py_ssize_t n1 = m.shape[2]
-    cdef complexs_st[:, :, :, ::1] M4 = <complexs_st[:N, :n0, :N, :n1]> &M[0, 0]
-
-    # Apparently, if we don't have a temporary, it fails... :(
-    # When slicing a mem-view, it seems to create a copy, i.e. k2pi0.base is k2pi
-    # fails... :(
-    cdef const double[:] k2pi0, k2pi1, k2pi2
+    cdef:
+        Py_ssize_t B0 = B[0]
+        Py_ssize_t B1 = B[1]
+        Py_ssize_t B2 = B[2]
+        Py_ssize_t N = B0 * B1 * B2
+        Py_ssize_t n0 = m.shape[1]
+        Py_ssize_t n1 = m.shape[2]
+        complexs_st[:, :, :, ::1] M4 = <complexs_st[:N, :n0, :N, :n1]> &M[0, 0]
+        # Apparently, if we don't have a temporary, it fails... :(
+        # When slicing a mem-view, it seems to create a copy, i.e. k2pi0.base is k2pi
+        # fails... :(
+        const double[:] k2pi0, k2pi1, k2pi2
 
     # Split calculations into single expansion (easy to abstract)
     # and full calculation (which is too heavy!)
@@ -170,102 +171,28 @@ def _unfold(const int[::1] B, const double[:, :, :, ::1] k2pi,
         _unfold_2(B0, k2pi0, B1, k2pi1, n0, n1, m, M4)
 
     else:
-        _unfold_3(B0, B1, B2, k2pi, n0, n1, m, M)
+        k2pi0 = k2pi[0, 0, :, 0]
+        k2pi1 = k2pi[0, :, 0, 1]
+        k2pi2 = k2pi[:, 0, 0, 2]
+        _unfold_3(B0, k2pi0, B1, k2pi1, B2, k2pi2, n0, n1, m, M4)
 
 
-cdef void _unfold_matrix(const double w,
-                         const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
-                         const double k0, const double k1, const double k2,
-                         const Py_ssize_t n0, const Py_ssize_t n1,
-                         const complexs_st[:, ::1] m,
-                         complexs_st[:, ::1] M) noexcept nogil:
-    """ Unfold matrix `m` into `M` """
+cdef void _unfold_block(
+        const Py_ssize_t N0, const Py_ssize_t N1,
+        const Py_ssize_t NA,
+        const double[:] k2pi,
+        const double complex wph,
+        const Py_ssize_t n0, const Py_ssize_t n1,
+        const complexs_st[:, :, ::1] m,
+        complexs_st *M) noexcept nogil:
 
-    cdef Py_ssize_t j0, j1, j2 # looping the output rows
-    cdef Py_ssize_t i, j # looping m[j, i]
-    cdef Py_ssize_t I, J # looping output M[J, I]
-
-    # Faster memory views
-    cdef complexs_st[::1] MJ
-    cdef const complexs_st[::1] mj
-
-    # Phase handling variables (still in double precision because we accummulate)
-    cdef double rph
-    cdef double complex aph0, aph1, aph2
-    cdef double complex ph, ph0, ph1, ph2
-
-    # Construct the phases to be added
-    aph0 = aph1 = aph2 = 1.
-    if B0 > 1:
-        aph0 = cos(k0) - 1j * sin(k0)
-    if B1 > 1:
-        aph1 = cos(k1) - 1j * sin(k1)
-    if B2 > 1:
-        aph2 = cos(k2) - 1j * sin(k2)
-
-    J = 0
-    for j2 in range(B2):
-        for j1 in range(B1):
-            for j0 in range(B0):
-                rph = - j0 * k0 - j1 * k1 - j2 * k2
-                ph = w * cos(rph) - 1j * (w * sin(rph))
-                for j in range(n0):
-                    # Every column starts from scratch
-                    ph2 = ph
-
-                    # Retrieve sub-arrays that we are to write too
-                    mj = m[j]
-                    MJ = M[J]
-
-                    I = 0
-                    for _ in range(B2):
-                        ph1 = ph2
-                        for _ in range(B1):
-                            ph0 = ph1
-                            for _ in range(B0):
-                                for i in range(n1):
-                                    MJ[I] += mj[i] * ph0
-                                    I += 1
-                                ph0 = ph0 * aph0
-                            ph1 = ph1 * aph1
-                        ph2 = ph2 * aph2
-                    J += 1
-
-
-cdef void _unfold_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
-                    const double[:, :, :, ::1] k2pi,
-                    const Py_ssize_t n0, const Py_ssize_t n1,
-                    const complexs_st[:, :, ::1] m,
-                    complexs_st[:, ::1] M) noexcept nogil:
-
-    # N should now equal K.shape[0]
-    cdef Py_ssize_t N = B0 * B1 * B2
-    cdef double k0, k1, k2
-    cdef double w = 1. / N
-    cdef Py_ssize_t T, A, B, C
-
-    # Now perform expansion
-    T = 0
-    for C in range(B2):
-        for B in range(B1):
-            for A in range(B0):
-                k0 = k2pi[C, B, A, 0]
-                k1 = k2pi[C, B, A, 1]
-                k2 = k2pi[C, B, A, 2]
-                _unfold_matrix(w, B0, B1, B2, k0, k1, k2, n0, n1, m[T], M)
-                T = T + 1
-
-
-cdef void _unfold_1(const Py_ssize_t NA, const double[:] kA2pi,
-                    const Py_ssize_t n0, const Py_ssize_t n1,
-                    const complexs_st[:, :, ::1] m,
-                    complexs_st[:, :, :, ::1] M) noexcept nogil:
-
-    cdef double k, w
-    cdef Py_ssize_t TA, iA
-    cdef Py_ssize_t i, j
-    cdef double complex ph, cph, pha
-    cdef const complexs_st[:, ::1] mT
+    cdef:
+        double k
+        Py_ssize_t TA, iA
+        Py_ssize_t i, j
+        Py_ssize_t to_c, to_r, off_r, off_c
+        double complex ph, cph, pha, pha_step
+        const complexs_st[:, ::1] mT
 
     # The algorithm for constructing the unfolded matrix can be done in the
     # following way:
@@ -275,35 +202,51 @@ cdef void _unfold_1(const Py_ssize_t NA, const double[:] kA2pi,
     #    a) calculate the first n0 rows
     #    b) copy from the previous column-block the first N-1 blocks into 1:N
 
-    # Dimension of final matrix
-    w = 1. / NA
-
     for TA in range(NA):
         mT = m[TA]
-        k = kA2pi[TA]
 
         # 1: construct M[0, :, 0, :]
         for j in range(n0):
+            to_r = j*N1
             for i in range(n1):
-                M[0, j, 0, i] += mT[j, i] * w
+                M[to_r + i] += mT[j, i] * wph
 
         # Initial phases along the column
-        pha = cos(k) - 1j * sin(k)
-        ph = w * pha
+        k = k2pi[TA]
+        pha_step = cos(k) - 1j * sin(k)
+        pha = pha_step
 
         for iA in range(1, NA):
+            off_r = iA * n0 * N1
+            off_c = iA * n1
+
             # Conjugate to construct first columns
-            cph = ph.conjugate()
+            ph = wph * pha
+            cph = wph * pha.conjugate()
             for j in range(n0):
+                to_r = j*N1
                 for i in range(n1):
                     # 2: construct M[0, :, 1:, :]
-                    M[0, j, iA, i] += mT[j, i] * ph
+                    M[to_r + off_c + i] += mT[j, i] * ph
                 for i in range(n1):
                     # 3a: construct M[1:, :, 0, :]
-                    M[iA, j, 0, i] += mT[j, i] * cph
+                    M[off_r + to_r + i] += mT[j, i] * cph
 
             # Increment phases
-            ph = ph * pha
+            pha = pha * pha_step
+
+
+cdef void _unfold_1(const Py_ssize_t NA, const double[:] kA2pi,
+                    const Py_ssize_t n0, const Py_ssize_t n1,
+                    const complexs_st[:, :, ::1] m,
+                    complexs_st[:, :, :, ::1] M) noexcept nogil:
+
+    cdef:
+        double complex w = 1. / NA
+        Py_ssize_t N0 = NA * n0
+        Py_ssize_t N1 = NA * n1
+
+    _unfold_block(N0, N1, NA, kA2pi, w, n0, n1, m, &M[0, 0, 0, 0])
 
 
 cdef void _unfold_2(const Py_ssize_t NA, const double[:] kA2pi,
@@ -312,116 +255,140 @@ cdef void _unfold_2(const Py_ssize_t NA, const double[:] kA2pi,
                     const complexs_st[:, :, ::1] m,
                     complexs_st[:, :, :, ::1] M) noexcept nogil:
 
-    cdef double w, kA, kB
-    cdef Py_ssize_t TA, iA, TB, iB
-    cdef Py_ssize_t i, j
-    cdef double complex ph, cph
-    cdef double complex pha, pha_step, phb, phb_step
+    cdef:
+        double w, kB
+        double complex phb_step, phb
+        const complexs_st[:, :, ::1] mT
+        Py_ssize_t TB, iB
+        Py_ssize_t N0 = NA * NB * n0
+        Py_ssize_t N1 = NA * NB * n1
 
-    cdef const complexs_st[:, ::1] mT
-
-    # The algorithm for constructing the unfolded matrix can be done in the
-    # following way:
-    # 1. Fill the diagonal which corresponds to zero phases, i.e. M[:n0, :n1] = sum(m, 0) / w
-    # 2. Construct the rest of the column M[:n0, n1:].
-    # 3. Loop neighboring columns and perform these steps:
-    #    a) calculate the first n0 rows
-    #    b) copy from the previous column-block the first N-1 blocks into 1:N
-
-    # Dimension of final matrix
     w = 1. / (NA * NB)
     for TB in range(NB):
+        # Get sub-matrix for the A-parts
+        mT = m[TB * NA:]
 
-        # Initial phases along the column
+        # First do iB == 0
+        phb = w
+        _unfold_block(N0, N1, NA, kA2pi, phb, n0, n1, mT, &M[0, 0, 0, 0])
+
+        # Calculate the B-phases
         kB = kB2pi[TB]
+        # Step-size in the Bloch-expansion phases.
         phb_step = cos(kB) - 1j * sin(kB)
 
-        for TA in range(NA):
+        phb = w * phb_step
+        for iB in range(1, NB):
 
-            # Initial phases along the column
-            kA = kA2pi[TA]
-            pha_step = cos(kA) - 1j * sin(kA)
+            #(0,0,iB,0)
+            _unfold_block(N0, N1, NA, kA2pi, phb, n0, n1, mT, &M[0, 0, iB*NA, 0])
+            #(iB,0,0,0)
+            _unfold_block(N0, N1, NA, kA2pi, phb.conjugate(), n0, n1, mT, &M[iB*NA, 0, 0, 0])
+            phb = phb * phb_step
 
-            mT = m[TB*NA+TA]
 
-            for j in range(n0):
-                for i in range(n1):
-                    #(0,0,0,0) (C-index)
-                    M[0, j, 0, i] += mT[j, i] * w
+cdef void _unfold_3(const Py_ssize_t NA, const double[:] kA2pi,
+                    const Py_ssize_t NB, const double[:] kB2pi,
+                    const Py_ssize_t NC, const double[:] kC2pi,
+                    const Py_ssize_t n0, const Py_ssize_t n1,
+                    const complexs_st[:, :, ::1] m,
+                    complexs_st[:, :, :, ::1] M) noexcept nogil:
 
-            # Initial phases along the column
-            pha = w * pha_step
-            for iA in range(1, NA):
+    cdef:
+        double w, kB, kC
+        double complex phc_step, phc, cphc
+        double complex phb_step, phb
+        const complexs_st[:, :, ::1] mT
+        Py_ssize_t TB, iB, TC, iC
+        Py_ssize_t NAB = NA * NB
+        Py_ssize_t N0 = NA * NB * NC * n0
+        Py_ssize_t N1 = NA * NB * NC * n1
 
-                # Conjugate to construct first columns
-                ph = pha
-                cph = pha.conjugate()
-                for j in range(n0):
-                    for i in range(n1):
-                        #(0,0,0,iA)
-                        M[0, j, iA, i] += mT[j, i] * ph
-                    for i in range(n1):
-                        #(0,iA,0,0)
-                        M[iA, j, 0, i] += mT[j, i] * cph
+    w = 1. / (NA * NB * NC)
+    for TC in range(NC):
 
-                # Increment phases
-                pha = pha * pha_step
+        # First do iC == 0
+        for TB in range(NB):
+            # Get sub-matrix for the A-parts
+            mT = m[TC * NAB + TB * NA:]
+
+            # First do iB == 0
+            phb = w
+            _unfold_block(N0, N1, NA, kA2pi, phb, n0, n1, mT, &M[0, 0, 0, 0])
+
+            # Calculate the B-phases
+            kB = kB2pi[TB]
+            # Step-size in the Bloch-expansion phases.
+            phb_step = cos(kB) - 1j * sin(kB)
 
             phb = w * phb_step
             for iB in range(1, NB):
 
-                # Conjugate to construct first columns
-                ph = phb
-                cph = phb.conjugate()
-                for j in range(n0):
-                    for i in range(n1):
-                        #(0,0,iB,0)
-                        M[0, j, iB*NA, i] += mT[j, i] * ph
-                    for i in range(n1):
-                        #(iB,0,0,0)
-                        M[iB*NA, j, 0, i] += mT[j, i] * cph
-
-                pha = pha_step
-                for iA in range(1, NA):
-
-                    ph = pha * phb
-                    cph = pha.conjugate() * phb
-                    for j in range(n0):
-                        for i in range(n1):
-                            #(0,0,iB,iA)
-                            M[0, j, iB*NA+iA, i] += mT[j, i] * ph
-                        for i in range(n1):
-                            #(0,iA,iB,0)
-                            M[iA, j, iB*NA, i] += mT[j, i] * cph
-
-                    ph = pha * phb.conjugate()
-                    cph = (pha * phb).conjugate()
-                    for j in range(n0):
-                        for i in range(n1):
-                            #(iB,0,0,iA)
-                            M[iB*NA, j, iA, i] += mT[j, i] * ph
-                        for i in range(n1):
-                            #(iB,iA,0,0)
-                            M[iB*NA+iA, j, 0, i] += mT[j, i] * cph
-
-                    # Increment phases
-                    pha = pha * pha_step
-
-                # Increment phases
+                #(0,0,iB,0)
+                _unfold_block(N0, N1, NA, kA2pi, phb, n0, n1, mT, &M[0, 0, iB*NA, 0])
+                #(iB,0,0,0)
+                _unfold_block(N0, N1, NA, kA2pi, phb.conjugate(), n0, n1, mT, &M[iB*NA, 0, 0, 0])
                 phb = phb * phb_step
 
 
-cdef void _unfold_copy(const int[::1] B, complexs_st[:, ::1] M):
+        # Calculate the C-phases
+        kC = kC2pi[TC]
+        # Step-size in the Bloch-expansion phases.
+        phc_step = cos(kC) - 1j * sin(kC)
+
+        phc = w * phc_step
+        for iC in range(1, NC):
+            cphc = phc.conjugate()
+
+            for TB in range(NB):
+                # Get sub-matrix for the A-parts
+                mT = m[TC * NAB + TB * NA:]
+
+                # Calculate the B-phases
+                kB = kB2pi[TB]
+                # Step-size in the Bloch-expansion phases.
+                phb_step = cos(kB) - 1j * sin(kB)
+
+                # First do iB == 0
+                ##(0,0,iC,0)
+                _unfold_block(N0, N1, NA, kA2pi, phc, n0, n1, mT, &M[0, 0, iC*NAB, 0])
+                ##(iC,0,0,0)
+                _unfold_block(N0, N1, NA, kA2pi, cphc, n0, n1, mT, &M[iC*NAB, 0, 0, 0])
+
+                phb = phb_step
+                for iB in range(1, NB):
+
+                    ##(0,0,iC,0)
+                    #(0,0,iB,0)
+                    _unfold_block(N0, N1, NA, kA2pi, phc*phb, n0, n1, mT, &M[0, 0, iC*NAB+iB*NA, 0])
+                    #(iB,0,0,0)
+                    _unfold_block(N0, N1, NA, kA2pi, phc*phb.conjugate(), n0, n1, mT,
+                                  &M[iB*NA, 0, iC*NAB, 0])
+
+                    ##(iC,0,0,0)
+                    #(0,0,iB,0)
+                    _unfold_block(N0, N1, NA, kA2pi, cphc*phb, n0, n1, mT, &M[iC*NAB, 0, iB*NA, 0])
+                    #(iB,0,0,0)
+                    _unfold_block(N0, N1, NA, kA2pi, cphc*phb.conjugate(), n0, n1, mT,
+                                  &M[iC*NAB+iB*NA, 0, 0, 0])
+
+                    phb = phb * phb_step
+
+            phc = phc * phc_step
+
+
+cdef void _unfold_copy(const int[::1] B, complexs_st[:, ::1] M) noexcept:
     """ Finalize an unfolding by copying data around for the Toeplitz matrix `m`. """
 
     # N should now equal K.shape[0]
-    cdef Py_ssize_t B0 = B[0]
-    cdef Py_ssize_t B1 = B[1]
-    cdef Py_ssize_t B2 = B[2]
-    cdef Py_ssize_t N = B0 * B1 * B2
-    cdef Py_ssize_t n0 = M.shape[0] // N
-    cdef Py_ssize_t n1 = M.shape[1] // N
-    cdef complexs_st[:, :, :, ::1] M4 = <complexs_st[:N, :n0, :N, :n1]> &M[0, 0]
+    cdef:
+        Py_ssize_t B0 = B[0]
+        Py_ssize_t B1 = B[1]
+        Py_ssize_t B2 = B[2]
+        Py_ssize_t N = B0 * B1 * B2
+        Py_ssize_t n0 = M.shape[0] // N
+        Py_ssize_t n1 = M.shape[1] // N
+        complexs_st[:, :, :, ::1] M4 = <complexs_st[:N, :n0, :N, :n1]> &M[0, 0]
 
     # Split calculations into single expansion (easy to abstract)
     # and full calculation (which is too heavy!)
@@ -466,9 +433,10 @@ cdef void _unfold_copy_block(const Py_ssize_t N0, const Py_ssize_t N1,
         the number of sub-blocks it contains. I.e. the full expanded
         1D will be ``(n0 * NA, n1 * NA)``.
     """
-    cdef Py_ssize_t rA, cA, r, c
-    cdef Py_ssize_t n0N1 = n0 * N1
-    cdef Py_ssize_t from_r, to_r, from_c, to_c
+    cdef:
+        Py_ssize_t rA, cA, r, c
+        Py_ssize_t n0N1 = n0 * N1
+        Py_ssize_t from_r, to_r, from_c, to_c
 
     # The matrix is in C-order (row-major).
 
@@ -495,10 +463,10 @@ cdef void _unfold_copy_2(const Py_ssize_t NA, const Py_ssize_t NB,
                          complexs_st[:, :, :, ::1] M) noexcept nogil:
     # Loop through the B-segments we wish to copy in, and let
     # copy_block handle the rest
-
-    cdef Py_ssize_t iB
-    cdef Py_ssize_t N0 = NA * NB * n0
-    cdef Py_ssize_t N1 = NA * NB * n1
+    cdef:
+        Py_ssize_t iB
+        Py_ssize_t N0 = NA * NB * n0
+        Py_ssize_t N1 = NA * NB * n1
 
     # the [0; 0] blocks
     _unfold_copy_block(N0, N1, n0, n1, NA, &M[0, 0, 0, 0])
@@ -518,11 +486,11 @@ cdef void _unfold_copy_3(const Py_ssize_t NA, const Py_ssize_t NB, const Py_ssiz
                          complexs_st[:, :, :, ::1] M) noexcept nogil:
     # Loop through the B-segments we wish to copy in, and let
     # copy_block handle the rest
-
-    cdef Py_ssize_t iB, iC
-    cdef Py_ssize_t NAB = NA * NB
-    cdef Py_ssize_t N0 = NA * NB * NC * n0
-    cdef Py_ssize_t N1 = NA * NB * NC * n1
+    cdef:
+        Py_ssize_t iB, iC
+        Py_ssize_t NAB = NA * NB
+        Py_ssize_t N0 = NA * NB * NC * n0
+        Py_ssize_t N1 = NA * NB * NC * n1
 
     # Start by copying the initial BxA block.
     # This is equivalent to doing it for iC == 0
