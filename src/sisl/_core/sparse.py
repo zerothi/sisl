@@ -324,10 +324,10 @@ column indices of the sparse elements
 
         # unpack size and check the sizes are "physical"
         M, N, K = arg1
-        if M <= 0 or N <= 0 or K <= 0:
+        if M < 0 or N < 0 or K < 0:
             raise ValueError(
-                self.__class__.__name__
-                + f" invalid size of sparse matrix, one of the dimensions is zero: M={M}, N={N}, K={K}"
+                f"{self.__class__.__name__} invalid size of sparse matrix. "
+                f"Must have finite (or zero) dimension."
             )
 
         # Store shape
@@ -341,7 +341,7 @@ column indices of the sparse elements
             # number of non-zero elements is NOT given
             nnz = M * nnzpr
 
-        else:
+        elif M > 0:
             # number of non-zero elements is give AND larger
             # than the provided non-zero elements per row
             nnzpr = nnz // M

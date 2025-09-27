@@ -189,7 +189,7 @@ class Atom(
         if isinstance(orbitals, (tuple, list, np.ndarray)):
             if len(orbitals) == 0:
                 # This may be the same as only regarding `R` argument
-                pass
+                orbitals = None
             elif isinstance(orbitals[0], Orbital):
                 # all is good
                 self._orbitals = orbitals
@@ -221,7 +221,7 @@ class Atom(
                 R = _a.asarrayd(kwargs["R"]).ravel()
                 self._orbitals = [Orbital(r) for r in R]
             else:
-                self._orbitals = [Orbital(-1.0)]
+                self._orbitals = []
 
         if mass is None:
             self._mass = _ptbl.atomic_mass(mass_Z)
@@ -397,39 +397,40 @@ class Atom(
         ----------
         attr : str
         """
-
         # First we create a list of values that the orbitals have
         # Some may have it, others may not
         vals = [None] * len(self.orbitals)
-        found = False
+        found = True
         is_Integral = is_Real = is_callable = True
         for io, orb in enumerate(self.orbitals):
             try:
                 vals[io] = getattr(orb, attr)
-                found = True
                 is_callable &= callable(vals[io])
                 is_Integral &= isinstance(vals[io], Integral)
                 is_Real &= isinstance(vals[io], Real)
             except AttributeError:
-                pass
+                found = False
 
-        if found == 0:
+        if not found:
             # we never got any values, reraise the AttributeError
             raise AttributeError(
                 f"'{self.__class__.__name__}.orbitals' objects has no attribute '{attr}'"
             )
 
         # Now parse the data, currently we'll only allow Integral, Real, Complex
-        if is_Integral:
+        if is_Integral and vals:
+            # we use and vals to ensure that emtpy arrays returns as reals
             for io in range(len(vals)):
                 if vals[io] is None:
                     vals[io] = 0
             return _a.arrayi(vals)
+
         elif is_Real:
             for io in range(len(vals)):
                 if vals[io] is None:
                     vals[io] = 0.0
             return _a.arrayd(vals)
+
         elif is_callable:
 
             def _ret_none(*args, **kwargs):
@@ -603,13 +604,13 @@ class Atoms:
     # Using the slots should make this class slightly faster.
     __slots__ = ("_atom", "_species", "_firsto")
 
-    def __init__(self, atoms: AtomsLike = "H", na: Optional[int] = None):
+    def __init__(self, atoms: Optional[AtomsLike] = None, na: Optional[int] = None):
         # Default value of the atom object
         if atoms is None:
-            atoms = Atom("H")
+            uatoms = []
+            species = []
 
-        # Correct the atoms input to Atom
-        if isinstance(atoms, Atom):
+        elif isinstance(atoms, Atom):
             uatoms = [atoms]
             species = [0]
 
@@ -645,7 +646,9 @@ class Atoms:
                 species.append(s)
 
         else:
-            raise ValueError(f"atoms keyword type is not acceptable {type(atoms)}")
+            raise ValueError(
+                f"{self.__class__.__name__}(atoms=) keyword type is not acceptable {type(atoms)}"
+            )
 
         # Default for number of atoms
         if na is None:
@@ -663,6 +666,16 @@ class Atoms:
         # Get number of orbitals per specie
         uorbs = _a.arrayi([a.no for a in self.atom])
         self._firsto = np.insert(_a.cumsumi(uorbs[self.species]), 0, 0)
+
+    def __str__(self):
+        """Return the `Atoms` in str"""
+        s = f"{self.__class__.__name__}{{species: {len(self._atom)},\n"
+        for a, idx in self.iter(True):
+            s += " {1}: {0},\n".format(len(idx), str(a).replace("\n", "\n "))
+        return f"{s}}}"
+
+    def __repr__(self):
+        return f"<{self.__module__}.{self.__class__.__name__} nspecies={len(self._atom)}, na={len(self)}, no={self.no}>"
 
     @property
     def atom(self):
@@ -691,6 +704,15 @@ class Atoms:
         """List of atomic species"""
         return self._species
 
+    def __len__(self):
+        """Return number of atoms in the object"""
+        return len(self._species)
+
+    @property
+    def na(self):
+        """Return number of atoms in the object (same as len)"""
+        return len(self.species)
+
     @property
     def no(self) -> int:
         """Total number of orbitals in this list of atoms"""
@@ -717,6 +739,18 @@ class Atoms:
         """Initial charge per atom"""
         q0 = _a.arrayd([a.q0.sum() for a in self.atom])
         return q0[self.species]
+
+    @property
+    def mass(self):
+        """Array of masses of the contained objects"""
+        umass = _a.arrayd([a.mass for a in self.atom])
+        return umass[self.species]
+
+    @property
+    def Z(self):
+        """Array of atomic numbers"""
+        uZ = _a.arrayi([a.Z for a in self.atom])
+        return uZ[self.species]
 
     def orbital(self, io):
         """Return an array of orbital of the contained objects"""
@@ -745,18 +779,6 @@ class Atoms:
             maxR = _a.arrayd([a.maxR() for a in self.atom])
             return maxR[self.species]
         return np.amax([a.maxR() for a in self.atom])
-
-    @property
-    def mass(self):
-        """Array of masses of the contained objects"""
-        umass = _a.arrayd([a.mass for a in self.atom])
-        return umass[self.species]
-
-    @property
-    def Z(self):
-        """Array of atomic numbers"""
-        uZ = _a.arrayi([a.Z for a in self.atom])
-        return uZ[self.species]
 
     def index(self, atom):
         """Return the indices of the atom object"""
@@ -928,7 +950,7 @@ class Atoms:
         return atoms
 
     def reverse(self, atoms=None):
-        """Returns a reversed geometry
+        """Returns a reversed atoms object
 
         Also enables reversing a subset of the atoms.
         """
@@ -939,20 +961,6 @@ class Atoms:
             copy._species[atoms] = self._species[atoms[::-1]]
         copy._update_orbitals()
         return copy
-
-    def __str__(self):
-        """Return the `Atoms` in str"""
-        s = f"{self.__class__.__name__}{{species: {len(self._atom)},\n"
-        for a, idx in self.iter(True):
-            s += " {1}: {0},\n".format(len(idx), str(a).replace("\n", "\n "))
-        return f"{s}}}"
-
-    def __repr__(self):
-        return f"<{self.__module__}.{self.__class__.__name__} nspecies={len(self._atom)}, na={len(self)}, no={self.no}>"
-
-    def __len__(self):
-        """Return number of atoms in the object"""
-        return len(self._species)
 
     def iter(self, species=False):
         """Loop on all atoms

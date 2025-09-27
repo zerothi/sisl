@@ -57,7 +57,7 @@ def test_fail_init1():
 
 def test_fail_init_shape0():
     with pytest.raises(ValueError):
-        SparseCSR((0, 10, 10), dtype=np.int32)
+        SparseCSR((-1, 10, 10), dtype=np.int32)
 
 
 def test_fail_init2():
