@@ -1,0 +1,5 @@
+Improved Atoms.index usability
+
+Now one gets an empty list if no atoms are found.
+One can also get the combined indices of several
+atom types, e.g., `atoms.index("C", "H")`.

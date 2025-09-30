@@ -297,5 +297,10 @@ def test_charge_diff():
 
 def test_index1():
     atom = Atoms(["C", "Au"])
-    with pytest.raises(KeyError):
-        atom.index(Atom("B"))
+    assert atom.index("B") == []
+    assert atom.index("C") == [0]
+    assert atom.index("C", Atom(6)) == [0]
+    assert atom.index(["C", "C"]) == [0]
+    assert atom.index(["B", "C", "C"]) == [0]
+    assert atom.index(Atom(79)) == [1]
+    assert np.allclose(atom.index("Au", "C"), [0, 1])

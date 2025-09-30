@@ -758,9 +758,40 @@ class Atoms:
         uZ = _a.arrayi([a.Z for a in self.atom])
         return uZ[self.species]
 
-    def index(self, atom):
-        """Return the indices of the atom object"""
-        return (self._species == self.species_index(atom)).nonzero()[0]
+    def index(self, *atoms):
+        """Return indices of atoms of the given atom type.
+
+        Parameters
+        ----------
+        atoms : str, Atom, or lists hereof
+            One or more atom descriptors
+
+        Returns
+        -------
+        numpy.ndarray
+            Indices of all matching atoms. Returns an empty array if no match is found.
+
+        Notes
+        -----
+        Unlike Python's ``list.index``, this method does **not** raise a ``ValueError``
+        when no match is found. Instead, it returns an empty array.
+        To check for existence, use e.g. ``if idx.size > 0: ...``.
+        """
+
+        if len(atoms) == 1 and isinstance(atoms[0], (list, tuple, np.ndarray)):
+            atoms = tuple(atoms[0])
+
+        idx = []
+        for a in atoms:
+            if not isinstance(a, Atom):
+                a = Atom(a)
+            mask = self.Z == a.Z  # compare Z values
+            if mask.any():
+                idx.append(np.nonzero(mask)[0])
+        if len(idx) > 0:
+            idx = np.unique(idx)
+
+        return idx
 
     def species_index(self, atom):
         """Return the species index of the atom object"""
