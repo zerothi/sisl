@@ -91,19 +91,24 @@ class Atom(
     >>> Carbon = Atom("Carbon")
 
     Add a tag to be able to distinguish it from other atoms
+
     >>> tagged_Carbon = Atom("Carbon", tag="siteA")
 
     Create deuterium
+
     >>> D = Atom("H", mass=2.014)
 
     Define an atom with 3 orbitals, each with a range of 2 Angstroem
+
     >>> C3 = Atom("C", orbitals=[2, 2, 2])
 
     Define an atom outside of the periodic table (negative will yield an
     AtomGhost object)
+
     >>> ghost_C = Atom(-6)
 
     Define an unknown atom (basically anything can do)
+
     >>> unknown_atom = Atom(1000)
 
     Notes
@@ -782,6 +787,7 @@ class Atoms:
         >>> idx_Au = atoms.index(Atom(79))
 
         This can be useful to get a subset of a geometry, e.g.,
+
         >>> geom = Geometry(...)
         >>> idx_CH = geom.atoms.index(["C", "H"])
         >>> geom_CH = geom.sub(idx_CH)
