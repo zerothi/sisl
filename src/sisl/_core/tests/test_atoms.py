@@ -297,7 +297,7 @@ def test_charge_diff():
 
 def test_index1():
     atom = Atoms(["C", "Au"])
-    assert atom.index("B") == []
+    assert len(atom.index("B")) == 0
     assert atom.index("C") == [0]
     assert atom.index(Atom(79)) == [1]
     assert atom.index(1) == [1]

@@ -758,12 +758,12 @@ class Atoms:
         uZ = _a.arrayi([a.Z for a in self.atom])
         return uZ[self.species]
 
-    def index(self, atom):
+    def index(self, atoms):
         """Return indices of atoms matching the specified atom identifier(s).
 
         Parameters
         ----------
-        atom : str, Atom, int, or lists hereof
+        atoms : str, Atom, int, or lists hereof
             Atom identifier (element string, Atom instance, or species_index).
             It can also be a list of identifiers for matching against any of the entries.
 
@@ -779,21 +779,18 @@ class Atoms:
         To check for existence, use e.g. ``if idx.size > 0: ...``.
         """
 
-        if not isinstance(atom, (list, tuple, np.ndarray)):
-            atom = [atom]
+        if not isinstance(atoms, (list, tuple, np.ndarray)):
+            atoms = [atoms]
 
         idx = []
-        for a in atom:
+        for atom in atoms:
             try:
-                idx.append((self._species == self.species_index(a)).nonzero()[0])
+                idx.append((self._species == self.species_index(atom)).nonzero()[0])
             except KeyError:
                 # no species found
-                continue
+                pass
 
-        if len(idx) > 0:
-            idx = np.unique(idx)
-
-        return idx
+        return np.unique(idx)
 
     def species_index(self, atom):
         """Return the species index of the atom object"""
