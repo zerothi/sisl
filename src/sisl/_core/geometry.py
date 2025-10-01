@@ -1889,7 +1889,7 @@ class Geometry(
 
         # Now rotate the angle between them
         a = acos(np.sum(lm * lv))
-        return self.rotate(a, cp, rad=True)
+        return self.rotate([a, cp], rad=True)
 
     def translate2uc(
         self,
