@@ -299,8 +299,8 @@ def test_index1():
     atom = Atoms(["C", "Au"])
     assert atom.index("B") == []
     assert atom.index("C") == [0]
-    assert atom.index("C", Atom(6)) == [0]
+    assert atom.index(Atom(79)) == [1]
+    assert atom.index(1) == [1]
     assert atom.index(["C", "C"]) == [0]
     assert atom.index(["B", "C", "C"]) == [0]
-    assert atom.index(Atom(79)) == [1]
-    assert np.allclose(atom.index("Au", "C"), [0, 1])
+    assert np.allclose(atom.index(["Au", "C"]), [0, 1])
