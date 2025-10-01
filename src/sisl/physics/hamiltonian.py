@@ -146,7 +146,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
            Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
@@ -212,7 +212,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
@@ -275,7 +275,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the chosen gauge, ``lattice`` for lattice vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional

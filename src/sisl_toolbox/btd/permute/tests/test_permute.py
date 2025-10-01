@@ -29,7 +29,7 @@ methods = ["cm", "rcm", "gps", "ggps"]
 
 
 def _graph(A):
-    A = sps.csr_matrix(A)
+    A = sps.csr_array(A)
     ptr = A.indptr.astype(np.int32)
     return symmetric_graph(
         ptr, np.diff(ptr).astype(np.int32), A.indices.astype(np.int32)
@@ -43,7 +43,7 @@ def _is_perm(perm, n):
 def test_symmetric_graph():
     A = sps.random(50, 50, density=0.1, random_state=1, format="csr") + sps.eye(50)
     ptr, col = _graph(A)
-    G = sps.csr_matrix((np.ones(len(col)), col, ptr), shape=A.shape)
+    G = sps.csr_array((np.ones(len(col)), col, ptr), shape=A.shape)
     S = (A + A.T).astype(bool).astype(float)
     S.setdiag(0)
     S.eliminate_zeros()
@@ -96,7 +96,7 @@ def test_generalized_gibbs_poole_stockmeyer(max_roots):
     i = np.concatenate([idx[:-1].ravel(), idx[:, :-1].ravel(), idx[:-1, :-1].ravel()])
     j = np.concatenate([idx[1:].ravel(), idx[:, 1:].ravel(), idx[1:, 1:].ravel()])
     p = np.random.default_rng(0).permutation(nx * ny)
-    A = sps.csr_matrix((np.ones(len(i)), (p[i], p[j])), shape=(nx * ny, nx * ny))
+    A = sps.csr_array((np.ones(len(i)), (p[i], p[j])), shape=(nx * ny, nx * ny))
     ptr, col = _graph(A)
     perm = generalized_gibbs_poole_stockmeyer(ptr, col, max_roots=max_roots)
     assert _is_perm(perm, nx * ny)
@@ -120,7 +120,7 @@ def test_reduce_bandwidth_supercell(method, refine):
 
     # compare against the folded pattern
     A = H.tocsr()
-    A = sps.csr_matrix((A.data, A.indices % g.no, A.indptr), shape=(g.no, g.no))
+    A = sps.csr_array((A.data, A.indices % g.no, A.indptr), shape=(g.no, g.no))
     ptr, col = _graph(A)
     assert bandwidth(ptr, col, perm) < bandwidth(ptr, col) // 2
 
@@ -282,7 +282,7 @@ def test_btd_partition(method, cost, csr):
     assert _is_perm(permbtd.permute, g.no)
     assert permbtd.blocks.sum() == g.no
     A = H.tocsr()
-    A = sps.csr_matrix((A.data, A.indices % g.no, A.indptr), shape=(g.no, g.no))
+    A = sps.csr_array((A.data, A.indices % g.no, A.indptr), shape=(g.no, g.no))
     ptr, col = _graph(A)
     assert _is_btd(ptr, col, permbtd.permute, permbtd.blocks)
     # sorted within each block

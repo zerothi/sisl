@@ -51,7 +51,7 @@ def matrix_at_k(
        chosen gauge, either the lattice gauge (``lattice``), or the interatomic distance
        gauge (``atomic``).
     format : {"csr", "array", "coo", ...}
-       the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+       the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
        however if one always requires operations on dense matrices, one can always
        return in `numpy.ndarray` (`"array"`).
        Prefixing with "sc:", or simply "sc" returns the matrix in supercell format
@@ -99,7 +99,7 @@ def overlap_at_k(
        chosen gauge, either the lattice gauge (``lattice``), or the interatomic distance
        gauge (``atomic``).
     format : {"csr", "array", "coo", ...}
-       the returned format of the overlap matrix, defaulting to the `scipy.sparse.csr_matrix`,
+       the returned format of the overlap matrix, defaulting to the `scipy.sparse.csr_array`,
        however if one always requires operations on dense matrices, one can always
        return in `numpy.ndarray` (`"array"`).
        Prefixing with "sc:", or simply "sc" returns the overlap matrix in supercell format
@@ -121,7 +121,7 @@ def overlap_at_k(
             S = np.zeros([nr, nc], dtype=dtype)
             np.fill_diagonal(S, 1.0)
         else:
-            S = sps.csr_matrix((nr, nc), dtype=dtype)
+            S = sps.csr_array((nr, nc), dtype=dtype)
             S.setdiag(1.0)
             S = S.asformat(format)
         return S

@@ -269,7 +269,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
     ):
         r""" Orbital COOP analysis of the projected spectral function
 
-        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
+        This will return a sparse matrix, see `scipy.sparse.csr_array` for details.
         Each matrix element of the sparse matrix corresponds to the COOP of the
         underlying geometry.
 
@@ -338,7 +338,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
     ):
         r"""Orbital COHP analysis of the projected spectral function
 
-        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
+        This will return a sparse matrix, see `scipy.sparse.csr_array` for details.
         Each matrix element of the sparse matrix corresponds to the COHP of the
         underlying geometry.
 
