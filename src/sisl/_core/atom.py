@@ -770,7 +770,21 @@ class Atoms:
         Returns
         -------
         numpy.ndarray
-            Indices of all matching atoms. Returns an empty array if no match is found.
+            Unique (sorted) indices of all matching atoms.
+            Returns an empty array if no match is found.
+
+        Examples
+        --------
+        >>> atoms = Atoms(["C", "H", "Au"])
+        >>> idx_C = atoms.index("C")
+        >>> idx_C = atoms.index(0)
+        >>> idx_CH = atoms.index(["C", "H"])
+        >>> idx_Au = atoms.index(Atom(79))
+
+        This can be useful to get a subset of a geometry, e.g.,
+        >>> geom = Geometry(...)
+        >>> idx_CH = geom.atoms.index(["C", "H"])
+        >>> geom_CH = geom.sub(idx_CH)
 
         Notes
         -----
