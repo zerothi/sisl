@@ -787,7 +787,8 @@ class Atoms:
             try:
                 idx.append((self._species == self.species_index(a)).nonzero()[0])
             except KeyError:
-                pass
+                # no species found
+                continue
 
         if len(idx) > 0:
             idx = np.unique(idx)
