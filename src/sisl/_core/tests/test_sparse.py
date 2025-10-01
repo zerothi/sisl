@@ -75,9 +75,9 @@ def test_init_csr_inputs():
     SparseCSR((data, indices, indptr))
 
 
-def test_csr_matrix_int64_fail():
+def test_csr_array_int64_fail():
     # fixes #901
-    s = sc.sparse.csr_matrix((2, 2))
+    s = sc.sparse.csr_array((2, 2))
     s[0, 0] = 1
     s[1, 1] = 1
     # this will also break scipy, but here for testing purposes:
@@ -134,7 +134,7 @@ def test_init2():
 
 
 def test_init3():
-    lil = sc.sparse.lil_matrix((10, 10), dtype=np.int32)
+    lil = sc.sparse.lil_array((10, 10), dtype=np.int32)
     lil[0, 1] = 1
     lil[0, 2] = 2
     sp = SparseCSR(lil)
@@ -152,7 +152,7 @@ def test_init3():
 
 
 def test_init4():
-    lil = sc.sparse.lil_matrix((10, 10), dtype=np.int32)
+    lil = sc.sparse.lil_array((10, 10), dtype=np.int32)
     lil[0, 1] = 1
     lil[0, 2] = 2
     csr = lil.tocsr()
@@ -985,7 +985,7 @@ def test_op2(s1):
 
 
 def test_op_csr(s1):
-    csr = sc.sparse.csr_matrix((10, 100), dtype=np.int32)
+    csr = sc.sparse.csr_array((10, 100), dtype=np.int32)
     for i in range(10):
         j = range(i + 2)
         s1[0, j] = i
@@ -1198,10 +1198,10 @@ def matrix_sisl_csr():
 
 
 @pytest.fixture(scope="module")
-def matrix_csr_matrix():
+def matrix_csr_array():
     matrix = []
 
-    csr_matrix = sc.sparse.csr_matrix
+    csr_array = sc.sparse.csr_array
 
     def add3(m):
         matrix.append(m)
@@ -1210,14 +1210,14 @@ def matrix_csr_matrix():
         matrix.append(m)
 
     # diagonal
-    m = csr_matrix((10, 80), dtype=np.int32)
+    m = csr_array((10, 80), dtype=np.int32)
     for i in range(10):
         m[i, i] = 1
     add3(m)
 
     # not completely full (some empty ncol)
 
-    m = csr_matrix((10, 80), dtype=np.int32)
+    m = csr_array((10, 80), dtype=np.int32)
     m[0, [1, 0]] = [11, 3]
     m[2, 2] = 10
     m[4, [4, 0]] = [22, 40]
@@ -1225,7 +1225,7 @@ def matrix_csr_matrix():
     add3(m)
 
     # all more than 1 coupling, and not sorted
-    m = csr_matrix((10, 80), dtype=np.int32)
+    m = csr_array((10, 80), dtype=np.int32)
     m[0, [1, 0]] = [12, 4]
     m[1, [10, 50, 20]] = [11, 20, 401]
     m[2, [4, 7, 3, 1]] = [2, 5, 4, 10]
@@ -1241,7 +1241,7 @@ def matrix_csr_matrix():
 
 
 @pytest.mark.parametrize("op", binary())
-def test_op_binary(matrix_sisl_csr, matrix_csr_matrix, op):
+def test_op_binary(matrix_sisl_csr, matrix_csr_array, op):
     for m in matrix_sisl_csr:
         mD = m.toarray()[..., 0]
         if op not in (operator.add, operator.sub):
@@ -1254,7 +1254,7 @@ def test_op_binary(matrix_sisl_csr, matrix_csr_matrix, op):
                 v = op(m, m2)
                 assert np.allclose(op(mD, m2D), v.toarray()[..., 0])
 
-            for m2 in matrix_csr_matrix:
+            for m2 in matrix_csr_array:
                 m2D = m2.toarray()
                 v = op(m, m2)
                 assert np.allclose(op(mD, m2D), v.toarray()[..., 0])

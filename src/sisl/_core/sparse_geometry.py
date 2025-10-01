@@ -26,7 +26,7 @@ from numpy import (
     unique,
 )
 from numpy.lib.mixins import NDArrayOperatorsMixin
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 from sisl import _array as _a
 from sisl._array import array_arange
@@ -984,7 +984,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
             cols = cols % geom_no + geom.sc_index(cols_lsc) * geom_no
 
-            return csr_matrix(
+            return csr_array(
                 (csr.data, cols, csr.indptr),
                 shape=(geom_no, geom_no * geom.n_s),
                 dtype=self.dtype,
@@ -1023,7 +1023,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         self._csr.finalize(*args, **kwargs)
 
     def tocsr(self, dim: int = 0, isc=None, **kwargs):
-        """Return a :class:`~scipy.sparse.csr_matrix` for the specified dimension
+        """Return a :class:`~scipy.sparse.csr_array` for the specified dimension
 
         Parameters
         ----------

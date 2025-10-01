@@ -97,7 +97,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the chosen gauge, `lattice` for lattice vector gauge, and `atomic` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
            Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
@@ -158,7 +158,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the chosen gauge, `lattice` for lattice vector gauge, and `atomic` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
 
@@ -217,7 +217,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
 
@@ -247,6 +247,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         # Create UC dynamical matrix
         dyn_sc = self.tocsr(0)
         no = self.no
+        # TODO scipy < ... 1D slicing does not work
         d_uc = lil_matrix((no, no), dtype=dyn_sc.dtype)
 
         for i, _ in self.lattice:

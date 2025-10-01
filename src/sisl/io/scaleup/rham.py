@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
-from scipy.sparse import lil_matrix
+from scipy.sparse import lil_array
 
 from sisl import Geometry
 from sisl.physics import Hamiltonian
@@ -94,7 +94,7 @@ class rhamSileScaleUp(SileScaleUp):
         for s, isc, o1, o2, rH, iH in lines:
             if s != old_s:
                 # We need to create a new Hamiltonian
-                H = lil_matrix((no, no_s), dtype=np.float64)
+                H = lil_array((no, no_s), dtype=np.float64)
                 old_s = s
                 Hs[s - 1] = H
 
