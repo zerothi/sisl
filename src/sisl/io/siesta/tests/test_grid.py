@@ -38,7 +38,7 @@ def test_si_pdos_kgrid_grid_fdf(sisl_files):
 
 def test_grid_read_write(sisl_tmp):
     path = sisl_tmp("grid.bin")
-    lat = sisl.Lattice(1).rotate(45, "z").rotate(45, "x")
+    lat = sisl.Lattice(1).rotate((45, "z")).rotate((45, "x"))
     grid = sisl.Grid([4, 5, 6], lattice=lat)
     grid.grid = np.random.rand(*grid.shape)
     gridSile = sisl.io.siesta.gridSileSiesta

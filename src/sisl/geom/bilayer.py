@@ -132,7 +132,7 @@ def bilayer(
             top.tile(rep, axis=0)
             .tile(rep, axis=1)
             .move(align_vec)
-            .rotate(theta, "z", rad=True, what="abc+xyz")
+            .rotate([theta, "z"], rad=True, what="abc+xyz")
         )
 
         inside_idx = cell_box.within_index(top.xyz)
@@ -166,7 +166,7 @@ def bilayer(
         vec = bilayer.cell[0] + bilayer.cell[1]
         vec_costh = vec[0] / vec.dot(vec) ** 0.5
         vec_th = -acos(vec_costh)
-        bilayer = bilayer.move(-offset).rotate(vec_th, "z", rad=True, what="xyz+abc")
+        bilayer = bilayer.move(-offset).rotate([vec_th, "z"], rad=True, what="xyz+abc")
 
     # Sanity check
     assert len(bilayer) == natoms

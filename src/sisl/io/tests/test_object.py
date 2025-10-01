@@ -264,7 +264,7 @@ class TestObject:
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
 
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
+        G = sisl_system.g.rotate([-30, sisl_system.g.cell[2]], what="xyz+abc")
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_write")
 
@@ -275,7 +275,7 @@ class TestObject:
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
 
-        L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
+        L = sisl_system.g.rotate([-30, sisl_system.g.cell[2]], what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win")
 
@@ -307,7 +307,7 @@ class TestObject:
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
 
-        L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
+        L = sisl_system.g.rotate((-30, sisl_system.g.cell[2]), what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win")
 
@@ -333,7 +333,7 @@ class TestObject:
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
 
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
+        G = sisl_system.g.rotate((-30, sisl_system.g.cell[2]), what="xyz+abc")
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win")
 
@@ -380,7 +380,7 @@ class TestObject:
         if issubclass(sile, _gfSileSiesta):
             pytest.skip("gfSileSiesta handles writing Hamiltonians in a special way")
 
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
+        G = sisl_system.g.rotate([-30, sisl_system.g.cell[2]], what="xyz+abc")
         H = Hamiltonian(G)
         H.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_hamiltonian.win")
@@ -409,7 +409,7 @@ class TestObject:
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
 
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
+        G = sisl_system.g.rotate((-30, sisl_system.g.cell[2]), what="xyz+abc")
         DM = DensityMatrix(G, orthogonal=True)
         DM.construct([[0.1, 1.45], [0.1, -2.7]])
 
@@ -440,7 +440,7 @@ class TestObject:
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
 
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
+        G = sisl_system.g.rotate((-30, sisl_system.g.cell[2]), what="xyz+abc")
         EDM = EnergyDensityMatrix(G, orthogonal=True)
         EDM.construct([[0.1, 1.45], [0.1, -2.7]])
 
@@ -473,7 +473,7 @@ class TestObject:
         if issubclass(sile, _gfSileSiesta):
             pytest.skip("gfSileSiesta handles writing Hamiltonians in a special way")
 
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
+        G = sisl_system.g.rotate((-30, sisl_system.g.cell[2]), what="xyz+abc")
         H = Hamiltonian(G, orthogonal=False)
         H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])
 
@@ -504,7 +504,7 @@ class TestObject:
         if issubclass(sile, SileCDF):
             pytest.importorskip("netCDF4")
 
-        g = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
+        g = sisl_system.g.rotate((-30, sisl_system.g.cell[2]), what="xyz+abc")
         G = Grid([10, 11, 12])
         G[:, :, :] = np.random.rand(10, 11, 12)
 
