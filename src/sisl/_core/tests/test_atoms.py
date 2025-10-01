@@ -303,4 +303,7 @@ def test_index1():
     assert atom.index(1) == [1]
     assert atom.index(["C", "C"]) == [0]
     assert atom.index(["B", "C", "C"]) == [0]
-    assert np.allclose(atom.index(["Au", "C"]), [0, 1])
+    idx = atom.index(["Au", "C"])
+    assert idx.ndim == 1
+    assert np.issubdtype(idx.dtype, np.integer)
+    assert np.allclose(idx, [0, 1])

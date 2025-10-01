@@ -802,10 +802,11 @@ class Atoms:
         if not isinstance(atoms, (list, tuple, np.ndarray)):
             atoms = [atoms]
 
-        idx = []
+        idx = np.array([], dtype=int)
         for atom in atoms:
             try:
-                idx.append((self._species == self.species_index(atom)).nonzero()[0])
+                arr = (self._species == self.species_index(atom)).nonzero()[0]
+                idx = np.concatenate([idx, arr])
             except KeyError:
                 # no species found
                 pass
