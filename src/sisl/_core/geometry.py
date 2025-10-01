@@ -4223,7 +4223,7 @@ class Geometry(
                 # Convert value[0] to the direction
                 # The rotate function expects degree
                 ang = angle(values[0], rad=False, in_rad=False)
-                ns._geometry = ns._geometry.rotate(ang, values[1], what="abc+xyz")
+                ns._geometry = ns._geometry.rotate([ang, values[1]], what="abc+xyz")
 
         p.add_argument(
             *opts("--rotate", "-R"),
@@ -4239,7 +4239,7 @@ class Geometry(
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, "x", what="abc+xyz")
+                    ns._geometry = ns._geometry.rotate([ang, "x"], what="abc+xyz")
 
             p.add_argument(
                 *opts("--rotate-x", "-Rx"),
@@ -4252,7 +4252,7 @@ class Geometry(
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, "y", what="abc+xyz")
+                    ns._geometry = ns._geometry.rotate([ang, "y"], what="abc+xyz")
 
             p.add_argument(
                 *opts("--rotate-y", "-Ry"),
@@ -4265,7 +4265,7 @@ class Geometry(
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, "z", what="abc+xyz")
+                    ns._geometry = ns._geometry.rotate([ang, "z"], what="abc+xyz")
 
             p.add_argument(
                 *opts("--rotate-z", "-Rz"),

@@ -408,67 +408,76 @@ class TestGeometry:
         assert len(lattice.sc_off) == np.prod(lattice.nsc)
 
     def test_rotation1(self, setup):
-        rot = setup.g.rotate(180, [0, 0, 1], what="xyz+abc")
+        rot = setup.g.rotate([180, [0, 0, 1]], what="xyz+abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what="xyz+abc")
+        rot = setup.g.rotate([np.pi, [0, 0, 1]], rad=True, what="xyz+abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = rot.rotate(180, "z", what="xyz+abc")
+        rot = rot.rotate([180, "z"], what="xyz+abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
+        # Just check it runs,
+        # xy-plane == z-direction
+        rot = setup.g.rotate([180, "xy"], what="xyz+abc")
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
+        assert np.allclose(-rot.xyz, setup.g.xyz)
+
+        rot.rotate([180, "x+y"], what="xyz+abc")
+
     def test_rotation2(self, setup):
-        rot = setup.g.rotate(180, "z", what="abc")
+        rot = setup.g.rotate([180, "z"], what="abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what="abc")
+        rot = setup.g.rotate([np.pi, [0, 0, 1]], rad=True, what="abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
-        rot = rot.rotate(180, [0, 0, 1], what="abc")
+        rot = rot.rotate([180, [0, 0, 1]], what="abc")
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation3(self, setup):
-        rot = setup.g.rotate(180, [0, 0, 1], what="xyz")
+        rot = setup.g.rotate([180, [0, 0, 1]], what="xyz")
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what="xyz")
+        rot = setup.g.rotate([np.pi, [0, 0, 1]], rad=True, what="xyz")
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = rot.rotate(180, "z", what="xyz")
+        rot = rot.rotate([180, "z"], what="xyz")
         assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation4(self, setup):
         ref = setup.g.tile(2, 0).tile(2, 1)
 
-        rot = ref.rotate(10, "z", atoms=1)
+        rot = ref.rotate([10, "z"], atoms=1)
         assert not np.allclose(ref.xyz[1], rot.xyz[1])
 
-        rot = ref.rotate(10, "z", atoms=[1, 2])
+        rot = ref.rotate([10, "z"], atoms=[1, 2])
         assert not np.allclose(ref.xyz[1], rot.xyz[1])
         assert not np.allclose(ref.xyz[2], rot.xyz[2])
         assert np.allclose(ref.xyz[3], rot.xyz[3])
 
-        rot = ref.rotate(10, "z", atoms=[1, 2], what="y")
+        rot = ref.rotate([10, "z"], atoms=[1, 2], what="y")
         assert ref.xyz[1, 0] == rot.xyz[1, 0]
         assert ref.xyz[1, 1] != rot.xyz[1, 1]
         assert ref.xyz[1, 2] == rot.xyz[1, 2]
 
-        rot = ref.rotate(10, "z", atoms=[1, 2], what="xy", origin=ref.xyz[2])
+        rot = ref.rotate([10, "z"], atoms=[1, 2], what="xy", origin=ref.xyz[2])
         assert ref.xyz[1, 0] != rot.xyz[1, 0]
         assert ref.xyz[1, 1] != rot.xyz[1, 1]
         assert ref.xyz[1, 2] == rot.xyz[1, 2]
@@ -669,8 +678,8 @@ class TestGeometry:
         assert np.allclose(double.xyz, d.xyz)
 
     def test___add2__(self, setup):
-        g1 = setup.g.rotate(15, setup.g.cell[2, :])
-        g2 = setup.g.rotate(30, setup.g.cell[2, :])
+        g1 = setup.g.rotate([15, setup.g.cell[2, :]])
+        g2 = setup.g.rotate([30, setup.g.cell[2, :]])
 
         assert g1 != g2
         assert g1 + g2 == g1.add(g2)
@@ -1559,11 +1568,11 @@ class TestGeometry:
         gr = sisl_geom.graphene()
         to_ase = gr.to.ase()
 
-        ase_rotate = si.rotate(to_ase, 30, [0, 0, 1])
+        ase_rotate = si.rotate(to_ase, [30, [0, 0, 1]])
         assert isinstance(ase_rotate, type(to_ase))
-        ase_sisl_rotate = si.rotate(to_ase, 30, [0, 0, 1], ret_sisl=True)
+        ase_sisl_rotate = si.rotate(to_ase, [30, [0, 0, 1]], ret_sisl=True)
         assert isinstance(ase_sisl_rotate, Geometry)
-        geom_rotate = si.rotate(gr, 30, [0, 0, 1])
+        geom_rotate = si.rotate(gr, [30, [0, 0, 1]])
 
         assert geom_rotate.equal(ase_sisl_rotate, R=False)
 

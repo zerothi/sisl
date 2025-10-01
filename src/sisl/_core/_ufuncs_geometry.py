@@ -1176,14 +1176,12 @@ def rotate(
 
     Parameters
     ----------
-    angle :
-         the angle in degrees to rotate the geometry. Set the ``rad``
-         argument to use radians.
-    v     :
-         the normal vector to the rotated plane, i.e.
-         ``[1, 0, 0]`` will rotate around the :math:`yz` plane.
-         If a str it refers to the Cartesian direction (xyz), or the
-         lattice vectors (abc). Providing several is the combined direction.
+    rotation :
+         the rotation method used for rotating the geometry.
+         It is parsed through `sisl.utils.parse_rotation` and allows
+         a consecutive rotation method.
+
+         See examples for details.
     origin :
          the origin of rotation. Anything but ``[0, 0, 0]`` is equivalent
          to a ``geometry.translate(-origin).rotate(...).translate(origin)``.
@@ -1203,11 +1201,15 @@ def rotate(
     Examples
     --------
     rotate coordinates around the :math:`x`-axis
-    >>> geom_x45 = geom.rotate(45, [1, 0, 0])
+    >>> geom_x45 = geom.rotate([45, [1, 0, 0]])
 
     rotate around the ``(1, 1, 0)`` direction but project the rotation onto the :math:`x`
     axis
-    >>> geom_xy_x = geom.rotate(45, "xy", what='x')
+    >>> geom_xy_x = geom.rotate([45, "xy"], what='x')
+
+    Currently, there is a compatibility layer with the older API (pre 0.16.3)
+    which will be removed at some point. Please update your code to use the new-style
+    rotation arguments which is much more versatile; allowing consecutive rotations.
 
     See Also
     --------

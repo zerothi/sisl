@@ -30,6 +30,7 @@ from scipy.special import sph_harm
 from sisl import _array as _a
 from sisl._core.quaternion import Quaternion
 from sisl._indices import indices_le
+from sisl._internal import set_module
 from sisl.typing import RotationType
 
 from .misc import direction
@@ -356,6 +357,7 @@ def intersect_and_diff_sets(a, b):
     return int1d, aover, bover, aonly, bonly
 
 
+@set_module("sisl.utils")
 def parse_rotation(
     rotation: Union[RotationType, Sequence[RotationType]],
     rad: bool,
@@ -382,6 +384,12 @@ def parse_rotation(
     A rotation of 45 degrees around the :math:`y` axis, but specified through the
     2nd index of the abc argument
     >>> q = parse_rotation([45, "b"], rad=False, abc=[[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+    A rotation of 45 degrees around the :math:`xy` plane:
+    >>> q = parse_rotation([45, "xy"], rad=False)
+
+    A rotation of 45 degrees around the vector along :math:`x+y`:
+    >>> q = parse_rotation([45, "x+y"], rad=False)
 
     Explicitly specify the angle and the vector of rotation (around :math:`xy` vector)
     >>> q = parse_rotation([np.pi/4, [0.4, 0.4, 0]])
@@ -428,21 +436,27 @@ def parse_rotation(
         return q
 
     if lrot == 2 and (isinstance(rotation[0], str) or isinstance(rotation[1], str)):
+        # this is:
+        #  angle, direction
+        # or
+        #  direction, angle
 
         if isinstance(rotation[0], str):
-            dirs, angles = rotation
+            dirs, angle = rotation
         elif isinstance(rotation[1], str):
-            angles, dirs = rotation
-
-        if not isinstance(angles, (Sequence, np.ndarray)):
-            angles = [angles]
+            angle, dirs = rotation
 
         xyz = np.identity(3)
 
-        for angle, dir in zip_longest(angles, dirs):
-            # Convert to q
-            dir = direction(dir, abc=abc, xyz=xyz)
-            q = Quaternion(angle, dir / fnorm(dir), rad=rad) * q
+        dir = 0.0
+        for outer_dir in dirs.split("+"):
+            tmp_dir = direction(outer_dir[0], abc=abc, xyz=xyz)
+            for inner_dir in outer_dir[1:]:
+                tmp_dir = np.cross(tmp_dir, direction(inner_dir, abc=abc, xyz=xyz))
+
+            dir = dir + tmp_dir
+
+        q = Quaternion(angle, dir / fnorm(dir), rad=rad)
 
         return q
 

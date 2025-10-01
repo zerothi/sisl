@@ -126,28 +126,28 @@ class TestLattice:
             assert np.allclose(s.cell, sc.cell + np.diag([R] * 3))
 
     def test_rotation1(self, setup):
-        rot = setup.lattice.rotate(180, [0, 0, 1])
+        rot = setup.lattice.rotate([180, [0, 0, 1]])
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.lattice.cell)
 
-        rot = setup.lattice.rotate(m.pi, [0, 0, 1], rad=True)
+        rot = setup.lattice.rotate([m.pi, [0, 0, 1]], rad=True)
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.lattice.cell)
 
-        rot = rot.rotate(180, [0, 0, 1])
+        rot = rot.rotate([180, [0, 0, 1]])
         rot.cell[2, 2] *= -1
         assert np.allclose(rot.cell, setup.lattice.cell)
 
     def test_rotation2(self, setup):
-        rot = setup.lattice.rotate(180, setup.lattice.cell[2, :])
+        rot = setup.lattice.rotate([180, setup.lattice.cell[2, :]])
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.lattice.cell)
 
-        rot = setup.lattice.rotate(m.pi, setup.lattice.cell[2, :], rad=True)
+        rot = setup.lattice.rotate([m.pi, setup.lattice.cell[2, :]], rad=True)
         rot.cell[2, 2] *= -1
         assert np.allclose(-rot.cell, setup.lattice.cell)
 
-        rot = rot.rotate(180, setup.lattice.cell[2, :])
+        rot = rot.rotate([180, setup.lattice.cell[2]])
         rot.cell[2, 2] *= -1
         assert np.allclose(rot.cell, setup.lattice.cell)
 
@@ -317,9 +317,9 @@ class TestLattice:
         assert np.allclose(parama, np.array(lattice.parameters(True)))
         for ang in range(0, 91, 5):
             s = (
-                lattice.rotate(ang, lattice.cell[0, :])
-                .rotate(ang, lattice.cell[1, :])
-                .rotate(ang, lattice.cell[2, :])
+                lattice.rotate([ang, lattice.cell[0]])
+                .rotate([ang, lattice.cell[1]])
+                .rotate([ang, lattice.cell[2]])
             )
             assert np.allclose(param, np.array(s.parameters()))
             assert np.allclose(parama, np.array(s.parameters(True)))
@@ -388,7 +388,7 @@ class TestLattice:
         gbig = g.repeat(40, 0).repeat(40, 1)
         assert g.lattice.parallel(gbig.lattice)
         assert gbig.lattice.parallel(g.lattice)
-        g = g.rotate(90, g.cell[0, :], what="abc")
+        g = g.rotate([90, g.cell[0]], what="abc")
         assert not g.lattice.parallel(gbig.lattice)
 
     def test_tile_multiply_orthogonal(self):
@@ -432,7 +432,7 @@ class TestLattice:
 
     def test_cell2length(self):
         gr = graphene(orthogonal=True)
-        lattice = (gr * (40, 40, 1)).rotate(24, gr.cell[2, :]).lattice
+        lattice = (gr * (40, 40, 1)).rotate([24, gr.cell[2]]).lattice
         assert np.allclose(
             lattice.length, (lattice.cell2length(lattice.length) ** 2).sum(1) ** 0.5
         )
