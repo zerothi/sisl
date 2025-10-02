@@ -106,8 +106,9 @@ class DIISMixer(BaseHistoryWeightMixer):
                 B[j, i] = B[i, j]
 
         # fill the rest of the matrix
-        B[:, n_h] = 1.0
-        B[n_h, :] = 1.0
+        scale = B[:n_h, :n_h].max() - B[:n_h, :n_h].min()
+        B[:, n_h] = scale
+        B[n_h, :] = scale
         B[n_h, n_h] = 0.0
 
         # Although B contains 1 and a number on the order of
@@ -124,7 +125,7 @@ class DIISMixer(BaseHistoryWeightMixer):
             # Is this because sym also implies positive definiteness?
             # However, these are matrices of order ~30, so we don't care
             c = solve_destroy(B, RHS, assume_a="sym")
-            return c[:-1], -c[-1]
+            return c[:-1] * scale, -c[-1] * scale**2
         except np.linalg.LinAlgError as e:
             # We have a LinalgError, this will take the last entry and
             # do a linear mixing.
