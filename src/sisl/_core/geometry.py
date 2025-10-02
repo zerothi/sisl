@@ -31,7 +31,7 @@ from numpy import (
     tile,
     unique,
 )
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 import sisl._array as _a
 from sisl._category import Category, GenericCategory
@@ -4078,7 +4078,7 @@ class Geometry(
         grid_indices = grid_indices[:i_value]
         orbital_indices = orbital_indices[:i_value]
 
-        psi_values = csr_matrix(
+        psi_values = csr_array(
             (grid_values, (grid_indices, orbital_indices)),
             shape=(np.prod(grid.shape), sp_grid_geom.no_s),
         )

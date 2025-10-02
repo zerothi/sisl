@@ -19,7 +19,7 @@ import numpy as np
 ndarray = np.ndarray
 
 # The sparse matrix for the orbital/bond currents
-from scipy.sparse import SparseEfficiencyWarning, csr_matrix, issparse
+from scipy.sparse import SparseEfficiencyWarning, csr_array, issparse
 
 import sisl._array as _a
 from sisl import Atoms, Geometry, constant
@@ -1162,7 +1162,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # retrieve and return data
         return self._value_E(name, elec, kavg, E)
 
-    def _sparse_data_to_matrix(self, data, isc=None, orbitals=None) -> csr_matrix:
+    def _sparse_data_to_matrix(self, data, isc=None, orbitals=None) -> csr_array:
         """Internal routine for retrieving sparse data (orbital current, COOP)"""
         # Get the geometry for obtaining the sparsity pattern.
         geom = self.geometry
@@ -1267,7 +1267,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             data = data[..., all_col]
 
-        return csr_matrix((data, col, rptr), shape=mat_size)
+        return csr_array((data, col, rptr), shape=mat_size)
 
     def _sparse_matrix(
         self,
@@ -1277,18 +1277,18 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
-    ) -> csr_matrix:
+    ) -> csr_array:
         """Internal routine for retrieving sparse matrices (orbital current, COOP)"""
         data = self._sparse_data(name, elec, E, kavg)
         return self._sparse_data_to_matrix(data, isc, orbitals)
 
     def sparse_orbital_to_atom(
         self, Dij, uc: bool = False, sum_dup: bool = True
-    ) -> csr_matrix:
+    ) -> csr_array:
         """Reduce a sparse matrix in orbital sparse to a sparse matrix in atomic indices
 
         This algorithm *may* keep the same non-zero entries, but will return
-        a new csr_matrix with duplicate indices.
+        a new csr_array with duplicate indices.
 
         Notes
         -----
@@ -1297,7 +1297,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        Dij : scipy.sparse.csr_matrix
+        Dij : scipy.sparse.csr_array
            the input sparse matrix in orbital format
         uc :
            whether the returned data are only in the unit-cell.
@@ -1318,13 +1318,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         # We convert to atomic bond-currents
         if uc:
-            Dab = csr_matrix((na, na), dtype=Dij.dtype)
+            Dab = csr_array((na, na), dtype=Dij.dtype)
 
             def map_col(c):
                 return o2a(c) % na
 
         else:
-            Dab = csr_matrix((na, na * geom.n_s), dtype=Dij.dtype)
+            Dab = csr_array((na, na * geom.n_s), dtype=Dij.dtype)
 
             map_col = o2a
 
@@ -1382,7 +1382,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        Dab : scipy.sparse.csr_matrix
+        Dab : scipy.sparse.csr_array
            the input sparse matrix in atomic indices
         """
         geom = self.geometry
@@ -1429,7 +1429,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        Dij : scipy.sparse.csr_matrix
+        Dij : scipy.sparse.csr_array
            the input sparse matrix
         uc :
            whether the returned data are only in the unit-cell.
@@ -1468,7 +1468,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        Dij: scipy.sparse.csr_matrix
+        Dij: scipy.sparse.csr_array
            the orbital sparse matrix.
         activity:
            ``True`` to return the atomic activity, see explanation above
@@ -1514,7 +1514,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc=None,
         what: str = "all",
         orbitals=None,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Transmission at energy `E` between orbitals originating from `elec`
 
         Each matrix element of the sparse matrix corresponds to the orbital indices of the
@@ -1566,7 +1566,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Returns
         -------
-        A `scipy.sparse.csr_matrix` containing the supercell transmission pathways, or
+        A `scipy.sparse.csr_array` containing the supercell transmission pathways, or
         orbital transmissions.
 
         Examples
@@ -1617,7 +1617,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc=None,
         what: str = "all",
         orbitals=None,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Orbital current originating from `elec` as a sparse matrix
 
         This is the bias window integrated quantity of `orbital_transmission`. As such it
@@ -1725,7 +1725,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         what: str = "all",
         orbitals=None,
         uc: bool = False,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Bond transmission between atoms at a specific energy
 
         Short hand function for calling `orbital_transmission` and `sparse_orbital_to_atom`.
@@ -1793,7 +1793,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         what: str = "all",
         orbitals=None,
         uc: bool = False,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Bond current between atoms (sum of orbital currents)
 
         Short hand function for calling `orbital_current` and `sparse_orbital_to_atom`.
@@ -2182,7 +2182,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc=None,
         orbitals=None,
         geometry: Optional[Geometry] = None,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Density matrix from the Green function at energy `E` (1/eV)
 
         The density matrix can be used to calculate the LDOS in real-space.
@@ -2240,7 +2240,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc=None,
         orbitals=None,
         geometry: Optional[Geometry] = None,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Spectral function density matrix at energy `E` (1/eV)
 
         The density matrix can be used to calculate the LDOS in real-space.
@@ -2303,10 +2303,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     @missing_input_fdf([("TBT.COOP.Gf", "True")])
     def orbital_COOP(
         self, E: EType, kavg: Union[int, bool] = True, isc=None, orbitals=None
-    ) -> csr_matrix:
+    ) -> csr_array:
         r""" Orbital COOP analysis of the Green function
 
-        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
+        This will return a sparse matrix, see `scipy.sparse.csr_array` for details.
         Each matrix element of the sparse matrix corresponds to the COOP of the
         underlying geometry.
 
@@ -2374,10 +2374,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r""" Orbital COOP analysis of the spectral function
 
-        This will return a sparse matrix, see `~scipy.sparse.csr_matrix` for details.
+        This will return a sparse matrix, see `~scipy.sparse.csr_array` for details.
         Each matrix element of the sparse matrix corresponds to the COOP of the
         underlying geometry.
 
@@ -2445,7 +2445,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc=None,
         orbitals=None,
         uc: bool = False,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Atomic COOP curve of the Green function
 
         The atomic COOP are a sum over all orbital COOP:
@@ -2493,7 +2493,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc=None,
         orbitals=None,
         uc: bool = False,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Atomic COOP curve of the spectral function
 
         The atomic COOP are a sum over all orbital COOP:
@@ -2541,10 +2541,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
     @missing_input_fdf([("TBT.COHP.Gf", "True")])
     def orbital_COHP(
         self, E: EType, kavg: Union[int, bool] = True, isc=None, orbitals=None
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Orbital resolved COHP analysis of the Green function
 
-        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
+        This will return a sparse matrix, see `scipy.sparse.csr_array` for details.
         Each matrix element of the sparse matrix corresponds to the COHP of the
         underlying geometry.
 
@@ -2594,10 +2594,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         kavg: Union[int, bool] = True,
         isc=None,
         orbitals=None,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Orbital resolved COHP analysis of the spectral function
 
-        This will return a sparse matrix, see `scipy.sparse.csr_matrix` for details.
+        This will return a sparse matrix, see `scipy.sparse.csr_array` for details.
         Each matrix element of the sparse matrix corresponds to the COHP of the
         underlying geometry.
 
@@ -2643,7 +2643,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc=None,
         orbitals=None,
         uc: bool = False,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Atomic COHP curve of the Green function
 
         The atomic COHP are a sum over all orbital COHP:
@@ -2691,7 +2691,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc=None,
         orbitals=None,
         uc: bool = False,
-    ) -> csr_matrix:
+    ) -> csr_array:
         r"""Atomic COHP curve of the spectral function
 
         Parameters

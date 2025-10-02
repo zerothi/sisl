@@ -1037,7 +1037,7 @@ class DeviceGreen:
     def _green_sparse(self):
         """Calculate the Green function only where the sparse H and S are non-zero.
 
-        Stored in a `scipy.sparse.csr_matrix` class."""
+        Stored in a `scipy.sparse.csr_array` class."""
         # create a sparse matrix
         G = self.H.Sk(format="csr", dtype=self._data.A[0].dtype)
         # pivot the matrix

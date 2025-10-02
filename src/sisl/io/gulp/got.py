@@ -225,14 +225,14 @@ class gotSileGULP(SileGULP):
     def _r_dynamical_matrix_got(self, geometry, **kwargs):
         """In case the dynamical matrix is read from the file"""
         # Easier for creation of the sparsity pattern
-        from scipy.sparse import lil_matrix
+        from scipy.sparse import lil_array
 
         # Default cutoff eV / Ang ** 2
         cutoff = kwargs.get("cutoff", 0.0)
         dtype = kwargs.get("dtype", np.float64)
 
         nxyz = geometry.no
-        dyn = lil_matrix((nxyz, nxyz), dtype=dtype)
+        dyn = lil_array((nxyz, nxyz), dtype=dtype)
 
         f, _ = self.step_to(self._keys["dyn"])
         if not f:
@@ -277,7 +277,7 @@ class gotSileGULP(SileGULP):
         # clean-up for memory
         del dat
 
-        # Convert to COO matrix format
+        # Convert to COO array format
         dyn = dyn.tocoo()
 
         # Construct mass ** (-.5), so we can check cutoff correctly (in unit eV/Ang**2)
