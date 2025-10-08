@@ -107,6 +107,7 @@ class DIISMixer(BaseHistoryWeightMixer):
 
         # fill the rest of the matrix
         scale = B[:n_h, :n_h].max() - B[:n_h, :n_h].min()
+        scale = scale / 2 + B[:n_h, :n_h].min()
         B[:, n_h] = scale
         B[n_h, :] = scale
         B[n_h, n_h] = 0.0

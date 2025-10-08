@@ -75,7 +75,7 @@ if sisl_files_tests.is_dir():
 # Setting up generic things
 
 # If building this on RTD, mock out fortran sources
-on_rtd = os.environ.get("READTHEDOCS", "false").lower() == "true"
+on_rtd = os.environ.get("READTHEDOCS", "false").lower() in ("1", "yes", "true")
 _doc_skip = list(
     map(lambda x: x.lower(), os.environ.get("_SISL_DOC_SKIP", "").split(","))
 )
@@ -84,6 +84,22 @@ skip_notebook = "notebook" in _doc_skip
 # If building this on RTD, mock out fortran sources
 if on_rtd:
     os.environ["SISL_NUM_PROCS"] = "1"
+
+# Let the builder decide what it should built.
+# This can be a pure HTML (for interaction), but that tends
+# to blow up file-sizes which isn't really suitable for
+# RTD.
+plotly_renderer = "iframe_connected"
+if on_rtd:
+    plotly_renderer = "png"
+plotly_renderer = os.environ.get("_SISL_DOC_PLOTLY", plotly_renderer)
+
+# Store the renderer
+import plotly.io as pio
+
+pio.renderers.default = plotly_renderer
+if "PLOTLY_RENDERER" not in os.environ:
+    os.environ["PLOTLY_RENDERER"] = plotly_renderer
 
 
 # General information about the project.
@@ -227,7 +243,7 @@ rst_epilog = """
 .. _GULP: https://nanochemistry.curtin.edu.au/gulp/news.cfm
 
 .. Other programs heavily used
-.. _ASE: https://wiki.fysik.dtu.dk/ase
+.. _ASE: https://ase-lib.org
 .. _kwant: https://kwant-project.org
 .. _XCrySDen: http://www.xcrysden.org
 .. _VMD: https://www.ks.uiuc.edu/Research/vmd
@@ -463,14 +479,12 @@ latex_documents = [
 # Plot directives for matplotlib
 plot_include_source = True
 plot_formats = [("png", 90)]
-plot_pre_code = """\
+plot_pre_code = f"""\
 import numpy as np
 import matplotlib.pyplot as plt
 import sisl as si
-import plotly.io as pio
 np.random.seed(123987)
 np.set_printoptions(precision=4, suppress=True)
-pio.renderers.default = "notebook_connected"
 """
 
 
@@ -504,7 +518,7 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
-    "ase": ("https://wiki.fysik.dtu.dk/ase/", None),
+    "ase": ("https://ase-lib.org/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "xarray": ("https://docs.xarray.dev/en/stable/", None),
     "plotly": ("https://plotly.com/python-api-reference/", None),
@@ -570,7 +584,7 @@ nbsphinx_timeout = 30
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""
-{% set docname = "docs/" + env.doc2path(env.docname, base=None) %}
+{% set docname = "docs/" + env.doc2path(env.docname, base=None)|string %}
 
 .. raw:: html
 
