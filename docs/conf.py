@@ -29,6 +29,10 @@ import sphinx
 
 _log = logging.getLogger("sisl_doc")
 
+# Currently disabling logging.INFO because of nodify, it would likely be best
+# if we are only removing that one!
+logging.disable(logging.INFO)
+
 _doc_root = pathlib.Path(__file__).absolute().parent
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
