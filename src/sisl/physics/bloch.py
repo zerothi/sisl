@@ -33,6 +33,7 @@ class Bloch:
     The general idea may be summarized in the following equation:
 
     .. math::
+
         \mathbf M_{K}^N =\frac1N
         \;
         \sum_{
@@ -74,12 +75,14 @@ class Bloch:
     Examples
     --------
     Auto-use finalize of the Toeplitz matrix.
+
     >>> bloch = Bloch([2, 1, 2])
     >>> k_unfold = bloch.unfold_points([0] * 3)
     >>> M = [func(*args, k=k) for k in k_unfold]
     >>> M = bloch.unfold(M, k_unfold)
 
     Manual finalization of the Toeplitz matrix.
+
     >>> bloch = Bloch([2, 1, 2], finalize=False)
     >>> k_unfold = bloch.unfold_points([0] * 3)
     >>> M = [func(*args, k=k) for k in k_unfold]

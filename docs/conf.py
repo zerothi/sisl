@@ -21,6 +21,7 @@ import logging
 import os
 import pathlib
 import sys
+import typing
 from datetime import date
 from functools import wraps
 from textwrap import indent
@@ -31,7 +32,8 @@ _log = logging.getLogger("sisl_doc")
 
 # Currently disabling logging.INFO because of nodify, it would likely be best
 # if we are only removing that one!
-logging.disable(logging.INFO)
+_nodify_logging = logging.getLogger("nodify")
+_nodify_logging.setLevel(logging.WARNING)
 
 _doc_root = pathlib.Path(__file__).absolute().parent
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -977,7 +979,7 @@ def _setup_autodoc(app):
     """Patch and fix autodoc so we get the correct formatting of the environment"""
     from sphinx.ext import autodoc, autosummary
     from sphinx.locale import _
-    from sphinx.util import typing
+    from sphinx.util import typing as sphinx_typing
 
     # These subsequent class and methods originate from mpi4py
     # which is released under BSD-3 clause.
@@ -1023,7 +1025,7 @@ def _setup_autodoc(app):
                 more_content.append(content, "")
                 more_content.append("", "")
             if istypealias(obj, self.name):
-                content = _("alias of %s") % typing.restify(obj)
+                content = _("alias of %s") % sphinx_typing.restify(obj)
                 more_content.append(content, "")
                 more_content.append("", "")
             super().update_content(more_content)
