@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -173,7 +173,7 @@ See <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.volumef" 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – containing the integration grid and has the <code class="docutils literal notranslate"><span class="pre">bz.parent</span></code> as an instance of Hamiltonian.</p></li>
-<li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if <em class="xref py py-obj">True</em>, the returned quantity is averaged over <em class="xref py py-obj">bz</em>, else all k-point
+<li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – if <em class="xref py py-obj">True</em>, the returned quantity is averaged over <em class="xref py py-obj">bz</em>, else all k-point
 contributions will be collected.
 Note, for large <em class="xref py py-obj">bz</em> integrations this may explode the memory usage.</p></li>
 <li><p><strong>sigma</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>, </em><em>npt.ArrayLike</em><em>]</em>) – which Pauli matrix is used, alternatively one can pass a custom spin matrix,
@@ -186,7 +186,7 @@ Defaults to the step function.</p></li>
 One should <em>not</em> pass a <code class="docutils literal notranslate"><span class="pre">k</span></code> or a <code class="docutils literal notranslate"><span class="pre">wrap</span></code> keyword argument as they are
 already used.</p></li>
 <li><p><strong>apply_kwargs</strong> – keyword arguments passed directly to <code class="docutils literal notranslate"><span class="pre">bz.apply.renew(**apply_kwargs)</span></code>.</p></li>
-<li><p><strong>**berry_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – <p>arguments passed directly to the <em class="xref py py-obj">berry_curvature</em> method.</p>
+<li><p><strong>**berry_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – <p>arguments passed directly to the <em class="xref py py-obj">berry_curvature</em> method.</p>
 <p>Here one can pass <em class="xref py py-obj">derivative_kwargs</em> to pass flags to the
 <em class="xref py py-obj">derivative</em> method. In particular <code class="docutils literal notranslate"><span class="pre">axes</span></code> can be used
 to speedup the calculation (by omitting certain directions).</p>
@@ -257,7 +257,7 @@ When <span class="math notranslate nohighlight">\(D\)</span> is the dimensionali
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>)</p></li>
-<li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
+<li><p><strong>k_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
 <li><p><strong>sigma</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>, </em><em>npt.ArrayLike</em><em>]</em>)</p></li>
 <li><p><strong>J_axes</strong> (<em>Union</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>, </em><em>Sequence</em><em>[</em><a class="reference internal" href="sisl.typing.CartesianAxisStrLiteral.html#sisl.typing.CartesianAxisStrLiteral" title="sisl.typing.CartesianAxisStrLiteral"><em>CartesianAxisStrLiteral</em></a><em>]</em><em>]</em>)</p></li>
 <li><p><strong>distribution</strong> (<a class="reference internal" href="sisl.typing.DistributionType.html#sisl.typing.DistributionType" title="sisl.typing.DistributionType"><em>DistributionType</em></a>)</p></li>

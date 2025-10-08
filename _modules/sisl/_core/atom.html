@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -208,19 +208,24 @@
 <span class="sd">    &gt;&gt;&gt; Carbon = Atom(&quot;Carbon&quot;)</span>
 
 <span class="sd">    Add a tag to be able to distinguish it from other atoms</span>
+
 <span class="sd">    &gt;&gt;&gt; tagged_Carbon = Atom(&quot;Carbon&quot;, tag=&quot;siteA&quot;)</span>
 
 <span class="sd">    Create deuterium</span>
+
 <span class="sd">    &gt;&gt;&gt; D = Atom(&quot;H&quot;, mass=2.014)</span>
 
 <span class="sd">    Define an atom with 3 orbitals, each with a range of 2 Angstroem</span>
+
 <span class="sd">    &gt;&gt;&gt; C3 = Atom(&quot;C&quot;, orbitals=[2, 2, 2])</span>
 
 <span class="sd">    Define an atom outside of the periodic table (negative will yield an</span>
 <span class="sd">    AtomGhost object)</span>
+
 <span class="sd">    &gt;&gt;&gt; ghost_C = Atom(-6)</span>
 
 <span class="sd">    Define an unknown atom (basically anything can do)</span>
+
 <span class="sd">    &gt;&gt;&gt; unknown_atom = Atom(1000)</span>
 
 <span class="sd">    Notes</span>
@@ -901,9 +906,55 @@
 
 <div class="viewcode-block" id="Atoms.index">
 <a class="viewcode-back" href="../../../api/generated/sisl.Atoms.html#sisl.Atoms.index">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the indices of the atom object&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_species</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">species_index</span><span class="p">(</span><span class="n">atom</span><span class="p">))</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return indices of atoms matching the specified atom identifier(s).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atoms : str, Atom, int, or lists hereof</span>
+<span class="sd">            Atom identifier (element string, Atom instance, or species_index).</span>
+<span class="sd">            It can also be a list of identifiers for matching against any of the entries.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Unique (sorted) indices of all matching atoms.</span>
+<span class="sd">            Returns an empty array if no match is found.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; atoms = Atoms([&quot;C&quot;, &quot;H&quot;, &quot;Au&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; idx_C = atoms.index(&quot;C&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; idx_C = atoms.index(0)</span>
+<span class="sd">        &gt;&gt;&gt; idx_CH = atoms.index([&quot;C&quot;, &quot;H&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; idx_Au = atoms.index(Atom(79))</span>
+
+<span class="sd">        This can be useful to get a subset of a geometry, e.g.,</span>
+
+<span class="sd">        &gt;&gt;&gt; geom = Geometry(...)</span>
+<span class="sd">        &gt;&gt;&gt; idx_CH = geom.atoms.index([&quot;C&quot;, &quot;H&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; geom_CH = geom.sub(idx_CH)</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Unlike Python&#39;s ``list.index``, this method does **not** raise a ``ValueError``</span>
+<span class="sd">        when no match is found. Instead, it returns an empty array.</span>
+<span class="sd">        To check for existence, use e.g. ``if idx.size &gt; 0: ...``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">arr</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_species</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">species_index</span><span class="p">(</span><span class="n">atom</span><span class="p">))</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">idx</span><span class="p">,</span> <span class="n">arr</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c1"># no species found</span>
+                <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Atoms.species_index">

@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -161,7 +161,7 @@ to tag the atom to distinguish it from other atoms of the same species.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Z</strong> – determine species for the atomic species.</p></li>
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – orbitals associated with this atom. See <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital</span></code></a> for details on
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-class docutils literal notranslate"><span class="pre">Orbital</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – orbitals associated with this atom. See <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital</span></code></a> for details on
 how to define orbitals.
 Defaults to one orbital.</p></li>
 <li><p><strong>mass</strong> – the atomic mass, defaults to the mass found in <a class="reference internal" href="sisl.PeriodicTable.html#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>.</p></li>
@@ -176,17 +176,27 @@ different settings (defaults to the label of the atom)</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Carbon</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;Carbon&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Add a tag to be able to distinguish it from other atoms
-&gt;&gt;&gt; tagged_Carbon = Atom(“Carbon”, tag=”siteA”)</p>
-<p>Create deuterium
-&gt;&gt;&gt; D = Atom(“H”, mass=2.014)</p>
-<p>Define an atom with 3 orbitals, each with a range of 2 Angstroem
-&gt;&gt;&gt; C3 = Atom(“C”, orbitals=[2, 2, 2])</p>
+<p>Add a tag to be able to distinguish it from other atoms</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tagged_Carbon</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;Carbon&quot;</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;siteA&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create deuterium</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="mf">2.014</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Define an atom with 3 orbitals, each with a range of 2 Angstroem</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C3</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
 <p>Define an atom outside of the periodic table (negative will yield an
-AtomGhost object)
-&gt;&gt;&gt; ghost_C = Atom(-6)</p>
-<p>Define an unknown atom (basically anything can do)
-&gt;&gt;&gt; unknown_atom = Atom(1000)</p>
+AtomGhost object)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ghost_C</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Define an unknown atom (basically anything can do)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">unknown_atom</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition-notes admonition">
 <p class="admonition-title">Notes</p>
 <p>One can define atoms outside of the periodic table. They will generally
@@ -291,9 +301,9 @@ in an AtomUnknown object</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>)</p></li>
-<li><p><strong>Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>)</p></li>
-<li><p><strong>mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>)</p></li>
-<li><p><strong>tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>)</p></li>
+<li><p><strong>Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a>)</p></li>
+<li><p><strong>mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a>)</p></li>
+<li><p><strong>tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -310,8 +320,8 @@ in an AtomUnknown object</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) – the other object to check againts</p></li>
-<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if True the equality check also checks the orbital radius, else they are not compared</p></li>
-<li><p><strong>psi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if True, also check the wave-function component of the orbitals, see <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital.psi" title="sisl.Orbital.psi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital.psi</span></code></a></p></li>
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if True the equality check also checks the orbital radius, else they are not compared</p></li>
+<li><p><strong>psi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if True, also check the wave-function component of the orbitals, see <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital.psi" title="sisl.Orbital.psi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital.psi</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -329,7 +339,7 @@ in an AtomUnknown object</p></li>
 <dd><p>Loop on all orbitals in this atom</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if two orbitals share the same radius
+<dd class="field-odd"><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if two orbitals share the same radius
 one may be able to group two orbitals together</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -355,7 +365,7 @@ otherwise a single orbital is returned</p>
 <p>See <a class="reference internal" href="sisl.PeriodicTable.html#sisl.PeriodicTable.radius" title="sisl.PeriodicTable.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable.radius</span></code></a> for details on the argument.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'calc'</em><em>, </em><em>'empirical'</em><em>, </em><em>'vdw'</em><em>]</em>)</p>
+<dd class="field-odd"><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'calc'</em><em>, </em><em>'empirical'</em><em>, </em><em>'vdw'</em><em>]</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -367,7 +377,7 @@ otherwise a single orbital is returned</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – indices of the orbitals to remove</p></li>
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>]</em>) – indices of the orbitals to remove</p></li>
 <li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>)</p></li>
 </ul>
 </dd>
@@ -394,7 +404,7 @@ otherwise a single orbital is returned</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the scale factor for the atomic radii</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – the scale factor for the atomic radii</p></li>
 <li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>)</p></li>
 </ul>
 </dd>
@@ -411,7 +421,7 @@ otherwise a single orbital is returned</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – indices of the orbitals to retain</p></li>
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>]</em>) – indices of the orbitals to retain</p></li>
 <li><p><strong>atom</strong> (<a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>)</p></li>
 </ul>
 </dd>
@@ -422,7 +432,7 @@ otherwise a single orbital is returned</p>
 <dd class="field-odd"><p><a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if the number of orbitals removed is too large or some indices are outside the allowed range</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if the number of orbitals removed is too large or some indices are outside the allowed range</p>
 </dd>
 </dl>
 </dd></dl>
@@ -448,13 +458,13 @@ otherwise a single orbital is returned</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Atom.Z">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.Z" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.Z" title="Link to this definition"></a></dt>
 <dd><p>Atomic number</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Atom.column">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">column</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.column" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">column</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.column" title="Link to this definition"></a></dt>
 <dd><p>The column of the atom in the periodic table.</p>
 <p>May return <em class="xref py py-obj">NotImplemented</em> if the element isn’t found
 in the periodic table.</p>
@@ -474,13 +484,13 @@ in the periodic table.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Atom.mass">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Atom.mass" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Atom.mass" title="Link to this definition"></a></dt>
 <dd><p>Atomic mass</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Atom.no">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">no</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.no" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">no</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.no" title="Link to this definition"></a></dt>
 <dd><p>Number of orbitals on this atom</p>
 </dd></dl>
 
@@ -492,7 +502,7 @@ in the periodic table.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Atom.row">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.row" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Atom.row" title="Link to this definition"></a></dt>
 <dd><p>The row of the atom in the periodic table.</p>
 <p>May return <em class="xref py py-obj">NotImplemented</em> if the element isn’t found
 in the periodic table.</p>
@@ -518,7 +528,7 @@ in the periodic table.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Atom.tag">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#sisl.Atom.tag" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#sisl.Atom.tag" title="Link to this definition"></a></dt>
 <dd><p>Tag for atom</p>
 </dd></dl>
 
@@ -534,8 +544,8 @@ method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – name of the attribute in the class</p></li>
-<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – dictionary of dispatch methods</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – name of the attribute in the class</p></li>
+<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – dictionary of dispatch methods</p></li>
 <li><p><strong>obj_getattr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>, <em>optional</em>) – method with 2 arguments, an <code class="docutils literal notranslate"><span class="pre">obj</span></code> and the <code class="docutils literal notranslate"><span class="pre">attr</span></code> which may be used
 to control how the attribute is called.</p></li>
 <li><p><strong>instance_dispatcher</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractDispatcher</span></code>, <em>optional</em>) – control how instance dispatchers are handled through <em class="xref py py-obj">__get__</em> method.

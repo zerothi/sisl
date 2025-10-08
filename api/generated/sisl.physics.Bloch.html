@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -153,7 +153,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.physics.Bloch">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.physics.</span></span><span class="sig-name descname"><span class="pre">Bloch</span></span><a class="headerlink" href="#sisl.physics.Bloch" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Bloch’s theorem object containing unfolding factors and unfolding algorithms</p>
 <p>This class is a wrapper for expanding <em>any</em> matrix from a smaller matrix cell into
 a larger, using Bloch’s theorem.
@@ -178,25 +178,46 @@ The general idea may be summarized in the following equation:</p>
 \end{bmatrix}
 \otimes
 \mathbf M_{k_j}^1.\end{split}\]</div>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>When doing a Brillouin-zone average of Bloch-expansions (e.g.
+self-energies) one can get better performance by using
+<code class="docutils literal notranslate"><span class="pre">finalize=False</span></code> and then call a subsequent <code class="docutils literal notranslate"><span class="pre">bloch.unfold_finalize(M)</span></code>.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bloch</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span> <span class="pre">int</span></code>) – Bloch repetitions along each direction</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bloch</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span> <span class="pre">int</span></code>) – Bloch repetitions along each direction</p></li>
+<li><p><strong>finalize</strong> – whether the unfold routine also copies out the
+Toeplitz matrix. If false, the user should call
+<code class="docutils literal notranslate"><span class="pre">bloch.unfold_finalize(M)</span></code> on the returned matrix
+to ensure it is complete, see examples.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bloch</span> <span class="o">=</span> <span class="n">Bloch</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">k_unfold</span> <span class="o">=</span> <span class="n">bloch</span><span class="o">.</span><span class="n">unfold_points</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">k_unfold</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bloch</span><span class="o">.</span><span class="n">unfold</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">k_unfold</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>Auto-use finalize of the Toeplitz matrix.
+&gt;&gt;&gt; bloch = Bloch([2, 1, 2])
+&gt;&gt;&gt; k_unfold = bloch.unfold_points([0] * 3)
+&gt;&gt;&gt; M = [func(<a href="#id1"><span class="problematic" id="id2">*</span></a>args, k=k) for k in k_unfold]
+&gt;&gt;&gt; M = bloch.unfold(M, k_unfold)</p>
+<p>Manual finalization of the Toeplitz matrix.
+&gt;&gt;&gt; bloch = Bloch([2, 1, 2], finalize=False)
+&gt;&gt;&gt; k_unfold = bloch.unfold_points([0] * 3)
+&gt;&gt;&gt; M = [func(<a href="#id3"><span class="problematic" id="id4">*</span></a>args, k=k) for k in k_unfold]
+&gt;&gt;&gt; M = bloch.unfold(M, k_unfold)
+&gt;&gt;&gt; if not bloch.finalize:
+…    bloch.unfold_finalize(M)</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Bloch.unfold" title="sisl.physics.Bloch.unfold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfold</span></code></a>(M, k_unfold)</p></td>
 <td><p>Unfold the matrix list of matrices <em class="xref py py-obj">M</em> into a corresponding k-point (unfolding k-points are <em class="xref py py-obj">k_unfold</em>)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Bloch.unfold_points" title="sisl.physics.Bloch.unfold_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfold_points</span></code></a>(k)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Bloch.unfold_finalize" title="sisl.physics.Bloch.unfold_finalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfold_finalize</span></code></a>(M)</p></td>
+<td><p>Copy out the Toeplitz matrix from the sub-calculated elements.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Bloch.unfold_points" title="sisl.physics.Bloch.unfold_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfold_points</span></code></a>(k)</p></td>
 <td><p>Return a list of k-points to be evaluated for this objects unfolding</p></td>
 </tr>
 </tbody>
@@ -230,9 +251,9 @@ methods.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – method called which returns a matrix.</p></li>
-<li><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – k-point to be unfolded</p></li>
-<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>) – arguments passed directly to <em class="xref py py-obj">func</em></p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – keyword arguments passed directly to <em class="xref py py-obj">func</em></p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – k-point to be unfolded</p></li>
+<li><p><strong>*args</strong> – arguments passed directly to <em class="xref py py-obj">func</em></p></li>
+<li><p><strong>**kwargs</strong> – keyword arguments passed directly to <em class="xref py py-obj">func</em></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -252,7 +273,7 @@ methods.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>M</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(:</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">:</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">:)</span></code>) – an <code class="docutils literal notranslate"><span class="pre">*</span></code>-N-M matrix used for unfolding</p></li>
-<li><p><strong>k_unfold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(:</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – unfolding k-points as returned by <a class="reference internal" href="#sisl.physics.Bloch.unfold_points" title="sisl.physics.Bloch.unfold_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bloch.unfold_points</span></code></a></p></li>
+<li><p><strong>k_unfold</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – unfolding k-points as returned by <a class="reference internal" href="#sisl.physics.Bloch.unfold_points" title="sisl.physics.Bloch.unfold_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bloch.unfold_points</span></code></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -260,6 +281,23 @@ methods.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.Bloch.unfold_finalize">
+<span class="sig-name descname"><span class="pre">unfold_finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/bloch.html#Bloch.unfold_finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.Bloch.unfold_finalize" title="Link to this definition"></a></dt>
+<dd><p>Copy out the Toeplitz matrix from the sub-calculated elements.</p>
+<p>This is necessary to be called if the <a class="reference internal" href="#sisl.physics.Bloch" title="sisl.physics.Bloch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bloch</span></code></a> object has
+been initialized with <code class="docutils literal notranslate"><span class="pre">Bloch(...,</span> <span class="pre">finalize=False)</span></code>.
+Otherwise it should not be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>M</strong> – the full matrix, where only the Toeplitz elements are filled.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">the</span> <span class="pre">full</span> <span class="pre">matrix</span> <span class="pre">with</span> <span class="pre">copied</span> <span class="pre">out</span> <span class="pre">elements.</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -273,7 +311,7 @@ The return list of <em class="xref py py-obj">k</em> points are the k-points req
 folded geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – k-point evaluation corresponding to the unfolded unit-cell</p>
+<dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – k-point evaluation corresponding to the unfolded unit-cell</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of <code class="docutils literal notranslate"><span class="pre">np.prod(self.bloch)</span></code> k-points used for the unfolding</p>

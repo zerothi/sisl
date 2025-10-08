@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,7 +141,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.btd.</span></span><span class="sig-name descname"><span class="pre">DeviceGreen</span></span><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Block-tri-diagonal Green function calculator</p>
 <p>This class enables the extraction and calculation of some important
 quantities not currently accessible in TBtrans.</p>
@@ -272,7 +272,7 @@ can also debug the values and see what’s happening.</p>
 <dd><p>Clean any memory used by this object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -296,10 +296,10 @@ The eigenvalues are the transmission eigenvalues. Further details may be found i
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>state</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>) – the scattering states as obtained from <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="sisl_toolbox.btd.DeviceGreen.scattering_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_state</span></code></a></p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span> <span class="pre">(list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">not)</span></code>) – which electrodes to consider for the transmission eigenchannel
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span> <span class="pre">(list</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">not)</span></code>) – which electrodes to consider for the transmission eigenchannel
 decomposition (the sum in the above equation).
 Defaults to all but the origin electrode.</p></li>
-<li><p><strong>ret_coeff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – return also the scattering state coefficients</p></li>
+<li><p><strong>ret_coeff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – return also the scattering state coefficients</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -314,7 +314,7 @@ This is equivalent to the <code class="docutils literal notranslate"><span class
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>, <a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><em>StateElectron</em></a>]</p>
+<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>[<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>, <a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><em>StateElectron</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -332,7 +332,7 @@ DOS weighted scattering states:</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>state_matrix</strong> – the scattering matrix as obtained from <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_matrix" title="sisl_toolbox.btd.DeviceGreen.scattering_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_matrix</span></code></a></p></li>
 <li><p><strong>scat_matrix</strong> (<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron" title="sisl.physics.electron.StateElectron"><em>StateElectron</em></a>)</p></li>
-<li><p><strong>ret_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
+<li><p><strong>ret_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -346,7 +346,7 @@ Only returned if <em class="xref py py-obj">ret_out</em> is true.</p></li>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>, …]</p>
+<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>[<a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><em>StateCElectron</em></a>, …]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -362,9 +362,9 @@ Only returned if <em class="xref py py-obj">ret_out</em> is true.</p></li>
 <li><p><strong>prefix</strong> (<em>Literal</em><em>[</em><em>'TBT'</em><em>, </em><em>'TS'</em><em>]</em>) – which prefix to use, if TBT it will prefer TBT prefix, but fall back
 to TS prefixes.
 If TS, only these prefixes will be used.</p></li>
-<li><p><strong>use_tbt_se</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to use the TBT.SE.nc files for self-energies
+<li><p><strong>use_tbt_se</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether to use the TBT.SE.nc files for self-energies
 or calculate them on the fly.</p></li>
-<li><p><strong>eta</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – force a specific eta value</p></li>
+<li><p><strong>eta</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – force a specific eta value</p></li>
 <li><p><strong>kwargs</strong> – passed to the class instantiating.</p></li>
 </ul>
 </dd>
@@ -385,8 +385,8 @@ or calculate them on the fly.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – k-point to calculate the Green function at</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.14)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – k-point to calculate the Green function at</p></li>
 <li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;array&quot;,</span> <span class="pre">&quot;btd&quot;,</span> <span class="pre">&quot;bm&quot;,</span> <span class="pre">&quot;bd&quot;,</span> <span class="pre">&quot;sparse&quot;}</span></code>) – <p>return the matrix in a specific format</p>
 <ul>
 <li><p>array: a regular numpy array (full matrix)</p></li>
@@ -434,11 +434,11 @@ function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode where the scattering matrix originates from</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span> <span class="pre">of</span></code>) – where the scattering matrix ends in.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – k-point to calculate the scattering matrix at</p></li>
-<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – cutoff eigen states of the broadening matrix.
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.14)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode where the scattering matrix originates from</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span> <span class="pre">of</span></code>) – where the scattering matrix ends in.</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – k-point to calculate the scattering matrix at</p></li>
+<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – cutoff eigen states of the broadening matrix.
 The cutoff is based on a relative fraction of the maximum eigen value.
 that are below this value.
 For example, we keep according to <span class="math notranslate nohighlight">\(\lambda_i/\max(\lambda_i) &gt; \mathrm{cutoff}\)</span>.
@@ -471,15 +471,15 @@ state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the spectral function from</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – k-point to calculate the spectral function at</p></li>
-<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a>) – Cut off the returned scattering states at some DOS value. Any scattering states
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.14)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the spectral function from</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – k-point to calculate the spectral function at</p></li>
+<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><em>Callable</em></a>) – Cut off the returned scattering states at some DOS value. Any scattering states
 with relative eigenvalues (to the largest eigenvalue), lower than <em class="xref py py-obj">cutoff</em> are discarded.
 For example, we keep according to <span class="math notranslate nohighlight">\(\epsilon_i/\max(\epsilon_i) &gt; \mathrm{cutoff}\)</span>.
 Values above or close to 0.1 should be used with care.
 Can be a function, see the details of this class.</p></li>
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'svd:gamma'</em><em>, </em><em>'svd:A'</em><em>, </em><em>'eig'</em><em>]</em>) – which method to use for calculating the scattering states.
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'svd:gamma'</em><em>, </em><em>'svd:A'</em><em>, </em><em>'eig'</em><em>]</em>) – which method to use for calculating the scattering states.
 Use only the <code class="docutils literal notranslate"><span class="pre">eig</span></code> method for testing purposes as it is extremely slow
 and requires a substantial amount of memory.
 The <code class="docutils literal notranslate"><span class="pre">svd:gamma</span></code> is the fastests while retaining complete precision.
@@ -487,7 +487,7 @@ The <code class="docutils literal notranslate"><span class="pre">svd:A</span></c
 very little loss of precision, since it diagonalizes <span class="math notranslate nohighlight">\(\mathbf A\)</span> in
 the subspace of the electrode <em class="xref py py-obj">elec</em> and reduces the propagated part of the spectral
 matrix.</p></li>
-<li><p><strong>cutoff_elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Only used for <code class="docutils literal notranslate"><span class="pre">method=svd:A</span></code>. The initial block of the spectral function is
+<li><p><strong>cutoff_elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Only used for <code class="docutils literal notranslate"><span class="pre">method=svd:A</span></code>. The initial block of the spectral function is
 diagonalized and only eigenvectors with relative eigenvalues
 <code class="docutils literal notranslate"><span class="pre">&gt;=cutoff_elec</span></code> are retained.
 thus reducing the initial propagated modes. The normalization explained for <em class="xref py py-obj">cutoff</em>
@@ -519,9 +519,9 @@ One may recreate the spectral function with <code class="docutils literal notran
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the spectral function from</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – k-point to calculate the spectral function at</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.14)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the spectral function from</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – k-point to calculate the spectral function at</p></li>
 <li><p><strong>format</strong> (<code class="docutils literal notranslate"><span class="pre">{&quot;array&quot;,</span> <span class="pre">&quot;btd&quot;,</span> <span class="pre">&quot;bm&quot;,</span> <span class="pre">&quot;bd&quot;}</span></code>) – <p>return the matrix in a specific format</p>
 <ul>
 <li><p>array: a regular numpy array (full matrix)</p></li>
@@ -530,11 +530,11 @@ One may recreate the spectral function with <code class="docutils literal notran
 <li><p>bd: same as btd, since the off-diagonals are already calculated</p></li>
 </ul>
 </p></li>
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'column'</em><em>, </em><em>'propagate'</em><em>]</em>) – which method to use for calculating the spectral function.
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'column'</em><em>, </em><em>'propagate'</em><em>]</em>) – which method to use for calculating the spectral function.
 Depending on the size of the BTD blocks one may be faster than the
 other. For large systems you are recommended to time the different methods
 and stick with the fastest one, they are numerically identical.</p></li>
-<li><p><strong>herm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – The spectral function is a Hermitian matrix, by default (True), the methods
+<li><p><strong>herm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – The spectral function is a Hermitian matrix, by default (True), the methods
 that can utilize the Hermitian property only calculates the lower triangular
 part of <span class="math notranslate nohighlight">\(\mathbf A\)</span>, and then copies the Hermitian to the upper part.
 By setting this to <em class="xref py py-obj">False</em> the entire matrix is explicitly calculated.</p></li>
@@ -565,14 +565,14 @@ the entire spectral function matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.13)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the transmission <em>from</em>.</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span> <span class="pre">of</span></code>) – the electrode(s) to calculate the transmission <em>to</em>.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – k-point to calculate the transmission at.</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.14)"><em>complex</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the electrode to calculate the transmission <em>from</em>.</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span> <span class="pre">of</span></code>) – the electrode(s) to calculate the transmission <em>to</em>.</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – k-point to calculate the transmission at.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>, …]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>, …]</p>
 </dd>
 </dl>
 </dd></dl>

@@ -23,7 +23,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -389,19 +389,24 @@ class Atom(sisl._dispatch_class._Dispatchs)
  |  &gt;&gt;&gt; Carbon = Atom(&#34;Carbon&#34;)
  |
  |  Add a tag to be able to distinguish it from other atoms
+ |
  |  &gt;&gt;&gt; tagged_Carbon = Atom(&#34;Carbon&#34;, tag=&#34;siteA&#34;)
  |
  |  Create deuterium
+ |
  |  &gt;&gt;&gt; D = Atom(&#34;H&#34;, mass=2.014)
  |
  |  Define an atom with 3 orbitals, each with a range of 2 Angstroem
+ |
  |  &gt;&gt;&gt; C3 = Atom(&#34;C&#34;, orbitals=[2, 2, 2])
  |
  |  Define an atom outside of the periodic table (negative will yield an
  |  AtomGhost object)
+ |
  |  &gt;&gt;&gt; ghost_C = Atom(-6)
  |
  |  Define an unknown atom (basically anything can do)
+ |
  |  &gt;&gt;&gt; unknown_atom = Atom(1000)
  |
  |  Notes

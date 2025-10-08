@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -136,7 +136,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl_toolbox.siesta.atom.AtomInput">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.siesta.atom.</span></span><span class="sig-name descname"><span class="pre">AtomInput</span></span><a class="headerlink" href="#sisl_toolbox.siesta.atom.AtomInput" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Input for the <code class="docutils literal notranslate"><span class="pre">atom</span></code> program see <a class="reference internal" href="#atomlicense" id="id1"><span>[AtomLicense]</span></a></p>
 <p>This class enables the construction of the <code class="docutils literal notranslate"><span class="pre">INP</span></code> file to be fed to <code class="docutils literal notranslate"><span class="pre">atom</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example input for ATOM</span>
@@ -221,7 +221,7 @@
 <dd><p>Return atom object respecting the input</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>inp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – create <a class="reference internal" href="#sisl_toolbox.siesta.atom.AtomInput" title="sisl_toolbox.siesta.atom.AtomInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomInput</span></code></a> from the content of <em class="xref py py-obj">inp</em></p>
+<dd class="field-odd"><p><strong>inp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – create <a class="reference internal" href="#sisl_toolbox.siesta.atom.AtomInput" title="sisl_toolbox.siesta.atom.AtomInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomInput</span></code></a> from the content of <em class="xref py py-obj">inp</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -244,10 +244,10 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a>, <em>optional</em>) – from which directory should files be read</p></li>
-<li><p><strong>plot</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list-like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – which data to plot</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a>, <em>optional</em>) – from which directory should files be read</p></li>
+<li><p><strong>plot</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list-like</span></code> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – which data to plot</p></li>
 <li><p><strong>l</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list-like</span></code>, <em>optional</em>) – which l-shells to plot (for those that have l-shell decompositions)</p></li>
-<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – call <em class="xref py py-obj">matplotlib.pyplot.show()</em> at the end</p></li>
+<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – call <em class="xref py py-obj">matplotlib.pyplot.show()</em> at the end</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

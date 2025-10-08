@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -268,30 +268,30 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>skip_input</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – the input geometry may be contained as a print-out.
+<li><p><strong>skip_input</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – the input geometry may be contained as a print-out.
 This is not part of an MD calculation, and hence is by
 default not returned.</p></li>
 <li><p><strong>axes</strong> (<em>Axes</em>) – The axes to project the geometry to.</p></li>
 <li><p><strong>atoms</strong> (<a class="reference internal" href="../../generated/sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – The atoms to plot. If None, all atoms are plotted.</p></li>
 <li><p><strong>atoms_style</strong> (<em>Sequence</em><em>[</em><em>AtomsStyleSpec</em><em>]</em>) – List of style specifications for the atoms. See the showcase notebooks for examples.</p></li>
-<li><p><strong>atoms_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Scaling factor for the size of all atoms.</p></li>
+<li><p><strong>atoms_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Scaling factor for the size of all atoms.</p></li>
 <li><p><strong>atoms_colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the atoms in case the color attribute is an array of values.
 If None, the default colorscale is used for each backend.</p></li>
 <li><p><strong>drawing_mode</strong> (<em>Literal</em><em>[</em><em>'scatter'</em><em>, </em><em>'balls'</em><em>, </em><em>None</em><em>]</em>) – The method used to draw the atoms.</p></li>
-<li><p><strong>bind_bonds_to_ats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to display only bonds between atoms that are being displayed.</p></li>
-<li><p><strong>points_per_bond</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – When the points are drawn using points instead of lines (e.g. in some frameworks
+<li><p><strong>bind_bonds_to_ats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display only bonds between atoms that are being displayed.</p></li>
+<li><p><strong>points_per_bond</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – When the points are drawn using points instead of lines (e.g. in some frameworks
 to draw multicolor bonds), the number of points used per bond.</p></li>
 <li><p><strong>bonds_style</strong> (<em>StyleSpec</em>) – Style specification for the bonds. See the showcase notebooks for examples.</p></li>
-<li><p><strong>bonds_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Scaling factor for the width of all bonds.</p></li>
+<li><p><strong>bonds_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Scaling factor for the width of all bonds.</p></li>
 <li><p><strong>bonds_colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the bonds in case the color attribute is an array of values.
 If None, the default colorscale is used for each backend.</p></li>
-<li><p><strong>show_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to display the atoms.</p></li>
-<li><p><strong>show_bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to display the bonds.</p></li>
+<li><p><strong>show_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display the atoms.</p></li>
+<li><p><strong>show_bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display the bonds.</p></li>
 <li><p><strong>show_cell</strong> (<em>Literal</em><em>[</em><em>'box'</em><em>, </em><em>'axes'</em><em>, </em><em>False</em><em>]</em>) – Mode to display the cell. If False, the cell is not displayed.</p></li>
 <li><p><strong>cell_style</strong> (<em>StyleSpec</em>) – Style specification for the cell. See the showcase notebooks for examples.</p></li>
-<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – Number of unit cells to display in each direction.</p></li>
-<li><p><strong>atoms_ndim_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – Scaling factor for the size of the atoms for different dimensionalities (1D, 2D, 3D).</p></li>
-<li><p><strong>bonds_ndim_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – Scaling factor for the width of the bonds for different dimensionalities (1D, 2D, 3D).</p></li>
+<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – Number of unit cells to display in each direction.</p></li>
+<li><p><strong>atoms_ndim_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – Scaling factor for the size of the atoms for different dimensionalities (1D, 2D, 3D).</p></li>
+<li><p><strong>bonds_ndim_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – Scaling factor for the width of the bonds for different dimensionalities (1D, 2D, 3D).</p></li>
 <li><p><strong>dataaxis_1d</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>np.ndarray</em><em>, </em><em>Callable</em><em>]</em><em>]</em>) – Only meaningful for 1D plots. The data to plot on the Y axis.</p></li>
 <li><p><strong>arrows</strong> (<em>Sequence</em><em>[</em><em>AtomArrowSpec</em><em>]</em>) – List of arrow specifications to display. See the showcase notebooks for examples.</p></li>
 <li><p><strong>backend</strong> – The backend to use to generate the figure.</p></li>
@@ -369,7 +369,7 @@ will loose the slice after each call.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p>
+<dd class="field-odd"><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../../generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><em>MonkhorstPack</em></a></p>
@@ -509,26 +509,26 @@ reading this would be very welcome.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>Literal</em><em>[</em><em>'voronoi'</em><em>, </em><em>'hirshfeld'</em><em>, </em><em>'mulliken'</em><em>, </em><em>'mulliken:&lt;5.2'</em><em>]</em>) – the name of the charges that you want to read</p></li>
-<li><p><strong>iscf</strong> (<em>Union</em><em>[</em><em>Opt</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.13)"><em>Ellipsis</em></a><em>]</em>) – index (0-based) of the scf iteration you want the charges for.
+<li><p><strong>iscf</strong> (<em>Union</em><em>[</em><em>Opt</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.14)"><em>Ellipsis</em></a><em>]</em>) – index (0-based) of the scf iteration you want the charges for.
 If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em>/<em class="xref py py-obj"></em> are used, then
 the returned quantities depend on what is present.
 If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any SCF charges.
 If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then only the final charges will be returned.</p></li>
-<li><p><strong>imd</strong> (<em>Union</em><em>[</em><em>Opt</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.13)"><em>Ellipsis</em></a><em>]</em>) – index (0-based) of the md step you want the charges for.
+<li><p><strong>imd</strong> (<em>Union</em><em>[</em><em>Opt</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.14)"><em>Ellipsis</em></a><em>]</em>) – index (0-based) of the md step you want the charges for.
 If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em>/<em class="xref py py-obj"></em> are used, then
 the returned quantities depend on what is present.
 If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any MD charges.
 If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then only the final charges will be returned.</p></li>
-<li><p><strong>key_scf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the key lookup for the scf iterations (a “:” will automatically be appended)</p></li>
-<li><p><strong>as_dataframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether charges should be returned as a pandas dataframe.</p></li>
+<li><p><strong>key_scf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – the key lookup for the scf iterations (a “:” will automatically be appended)</p></li>
+<li><p><strong>as_dataframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether charges should be returned as a pandas dataframe.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – if a specific MD+SCF index is requested (or special cases where output is
 not complete)</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – if <em class="xref py py-obj">iscf</em> or <em class="xref py py-obj">imd</em> is different from <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code>.</p></li>
-<li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> – if <em class="xref py py-obj">as_dataframe</em> is requested. The dataframe will have multi-indices if multiple
+<li><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> – if <em class="xref py py-obj">iscf</em> or <em class="xref py py-obj">imd</em> is different from <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code>.</p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> – if <em class="xref py py-obj">as_dataframe</em> is requested. The dataframe will have multi-indices if multiple
 SCF or MD steps are requested.</p></li>
 </ul>
 </p>
@@ -553,11 +553,11 @@ of keywords, so:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read geometry, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_geometry" title="sisl.io.siesta.stdoutSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a></p></li>
-<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read force, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="sisl.io.siesta.stdoutSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a></p></li>
-<li><p><strong>stress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read stress, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_stress" title="sisl.io.siesta.stdoutSileSiesta.read_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_stress</span></code></a></p></li>
-<li><p><strong>moment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read moment, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_moment" title="sisl.io.siesta.stdoutSileSiesta.read_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_moment</span></code></a> (only for spin-orbit calculations)</p></li>
-<li><p><strong>energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read final energies, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_energy" title="sisl.io.siesta.stdoutSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a></p></li>
+<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read geometry, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_geometry" title="sisl.io.siesta.stdoutSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a></p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read force, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="sisl.io.siesta.stdoutSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a></p></li>
+<li><p><strong>stress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read stress, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_stress" title="sisl.io.siesta.stdoutSileSiesta.read_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_stress</span></code></a></p></li>
+<li><p><strong>moment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read moment, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_moment" title="sisl.io.siesta.stdoutSileSiesta.read_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_moment</span></code></a> (only for spin-orbit calculations)</p></li>
+<li><p><strong>energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – read final energies, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_energy" title="sisl.io.siesta.stdoutSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -633,17 +633,17 @@ of keywords, so:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – return the total forces instead of the atomic forces.</p></li>
-<li><p><strong>max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <p>whether only the maximum atomic force should be returned for each step.</p>
+<li><p><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – return the total forces instead of the atomic forces.</p></li>
+<li><p><strong>max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – <p>whether only the maximum atomic force should be returned for each step.</p>
 <p>Setting it to <em class="xref py py-obj">True</em> is equivalent to <em class="xref py py-obj">max(outSile.read_force())</em> in case atomic forces
 are written in the output file (<em class="xref py py-obj">WriteForces .true.</em> in the fdf file)</p>
 <p>Note that this is not the same as doing <em class="xref py py-obj">max(outSile.read_force(total=True))</em> since
 the forces returned in that case are averages on each axis.</p>
 </p></li>
-<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'siesta'</em><em>, </em><em>'ts'</em><em>]</em>) – Specifies the indicator string for the forces that are to be read.
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'siesta'</em><em>, </em><em>'ts'</em><em>]</em>) – Specifies the indicator string for the forces that are to be read.
 The function will look for a line containing <code class="docutils literal notranslate"><span class="pre">f'{key}:</span> <span class="pre">Atomic</span> <span class="pre">forces'</span></code>
 to start reading forces.</p></li>
-<li><p><strong>skip_final</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – the final output of the forces is duplicated when the <em>final</em>
+<li><p><strong>skip_final</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a>) – the final output of the forces is duplicated when the <em>final</em>
 output is written.
 By default, this method will return the final forces, but
 only <strong>if</strong> no other forces are found.
@@ -666,7 +666,7 @@ output, otherwise forces will be returned</p>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition-notes admonition">
@@ -697,7 +697,7 @@ will loose the slice after each call.</p>
 <dd><p>Reads the geometry from the Siesta output file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>skip_input</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – the input geometry may be contained as a print-out.
+<dd class="field-odd"><p><strong>skip_input</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – the input geometry may be contained as a print-out.
 This is not part of an MD calculation, and hence is by
 default not returned.</p>
 </dd>
@@ -706,7 +706,7 @@ default not returned.</p>
 a list of geometries corresponding to the MD-runs.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition-notes admonition">
@@ -739,9 +739,9 @@ will loose the slice after each call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – return a table with orbitally resolved
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – return a table with orbitally resolved
 moments.</p></li>
-<li><p><strong>quantity</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'S'</em><em>, </em><em>'L'</em><em>]</em>) – return the spin-moments or the L moments</p></li>
+<li><p><strong>quantity</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'S'</em><em>, </em><em>'L'</em><em>]</em>) – return the spin-moments or the L moments</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -778,13 +778,13 @@ will loose the slice after each call.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>Literal</em><em>[</em><em>'scf'</em><em>, </em><em>'ts-scf'</em><em>]</em>) – parse SCF information from Siesta SCF or TranSiesta SCF</p></li>
-<li><p><strong>iscf</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.13)"><em>Ellipsis</em></a><em>]</em><em>]</em>) – which SCF cycle should be stored. If <code class="docutils literal notranslate"><span class="pre">-1</span></code> only the final SCF step is stored,
+<li><p><strong>iscf</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.14)"><em>Ellipsis</em></a><em>]</em><em>]</em>) – which SCF cycle should be stored. If <code class="docutils literal notranslate"><span class="pre">-1</span></code> only the final SCF step is stored,
 for <em class="xref py py-obj"></em>/<em class="xref py py-obj">None</em> <em>all</em> SCF cycles are returned. When <em class="xref py py-obj">iscf</em> values queried are not found they
 will be truncated to the nearest SCF step.</p></li>
-<li><p><strong>as_dataframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the information should be returned as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>. The advantage of this
+<li><p><strong>as_dataframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether the information should be returned as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>. The advantage of this
 format is that everything is indexed and therefore you know what each value means.You can also
 perform operations very easily on a dataframe.</p></li>
-<li><p><strong>ret_header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to also return the headers that define each value in the returned array,
+<li><p><strong>ret_header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether to also return the headers that define each value in the returned array,
 will have no effect if <em class="xref py py-obj">as_dataframe</em> is true.</p></li>
 </ul>
 </dd>
@@ -818,8 +818,8 @@ will loose the slice after each call.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'static'</em><em>, </em><em>'total'</em><em>, </em><em>'Voigt'</em><em>]</em>) – which stress to read from the output.</p></li>
-<li><p><strong>skip_final</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – the final output of the stress is duplicated when the <em>final</em>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'static'</em><em>, </em><em>'total'</em><em>, </em><em>'Voigt'</em><em>]</em>) – which stress to read from the output.</p></li>
+<li><p><strong>skip_final</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a>) – the final output of the stress is duplicated when the <em>final</em>
 output is written.
 By default, this method will return the final stress, but
 only <strong>if</strong> no other stresses are found.
@@ -832,7 +832,7 @@ will not be returned, unless explicitly requested through this flag.</p></li>
 output, otherwise stresses will be returned</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition-notes admonition">

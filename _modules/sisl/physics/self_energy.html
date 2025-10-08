@@ -21,7 +21,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1326,7 +1326,7 @@
         <span class="n">unfold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">tile</span> <span class="o">=</span> <span class="n">unfold</span><span class="p">[</span><span class="n">s_ax</span><span class="p">]</span>
         <span class="n">unfold</span><span class="p">[</span><span class="n">s_ax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">bloch</span> <span class="o">=</span> <span class="n">Bloch</span><span class="p">(</span><span class="n">unfold</span><span class="p">)</span>
+        <span class="n">bloch</span> <span class="o">=</span> <span class="n">Bloch</span><span class="p">(</span><span class="n">unfold</span><span class="p">,</span> <span class="n">finalize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># We always need the inverse</span>
         <span class="n">getrf</span> <span class="o">=</span> <span class="n">linalg_info</span><span class="p">(</span><span class="s2">&quot;getrf&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
@@ -1481,6 +1481,8 @@
         <span class="n">G</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">renew</span><span class="p">(</span><span class="o">**</span><span class="n">apply_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">_func_bloch</span><span class="p">)(</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">no</span><span class="o">=</span><span class="n">no</span><span class="p">,</span> <span class="n">tile</span><span class="o">=</span><span class="n">tile</span><span class="p">,</span> <span class="n">idx0</span><span class="o">=</span><span class="n">idx0</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bloch</span><span class="o">.</span><span class="n">finalize</span><span class="p">:</span>
+            <span class="n">bloch</span><span class="o">.</span><span class="n">unfold_finalize</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">is_k</span><span class="p">:</span>
             <span class="c1"># Revert k-points</span>
@@ -2149,7 +2151,7 @@
         <span class="c1"># to filter out unused arguments.</span>
 
         <span class="c1"># Define Bloch unfolding routine and number of tiles along the semi-inf direction</span>
-        <span class="n">bloch</span> <span class="o">=</span> <span class="n">Bloch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">)</span>
+        <span class="n">bloch</span> <span class="o">=</span> <span class="n">Bloch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">,</span> <span class="n">finalize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># If using Bloch&#39;s theorem we need to wrap the Green function calculation</span>
         <span class="c1"># as the method call.</span>
@@ -2171,6 +2173,9 @@
         <span class="n">G</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">_func_bloch</span><span class="p">)(</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">surf_orbs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_surface_orbs</span><span class="p">,</span> <span class="n">semi_bulk</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;semi_bulk&quot;</span><span class="p">]</span>
         <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bloch</span><span class="o">.</span><span class="n">finalize</span><span class="p">:</span>
+            <span class="n">bloch</span><span class="o">.</span><span class="n">unfold_finalize</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">is_k</span><span class="p">:</span>
             <span class="c1"># Restore Brillouin zone k-points</span>

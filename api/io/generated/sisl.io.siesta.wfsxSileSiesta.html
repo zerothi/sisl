@@ -22,7 +22,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -263,7 +263,7 @@ used to convert k [1/Ang] -&gt; [b]</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fdf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Path to the fdf file used to run the calculation. Needed to gather
+<li><p><strong>fdf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Path to the fdf file used to run the calculation. Needed to gather
 information about the geometry and the hamiltonian/overlap if needed.</p></li>
 <li><p><strong>extra_vars</strong> – <p>Additional variables to calculate for each eigenstate, apart from their energy.</p>
 <p>Each item of the list should be a dictionary with the following keys:
@@ -285,11 +285,11 @@ coordinates are new, just pass the values for them, they will get overwritten.</
 <p>Each item can also be a string indicating the name of a known variable: ‘norm2’, ‘spin_moment’, ‘ipr’.</p>
 </p></li>
 <li><p><strong>need_H</strong> – Whether the Hamiltonian is needed to read the WFSX file.</p></li>
-<li><p><strong>Erange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The energy range to plot.
+<li><p><strong>Erange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – The energy range to plot.
 If None, the range is determined by <em class="xref py py-obj">bands_range</em>.</p></li>
-<li><p><strong>E0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The energy reference.</p></li>
+<li><p><strong>E0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The energy reference.</p></li>
 <li><p><strong>E_axis</strong> (<em>Literal</em><em>[</em><em>'x'</em><em>, </em><em>'y'</em><em>]</em>) – Axis to plot the energies.</p></li>
-<li><p><strong>bands_range</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>]</em>) – The bands to plot. Only used if <em class="xref py py-obj">Erange</em> is None.
+<li><p><strong>bands_range</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em><em>]</em>) – The bands to plot. Only used if <em class="xref py py-obj">Erange</em> is None.
 If None, the 15 bands above and below the Fermi level are plotted.</p></li>
 <li><p><strong>spin</strong> (<em>Optional</em><em>[</em><em>Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>]</em><em>]</em>) – Which spin channel to display. Only meaningful for spin-polarized calculations.
 If None and the calculation is spin polarized, both are plotted.</p></li>
@@ -298,17 +298,17 @@ If None and the calculation is spin polarized, both are plotted.</p></li>
 will be taken from <em class="xref py py-obj">bands_style</em>.</p></li>
 <li><p><strong>colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the bands in case the color attribute is an array of values.
 If None, the default colorscale is used for each backend.</p></li>
-<li><p><strong>gap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to display the gap.</p></li>
-<li><p><strong>gap_tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Tolerance in k for determining whether two gaps are the same.</p></li>
-<li><p><strong>gap_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Color of the gap.</p></li>
-<li><p><strong>gap_marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Marker styles for the gap (as <a class="reference external" href="https://plotly.com/python-api-reference/generated/plotly.html#module-plotly" title="(in )"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotly</span></code></a> marker’s styles).</p></li>
-<li><p><strong>direct_gaps_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to only display direct gaps.</p></li>
-<li><p><strong>custom_gaps</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of custom gaps to display. See the showcase notebooks for examples.</p></li>
+<li><p><strong>gap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display the gap.</p></li>
+<li><p><strong>gap_tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Tolerance in k for determining whether two gaps are the same.</p></li>
+<li><p><strong>gap_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Color of the gap.</p></li>
+<li><p><strong>gap_marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Marker styles for the gap (as <a class="reference external" href="https://plotly.com/python-api-reference/generated/plotly.html#module-plotly" title="(in )"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotly</span></code></a> marker’s styles).</p></li>
+<li><p><strong>direct_gaps_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to only display direct gaps.</p></li>
+<li><p><strong>custom_gaps</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>]</em>) – List of custom gaps to display. See the showcase notebooks for examples.</p></li>
 <li><p><strong>line_mode</strong> (<em>Literal</em><em>[</em><em>'line'</em><em>, </em><em>'scatter'</em><em>, </em><em>'area_line'</em><em>]</em>) – The method used to draw the band lines.</p></li>
-<li><p><strong>group_legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <p>Whether to group all bands in the legend to show a single legend item.</p>
+<li><p><strong>group_legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – <p>Whether to group all bands in the legend to show a single legend item.</p>
 <p>If the bands are spin polarized, bands are grouped by spin channel.</p>
 </p></li>
-<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>
+<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -333,7 +333,7 @@ If None, the default colorscale is used for each backend.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fdf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Path to the fdf file used to run the calculation. Needed to gather
+<li><p><strong>fdf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Path to the fdf file used to run the calculation. Needed to gather
 information about the geometry and the hamiltonian/overlap if needed.</p></li>
 <li><p><strong>extra_vars</strong> – <p>Additional variables to calculate for each eigenstate, apart from their energy.</p>
 <p>Each item of the list should be a dictionary with the following keys:
@@ -355,33 +355,33 @@ coordinates are new, just pass the values for them, they will get overwritten.</
 <p>Each item can also be a string indicating the name of a known variable: ‘norm2’, ‘spin_moment’, ‘ipr’.</p>
 </p></li>
 <li><p><strong>need_H</strong> – Whether the Hamiltonian is needed to read the WFSX file.</p></li>
-<li><p><strong>Erange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The energy range to plot.
+<li><p><strong>Erange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – The energy range to plot.
 If None, the range is determined by <em class="xref py py-obj">bands_range</em>.</p></li>
-<li><p><strong>E0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The energy reference.</p></li>
+<li><p><strong>E0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The energy reference.</p></li>
 <li><p><strong>E_axis</strong> (<em>Literal</em><em>[</em><em>'x'</em><em>, </em><em>'y'</em><em>]</em>) – Axis to plot the energies.</p></li>
-<li><p><strong>bands_range</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>]</em>) – The bands to plot. Only used if <em class="xref py py-obj">Erange</em> is None.
+<li><p><strong>bands_range</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em><em>]</em>) – The bands to plot. Only used if <em class="xref py py-obj">Erange</em> is None.
 If None, the 15 bands above and below the Fermi level are plotted.</p></li>
 <li><p><strong>spin</strong> (<em>Optional</em><em>[</em><em>Literal</em><em>[</em><em>0</em><em>, </em><em>1</em><em>]</em><em>]</em>) – Which spin channel to display. Only meaningful for spin-polarized calculations.
 If None and the calculation is spin polarized, both are plotted.</p></li>
 <li><p><strong>bands_style</strong> (<em>StyleSpec</em>) – Styling attributes for bands.</p></li>
 <li><p><strong>spindown_style</strong> (<em>StyleSpec</em>) – Styling attributes for the spin down bands (if present). Any missing attribute
 will be taken from <em class="xref py py-obj">bands_style</em>.</p></li>
-<li><p><strong>gap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to display the gap.</p></li>
-<li><p><strong>gap_tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Tolerance in k for determining whether two gaps are the same.</p></li>
-<li><p><strong>gap_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Color of the gap.</p></li>
-<li><p><strong>gap_marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Marker styles for the gap (as <a class="reference external" href="https://plotly.com/python-api-reference/generated/plotly.html#module-plotly" title="(in )"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotly</span></code></a> marker’s styles).</p></li>
-<li><p><strong>direct_gaps_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to only display direct gaps.</p></li>
-<li><p><strong>custom_gaps</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of custom gaps to display. See the showcase notebooks for examples.</p></li>
+<li><p><strong>gap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display the gap.</p></li>
+<li><p><strong>gap_tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Tolerance in k for determining whether two gaps are the same.</p></li>
+<li><p><strong>gap_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Color of the gap.</p></li>
+<li><p><strong>gap_marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Marker styles for the gap (as <a class="reference external" href="https://plotly.com/python-api-reference/generated/plotly.html#module-plotly" title="(in )"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotly</span></code></a> marker’s styles).</p></li>
+<li><p><strong>direct_gaps_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to only display direct gaps.</p></li>
+<li><p><strong>custom_gaps</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>]</em>) – List of custom gaps to display. See the showcase notebooks for examples.</p></li>
 <li><p><strong>bands_mode</strong> (<em>Literal</em><em>[</em><em>'line'</em><em>, </em><em>'scatter'</em><em>, </em><em>'area_line'</em><em>]</em>) – The method used to draw the band lines.</p></li>
-<li><p><strong>bands_group_legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <p>Whether to group all bands in the legend to show a single legend item.</p>
+<li><p><strong>bands_group_legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – <p>Whether to group all bands in the legend to show a single legend item.</p>
 <p>If the bands are spin polarized, bands are grouped by spin channel.</p>
 </p></li>
 <li><p><strong>groups</strong> (<em>OrbitalQueries</em>) – Orbital groups to plots. See showcase notebook for examples.</p></li>
-<li><p><strong>fatbands_var</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The variable to use from bands_data to determine the width of the fatbands.
+<li><p><strong>fatbands_var</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The variable to use from bands_data to determine the width of the fatbands.
 This variable must have as coordinates <code class="docutils literal notranslate"><span class="pre">(k,</span> <span class="pre">band,</span> <span class="pre">orb,</span> <span class="pre">[spin])</span></code>.</p></li>
 <li><p><strong>fatbands_mode</strong> (<em>Literal</em><em>[</em><em>'line'</em><em>, </em><em>'scatter'</em><em>, </em><em>'area_line'</em><em>]</em>) – The method used to draw the fatbands.</p></li>
-<li><p><strong>fatbands_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Factor that scales the size of all fatbands.</p></li>
-<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>
+<li><p><strong>fatbands_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Factor that scales the size of all fatbands.</p></li>
+<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -408,20 +408,20 @@ This variable must have as coordinates <code class="docutils literal notranslate
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>H</strong> (<a class="reference internal" href="../../generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian" title="sisl.physics.Hamiltonian"><em>Hamiltonian</em></a>) – The Hamiltonian to which the eigenstates correspond. Used to get the overlap
 matrix and the spin type.</p></li>
-<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – The geometry of the system. If not provided, it is extracted from the Hamiltonian.</p></li>
+<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a>) – The geometry of the system. If not provided, it is extracted from the Hamiltonian.</p></li>
 <li><p><strong>data_Erange</strong> – The energy range in which to calculate the PDOS.</p></li>
-<li><p><strong>nE</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The number of energy points for which to calculate the PDOS.</p></li>
-<li><p><strong>E0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Reference energy to take as 0. Energy levels will be shifted by <em class="xref py py-obj">-E0</em>.</p></li>
+<li><p><strong>nE</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The number of energy points for which to calculate the PDOS.</p></li>
+<li><p><strong>E0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Reference energy to take as 0. Energy levels will be shifted by <em class="xref py py-obj">-E0</em>.</p></li>
 <li><p><strong>distribution</strong> – The distribution to use for smoothing the PDOS along the energy axis.
 Each state will be broadened by this distribution.</p></li>
 <li><p><strong>groups</strong> (<em>Sequence</em><em>[</em><em>OrbitalStyleQuery</em><em>]</em>) – List of orbital specifications to filter and accumulate the PDOS.
 The contribution of each group will be displayed in a different line.
 See showcase notebook for examples.</p></li>
-<li><p><strong>Erange</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – The energy range to plot.</p></li>
+<li><p><strong>Erange</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – The energy range to plot.</p></li>
 <li><p><strong>E_axis</strong> (<em>Literal</em><em>[</em><em>'x'</em><em>, </em><em>'y'</em><em>]</em>) – Axis to project the energies.</p></li>
 <li><p><strong>line_mode</strong> (<em>Literal</em><em>[</em><em>'line'</em><em>, </em><em>'scatter'</em><em>, </em><em>'area_line'</em><em>]</em>) – Mode used to draw the PDOS lines.</p></li>
-<li><p><strong>line_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Scaling factor for the width of all lines.</p></li>
-<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The backend to generate the figure.</p></li>
+<li><p><strong>line_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Scaling factor for the width of all lines.</p></li>
+<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The backend to generate the figure.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -448,42 +448,42 @@ See showcase notebook for examples.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fdf</strong> – The FDF file to be used as the root.</p></li>
 <li><p><strong>data_geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – The geometry to be used for the Hamiltonian.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – The k-point for which the eigenstate coefficients are desired.</p></li>
-<li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The spin for which the eigenstate coefficients are desired.</p></li>
-<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The index of the eigenstate to plot.</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – The k-point for which the eigenstate coefficients are desired.</p></li>
+<li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The spin for which the eigenstate coefficients are desired.</p></li>
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The index of the eigenstate to plot.</p></li>
 <li><p><strong>geometry</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>]</em>) – Geometry to use to project the eigenstate to real space.
 If None, the geometry associated with the eigenstate is used.</p></li>
-<li><p><strong>grid_prec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The precision of the grid where the wavefunction is projected.</p></li>
+<li><p><strong>grid_prec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The precision of the grid where the wavefunction is projected.</p></li>
 <li><p><strong>grid</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="../../generated/sisl.Grid.html#sisl.Grid" title="sisl.Grid"><em>Grid</em></a><em>]</em>) – The grid to plot.</p></li>
 <li><p><strong>axes</strong> (<em>Axes</em>) – The axes to project the grid to.</p></li>
 <li><p><strong>represent</strong> (<em>Literal</em><em>[</em><em>'real'</em><em>, </em><em>'imag'</em><em>, </em><em>'mod'</em><em>, </em><em>'phase'</em><em>, </em><em>'deg_phase'</em><em>, </em><em>'rad_phase'</em><em>]</em>) – The representation of the grid to plot.</p></li>
-<li><p><strong>transforms</strong> (<em>Sequence</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Callable</em><em>]</em><em>]</em>) – List of transforms to apply to the grid before plotting.</p></li>
+<li><p><strong>transforms</strong> (<em>Sequence</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>Callable</em><em>]</em><em>]</em>) – List of transforms to apply to the grid before plotting.</p></li>
 <li><p><strong>reduce_method</strong> (<em>Literal</em><em>[</em><em>'average'</em><em>, </em><em>'sum'</em><em>]</em>) – The method used to reduce the grid axes that are not displayed.</p></li>
-<li><p><strong>boundary_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The method used to deal with the boundary conditions.
+<li><p><strong>boundary_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The method used to deal with the boundary conditions.
 Only used if the grid is to be orthogonalized.
 See scipy docs for more info on the possible values.</p></li>
-<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – The number of unit cells to display in each direction.</p></li>
-<li><p><strong>interp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – The interpolation factor to use for each axis to make the grid smoother.</p></li>
-<li><p><strong>isos</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of isosurfaces or isocontours to plot. See the showcase notebooks for examples.</p></li>
-<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to ask the plotting backend to make an attempt at smoothing the grid display.</p></li>
+<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – The number of unit cells to display in each direction.</p></li>
+<li><p><strong>interp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – The interpolation factor to use for each axis to make the grid smoother.</p></li>
+<li><p><strong>isos</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>]</em>) – List of isosurfaces or isocontours to plot. See the showcase notebooks for examples.</p></li>
+<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to ask the plotting backend to make an attempt at smoothing the grid display.</p></li>
 <li><p><strong>colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the grid display in the 2D representation.
 If None, the default colorscale is used for each backend.</p></li>
-<li><p><strong>crange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – Min and max values for the colorscale.</p></li>
-<li><p><strong>cmid</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – The value at which the colorscale is centered.</p></li>
+<li><p><strong>crange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – Min and max values for the colorscale.</p></li>
+<li><p><strong>cmid</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – The value at which the colorscale is centered.</p></li>
 <li><p><strong>show_cell</strong> (<em>Literal</em><em>[</em><em>'box'</em><em>, </em><em>'axes'</em><em>, </em><em>False</em><em>]</em>) – Method used to display the unit cell. If False, the cell is not displayed.</p></li>
-<li><p><strong>cell_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Style specification for the cell. See the showcase notebooks for examples.</p></li>
-<li><p><strong>x_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The range of the x axis to take into account.
+<li><p><strong>cell_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Style specification for the cell. See the showcase notebooks for examples.</p></li>
+<li><p><strong>x_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – The range of the x axis to take into account.
 Even if the X axis is not displayed! This is important because the reducing
 operation will only be applied on this range.</p></li>
-<li><p><strong>y_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The range of the y axis to take into account.
+<li><p><strong>y_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – The range of the y axis to take into account.
 Even if the Y axis is not displayed! This is important because the reducing
 operation will only be applied on this range.</p></li>
-<li><p><strong>z_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The range of the z axis to take into account.
+<li><p><strong>z_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – The range of the z axis to take into account.
 Even if the Z axis is not displayed! This is important because the reducing
 operation will only be applied on this range.</p></li>
-<li><p><strong>plot_geom</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to plot the associated geometry (if any).</p></li>
-<li><p><strong>geom_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Keyword arguments to pass to the geometry plot of the associated geometry.</p></li>
-<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>
+<li><p><strong>plot_geom</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to plot the associated geometry (if any).</p></li>
+<li><p><strong>geom_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Keyword arguments to pass to the geometry plot of the associated geometry.</p></li>
+<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -551,9 +551,9 @@ this method repeatedly. If you want to loop eigenstates, use <a class="reference
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(3,)</span></code>, <em>optional</em>) – The k point of the state you want to find.</p></li>
-<li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The spin index of the state you want to find. Only meaningful for polarized
+<li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The spin index of the state you want to find. Only meaningful for polarized
 calculations.</p></li>
-<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The threshold value for considering two k-points the same (i.e. to match
+<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – The threshold value for considering two k-points the same (i.e. to match
 the query k point with the states k point).</p></li>
 </ul>
 </dd>
@@ -570,15 +570,15 @@ the query k point with the states k point).</p></li>
 <dd class="field-odd"><p>If found, the state that was queried.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EigenstateElectron</span></code> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EigenstateElectron</span></code> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>LookupError :</strong> – in case the requested k-point can not be found in the file.</p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p></li>
-<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>)</p></li>
+<li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
+<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>)</p></li>
 </ul>
 </dd>
 </dl>

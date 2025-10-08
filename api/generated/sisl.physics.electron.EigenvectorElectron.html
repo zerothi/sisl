@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -259,7 +259,7 @@
 <span class="math notranslate nohighlight">\(\mathbf k\)</span>-point these eigenstates originate from.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – the returned format of the overlap matrix. This only takes effect for
+<dd class="field-odd"><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – the returned format of the overlap matrix. This only takes effect for
 non-orthogonal parents.</p>
 </dd>
 </dl>
@@ -279,14 +279,14 @@ The new states (from <em class="xref py py-obj">self</em>) returned is then orde
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code>) – the other state to align against</p></li>
-<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – also return indices for the swapped indices</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – swap states in-place</p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – also return indices for the swapped indices</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – swap states in-place</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>self_swap</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code>) – A swapped instance of <em class="xref py py-obj">self</em>, only if <em class="xref py py-obj">inplace</em> is False</p></li>
-<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the indices that swaps <em class="xref py py-obj">self</em> to be <code class="docutils literal notranslate"><span class="pre">self_swap</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">self_swap</span> <span class="pre">=</span> <span class="pre">self.sub(index)</span></code>
+<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the indices that swaps <em class="xref py py-obj">self</em> to be <code class="docutils literal notranslate"><span class="pre">self_swap</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">self_swap</span> <span class="pre">=</span> <span class="pre">self.sub(index)</span></code>
 Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py py-obj">ret_index</em> is True</p></li>
 </ul>
 </p>
@@ -314,8 +314,8 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code>) – the other state to align onto this state</p></li>
-<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – return which indices got swapped</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – rotate the states in-place</p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – return which indices got swapped</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – rotate the states in-place</p></li>
 </ul>
 </dd>
 </dl>
@@ -340,7 +340,7 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>) – specify the new gauge for the mode coefficients</p></li>
+<li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'lattice'</em><em>, </em><em>'atomic'</em><em>]</em>) – specify the new gauge for the mode coefficients</p></li>
 <li><p><strong>offset</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – whether the coordinates should be offset by another phase-factor</p></li>
 </ul>
 </dd>
@@ -417,8 +417,8 @@ One have to add the overlap matrix in the <em class="xref py py-obj">matrix</em>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if the number of state coefficients are different for the bra and ket</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.13)"><strong>RuntimeError</strong></a> – if the matrix shapes are incompatible with an atomic resolution conversion</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if the number of state coefficients are different for the bra and ket</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – if the matrix shapes are incompatible with an atomic resolution conversion</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -459,7 +459,7 @@ states:</p>
 <p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – order parameter for the IPR</p>
+<dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – order parameter for the IPR</p>
 </dd>
 </dl>
 </dd></dl>
@@ -470,7 +470,7 @@ states:</p>
 <dd><p>An iterator looping over the states in this system</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>asarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if true the yielded values are the state vectors, i.e. a numpy array.
+<dd class="field-odd"><p><strong>asarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if true the yielded values are the state vectors, i.e. a numpy array.
 Otherwise an equivalent object is yielded.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
@@ -504,7 +504,7 @@ Otherwise an equivalent object is yielded.</p>
 <span class="math notranslate nohighlight">\(\mathbf S \equiv \mathbf I\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'matrix'</em><em>, </em><em>'ij'</em><em>, </em><em>'diagonal'</em><em>, </em><em>'diag'</em><em>, </em><em>'ii'</em><em>, </em><em>'trace'</em><em>, </em><em>'sum'</em><em>, </em><em>'hadamard'</em><em>, </em><em>'basis'</em><em>, </em><em>'hadamard:atoms'</em><em>, </em><em>'atoms'</em><em>]</em>) – whether to compute the norm per state as a single number or as orbital-/atom-resolved quantity</p>
+<dd class="field-odd"><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'matrix'</em><em>, </em><em>'ij'</em><em>, </em><em>'diagonal'</em><em>, </em><em>'diag'</em><em>, </em><em>'ii'</em><em>, </em><em>'trace'</em><em>, </em><em>'sum'</em><em>, </em><em>'hadamard'</em><em>, </em><em>'basis'</em><em>, </em><em>'hadamard:atoms'</em><em>, </em><em>'atoms'</em><em>]</em>) – whether to compute the norm per state as a single number or as orbital-/atom-resolved quantity</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -522,7 +522,7 @@ Otherwise an equivalent object is yielded.</p>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>'matrix'</em><em>, </em><em>'ij'</em><em>, </em><em>'diagonal'</em><em>, </em><em>'diag'</em><em>, </em><em>'ii'</em><em>, </em><em>'trace'</em><em>, </em><em>'sum'</em><em>, </em><em>'hadamard'</em><em>, </em><em>'basis'</em><em>, </em><em>'hadamard:atoms'</em><em>, </em><em>'atoms'</em><em>]</em>)</p>
+<dd class="field-odd"><p><strong>projection</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>'matrix'</em><em>, </em><em>'ij'</em><em>, </em><em>'diagonal'</em><em>, </em><em>'diag'</em><em>, </em><em>'ii'</em><em>, </em><em>'trace'</em><em>, </em><em>'sum'</em><em>, </em><em>'hadamard'</em><em>, </em><em>'basis'</em><em>, </em><em>'hadamard:atoms'</em><em>, </em><em>'atoms'</em><em>]</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -588,7 +588,7 @@ product with itself. The object itself will always be the bra <span class="math 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>method</strong> (<code class="docutils literal notranslate"><span class="pre">{'max',</span> <span class="pre">'all'}</span></code>) – for max, the phase for the element which has the largest absolute magnitude is returned,
 for all, all phases are calculated</p></li>
-<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – return indices for the elements used when <code class="docutils literal notranslate"><span class="pre">method=='max'</span></code></p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – return indices for the elements used when <code class="docutils literal notranslate"><span class="pre">method=='max'</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -601,8 +601,8 @@ for all, all phases are calculated</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – indices that are removed in the returned object</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the values will be removed inplace</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>]</em>) – indices that are removed in the returned object</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether the values will be removed inplace</p></li>
 <li><p><strong>state</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>)</p></li>
 </ul>
 </dd>
@@ -627,15 +627,15 @@ and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to a
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – angle to align the state at (in radians), 0 is the positive real axis</p></li>
-<li><p><strong>individual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the rotation is per state, or a single maximum component is chosen.</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to do the rotation on the object it-self (True), or return a copy
+<li><p><strong>phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – angle to align the state at (in radians), 0 is the positive real axis</p></li>
+<li><p><strong>individual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether the rotation is per state, or a single maximum component is chosen.</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether to do the rotation on the object it-self (True), or return a copy
 with the rotated states (False).</p></li>
 <li><p><strong>state</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
+<dd class="field-even"><p><a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -661,8 +661,8 @@ and returns the spin moment for the states.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>]</em>) – indices that are retained in the returned object</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the values will be retained inplace</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>]</em>) – indices that are retained in the returned object</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether the values will be retained inplace</p></li>
 <li><p><strong>state</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>)</p></li>
 </ul>
 </dd>
@@ -689,11 +689,11 @@ by said amount, i.e. <span class="math notranslate nohighlight">\(i\to i+\mathrm
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of repetitions along a specific lattice vector</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – lattice vector to tile along</p></li>
-<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether the states are normalized upon return, may be useful for
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – number of repetitions along a specific lattice vector</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – lattice vector to tile along</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – whether the states are normalized upon return, may be useful for
 eigenstates, equivalent to <code class="docutils literal notranslate"><span class="pre">state.tile().normalize()</span></code></p></li>
-<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the offset for the phase factors</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – the offset for the phase factors</p></li>
 <li><p><strong>state</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>)</p></li>
 </ul>
 </dd>

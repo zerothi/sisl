@@ -22,7 +22,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../_static/doctools.js?v=9a2dae69"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -262,7 +262,7 @@ The orbitals are with respect to the local orbital indices on the given atom</p>
 <span class="pre">&gt;&gt;&gt;</span> <span class="pre">for</span> <span class="pre">ia,</span> <span class="pre">io</span> <span class="pre">in</span> <span class="pre">Geometry.iter_orbitals(local=False):</span>
 <span class="pre">&gt;&gt;&gt;</span>&#160;&#160;&#160;&#160; <span class="pre">Geometry.atom[ia].R[io]</span>
 <span class="pre">`</span></code></p>
-<p>does not work because <a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> is globally defined.</p>
+<p>does not work because <a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> is globally defined.</p>
 </li>
 <li><p>Changed argument name for <em class="xref py py-obj">coords</em>, <em class="xref py py-obj">atom</em> instead of the
 old <em class="xref py py-obj">idx</em>.</p></li>

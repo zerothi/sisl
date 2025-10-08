@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -203,13 +203,13 @@ If this is <code class="docutils literal notranslate"><span class="pre">None</sp
 <li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – k-point associated with wavefunction, by default the inherent k-point used
 to calculate the eigenstate will be used (generally shouldn’t be used unless the <a class="reference internal" href="sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron" title="sisl.physics.electron.EigenstateElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenstateElectron</span></code></a> object
 has not been created via <a class="reference internal" href="sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenstate" title="sisl.physics.Hamiltonian.eigenstate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eigenstate</span></code></a>).</p></li>
-<li><p><strong>spinor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spinor for non-colinear/spin-orbit calculations. This is only used if the
+<li><p><strong>spinor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the spinor for non-colinear/spin-orbit calculations. This is only used if the
 eigenstate object has been created from a parent object with a <code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin</span></code> object
 contained, <em>and</em> if the spin-configuration is non-colinear or spin-orbit coupling.
 Default to the first spinor component.</p></li>
-<li><p><strong>spin</strong> (<a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin" title="sisl.physics.Spin"><em>Spin</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a>) – specification of the spin configuration of the orbital coefficients. This only has
+<li><p><strong>spin</strong> (<a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin" title="sisl.physics.Spin"><em>Spin</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a>) – specification of the spin configuration of the orbital coefficients. This only has
 influence for non-colinear wavefunctions where <em class="xref py py-obj">spinor</em> choice is important.</p></li>
-<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – Display a console progressbar.</p></li>
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – Display a console progressbar.</p></li>
 </ul>
 </dd>
 </dl>

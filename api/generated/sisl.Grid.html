@@ -22,7 +22,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e6894c64"></script>
+      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -159,9 +159,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the shape of the grid. A <code class="docutils literal notranslate"><span class="pre">float</span></code> specifies the grid spacing in Angstrom, while
+<li><p><strong>shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">(3,)</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the shape of the grid. A <code class="docutils literal notranslate"><span class="pre">float</span></code> specifies the grid spacing in Angstrom, while
 a list of integers specifies the exact grid size.</p></li>
-<li><p><strong>bc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span> <span class="pre">(3</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">2)</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">(3</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>, <em>optional</em>) – the boundary conditions for each of the cell’s planes. Default to periodic BC.</p></li>
+<li><p><strong>bc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span> <span class="pre">(3</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">2)</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">(3</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">)</span></code>, <em>optional</em>) – the boundary conditions for each of the cell’s planes. Default to periodic BC.</p></li>
 <li><p><strong>lattice</strong> – the lattice that this grid represents. <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code> has precedence if both <code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code>
 has been specified. Defaults to <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></code>.</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.dtype</span></code></a>, <em>optional</em>) – the data-type of the grid, default to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.float64</span></code></a>.</p></li>
@@ -438,7 +438,7 @@ some measurement). In that case, you will get the result instead of a <a class="
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>function</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">function</span></code>) – for a string the full module path to the function should be given.
+<li><p><strong>function</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">function</span></code>) – for a string the full module path to the function should be given.
 The function that will be called should have the grid as the first argument in its
 interface.</p></li>
 <li><p><strong>**kwargs</strong> (<em>*args and</em>) – <p>arguments that go directly to the function call</p>
@@ -460,7 +460,7 @@ keyword argument for the function.</p>
 <dd><p>Calculate the area spanned by the two axis <em class="xref py py-obj">ax0</em> and <em class="xref py py-obj">ax1</em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -472,7 +472,7 @@ keyword argument for the function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – unit-cell direction to average across</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – unit-cell direction to average across</p></li>
 <li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the weights for the individual axis elements, if boolean it corresponds to 0 and 1
 for false/true.</p></li>
 </ul>
@@ -527,12 +527,12 @@ cuts via rotation of the axis</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>coord</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(:</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code>) – the coordinate of the axis. If a float is passed <em class="xref py py-obj">axis</em> is
+<li><p><strong>coord</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(:</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Shape</span></code>) – the coordinate of the axis. If a float is passed <em class="xref py py-obj">axis</em> is
 also required in which case it corresponds to the length along the
 lattice vector corresponding to <em class="xref py py-obj">axis</em>.
 If a Shape a list of coordinates that fits the voxel positions
 are returned (all internal points also).</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the axis direction of the index, or for all axes if none.</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – the axis direction of the index, or for all axes if none.</p></li>
 </ul>
 </dd>
 </dl>
@@ -568,7 +568,7 @@ are returned (all internal points also).</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>index</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – indices for grid-positions</p></li>
-<li><p><strong>unique</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if true the returned indices are made unique after having folded the index points</p></li>
+<li><p><strong>unique</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – if true the returned indices are made unique after having folded the index points</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -626,7 +626,7 @@ The lattice vectors remains unchanged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">len</span> <span class="pre">3</span></code>) – the new shape of the grid.</p></li>
+<li><p><strong>shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">len</span> <span class="pre">3</span></code>) – the new shape of the grid.</p></li>
 <li><p><strong>order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span> <span class="pre">0-5</span></code>, <em>optional</em>) – the order of the spline interpolation.
 1 means linear, 2 quadratic, etc…</p></li>
 <li><p><strong>mode</strong> (<code class="docutils literal notranslate"><span class="pre">{'wrap',</span> <span class="pre">'mirror',</span> <span class="pre">'constant',</span> <span class="pre">'reflect',</span> <span class="pre">'nearest'}</span></code>) – determines how to compute the borders of the grid.
@@ -653,9 +653,9 @@ The interpolation routine is <a class="reference external" href="https://docs.sc
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – contour value to search for isosurfaces in the grid.
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – contour value to search for isosurfaces in the grid.
 If not given or None, the average of the min and max of the grid is used.</p></li>
-<li><p><strong>step_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – step size in voxels. Larger steps yield faster but coarser results.
+<li><p><strong>step_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – step size in voxels. Larger steps yield faster but coarser results.
 The result will always be topologically correct though.</p></li>
 <li><p><strong>**kwargs</strong> – optional arguments passed directly to <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.25.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a>
 for the calculation of isosurfaces.</p></li>
@@ -689,7 +689,7 @@ This can be used by visualization tools to apply a colormap to the mesh.</p></li
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – unit-cell direction to average across</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – unit-cell direction to average across</p></li>
 <li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – the weights for the individual axis elements, if boolean it corresponds to 0 and 1
 for false/true.</p></li>
 </ul>
@@ -712,7 +712,7 @@ for false/true.</p></li>
 in a (:, 3) array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>*slices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – return a linear list of indices that points to the collective slice
+<dd class="field-odd"><p><strong>*slices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – return a linear list of indices that points to the collective slice
 made by the passed arguments</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -734,33 +734,33 @@ made by the passed arguments</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>axes</strong> (<em>Axes</em>) – The axes to project the grid to.</p></li>
 <li><p><strong>represent</strong> (<em>Literal</em><em>[</em><em>'real'</em><em>, </em><em>'imag'</em><em>, </em><em>'mod'</em><em>, </em><em>'phase'</em><em>, </em><em>'deg_phase'</em><em>, </em><em>'rad_phase'</em><em>]</em>) – The representation of the grid to plot.</p></li>
-<li><p><strong>transforms</strong> (<em>Sequence</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Callable</em><em>]</em><em>]</em>) – List of transforms to apply to the grid before plotting.</p></li>
+<li><p><strong>transforms</strong> (<em>Sequence</em><em>[</em><em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>Callable</em><em>]</em><em>]</em>) – List of transforms to apply to the grid before plotting.</p></li>
 <li><p><strong>reduce_method</strong> (<em>Literal</em><em>[</em><em>'average'</em><em>, </em><em>'sum'</em><em>]</em>) – The method used to reduce the grid axes that are not displayed.</p></li>
-<li><p><strong>boundary_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The method used to deal with the boundary conditions.
+<li><p><strong>boundary_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The method used to deal with the boundary conditions.
 Only used if the grid is to be orthogonalized.
 See scipy docs for more info on the possible values.</p></li>
-<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – The number of unit cells to display in each direction.</p></li>
-<li><p><strong>interp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – The interpolation factor to use for each axis to make the grid smoother.</p></li>
-<li><p><strong>isos</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>]</em>) – List of isosurfaces or isocontours to plot. See the showcase notebooks for examples.</p></li>
-<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to ask the plotting backend to make an attempt at smoothing the grid display.</p></li>
+<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – The number of unit cells to display in each direction.</p></li>
+<li><p><strong>interp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – The interpolation factor to use for each axis to make the grid smoother.</p></li>
+<li><p><strong>isos</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>]</em>) – List of isosurfaces or isocontours to plot. See the showcase notebooks for examples.</p></li>
+<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to ask the plotting backend to make an attempt at smoothing the grid display.</p></li>
 <li><p><strong>colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the grid display in the 2D representation.
 If None, the default colorscale is used for each backend.</p></li>
-<li><p><strong>crange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – Min and max values for the colorscale.</p></li>
-<li><p><strong>cmid</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – The value at which the colorscale is centered.</p></li>
+<li><p><strong>crange</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – Min and max values for the colorscale.</p></li>
+<li><p><strong>cmid</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – The value at which the colorscale is centered.</p></li>
 <li><p><strong>show_cell</strong> (<em>Literal</em><em>[</em><em>'box'</em><em>, </em><em>'axes'</em><em>, </em><em>False</em><em>]</em>) – Method used to display the unit cell. If False, the cell is not displayed.</p></li>
-<li><p><strong>cell_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Style specification for the cell. See the showcase notebooks for examples.</p></li>
-<li><p><strong>x_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The range of the x axis to take into account.
+<li><p><strong>cell_style</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Style specification for the cell. See the showcase notebooks for examples.</p></li>
+<li><p><strong>x_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – The range of the x axis to take into account.
 Even if the X axis is not displayed! This is important because the reducing
 operation will only be applied on this range.</p></li>
-<li><p><strong>y_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The range of the y axis to take into account.
+<li><p><strong>y_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – The range of the y axis to take into account.
 Even if the Y axis is not displayed! This is important because the reducing
 operation will only be applied on this range.</p></li>
-<li><p><strong>z_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The range of the z axis to take into account.
+<li><p><strong>z_range</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em><em>]</em>) – The range of the z axis to take into account.
 Even if the Z axis is not displayed! This is important because the reducing
 operation will only be applied on this range.</p></li>
-<li><p><strong>plot_geom</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to plot the associated geometry (if any).</p></li>
-<li><p><strong>geom_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Keyword arguments to pass to the geometry plot of the associated geometry.</p></li>
-<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>
+<li><p><strong>plot_geom</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to plot the associated geometry (if any).</p></li>
+<li><p><strong>geom_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Keyword arguments to pass to the geometry plot of the associated geometry.</p></li>
+<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The backend to use to generate the figure.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -799,9 +799,9 @@ operation will only be applied on this range.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>A</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.16.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>/<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html#scipy.sparse.csc_matrix" title="(in SciPy v1.16.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csc_matrix</span></code></a>) – sparse matrix describing the LHS for the linear system of equations</p></li>
 <li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(\mathbf A \mathbf x = \mathbf b\)</span> for the solution of the grid stencil</p></li>
-<li><p><strong>pyamg_indices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
+<li><p><strong>pyamg_indices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
 correspond to returned quantities from <em class="xref py py-obj">pyamg_indices</em>.</p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the value of the grid to fix the value at</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the value of the grid to fix the value at</p></li>
 </ul>
 </dd>
 </dl>
@@ -813,7 +813,7 @@ correspond to returned quantities from <em class="xref py py-obj">pyamg_indices<
 <dd><p>Calculate <em class="xref py py-obj">pyamg</em> matrix indices from a list of grid indices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(:</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – a list of indices of the grid along each grid axis</p>
+<dd class="field-odd"><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">(:</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">3)</span></code> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – a list of indices of the grid along each grid axis</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>linear indices for the matrix</p>
@@ -833,7 +833,7 @@ correspond to returned quantities from <em class="xref py py-obj">pyamg_indices<
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – if any of the passed indices are below 0 or above the number of elements per axis</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if any of the passed indices are below 0 or above the number of elements per axis</p>
 </dd>
 </dl>
 </dd></dl>
@@ -846,7 +846,7 @@ correspond to returned quantities from <em class="xref py py-obj">pyamg_indices<
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(\mathbf A \mathbf x = \mathbf b\)</span> for the solution of the grid stencil</p></li>
-<li><p><strong>pyamg_indices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
+<li><p><strong>pyamg_indices</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
 correspond to returned quantities from <em class="xref py py-obj">pyamg_indices</em>.</p></li>
 </ul>
 </dd>
@@ -860,7 +860,7 @@ correspond to returned quantities from <em class="xref py py-obj">pyamg_indices<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sile</span></code>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a>) – a <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> object which will be used to read the grid
+<li><p><strong>sile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sile</span></code>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a>) – a <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> object which will be used to read the grid
 if it is a string it will create a new sile using <code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code>.</p></li>
 <li><p><strong>*</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">args</span> <span class="pre">passed</span> <span class="pre">directly</span></code> to <code class="docutils literal notranslate"><span class="pre">read_grid(,**)</span></code>)</p></li>
 </ul>
@@ -876,8 +876,8 @@ if it is a string it will create a new sile using <code class="xref py py-obj do
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – the indices of the grid axis <em class="xref py py-obj">axis</em> to be removed</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – the axis segment from which we remove all indices <em class="xref py py-obj">idx</em></p></li>
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – the indices of the grid axis <em class="xref py py-obj">axis</em> to be removed</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – the axis segment from which we remove all indices <em class="xref py py-obj">idx</em></p></li>
 <li><p><strong>grid</strong> (<a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><em>Grid</em></a>)</p></li>
 </ul>
 </dd>
@@ -895,11 +895,11 @@ if it is a string it will create a new sile using <code class="xref py py-obj do
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the index of the grid axis <em class="xref py py-obj">axis</em> to be removed
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the index of the grid axis <em class="xref py py-obj">axis</em> to be removed
 for <code class="docutils literal notranslate"><span class="pre">above=True</span></code> grid[:idx,…]
 for <code class="docutils literal notranslate"><span class="pre">above=False</span></code> grid[idx:,…]</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
-<li><p><strong>above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – <dl class="simple">
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
+<li><p><strong>above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – <dl class="simple">
 <dt>if <code class="docutils literal notranslate"><span class="pre">True</span></code> will retain the grid:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">grid[:idx,...]</span></code></p>
 </dd>
 <dt>else it will retain the grid:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">grid[idx:,...]</span></code></p>
@@ -917,7 +917,7 @@ for <code class="docutils literal notranslate"><span class="pre">above=False</sp
 <dd><p>Call local <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.sc_index" title="sisl.Lattice.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.sc_index</span></code></a> function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a> | <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a> | <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -947,9 +947,9 @@ to attach atoms to the grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>) – specify the new geometry in the <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>. If <code class="docutils literal notranslate"><span class="pre">None</span></code> will
+<li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-class docutils literal notranslate"><span class="pre">Geometry</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>) – specify the new geometry in the <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>. If <code class="docutils literal notranslate"><span class="pre">None</span></code> will
 remove the geometry (but not the lattice)</p></li>
-<li><p><strong>also_lattice</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether to also set the lattice for the grid according to the
+<li><p><strong>also_lattice</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – whether to also set the lattice for the grid according to the
 lattice of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code>, if <code class="docutils literal notranslate"><span class="pre">False</span></code> it will keep the lattice
 as it was.</p></li>
 </ul>
@@ -1006,7 +1006,7 @@ as it was.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">len</span> <span class="pre">3</span></code>, <em>optional</em>) – <p>the radius of the filter in Angstrom for each axis.
+<li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of <code class="xref py py-class docutils literal notranslate"><span class="pre">len</span> <span class="pre">3</span></code>, <em>optional</em>) – <p>the radius of the filter in Angstrom for each axis.
 If the method is <code class="docutils literal notranslate"><span class="pre">&quot;gaussian&quot;</span></code>, this is the standard deviation!</p>
 <p>If a single float is provided, then the same distance will be used for all axes.</p>
 </p></li>
@@ -1030,8 +1030,8 @@ The default is wrap, which accounts for periodic conditions.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.13)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – the indices of the grid axis <em class="xref py py-obj">axis</em> to be retained</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – the indices of the grid axis <em class="xref py py-obj">axis</em> to be retained</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
 <li><p><strong>grid</strong> (<a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><em>Grid</em></a>)</p></li>
 </ul>
 </dd>
@@ -1049,11 +1049,11 @@ The default is wrap, which accounts for periodic conditions.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the index of the grid axis <em class="xref py py-obj">axis</em> to be retained
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the index of the grid axis <em class="xref py py-obj">axis</em> to be retained
 for <code class="docutils literal notranslate"><span class="pre">above=True</span></code> grid[idx:,…]
 for <code class="docutils literal notranslate"><span class="pre">above=False</span></code> grid[:idx,…]</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
-<li><p><strong>above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – <dl class="simple">
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
+<li><p><strong>above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – <dl class="simple">
 <dt>if <code class="docutils literal notranslate"><span class="pre">True</span></code> will retain the grid:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">grid[idx:,...]</span></code></p>
 </dd>
 <dt>else it will retain the grid:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">grid[:idx,...]</span></code></p>
@@ -1071,7 +1071,7 @@ for <code class="docutils literal notranslate"><span class="pre">above=False</sp
 <dd><p>Sum grid values along axis <em class="xref py py-obj">axis</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – unit-cell direction to sum across</p>
+<dd class="field-odd"><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – unit-cell direction to sum across</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1084,8 +1084,8 @@ for <code class="docutils literal notranslate"><span class="pre">above=False</sp
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>axis1</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – axes indices to be swapped</p></li>
-<li><p><strong>axis2</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – axes indices to be swapped</p></li>
+<li><p><strong>axis1</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – axes indices to be swapped</p></li>
+<li><p><strong>axis2</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – axes indices to be swapped</p></li>
 <li><p><strong>grid</strong> (<a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><em>Grid</em></a>)</p></li>
 </ul>
 </dd>
@@ -1103,8 +1103,8 @@ for <code class="docutils literal notranslate"><span class="pre">above=False</sp
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of tiles (repetitions)</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.13)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – direction of tiling, 0, 1, 2 according to the cell-direction</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – number of tiles (repetitions)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><em>Literal</em></a><em>[</em><em>0</em><em>, </em><em>1</em><em>, </em><em>2</em><em>, </em><em>'a'</em><em>, </em><em>'b'</em><em>, </em><em>'c'</em><em>]</em>) – direction of tiling, 0, 1, 2 according to the cell-direction</p></li>
 <li><p><strong>grid</strong> (<a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><em>Grid</em></a>)</p></li>
 </ul>
 </dd>
@@ -1201,7 +1201,7 @@ underlying routine</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><em>None</em></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1282,13 +1282,13 @@ underlying routine</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Grid.length">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Grid.length" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Grid.length" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.length" title="sisl.Lattice.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.length</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Grid.n_s">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_s</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Grid.n_s" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_s</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.Grid.n_s" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.n_s" title="sisl.Lattice.n_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.n_s</span></code></a></p>
 </dd></dl>
 
@@ -1370,8 +1370,8 @@ method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – name of the attribute in the class</p></li>
-<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – dictionary of dispatch methods</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – name of the attribute in the class</p></li>
+<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – dictionary of dispatch methods</p></li>
 <li><p><strong>obj_getattr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>, <em>optional</em>) – method with 2 arguments, an <code class="docutils literal notranslate"><span class="pre">obj</span></code> and the <code class="docutils literal notranslate"><span class="pre">attr</span></code> which may be used
 to control how the attribute is called.</p></li>
 <li><p><strong>instance_dispatcher</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractDispatcher</span></code>, <em>optional</em>) – control how instance dispatchers are handled through <em class="xref py py-obj">__get__</em> method.
@@ -1391,7 +1391,7 @@ This controls the dispatcher used if called from a class.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Grid.volume">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Grid.volume" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.Grid.volume" title="Link to this definition"></a></dt>
 <dd><p>Returns the inherent <a class="reference internal" href="sisl.Lattice.html#sisl.Lattice.volume" title="sisl.Lattice.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice.volume</span></code></a></p>
 </dd></dl>
 
