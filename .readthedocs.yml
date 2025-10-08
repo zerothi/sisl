@@ -18,10 +18,6 @@ build:
     pre_install:
       - ./.readthedocs-pre_install.sh
 
-sphinx:
-  configuration: docs/conf.py
-  fail_on_warning: false
-
 python:
   install:
     - method: pip
@@ -30,6 +26,10 @@ python:
         - analysis
         - viz
         - test
-        - docs
+        # the docs group is moved to the pre-install.sh script
+
+sphinx:
+  configuration: docs/conf.py
+  fail_on_warning: false
 
 formats: []
