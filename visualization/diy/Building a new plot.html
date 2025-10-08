@@ -23,7 +23,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9d09c2c4"></script>
+      <script src="../../_static/documentation_options.js?v=7b70f75b"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -182,18 +182,46 @@
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<script type="text/javascript">
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+</script>
+<script type="module">import "https://cdn.plot.ly/plotly-3.1.1.min"</script></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<iframe
-    scrolling="no"
-    width="100%"
-    height="545px"
-    src="iframe_figures/figure_2.html"
-    frameborder="0"
-    allowfullscreen
-></iframe></div>
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.1.min.js" integrity="sha256-HUEFyfiTnZJxCxur99FjbKYTvKSzwDaD3/x5TqHpFu4=" crossorigin="anonymous"></script>                <div id="d15e2c86-0385-4f4c-a375-193d90fa9a9c" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d15e2c86-0385-4f4c-a375-193d90fa9a9c")) {                    Plotly.newPlot(                        "d15e2c86-0385-4f4c-a375-193d90fa9a9c",                        [{"line":{"color":"red"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
+
+var gd = document.getElementById('d15e2c86-0385-4f4c-a375-193d90fa9a9c');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div>
 </div>
 <p>Simple, isn’t it?</p>
 <p>As you might have imagined, we can ask for a matplotlib figure:</p>
@@ -211,7 +239,7 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.viz.figure.matplotlib.MatplotlibFigure at 0x7f1ae82e5970&gt;
+&lt;sisl.viz.figure.matplotlib.MatplotlibFigure at 0x7f59574e3b60&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -249,14 +277,32 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<iframe
-    scrolling="no"
-    width="100%"
-    height="545px"
-    src="iframe_figures/figure_5.html"
-    frameborder="0"
-    allowfullscreen
-></iframe></div>
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.1.min.js" integrity="sha256-HUEFyfiTnZJxCxur99FjbKYTvKSzwDaD3/x5TqHpFu4=" crossorigin="anonymous"></script>                <div id="dd297f01-9b96-4f5a-bef8-b02ccb759646" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("dd297f01-9b96-4f5a-bef8-b02ccb759646")) {                    Plotly.newPlot(                        "dd297f01-9b96-4f5a-bef8-b02ccb759646",                        [{"line":{"color":"green"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
+
+var gd = document.getElementById('dd297f01-9b96-4f5a-bef8-b02ccb759646');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div>
 </div>
 <p>What is there left to do then? Remember that we wanted our plot to be a workflow, and currently it isn’t.</p>
 </section>
@@ -672,27 +718,45 @@ function highlightFilter(filter) {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO    Task(Task-3) nodify.node.139753499365920:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753499365632:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753499364864:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753499364576:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753499368656:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753499367072:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753499368800:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647234288:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647231600:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647235632:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021648694432:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647237024:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647236688:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647236064:node.py:get()- Evaluated because inputs changed.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<iframe
-    scrolling="no"
-    width="100%"
-    height="545px"
-    src="iframe_figures/figure_9.html"
-    frameborder="0"
-    allowfullscreen
-></iframe></div>
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.1.min.js" integrity="sha256-HUEFyfiTnZJxCxur99FjbKYTvKSzwDaD3/x5TqHpFu4=" crossorigin="anonymous"></script>                <div id="2e639363-c850-4a11-b5d6-c4866b3859f0" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("2e639363-c850-4a11-b5d6-c4866b3859f0")) {                    Plotly.newPlot(                        "2e639363-c850-4a11-b5d6-c4866b3859f0",                        [{"line":{"color":"blue"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
+
+var gd = document.getElementById('2e639363-c850-4a11-b5d6-c4866b3859f0');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div>
 </div>
 <p>And now, the moment we’ve all been waiting for. Let’s update our plot:</p>
 <div class="nbinput docutils container">
@@ -708,13 +772,13 @@ INFO    Task(Task-3) nodify.node.139753499368800:node.py:get()- Evaluated becaus
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO    Task(Task-3) nodify.node.139753499365920:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753499365632:node.py:get()- No need to evaluate
-INFO    Task(Task-3) nodify.node.139753499364864:node.py:get()- No need to evaluate
-INFO    Task(Task-3) nodify.node.139753499364576:node.py:get()- No need to evaluate
-INFO    Task(Task-3) nodify.node.139753499368656:node.py:get()- No need to evaluate
-INFO    Task(Task-3) nodify.node.139753499367072:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753499368800:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647234288:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647231600:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140021647235632:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140021648694432:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140021647237024:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140021647236688:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021647236064:node.py:get()- Evaluated because inputs changed.
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -723,7 +787,7 @@ INFO    Task(Task-3) nodify.node.139753499368800:node.py:get()- Evaluated becaus
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;__main__.a_cool_plot at 0x7f1ae5af9670&gt;
+&lt;__main__.a_cool_plot at 0x7f59548b5010&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -777,27 +841,45 @@ INFO    Task(Task-3) nodify.node.139753499368800:node.py:get()- Evaluated becaus
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO    Task(Task-3) nodify.node.139753497768784:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497767248:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497971648:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497969392:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497969872:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497974768:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497969728:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645469424:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645627936:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021649934816:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645822000:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645632688:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645722352:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645822288:node.py:get()- Evaluated because inputs changed.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<iframe
-    scrolling="no"
-    width="100%"
-    height="545px"
-    src="iframe_figures/figure_12.html"
-    frameborder="0"
-    allowfullscreen
-></iframe></div>
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.1.min.js" integrity="sha256-HUEFyfiTnZJxCxur99FjbKYTvKSzwDaD3/x5TqHpFu4=" crossorigin="anonymous"></script>                <div id="02baae0f-136a-4965-935b-01d3b5f15d63" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("02baae0f-136a-4965-935b-01d3b5f15d63")) {                    Plotly.newPlot(                        "02baae0f-136a-4965-935b-01d3b5f15d63",                        [{"line":{"color":"red"},"meta":{},"mode":"lines","opacity":1,"x":[1,2],"y":[3,4],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}}},                        {"responsive": true}                    ).then(function(){
+
+var gd = document.getElementById('02baae0f-136a-4965-935b-01d3b5f15d63');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -812,13 +894,13 @@ INFO    Task(Task-3) nodify.node.139753497969728:node.py:get()- Evaluated becaus
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO    Task(Task-3) nodify.node.139753497768784:node.py:get()- No need to evaluate
-INFO    Task(Task-3) nodify.node.139753497767248:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497971648:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497969392:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497969872:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497974768:node.py:get()- Evaluated because inputs changed.
-INFO    Task(Task-3) nodify.node.139753497969728:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645469424:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140021645627936:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021649934816:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645822000:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645632688:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645722352:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140021645822288:node.py:get()- Evaluated because inputs changed.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
