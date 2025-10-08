@@ -89,10 +89,13 @@ if on_rtd:
 # This can be a pure HTML (for interaction), but that tends
 # to blow up file-sizes which isn't really suitable for
 # RTD.
-plotly_renderer = "iframe_connected"
+plotly_renderer = "notebook_connected"
 if on_rtd:
     plotly_renderer = "png"
 plotly_renderer = os.environ.get("_SISL_DOC_PLOTLY", plotly_renderer)
+
+if "iframe" in plotly_renderer:
+    raise RuntimeError("sisl: is not compatible with plotly renderering in iframes")
 
 # Store the renderer
 import plotly.io as pio
