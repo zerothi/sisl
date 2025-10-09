@@ -430,7 +430,7 @@ def angle(s: str, rad: bool = True, in_rad: bool = True) -> float:
 
 
 def allow_kwargs(*args):
-    """Decoractor for forcing `func` to have the named arguments as listed in `args`
+    """Decorator for forcing `func` to have the named arguments as listed in `args`
 
     This decorator merely removes any keyword argument from the called function
     which is in the list of `args` in case the function does not have the arguments

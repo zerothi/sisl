@@ -254,7 +254,7 @@ def fatbands_plot(
     groups :
         Orbital groups to plots. See showcase notebook for examples.
     fatbands_var :
-        The variable to use from bands_data to determine the width of the fatbands.
+        The variable to use from `bands_data` to determine the width of the fatbands.
         This variable must have as coordinates ``(k, band, orb, [spin])``.
     fatbands_mode :
         The method used to draw the fatbands.

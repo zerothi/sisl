@@ -126,28 +126,29 @@ class AtomXYZ(AtomCategory):
     Parameters
     ----------
     *args : Shape
-       any shape that implements `Shape.within`
+        any shape that implements `Shape.within`
     **kwargs:
-       keys are operator specifications and values are
-       used in those specifications.
-       The keys are split into 3 sections
-       ``<options>_<direction>_<operator>``
-       - ``options`` are made of combinations of ``['a', 'f']``
-         i.e. ``"af"``, ``"f"`` or ``"a"`` are all valid.
-         An ``a`` takes the absolute value, ``f`` means a fractional
-         coordinate. This part is optional.
-       - ``direction`` is anything that gets parsed in `sisl.utils.misc.direction`
-         either one of ``{0, "X", "x", "a", 1, "Y", "y", "b", 2, "Z", "z", "c"}``.
-       - ``operator`` is a name for an operator defined in the `operator` module.
+        keys are operator specifications and values are
+        used in those specifications.
+        The keys are split into 3 sections
+        ``<options>_<direction>_<operator>``
 
-       For instance ``a_z_lt=3.`` will be equivalent to the
-       boolean operation ``np.fabs(geometry.xyz[:, 2]) < 3.``.
+        - ``options`` are made of combinations of ``['a', 'f']``
+          i.e. ``"af"``, ``"f"`` or ``"a"`` are all valid.
+          An ``a`` takes the absolute value, ``f`` means a fractional
+          coordinate. This part is optional.
+        - ``direction`` is anything that gets parsed in `sisl.utils.misc.direction`
+          either one of ``{0, "X", "x", "a", 1, "Y", "y", "b", 2, "Z", "z", "c"}``.
+        - ``operator`` is a name for an operator defined in the `operator` module.
 
-       Optionally one need not specify the operator in which case one should
-       provide an argument of two values.
+        For instance ``a_z_lt=3.`` will be equivalent to the
+        boolean operation ``np.fabs(geometry.xyz[:, 2]) < 3.``.
 
-       For instance ``c=(3., 6.)`` will be equivalent to the
-       boolean operation ``3. <= geometry.xyz[:, 2]) <= 6.``.
+        Optionally one need not specify the operator in which case one should
+        provide an argument of two values.
+
+        For instance ``c=(3., 6.)`` will be equivalent to the
+        boolean operation ``3. <= geometry.xyz[:, 2]) <= 6.``.
 
     Attributes
     -----------

@@ -12,3 +12,7 @@ fi
 # Ensure we get a version that lets us use groups
 python3 -m pip install --upgrade pip
 python3 -m pip install --group docs
+
+# So since kaleido does not install chrome, we have to do it
+# This is only necessary when it works, otherwise, skip it!
+kaleido_get_chrome || true

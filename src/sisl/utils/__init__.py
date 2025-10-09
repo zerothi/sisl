@@ -29,6 +29,7 @@ Miscellaneous routines
    iter_shape
    math_eval
    batched_indices
+   parse_rotation
 
 """
 from . import mathematics as math
@@ -36,3 +37,6 @@ from ._arrays import *
 from .cmd import *
 from .misc import *
 from .ranges import *
+
+# Expose parse_rotation
+parse_rotation = math.parse_rotation

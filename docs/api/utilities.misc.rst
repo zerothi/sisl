@@ -31,3 +31,4 @@ Miscellaneous routines
    iter_shape
    math_eval
    batched_indices
+   parse_rotation

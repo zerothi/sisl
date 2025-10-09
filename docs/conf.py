@@ -32,8 +32,7 @@ _log = logging.getLogger("sisl_doc")
 
 # Currently disabling logging.INFO because of nodify, it would likely be best
 # if we are only removing that one!
-_nodify_logging = logging.getLogger("nodify")
-_nodify_logging.setLevel(logging.WARNING)
+logging.getLogger("nodify").setLevel(logging.WARNING)
 
 _doc_root = pathlib.Path(__file__).absolute().parent
 # If extensions (or modules to document with autodoc) are in another directory,
