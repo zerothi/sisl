@@ -9,6 +9,9 @@ if [[ "${READTHEDOCS:-no}" == "no" ]]; then
   exit 1
 fi
 
+# Try and fetch the shallow submodule
+git submodule update --init --depth=1
+
 # Ensure we get a version that lets us use groups
 python3 -m pip install --upgrade pip
 python3 -m pip install --group docs
