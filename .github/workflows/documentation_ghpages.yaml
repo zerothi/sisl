@@ -88,14 +88,14 @@ jobs:
           # Ensure it's not understood as a jekyll page
           touch build/html/.nojekyll
           cd ..
+          ls -l
 
-      - name: Archive production artifacts
+      - name: Upload files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@v4
         with:
           retention-days: 4
-          path: |
-            docs/build/html/
+          path: docs/build/html/
 
   deploy:
     needs: build
