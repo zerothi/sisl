@@ -10,7 +10,7 @@ if [[ "${READTHEDOCS:-no}" == "no" ]]; then
 fi
 
 # Try and fetch the shallow submodule
-git submodule update --init --depth=1
+git submodule update --init --depth=1 --single-branch
 
 # Ensure we get a version that lets us use groups
 python3 -m pip install --upgrade pip

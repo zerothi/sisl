@@ -44,7 +44,7 @@ using :code:`pip` or :code:`conda` methods:
 
    .. code-block:: bash
 
-       git clone git+https://github.com/zerothi/sisl.git
+       git clone git+https://github.com/zerothi/sisl.git --single-branch
        cd sisl
        python3 -m pip install -e .
 
@@ -121,7 +121,7 @@ A basic procedure would be:
 
 .. code-block:: bash
 
-   git clone https://github.com/zerothi/sisl-files.git
+   git clone https://github.com/zerothi/sisl-files.git --single-branch
    SISL_FILES_TESTS=$(pwd)/sisl-files pytest --pyargs sisl
 
 

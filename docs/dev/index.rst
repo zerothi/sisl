@@ -68,13 +68,13 @@ Here is a short summary of how to do developments with `sisl`.
 
         .. code:: bash
 
-           git clone git@github.com:<your-username>/sisl.git
+           git clone git@github.com:<your-username>/sisl.git --single-branch
 
      .. tab:: HTML
 
         .. code:: bash
 
-           git clone https://github.com/<your-username>/sisl.git
+           git clone https://github.com/<your-username>/sisl.git --single-branch
 
      And move to the folder ``cd sisl``.
 
@@ -199,8 +199,7 @@ To contribute to the documentation one needs to install `pandoc`_ first (see
 
    .. code:: bash
 
-      git submodule init
-      git submodule update
+      git submodule update --init --single-branch
 
 #. **OPTIONAL**
 

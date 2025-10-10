@@ -94,9 +94,10 @@ if on_rtd:
 # This can be a pure HTML (for interaction), but that tends
 # to blow up file-sizes which isn't really suitable for
 # RTD.
-plotly_renderer = "notebook_connected"
-if on_rtd:
-    plotly_renderer = "png"
+# For now, we retain the PNG as default.
+# This will limit the interaction, but
+# will make loading the page much faster!
+plotly_renderer = "png"
 plotly_renderer = os.environ.get("_SISL_DOC_PLOTLY", plotly_renderer)
 
 if "iframe" in plotly_renderer:
@@ -488,6 +489,8 @@ latex_documents = [
 plot_include_source = True
 plot_formats = [("png", 90)]
 plot_pre_code = f"""\
+import logging
+logging.getLogger("nodify").setLevel(logging.WARNING)
 import numpy as np
 import matplotlib.pyplot as plt
 import sisl as si
