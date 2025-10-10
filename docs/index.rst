@@ -103,7 +103,7 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
    :maxdepth: 3
    :caption: Extras
 
-   math
+   conventions
    release
    other
    references

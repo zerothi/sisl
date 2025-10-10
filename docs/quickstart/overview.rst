@@ -18,18 +18,6 @@ sisl is a Python package providing access to a large variety of things.
   exploration of calculations
 
 
-Units
------
-
-sisl assumes the user is careful in using consistent units.
-
-The internal units in sisl are:
-
-* Ang (Angstrom)
-* eV (electron volt)
-
-If you wish to introduce a specific unit, and its default, please open an `issue`_.
-
 
 Data structures
 ---------------

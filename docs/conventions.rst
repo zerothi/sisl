@@ -1,12 +1,36 @@
-.. _math_convention:
 
-Mathematical notation convention
-================================
+.. _conventions:
 
-In `sisl` we strive to make the documentation as consistent
-as possible.
-This should make reading different parts of the documentation
-simple to understand.
+Conventions in sisl
+===================
+
+sisl is a joint effort to enable easy usage of electronic structure
+concepts in a scientific setting. Ranging between introductory levels
+up to, and including, full scientific employees.
+
+There are certain conventions that we want to enforce in sisl, and
+we strive them as far as possible.
+
+
+
+.. _conventions.units:
+
+Units
+-----
+
+All units in sisl are standardized to:
+
+Length
+   All units internally and returned are in Angstrom.
+
+Energy
+   All units internally and returned are in electron volts.
+
+
+.. _convention.mathematics:
+
+Mathematical notation
+---------------------
 
 Here is a list of rules that sisl will strive to adhere to.
 If you find any inconsistencies in the documentation,
