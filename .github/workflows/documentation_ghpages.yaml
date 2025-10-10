@@ -32,6 +32,7 @@ jobs:
     # check that a commit has actually been made and only run if a commit has been made within the last week
     needs: check_commit
     if: ${{ needs.check_commit.outputs.should_run != 'false' }}
+    name: Build documentation
 
     runs-on: ubuntu-latest
 
@@ -86,6 +87,7 @@ jobs:
           rm -rf build/html/_sources
           # Ensure it's not understood as a jekyll page
           touch build/html/.nojekyll
+          cd ..
 
       - name: Archive production artifacts
         id: deployment
@@ -97,6 +99,7 @@ jobs:
 
   deploy:
     needs: build
+    name: Deploy to gh-pages
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
