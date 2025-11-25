@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import numpy as np
-from scipy.sparse import SparseEfficiencyWarning, lil_matrix, triu
+from scipy.sparse import SparseEfficiencyWarning, lil_array, triu
 
 from sisl import Atom, Geometry, Lattice
 from sisl import _array as _a
@@ -110,8 +110,8 @@ class hamiltonianSile(Sile):
 
         # With the geometry in place we can read in the entire matrix
         # Create a new sparse matrix
-        H = lil_matrix((geom.no, geom.no_s), dtype=dtype)
-        S = lil_matrix((geom.no, geom.no_s), dtype=dtype)
+        H = lil_array((geom.no, geom.no_s), dtype=dtype)
+        S = lil_array((geom.no, geom.no_s), dtype=dtype)
 
         def i2o(geom, i):
             try:
