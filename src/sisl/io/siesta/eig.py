@@ -1,7 +1,9 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from __future__ import annotations
+# from __future__ import annotations
+
+from typing import Literal, Optional, Tuple
 
 import numpy as np
 
@@ -426,3 +428,62 @@ class eigSileSiesta(SileSiesta):
 
 
 add_sile("EIG", eigSileSiesta, gzip=True)
+
+from sisl.data.dos import DOSData
+
+
+def dos_from_eig(
+    eigsile: eigSileSiesta,
+    Erange: Optional[Tuple[float, float]] = None,
+    dE: float = 0.005,
+    distribution: Literal["gaussian", "lorentzian"] = "gaussian",
+    smearing: float = 0.025,
+    kp_file: Optional[str] = None,
+):
+    """Computes DOS from an eig file
+
+    Parameters
+    ----------
+    eigsile :
+        The file containing the eigenvalues.
+    Erange :
+        The energy range to calculate the DOS. If not provided,
+        the full range will be used.
+    dE :
+        The energy spacing.
+    distribution :
+        The distribution used to smooth the DOS.
+    smearing :
+        Smearing parameter for the distribution. The bigger,
+        the smoother the DOS.
+    kp_file :
+        The file containing the k-point weights. If not provided,
+        the file will be guessed from the eig file.
+    """
+    # Read the eigenvalues
+    eigs = eigsile.read_data()
+
+    # Read the k-point weights
+    if kp_file is None:
+        kp_file = str(eigsile.file).replace("EIG", "KP")
+
+    weights = kpSileSiesta(kp_file).read_data()[1]
+
+    # Now create the final distribution
+    distribution_function = get_distribution(distribution, smearing=smearing)
+
+    # Calculate the DOS
+    if Erange is None:
+        Erange = (eigs.min() - smearing * 4, eigs.max() + smearing * 4)
+
+    E = np.arange(Erange[0], Erange[1], dE)
+    DOS = np.zeros(len(E))
+    for spin_eigs in eigs:
+        for w_band, e_band in zip(weights, spin_eigs):
+            for e in e_band:
+                DOS += distribution_function(E - e) * w_band
+
+    return DOSData.new(E, DOS)
+
+
+DOSData.new.register("siesta-eig", dos_from_eig)
