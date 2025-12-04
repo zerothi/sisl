@@ -228,7 +228,7 @@ class hamrealSileDFTB(_realSileDFTB):
         Hs = []
         for i in range(1, 5):
             self._file = self.dir_file(f"hamreal{i}.dat")
-            if not self._file.exists():
+            if not self._file.is_file():
                 continue
 
             geometry, H = self._r_file(geometry)

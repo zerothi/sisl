@@ -59,7 +59,7 @@ class NotebookTester:
         for path in self.generated:
             if os.path.isdir(path):
                 shutil.rmtree(path)
-            elif os.path.exists(path):
+            elif os.path.isfile(path):
                 os.remove(path)
 
 

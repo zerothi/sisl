@@ -108,7 +108,7 @@ class winSileWannier90(SileWannier90):
 
         f = self.associated_file("_tb.dat")
         lattice = None
-        if f.exists():
+        if f.is_file():
             lattice = tbSileWannier90(f).read_lattice(*args, **kwargs)
         return lattice
 
@@ -171,7 +171,7 @@ class winSileWannier90(SileWannier90):
 
         f = self.associated_file("_centres.xyz")
         geometry = None
-        if f.exists():
+        if f.is_file():
             geometry = centresSileWannier90(f).read_geometry(*args, **kwargs)
         return geometry
 
@@ -326,7 +326,7 @@ class winSileWannier90(SileWannier90):
         """Read Hamiltonian from the ``<>_tb.dat`` file"""
         f = self.associated_file("_tb.dat")
         H = None
-        if f.exists():
+        if f.is_file():
             H = tbSileWannier90(f).read_hamiltonian(*args, **kwargs)
         return H
 
@@ -334,7 +334,7 @@ class winSileWannier90(SileWannier90):
         """Reads a Hamiltonian model from the ``<>_hr.dat`` file"""
         f = self.associated_file("_hr.dat")
         H = None
-        if f.exists():
+        if f.is_file():
             H = hrSileWannier90(f).read_hamiltonian(*args, **kwargs)
         return H
 

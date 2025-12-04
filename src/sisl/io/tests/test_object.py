@@ -91,7 +91,7 @@ class TestObject:
 
         # branch with string arguments
         fp = sisl_tmp("shouldnotexist.1234567")
-        if os.path.exists(fp):
+        if os.path.isfile(fp):
             os.remove(fp)
 
         if issubclass(Sile, SileCDF):
@@ -100,11 +100,11 @@ class TestObject:
             sile = Sile(fp)
 
         assert isinstance(sile, Sile)
-        assert not os.path.exists(fp)
+        assert not os.path.isfile(fp)
 
         # branch with Path arguments
         fp = Path(sisl_tmp("shouldnotexist.1234567"))
-        if fp.exists():
+        if fp.is_file():
             os.remove(str(fp))
 
         if issubclass(Sile, SileCDF):
@@ -113,7 +113,7 @@ class TestObject:
             sile = Sile(fp)
 
         assert isinstance(sile, Sile)
-        assert not fp.exists()
+        assert not fp.is_file()
 
     @pytest.mark.parametrize(
         "sile", _fnames("test", ["cube", "CUBE", "cube.gz", "CUBE.gz"])

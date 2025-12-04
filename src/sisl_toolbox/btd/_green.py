@@ -293,7 +293,7 @@ class DeviceGreen:
 
         # Read the device H, only valid for TBT stuff
         for hs_ext in ("TS.HSX", "TSHS", "HSX", "nc"):
-            if Path(f"{slabel}.{hs_ext}").exists():
+            if Path(f"{slabel}.{hs_ext}").is_file():
                 # choose a sane default (if it exists!)
                 hs_default = f"{slabel}.{hs_ext}"
                 break

@@ -188,7 +188,7 @@ TBT.HS DEVICE_zz.nc
 
 import os
 
-if not os.path.exists("zz.gout"):
+if not os.path.isfile("zz.gout"):
     raise ValueError("zz.gin has not been runned by GULP")
 
 print("Reading output")

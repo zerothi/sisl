@@ -140,7 +140,7 @@ def sisl_files():
 
         def _path(*files):
             p = sisl_files_tests.joinpath(*files)
-            if p.exists():
+            if p.is_file():
                 return p
             _log.info("sisl_files: test requested non-existing ' {p!s}' -> xfail")
 
