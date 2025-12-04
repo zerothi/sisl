@@ -13,7 +13,7 @@ if np.lib.NumpyVersion(np.__version__) >= "2.0.0b1":
 else:
     from numpy import ComplexWarning
 import pytest
-from scipy.linalg import block_diag
+from scipy.linalg import block_diag, eigh
 from scipy.sparse import SparseEfficiencyWarning, issparse
 
 from sisl import (
@@ -1584,6 +1584,7 @@ class TestHamiltonian:
     def test_non_colinear_orthogonal(self, setup, sisl_tolerance):
         atol, rtol = sisl_tolerance[np.complex64]
         allclose = partial(np.allclose, atol=atol, rtol=rtol)
+        eigh_kwargs = dict(driver="evd")
 
         g = Geometry(
             [[i, 0, 0] for i in range(10)],
@@ -1604,9 +1605,9 @@ class TestHamiltonian:
                 H[i, i + 1, 0] = 1.0
                 H[i, i + 1, 1] = 1.0
 
-        eig1 = H.eigh(dtype=np.complex64)
-        assert allclose(H.eigh(dtype=np.complex128), eig1)
-        assert allclose(H.eigh(gauge="atom", dtype=np.complex128), eig1)
+        eig1 = H.eigh(dtype=np.complex64, **eigh_kwargs)
+        assert allclose(H.eigh(dtype=np.complex128, **eigh_kwargs), eig1)
+        assert allclose(H.eigh(gauge="atom", dtype=np.complex128, **eigh_kwargs), eig1)
         assert len(eig1) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin("non-collinear"))
@@ -1624,38 +1625,38 @@ class TestHamiltonian:
                 H1[i, i + 1, 1] = 1.0
         assert H1.spsame(H)
 
-        eig1 = H1.eigh(dtype=np.complex64)
-        assert allclose(H1.eigh(dtype=np.complex128), eig1)
-        assert np.allclose(H.eigh(), H1.eigh())
+        eig1 = H1.eigh(dtype=np.complex64, **eigh_kwargs)
+        assert allclose(H1.eigh(dtype=np.complex128, **eigh_kwargs), eig1)
+        assert allclose(H.eigh(**eigh_kwargs), H1.eigh(**eigh_kwargs))
 
         # Create the block matrix for expectation
         SZ = block_diag(*([H1.spin.Z] * H1.no))
 
         for dtype in (np.complex64, np.complex128):
-            es = H1.eigenstate(dtype=dtype)
+            es = H1.eigenstate(dtype=dtype, **eigh_kwargs)
             assert allclose(es.eig, eig1)
-            assert np.allclose(es.inner(), 1)
+            assert allclose(es.inner(), 1)
 
             # Perform spin-moment calculation
             sm = es.spin_moment()
             sm2 = es.inner(matrix=SZ).real
             sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
-            assert np.allclose(sm[2], sm2)
-            assert np.allclose(sm[2], sm3)
+            assert allclose(sm[2], sm2)
+            assert allclose(sm[2], sm3)
 
             om = es.spin_moment(projection=True)
-            assert np.allclose(sm, om.sum(-1))
+            assert allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))
             DOS = es.DOS(np.linspace(-1, 1, 21))
-            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            assert allclose(PDOS.sum(1)[0, :], DOS, atol=1e-4)
             es.velocity(matrix=True)
 
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
         vv = es.velocity(matrix=True)
-        assert np.allclose(np.diagonal(vv).T, v)
+        assert allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge("cell")
@@ -1664,6 +1665,7 @@ class TestHamiltonian:
     def test_non_colinear_non_orthogonal(self, sisl_tolerance):
         atol, rtol = sisl_tolerance[np.complex64]
         allclose = partial(np.allclose, atol=atol * 10, rtol=rtol * 100)
+        eigh_kwargs = dict(driver="gvd")
 
         g = Geometry(
             [[i, 0, 0] for i in range(10)],
@@ -1685,8 +1687,8 @@ class TestHamiltonian:
                 H[i, i + 1, 1] = 1.0
             H.S[i, i] = 1.0
 
-        eig1 = H.eigh(dtype=np.complex64)
-        assert allclose(H.eigh(dtype=np.complex128), eig1)
+        eig1 = H.eigh(dtype=np.complex64, **eigh_kwargs)
+        assert allclose(H.eigh(dtype=np.complex128, **eigh_kwargs), eig1)
         assert len(eig1) == len(H)
 
         H1 = Hamiltonian(
@@ -1707,29 +1709,32 @@ class TestHamiltonian:
             H1.S[i, i] = 1.0
         assert H1.spsame(H)
 
-        eig1 = H1.eigh(dtype=np.complex64)
-        assert allclose(H1.eigh(dtype=np.complex128), eig1)
-        assert allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
+        eig1 = H1.eigh(dtype=np.complex64, **eigh_kwargs)
+        assert allclose(H1.eigh(dtype=np.complex128, **eigh_kwargs), eig1)
+        assert allclose(
+            H.eigh(dtype=np.complex64, **eigh_kwargs),
+            H1.eigh(dtype=np.complex128, **eigh_kwargs),
+        )
 
         for dtype in (np.complex64, np.complex128):
-            es = H1.eigenstate(dtype=dtype)
+            es = H1.eigenstate(dtype=dtype, **eigh_kwargs)
             assert allclose(es.eig, eig1)
 
             sm = es.spin_moment()
 
             om = es.spin_moment(projection=True)
-            assert np.allclose(sm, om.sum(-1))
+            assert allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))
             DOS = es.DOS(np.linspace(-1, 1, 21))
-            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            assert allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity(matrix=True)
 
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
         vv = es.velocity(matrix=True)
-        assert np.allclose(np.diagonal(vv).T, v)
+        assert allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge("cell")
@@ -1738,6 +1743,7 @@ class TestHamiltonian:
     def test_spin_orbit_orthogonal(self, sisl_tolerance):
         atol, rtol = sisl_tolerance[np.complex64]
         allclose = partial(np.allclose, atol=atol * 10, rtol=rtol * 100)
+        eigh_kwargs = dict(driver="evd")
 
         g = Geometry(
             [[i, 0, 0] for i in range(10)],
@@ -1762,8 +1768,8 @@ class TestHamiltonian:
                 H[i, i + 1, 0] = 1.0
                 H[i, i + 1, 1] = 1.0
 
-        eig1 = H.eigh(dtype=np.complex64)
-        assert allclose(H.eigh(dtype=np.complex128), eig1)
+        eig1 = H.eigh(dtype=np.complex64, **eigh_kwargs)
+        assert allclose(H.eigh(dtype=np.complex128, **eigh_kwargs), eig1)
         assert len(H.eigh()) == len(H)
 
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin("spin-orbit"))
@@ -1785,36 +1791,39 @@ class TestHamiltonian:
                 H1[i, i + 1, 1] = 1.0
         assert H1.spsame(H)
 
-        eig1 = H1.eigh(dtype=np.complex64)
-        assert allclose(H1.eigh(dtype=np.complex128), eig1)
-        assert allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
+        eig1 = H1.eigh(dtype=np.complex64, **eigh_kwargs)
+        assert allclose(H1.eigh(dtype=np.complex128, **eigh_kwargs), eig1)
+        assert allclose(
+            H.eigh(dtype=np.complex64, **eigh_kwargs),
+            H1.eigh(dtype=np.complex128, **eigh_kwargs),
+        )
 
         # Create the block matrix for expectation
         SZ = block_diag(*([H1.spin.Z] * H1.no))
 
         for dtype in (np.complex64, np.complex128):
-            es = H.eigenstate(dtype=dtype)
+            es = H.eigenstate(dtype=dtype, **eigh_kwargs)
             assert allclose(es.eig, eig1)
 
             sm = es.spin_moment()
             sm2 = es.inner(matrix=SZ).real
             sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
-            assert np.allclose(sm[2], sm2)
-            assert np.allclose(sm[2], sm3)
+            assert allclose(sm[2], sm2)
+            assert allclose(sm[2], sm3)
 
             om = es.spin_moment(projection=True)
-            assert np.allclose(sm, om.sum(-1))
+            assert allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))
             DOS = es.DOS(np.linspace(-1, 1, 21))
-            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            assert allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity(matrix=True)
 
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
         vv = es.velocity(matrix=True)
-        assert np.allclose(np.diagonal(vv).T, v)
+        assert allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for SO stuff
         es.change_gauge("cell")

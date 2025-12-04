@@ -367,7 +367,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if kwargs.pop("sparse", False):
             e = self.eigsh(k, gauge=gauge, eigvals_only=True, **kwargs)
         else:
-            e = self.eigh(k, gauge, eigvals_only=True, **kwargs)
+            e = self.eigh(k, gauge=gauge, eigvals_only=True, **kwargs)
         info = {"k": k, "gauge": gauge}
         for name in ("spin",):
             if name in kwargs:
@@ -408,7 +408,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if kwargs.pop("sparse", False):
             e, v = self.eigsh(k, gauge=gauge, eigvals_only=False, **kwargs)
         else:
-            e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
+            e, v = self.eigh(k, gauge=gauge, eigvals_only=False, **kwargs)
         info = {"k": k, "gauge": gauge}
         for name in ("spin",):
             if name in kwargs:
