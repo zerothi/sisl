@@ -60,9 +60,6 @@ jobs:
             cibw_archs: "x86_64"
 
           # MacOS x86_64
-          - os: macos-13
-            cibw_archs: "x86_64"
-            deployment_target: "13.0"
           - os: macos-14
             cibw_archs: "arm64"
             deployment_target: "14.0"
@@ -172,7 +169,7 @@ jobs:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-latest, macos-13, macos-14]
+        os: [ubuntu-22.04, ubuntu-latest, macos-14]
 
     steps:
       - name: Python installation
