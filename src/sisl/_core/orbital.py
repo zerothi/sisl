@@ -1178,7 +1178,7 @@ class AtomicOrbital(Orbital):
                 )[self.m + 3]
             elif self.l == 4:
                 name += (
-                    "_{_{xy(x^2-y^2)}}",
+                    "_{xy(x^2-y^2)}",
                     "_{zy(3x^2-y^2)}",
                     "_{z^2xy}",
                     "_{z^3y}",
