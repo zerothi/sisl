@@ -7,7 +7,7 @@ import warnings
 from typing import Literal, Optional, Tuple, Union
 
 import numpy as np
-from scipy.sparse import SparseEfficiencyWarning, coo_matrix, csr_matrix
+from scipy.sparse import SparseEfficiencyWarning, coo_matrix, csr_array
 from scipy.sparse import hstack as ss_hstack
 
 import sisl._array as _a
@@ -432,7 +432,7 @@ class SparseOrbitalBZ(SparseOrbital):
             except AttributeError:
                 orthogonal.append(True)
 
-        # Extract all SparseCSR matrices (or csr_matrix)
+        # Extract all SparseCSR matrices (or csr_array)
         def extract_csr(P, orthogonal: bool = True):
             try:
                 P = P._csr
@@ -525,7 +525,7 @@ class SparseOrbitalBZ(SparseOrbital):
         format: str = "csr",
         _dim=0,
     ):
-        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a polarized system
+        r"""Sparse matrix (`scipy.sparse.csr_array`) at `k` for a polarized system
 
         Parameters
         ----------
@@ -547,7 +547,7 @@ class SparseOrbitalBZ(SparseOrbital):
         format: str = "csr",
         _dim=0,
     ):
-        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` differentiated with respect to `k` for a polarized system
+        r"""Sparse matrix (`scipy.sparse.csr_array`) at `k` differentiated with respect to `k` for a polarized system
 
         Parameters
         ----------
@@ -569,7 +569,7 @@ class SparseOrbitalBZ(SparseOrbital):
         format: str = "csr",
         _dim=0,
     ):
-        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` double differentiated with respect to `k` for a polarized system
+        r"""Sparse matrix (`scipy.sparse.csr_array`) at `k` double differentiated with respect to `k` for a polarized system
 
         Parameters
         ----------
@@ -624,7 +624,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge :
            the chosen gauge
         format : {"csr", "array", "matrix", "coo", ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`"array"`/`"dense"`/`"matrix"`).
            Prefixing with "sc:", or simply "sc" returns the matrix in supercell format
@@ -671,7 +671,7 @@ class SparseOrbitalBZ(SparseOrbital):
             S = np.zeros([nr, nc], dtype=dtype)
             np.fill_diagonal(S, 1.0)
             return S
-        S = csr_matrix((nr, nc), dtype=dtype)
+        S = csr_array((nr, nc), dtype=dtype)
         S.setdiag(1.0)
         return S.asformat(format)
 
@@ -682,7 +682,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k`.
+        r"""Overlap matrix in a `scipy.sparse.csr_array` at `k`.
 
         Parameters
         ----------
@@ -737,7 +737,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge :
            the chosen gauge.
         format : {"csr", "array", "matrix", "coo", ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`"array"`/`"dense"`/`"matrix"`).
 
@@ -760,7 +760,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` differentiated with respect to `k`
+        r"""Overlap matrix in a `scipy.sparse.csr_array` at `k` differentiated with respect to `k`
 
         Parameters
         ----------
@@ -780,7 +780,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` for non-collinear spin, differentiated with respect to `k`
+        r"""Overlap matrix in a `scipy.sparse.csr_array` at `k` for non-collinear spin, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -839,7 +839,7 @@ class SparseOrbitalBZ(SparseOrbital):
            the chosen gauge, ``cell`` for cell vector gauge, and ``atom`` for atomic distance
            gauge.
         format : {"csr", "array", "matrix", "coo", ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`"array"`/`"dense"`/`"matrix"`).
 
@@ -862,7 +862,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` double differentiated with respect to `k`
+        r"""Overlap matrix in a `scipy.sparse.csr_array` at `k` double differentiated with respect to `k`
 
         Parameters
         ----------
@@ -882,7 +882,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` for non-collinear spin, differentiated with respect to `k`
+        r"""Overlap matrix in a `scipy.sparse.csr_array` at `k` for non-collinear spin, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -905,7 +905,7 @@ class SparseOrbitalBZ(SparseOrbital):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k` for Nambu spin, differentiated with respect to `k`
+        r"""Overlap matrix in a `scipy.sparse.csr_array` at `k` for Nambu spin, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1512,7 +1512,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k`
+        r"""Sparse matrix (`scipy.sparse.csr_array`) at `k`
 
         Parameters
         ----------
@@ -1533,7 +1533,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a polarized system
+        r"""Sparse matrix (`scipy.sparse.csr_array`) at `k` for a polarized system
 
         Parameters
         ----------
@@ -1555,7 +1555,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system
+        r"""Sparse matrix (`scipy.sparse.csr_array`) at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -1576,7 +1576,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a spin-orbit system
+        r"""Sparse matrix (`scipy.sparse.csr_array`) at `k` for a spin-orbit system
 
         Parameters
         ----------
@@ -1597,7 +1597,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
+        r"""Sparse matrix (`scipy.sparse.csr_array`) at `k` for a Nambu system
 
         Parameters
         ----------
@@ -1618,7 +1618,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k`, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_array`) at `k`, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1639,7 +1639,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k`, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_array`) at `k`, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1661,7 +1661,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_array`) at `k` for a non-collinear system, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1682,7 +1682,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a spin-orbit system, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_array`) at `k` for a spin-orbit system, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1703,7 +1703,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu spin system, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_array`) at `k` for a Nambu spin system, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1724,7 +1724,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system, differentiated with respect to `k` twice
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_array`) at `k` for a non-collinear system, differentiated with respect to `k` twice
 
         Parameters
         ----------
@@ -1745,7 +1745,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a spin-orbit system, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_array`) at `k` for a spin-orbit system, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1766,7 +1766,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Tuple of sparse matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system, differentiated with respect to `k`
+        r"""Tuple of sparse matrix (`scipy.sparse.csr_array`) at `k` for a Nambu system, differentiated with respect to `k`
 
         Parameters
         ----------
@@ -1787,7 +1787,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix in a `scipy.sparse.csr_matrix` at `k`.
+        r"""Overlap matrix in a `scipy.sparse.csr_array` at `k`.
 
         Parameters
         ----------
@@ -1807,7 +1807,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system
+        r"""Overlap matrix (`scipy.sparse.csr_array`) at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -1828,7 +1828,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
+        r"""Overlap matrix (`scipy.sparse.csr_array`) at `k` for a Nambu system
 
         Parameters
         ----------
@@ -1849,7 +1849,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a non-collinear system
+        r"""Overlap matrix (`scipy.sparse.csr_array`) at `k` for a non-collinear system
 
         Parameters
         ----------
@@ -1872,7 +1872,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         gauge: GaugeType = "lattice",
         format: str = "csr",
     ):
-        r"""Overlap matrix (`scipy.sparse.csr_matrix`) at `k` for a Nambu system
+        r"""Overlap matrix (`scipy.sparse.csr_array`) at `k` for a Nambu system
 
         Parameters
         ----------
@@ -2783,8 +2783,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
                 # initialize the result array
                 # Not strictly needed, but enforces that the
-                # data always contains a csr_matrix
-                r = csr_matrix((n, n), dtype=A.dtype)
+                # data always contains a csr_array
+                r = csr_array((n, n), dtype=A.dtype)
 
                 # get current supercell information
                 for i, sc in enumerate(sc_offj):
