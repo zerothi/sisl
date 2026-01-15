@@ -65,7 +65,7 @@ _rspher_harm_fact = tuple({m: _rfact(l, m) for m in range(-l, l + 1)} for l in r
 del _rfact
 
 
-def _rspherical_harm(m, l, theta, cos_phi):
+def _rspherical_harm(l, m, theta, cos_phi):
     r""" Calculates the real spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf r\to \{r, \theta, \varphi\}`.
 
     These real spherical harmonics are via these equations:
@@ -79,10 +79,10 @@ def _rspherical_harm(m, l, theta, cos_phi):
 
     Parameters
     ----------
-    m : int
-       order of the spherical harmonics
     l : int
        degree of the spherical harmonics
+    m : int
+       order of the spherical harmonics
     theta : array_like
        angle in :math:`xy` plane (azimuthal)
     cos_phi : array_like
@@ -697,8 +697,8 @@ class SphericalOrbital(Orbital):
            spherical harmonics at angles :math:`\theta` and :math:`\phi` and given quantum number `m`
         """
         if cos_phi:
-            return _rspherical_harm(m, self.l, theta, phi)
-        return _rspherical_harm(m, self.l, theta, cos(phi))
+            return _rspherical_harm(self.l, m, theta, phi)
+        return _rspherical_harm(self.l, m, theta, cos(phi))
 
     def psi(self, r, m: int = 0):
         r"""Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
@@ -1610,8 +1610,8 @@ class _ExponentialOrbital(Orbital):
             spherical harmonics at angles :math:`\theta` and :math:`\phi`
         """
         if cos_phi:
-            return _rspherical_harm(self.m, self.l, theta, phi)
-        return _rspherical_harm(self.m, self.l, theta, cos(phi))
+            return _rspherical_harm(self.l, self.m, theta, phi)
+        return _rspherical_harm(self.l, self.m, theta, cos(phi))
 
     def psi_spher(self, r, theta, phi, cos_phi: bool = False):
         r"""Calculate :math:`\phi(|\mathbf r|, \theta, \phi)` at a given point (in spherical coordinates)

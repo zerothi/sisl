@@ -1,0 +1,4 @@
+Changed spherical_harm argument order to match scipy 1.17
+
+Since this is generally not really used, it should
+be safe to do. Sorry for the inconvenience.
