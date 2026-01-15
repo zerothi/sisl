@@ -25,7 +25,23 @@ from numpy import (
     take,
     zeros_like,
 )
-from scipy.special import sph_harm
+
+try:
+    # from 1.15 and onwards
+    from scipy.special import sph_harm_y
+
+    def _sph_harm(n, m, theta, phi, diff_n: int = 0):
+        return sph_harm_y(n, m, theta, phi, diff_n=diff_n)
+
+except ImportError:
+    # deprecated since 1.15
+    # note the order has changed of the arguments
+    from scipy.special import sph_harm
+
+    def _sph_harm(n, m, theta, phi, diff_n: int = 0):
+        assert diff_n == 0
+        return sph_harm(m, n, theta, phi)
+
 
 from sisl import _array as _a
 from sisl._core.quaternion import Quaternion
@@ -219,7 +235,7 @@ def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
     return idx, rr, theta, phi
 
 
-def spherical_harm(m, l, theta, phi):
+def spherical_harm(l, m, theta, phi, diff_n: int = 0):
     r"""Calculate the spherical harmonics using :math:`Y_l^m(\theta, \varphi)` with :math:`\mathbf r\to \{r, \theta, \varphi\}`.
 
     .. math::
@@ -230,19 +246,21 @@ def spherical_harm(m, l, theta, phi):
 
     Parameters
     ----------
-    m : int
-       order of the spherical harmonics
     l : int
        degree of the spherical harmonics
+    m : int
+       order of the spherical harmonics
     theta : array_like
        angle in :math:`xy` plane (azimuthal)
     phi : array_like
        angle from :math:`z` axis (polar)
+    diff_n : int
+        if a recent enough scipy (>=1.16), one can calculate the derivatives.
     """
     # Probably same as:
     # return (-1) ** m * ( (2*l+1)/(4*pi) * factorial(l-m) / factorial(l+m) ) ** 0.5 \
     #    * lpmv(m, l, cos(theta)) * exp(1j * m * phi)
-    return sph_harm(m, l, theta, phi) * (-1) ** m
+    return _sph_harm(l, m, theta, phi, diff_n=diff_n) * (-1) ** m
 
 
 def curl(M, axis=-2, axisv=-1):
