@@ -101,15 +101,15 @@ class orbindxSileSiesta(SileSiesta):
             def crt_atom(i_s, tag, orbs):
                 # Get the atom and add the orbitals
                 kwargs = {}
-                if atoms[i_s].tag != tag:
+                if atoms.atom[i_s].tag != tag:
                     # we know ORB_INDX tag is correct
                     kwargs["tag"] = tag
-                if len(atoms[i_s]) != len(orbs):
+                if len(atoms.atom[i_s]) != len(orbs):
                     # only overwrite if # of orbitals don't match
                     kwargs["orbitals"] = orbs
                 if kwargs:
-                    return atoms[i_s].copy(**kwargs)
-                return atoms[i_s]
+                    return atoms.atom[i_s].copy(**kwargs)
+                return atoms.atom[i_s]
 
         # Now we begin by reading the atoms
         atom, orbs = [], []
