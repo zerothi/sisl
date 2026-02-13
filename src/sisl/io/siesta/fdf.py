@@ -1315,7 +1315,7 @@ class fdfSileSiesta(SileSiesta):
 
         if np.all(supercell <= 1):
             # also catches supercell == 0
-            D = sp.sparse.lil_matrix((geom.no, geom.no), dtype=np.float64)
+            D = sp.sparse.lil_array((geom.no, geom.no), dtype=np.float64)
 
             FC = np.squeeze(FC, axis=(2, 3, 4))
             # Instead of doing the sqrt in all D = FC (below) we do it here
@@ -1384,8 +1384,8 @@ class fdfSileSiesta(SileSiesta):
                     FC[:, :, :, :, halve_idx, :, :] *= 0.5
 
             # Now create the dynamical matrix
-            # Currently this will be in lil_matrix (changed in the end)
-            D = sp.sparse.lil_matrix((geom.no, geom.no_s), dtype=np.float64)
+            # Currently this will be in lil_array (changed in the end)
+            D = sp.sparse.lil_array((geom.no, geom.no_s), dtype=np.float64)
 
             # When x, y, z are negative we simply look-up from the back of the array
             # which is exactly what is required

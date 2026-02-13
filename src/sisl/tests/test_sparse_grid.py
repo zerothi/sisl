@@ -160,8 +160,8 @@ def test_orbital_products(geometry):
     psi_values = geometry._orbital_values((10, 10, 10))
 
     orb_csr = psi_values._csr.tocsr()
-    orb_0 = orb_csr[:, 0].toarray().ravel()
-    orb_1 = orb_csr[:, 1].toarray().ravel()
+    orb_0 = orb_csr[:, [0]].toarray().ravel()
+    orb_1 = orb_csr[:, [1]].toarray().ravel()
 
     # Compute the orbital products with one coefficient
     DM = sisl.DensityMatrix(geometry, dim=1, dtype=np.float64)
