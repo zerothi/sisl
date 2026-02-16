@@ -11,7 +11,7 @@ Generally this can be accommodated by using a code ``if`` block:
 
 .. code-block::
 
-    if sisl.__version_tuple__[:3] >= (0, 16, 0):
+    if sisl.__version_tuple__[:3] >= (0, 16, 3):
        pass
     else:
        pass
@@ -28,12 +28,13 @@ between versions.
 .. toctree::
    :maxdepth: 2
 
+   0.16.3 <release/0.16.3-notes.rst>
    0.16.2 <release/0.16.2-notes.rst>
-   0.16.1 <release/0.16.1-notes.rst>
 
 .. toctree::
    :maxdepth: 1
 
+   0.16.1 <release/0.16.1-notes.rst>
    0.16.0 <release/0.16.0-notes.rst>
 
 

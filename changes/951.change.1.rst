@@ -1,4 +1,0 @@
-Full implementation of Bloch 3D expansion
-
-It now fully utilizes the Toeplitz matrix structure
-for huge performance improvements.

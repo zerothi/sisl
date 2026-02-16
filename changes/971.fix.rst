@@ -1,1 +1,0 @@
-Fixed order in ORB_INDX files when species are not linear

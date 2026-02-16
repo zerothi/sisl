@@ -1,0 +1,135 @@
+sisl 0.16.3 Release Notes
+*************************
+
+Released on 2026-02-16.
+
+
+Changes and improvements
+========================
+
+- Change `trs` default in `MonkhorstPack` depending on spin
+
+  Now for non-collinear or higher spin-configurations it defaults
+  to ``trs=False``.
+
+  (:pull:`927`)
+
+
+- Full implementation of Bloch 3D expansion
+
+  It now fully utilizes the Toeplitz matrix structure
+  for huge performance improvements.
+
+  (:pull:`951`)
+
+
+- Improved performance of real-space self-energies
+
+  Now there is only a single copy at the end of
+  the integration, so it should be much faster.
+
+  (:pull:`951`)
+
+
+- Improved Atoms.index usability
+
+  Now one gets an empty list if no atoms are found.
+  One can also get the combined indices of several
+  atom types, e.g., `atoms.index(["C", "H"])`.
+
+  (:pull:`954`)
+
+
+- Changed spherical_harm argument order to match scipy 1.17
+
+  Since this is generally not really used, it should
+  be safe to do. Sorry for the inconvenience.
+
+  (:pull:`969`)
+
+
+- Dropped support for Python 3.9
+
+
+- Enabled simpler `rotation` argument to `Geometry.rotate`
+
+  This makes rotation arguments more versatile, and also
+  easier to combine.
+
+  One can now do lists of rotations that then gets parsed
+  directly.
+
+
+- Implemented dependency-groups in pyproject.toml
+
+  This affects developers where the `docs`
+  build specification is now hidden from
+  end-users.
+
+
+- added `oxyz` to extract coordinates of orbitals
+
+  This allows easier access to orbital coordinates
+  rather than having to convert indices to atoms
+  and then to supercell coordinates.
+
+  Basically equivalent to:
+  ```python
+  atoms = geom.o2a(orbitals)
+  geom.axyz(atoms) == geom.oxyz(orbitals)
+  ```
+
+
+
+Bugfixes
+========
+
+- Fixed spin-rotations
+
+  Now one can denote rotations in a much more
+  generic way.
+
+  Removed `rotation_matrix` and superseeded by
+  `parse_rotation` which returns a `Quaternion`
+  which can be used to create a rotation-matrix.
+
+  (:pull:`924`)
+
+
+- Reading the basis-enthalpy for Siesta 5.4 changed
+
+  (:pull:`929`)
+
+
+- Fixed finding coordinates within elliptical cylinders
+
+  (:pull:`947`)
+
+
+- Fixed import error for scipy deprecations
+
+  (:pull:`968`)
+
+
+- Fixed order in ORB_INDX files when species are not linear
+
+  (:pull:`971`)
+
+
+- DIIS mixing now uses a scaling factor for inverse
+
+  This provides a better stability for the inversion
+  algorithm when the metrics are much bigger
+  than 1.
+
+
+
+Documentation
+=============
+
+- Fixed wording in `Geometry.scale` documentation
+
+  It is now clearer that both lattice vectors and
+  atomic coordinates are scaled.
+
+  (:pull:`949`)
