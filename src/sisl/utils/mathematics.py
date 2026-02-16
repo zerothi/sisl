@@ -199,6 +199,7 @@ def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
        If `cos_phi` is ``True`` this is :math:`\cos(\phi)`, otherwise
        :math:`\phi` is returned (the polar angle from the :math:`z` axis)
     """
+    eps = 1e-16
     r = _a.asarray(r)
     if maxR is None:
         rr = sqrt(square(r).sum(-1))
@@ -207,7 +208,12 @@ def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
         else:
             theta = None
         phi = zeros_like(rr)
-        idx = rr != 0.0
+        # Typically the angles then becomes a precision of the length
+        # precision.
+        # So calculating angles, and re-calculating coordinates results
+        # in differences on the scale of this `eps` number.
+        # Hence, we just choose it around numerical accuracy.
+        idx = rr > eps
         divide(r[..., 2], rr, out=phi, where=idx)
         if not cos_phi:
             arccos(phi, out=phi, where=idx)
@@ -228,7 +234,7 @@ def cart2spher(r, theta: bool = True, cos_phi: bool = False, maxR=None):
         theta = None
 
     phi = zeros_like(rr)
-    idx0 = rr != 0.0
+    idx0 = rr > eps
     divide(r[..., 2], rr, out=phi, where=idx0)
     if not cos_phi:
         arccos(phi, out=phi, where=idx0)

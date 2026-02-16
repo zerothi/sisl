@@ -1776,7 +1776,12 @@ class Geometry(
             xi -= _a.asarrayd(ref)[None, :]
         nx = sqrt(square(xi).sum(1))
         ang = np.zeros_like(nx)
-        idx = (nx > 1e-6).nonzero()[0]
+        # Typically the angles then becomes a precision of the length
+        # precision.
+        # So calculating angles, and re-calculating coordinates results
+        # in differences on the scale of this `eps` number.
+        # Hence, we just choose it around numerical accuracy.
+        idx = (nx > 1e-16).nonzero()[0]
         ang[idx] = np.arccos(xi[idx] @ dir / nx[idx])
         if rad:
             return ang
