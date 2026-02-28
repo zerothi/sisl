@@ -1085,6 +1085,13 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         return p
 
+    def trace_with_S(self):
+        """Trace of the multiplication of the sparse matrix with the overlap matrix."""
+        if self.orthogonal:
+            return self._csr.diagonal().sum(axis=0)
+        else:
+            return (self._csr.data[:, :-1] * self._csr.data[:, [-1]]).sum(axis=0)
+
     # numpy dispatch methods (same priority as SparseCSR!)
     __array_priority__ = 14
 
