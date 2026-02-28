@@ -1,0 +1,8 @@
+Changed internal ``scipy.sparse.*_matrix`` to ``*_array``
+
+This is necessary to further the usage of scipy which
+now encourages the use of ``*_array``.
+
+There are some missing features using the array-like
+interface, but they should be easy to circumvent
+until full compatibility is shipped in scipy.

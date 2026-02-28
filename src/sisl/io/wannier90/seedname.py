@@ -10,7 +10,7 @@ from collections import defaultdict
 
 import numpy as np
 import scipy.sparse as sps
-from scipy.sparse import lil_matrix
+from scipy.sparse import lil_array
 
 import sisl._array as _a
 from sisl import Geometry, Lattice
@@ -502,7 +502,7 @@ class tbSileWannier90(hamSileWannier90):
         ws = self._r_wigner_seitz_weights()
 
         # List for holding the Hamiltonian
-        Hsc = defaultdict(lambda: lil_matrix((geometry.no, geometry.no), dtype=dtype))
+        Hsc = defaultdict(lambda: lil_array((geometry.no, geometry.no), dtype=dtype))
         is_complex = np.iscomplexobj(dtype(1))
 
         # Parse hamiltonian matrix elements
@@ -590,7 +590,7 @@ class hrSileWannier90(hamSileWannier90):
         ws = self._r_wigner_seitz_weights()
 
         # List for holding the Hamiltonian
-        Hsc = defaultdict(lambda: lil_matrix((geometry.no, geometry.no), dtype=dtype))
+        Hsc = defaultdict(lambda: lil_array((geometry.no, geometry.no), dtype=dtype))
         is_complex = np.iscomplexobj(dtype(1))
 
         iws = -1
