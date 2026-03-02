@@ -144,7 +144,7 @@ class NeighborFinder:
         geometry: Geometry,
         R: Optional[Union[float, np.ndarray]] = None,
         overlap: bool = False,
-        bin_size: Union[float, tuple[float, float, float]] = 2,
+        bin_size: Union[float, tuple[float, float, float]] = 1,
     ):
         self.setup(geometry, R=R, overlap=overlap, bin_size=bin_size)
 
@@ -153,7 +153,7 @@ class NeighborFinder:
         geometry: Optional[Geometry] = None,
         R: Optional[Union[float, np.ndarray]] = None,
         overlap: bool = None,
-        bin_size: Union[float, tuple[float, float, float]] = 2,
+        bin_size: Union[float, tuple[float, float, float]] = 1,
     ):
         r"""Prepares everything for neighbor finding.
 
@@ -184,14 +184,15 @@ class NeighborFinder:
             is within the sphere of the first atom. Note that this implies that
             atom :math:`I` might be atom :math:`J`'s neighbor while the opposite is not true.
         bin_size :
-            the factor for the radius to determine how large the bins are,
-            optionally along each lattice vector.
-            It can minimally be 2, meaning that the maximum radius to consider
-            is twice the radius considered. For larger values, more atoms will be in
-            each bin (and thus fewer bins).
-            Hence, this value can be used to fine-tune the memory requirement by
-            decreasing number of bins, at the cost of a bit more run-time searching
-            bins.
+            the neighbor finding algorithm divides space with a uniform grid.
+            The minimal size of each grid bin depends on the radius for neighbor
+            search and the lattice vectors (the more skewed the cell, the bigger
+            the bins need to be).
+            This argument accepts a factor by which to multiply the bin size,
+            with 1 resulting in the minimum bin size. 
+            Larger values reduce the amount of memory needed by the algorithm, but
+            will slow down the neighbor finding since there will be more potential
+            neighbors for each atom.
         """
         # Set the geometry. Copy it because we may need to modify the supercell size.
         if geometry is not None:
@@ -234,29 +235,47 @@ class NeighborFinder:
             raise ValueError(
                 "All R values are 0 or less. Please provide some positive values"
             )
+        
+        # Find the minimum length needed in each lattice vector direction
+        # (the more skewed the cell is, the bigger the bins have to be).
+        # The minimum bin size dicated by two lattice vectors (v1, v2) is:
+        #   2 * (max_R / sin[angle(v1, v2)] ) 
+        min_bin_sizes = np.zeros(3)
+        lattice_norms = self.geometry.length
+        for i in range(3):
+            for j in range(3):
+                if i == j: continue
+
+                # Compute angle of vectors i and j
+                scalar_prod = np.dot(self.geometry.cell[i], self.geometry.cell[j])
+                alpha = np.acos(
+                    scalar_prod / (lattice_norms[i] * lattice_norms[j])
+                )
+
+                # Required bin size along vector i due to its relation with j
+                required_bin_size = 2 * max_R / np.sin(alpha)
+                min_bin_sizes[i] = max(min_bin_sizes[i], required_bin_size)
 
         bin_size = np.asarray(bin_size)
-        if np.any(bin_size < 2):
+        if np.any(bin_size < 1):
             raise ValueError(
-                "The bin_size must be larger than 2 to only search in the "
-                "neighboring bins. Please increase to a value >=2"
+                "The bin_size argument must be larger than 1 so that the search"
+                f"is performed on neighboring bins. Received {bin_size}"
             )
 
-        bin_size = max_R * bin_size
+        bin_size = min_bin_sizes * bin_size
 
         # We add a small amount to bin_size to avoid ambiguities when
         # a position is exactly at the center of a bin.
         bin_size += 0.001
 
-        lattice_sizes = self.geometry.length
-
-        self._R_too_big = np.any(bin_size > lattice_sizes)
+        self._R_too_big = np.any(bin_size > lattice_norms)
         if self._R_too_big:
             # This means that nsc must be at least 5.
 
             # We round the amount of cells needed in each direction
             # to the closest next odd number.
-            nsc = np.ceil(bin_size / lattice_sizes) // 2 * 2 + 1
+            nsc = np.ceil(bin_size / lattice_norms) // 2 * 2 + 1
             # And then set it as the number of supercells.
             self.geometry.set_nsc(nsc.astype(int))
             if self._aux_R.ndim == 1:
@@ -272,13 +291,13 @@ class NeighborFinder:
             )
 
             # Recompute lattice sizes
-            lattice_sizes = self._bins_geometry.length
+            lattice_norms = self._bins_geometry.length
 
         else:
             self._bins_geometry = self.geometry
 
         # Get the number of bins along each cell direction.
-        nbins_float = lattice_sizes / bin_size
+        nbins_float = lattice_norms / bin_size
         self.nbins = tuple(np.floor(nbins_float).astype(int))
         self.total_nbins = np.prod(self.nbins)
 

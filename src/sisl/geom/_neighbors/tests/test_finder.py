@@ -352,3 +352,33 @@ def test_outside_box():
     # IT SHOULD BE SUPPORTED IN THE FUTURE
     with pytest.raises(ValueError):
         n = NeighborFinder(geom, R=1.1)
+
+def test_skewed_cell(pbc):
+    """Skewed cells are more complex for determining bin size,
+    here we check that the finder works for a case where treating
+    the skewed cell as an orthogonal cell will not work.
+    """
+    R = 1.12
+    atom_0_xyz = np.array([R - 0.004, 0, 0])
+    atom_1_xyz = atom_0_xyz + [1, 0.5, 0] # Atom 1.118 Ang away
+
+    geom = Geometry(
+        [atom_0_xyz, atom_1_xyz], 
+        lattice=[
+            [(R+0.01)*6, 0, 0],
+            [-3.5, (R+0.01)*6, 0],
+            [0, 0, 20],
+        ]
+    )
+    set_pbc(geom, pbc)
+
+    neighfinder = NeighborFinder(geom, R=R, overlap=False)
+
+    neighfinder.assert_consistency()
+
+    # Check that the finder took into account the skewed cell
+    # by dividing space in (2, 3, 8) instead of (3, 3, 8).
+    assert neighfinder.nbins == (2, 3, 8)
+    # Atoms should have one neighbor
+    assert neighfinder.find_neighbors()[0].n_neighbors == 1
+
