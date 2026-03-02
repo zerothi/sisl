@@ -74,11 +74,9 @@ class bandsSileSiesta(SileSiesta):
             l = _a.arrayd(l)
             eb[ik, :, :] = l.reshape(ns, no) - Ef
 
-        vals = (k, eb)
-
         # for band-lines
         if band_lines:
-            k.shape = (-1,)
+            k = k.ravel()
 
             # Now we need to read the labels for the points
             xlabels = []
@@ -88,7 +86,9 @@ class bandsSileSiesta(SileSiesta):
                 l = self.readline().split()
                 xlabels.append(float(l[0]))
                 labels.append((" ".join(l[1:])).replace("'", ""))
-            vals = (xlabels, labels), *vals
+            vals = (xlabels, labels), k, eb
+        else:
+            vals = k, eb
 
         if as_dataarray:
             from xarray import DataArray

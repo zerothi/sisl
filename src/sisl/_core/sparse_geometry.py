@@ -823,7 +823,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # division operations.
         lsc = tile(self.geometry.lattice.sc_off, (1, reps)).reshape(-1, reps, 3)
         lsc[:, :, axis] = lsc[:, :, axis] * reps + _a.arangei(reps) - segment
-        lsc.shape = (-1, 3)
+        lsc = lsc.reshape(-1, 3)
 
         # now we have the *correct* lsc that corresponds to the
         # sc_off in the cut structure.
@@ -2949,9 +2949,9 @@ depending on your use case. Note indices in the following are supercell indices.
 
         # Create a conversion vector
         orb2atom = tile(geom.o2a(_a.arangei(geom.no)), geom.n_s)
-        orb2atom.shape = (-1, geom.no)
+        orb2atom = orb2atom.reshape(-1, geom.no)
         orb2atom += _a.arangei(geom.n_s).reshape(-1, 1) * geom.na
-        orb2atom.shape = (-1,)
+        orb2atom = orb2atom.ravel()
 
         # First convert all rows to the same
         csr = self._csr

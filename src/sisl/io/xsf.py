@@ -166,7 +166,7 @@ class xsfSile(Sile):
 
         has_data = data is not None
         if has_data:
-            data.shape = (-1, 3)
+            data = data.reshape(-1, 3)
 
         self._write_once("#\n# Atomic coordinates (in primitive coordinates)\n#\n")
         self._geometry_write += 1

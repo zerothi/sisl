@@ -1371,12 +1371,12 @@ column indices of the sparse elements
             ij = broadcast(i, j)
             if data.ndim == 0:
                 # enables checking for shape values
-                data.shape = (1,)
+                data = data.reshape(1)
             elif data.ndim == 1:
                 # this corresponds to:
                 #  [:, :, :] = data.reshape(1, 1, -1)
                 if ij.ndim == 2:
-                    data.shape = (1, -1)
+                    data = data.reshape(1, -1)
                 # if ij.ndim == 1 we shouldn't need
                 # to reshape data since it should correspond to each value
             elif data.ndim == 2:
@@ -1400,7 +1400,7 @@ column indices of the sparse elements
                                 )
                             )
                     # flatten data
-                    data.shape = (-1,)
+                    data = data.ravel()
                 # ij.ndim == 1
                 # this should correspond to the diagonal specification case
                 # and we don't need to do anything
@@ -1410,7 +1410,7 @@ column indices of the sparse elements
                     raise ValueError(
                         "could not broadcast input array from 3 dimensions into 2"
                     )
-                data.shape = (-1, data.shape[2])
+                data = data.reshape(-1, data.shape[2])
 
             # Now we need to figure out the final dimension and how to
             # assign elements.
@@ -1419,7 +1419,7 @@ column indices of the sparse elements
                 k = atleast_1d(key[2])
 
                 if len(k) == 1 and data.ndim == 2:
-                    data.shape = (-1,)
+                    data = data.ravel()
 
                 if data.shape[0] == ij.size:
                     for (i, j), d in zip(ij, data):
@@ -1447,9 +1447,9 @@ column indices of the sparse elements
         else:
             # Ensure correct shape
             if data.size == 1:
-                data.shape = (1, 1)
+                data = data.reshape(1, 1)
             else:
-                data.shape = (-1, self.shape[2])
+                data = data.reshape(-1, self.shape[2])
 
             # Now there are two cases
             if data.shape[0] == 1:

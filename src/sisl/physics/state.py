@@ -635,7 +635,7 @@ state coefficients
             # non-orthogonal basis. That would be non-ideal
             ket = ket.state
         if len(ket.shape) == 1:
-            ket.shape = (1, -1)
+            ket = ket.reshape(1, -1)
 
         # check that the shapes matches (ket should be transposed)
         #  ket M bra

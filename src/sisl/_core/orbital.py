@@ -726,8 +726,7 @@ class SphericalOrbital(Orbital):
             p[idx] = self.psi_spher(r, theta, phi, m, cos_phi=True)
             # Reduce memory immediately
             del idx, r, theta, phi
-        p.shape = s
-        return p
+        return p.reshape(s)
 
     def psi_spher(self, r, theta, phi, m: int = 0, cos_phi: bool = False):
         r"""Calculate :math:`\phi(|\mathbf r|, \theta, \phi)` at a given point (in spherical coordinates)
@@ -1588,8 +1587,7 @@ class _ExponentialOrbital(Orbital):
             p[idx] = self.psi_spher(r, theta, phi, cos_phi=True)
             # Reduce memory immediately
             del idx, r, theta, phi
-        p.shape = s
-        return p
+        return p.reshape(s)
 
     def spher(self, theta, phi, cos_phi: bool = False):
         r"""Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)

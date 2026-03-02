@@ -889,8 +889,8 @@ class MonkhorstPack(BrillouinZone):
             k_dup = np.ravel_multi_index(tuple(k), self._k.shape[:-1])
             del k
 
-        self._k.shape = (-1, 3)
-        self._w.shape = (-1,)
+        self._k = self._k.reshape(-1, 3)
+        self._w = self._w.ravel()
 
         if trs and k_dup is not None:
             self._k = np.delete(self._k, k_del, 0)
@@ -1133,8 +1133,7 @@ class MonkhorstPack(BrillouinZone):
         # the size of the k-points that will be added
         s_size2 = self._size / 2
         mp_size2 = mp._size / 2
-        dk = np.where(mp_size2 < s_size2, mp_size2, s_size2)
-        dk.shape = (1, 3)
+        dk = np.where(mp_size2 < s_size2, mp_size2, s_size2).reshape(1, 3)
 
         # determine indices of k-point inputs
         k = np.asarray(k)
@@ -1376,7 +1375,7 @@ class BandStructure(BrillouinZone):
                     self.points = np.insert(self.points, i, 0.0, axis=1)
 
         # Ensure the shape is correct
-        self.points.shape = (-1, 3)
+        self.points = self.points.reshape(-1, 3)
 
         # Now figure out what to do with the divisions
         if isinstance(divisions, Integral):

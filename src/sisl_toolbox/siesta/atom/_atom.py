@@ -728,7 +728,7 @@ class AtomInput:
                 e, log = get_xy(f"AELOGD{il}")
                 emark = np.loadtxt(path / f"AEEV{il}")
                 if emark.ndim == 1:
-                    emark.shape = (1, -1)
+                    emark = emark.reshape(1, -1)
                 emark = emark[:, 0]
                 if not e is None:
                     p = ax.plot(e, log, label=f"AE {_spdfgh[il]}")
@@ -742,7 +742,7 @@ class AtomInput:
                 e, log = get_xy(f"PSLOGD{il}")
                 emark = np.loadtxt(path / f"PSEV{il}")
                 if emark.ndim == 1:
-                    emark.shape = (1, -1)
+                    emark = emark.reshape(1, -1)
                 emark = emark[:, 0]
                 if not e is None:
                     p = ax.plot(e, log, ":", label=f"PS {_spdfgh[il]}")

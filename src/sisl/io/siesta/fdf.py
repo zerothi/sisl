@@ -1183,7 +1183,7 @@ class fdfSileSiesta(SileSiesta):
         supercell = _a.asarrayi(supercell)
 
         # Reshape to supercell
-        FC.shape = (FC.shape[0], 3, *supercell, -1, 3)
+        FC = FC.reshape(FC.shape[0], 3, *supercell, -1, 3)
         na_fc = len(FC_atoms)
         assert FC.shape[0] == len(FC_atoms)
         assert FC.shape[5] == len(geom) // np.prod(supercell)
@@ -1265,14 +1265,14 @@ class fdfSileSiesta(SileSiesta):
             # order of FC is reversed of the axis_tiling (because of contiguous arrays)
             # so reverse
             axis_tiling.reverse()
-            FC.shape = (na_fc, 3, *supercell[axis_tiling], -1, 3)
+            FC = FC.reshape(na_fc, 3, *supercell[axis_tiling], -1, 3)
 
             # now ensure we have the correct order of the supercell
             # If the input supercell is
             # [-2] [-1] [0] [1] [2]
             # we need to convert it to
             #  [0] [1] [2] [3] [4] [5]
-            isc_xyz.shape = (*supercell[axis_tiling], na_fc, 3)
+            isc_xyz = isc_xyz.reshape(*supercell[axis_tiling], na_fc, 3)
             for axis in axis_tiling:
                 nroll = isc_xyz[..., axis].min()
                 inroll = int(round(nroll))

@@ -86,8 +86,7 @@ class hamiltonianSile(Sile):
                     Z.append({"Z": z, "orbital": [-1.0 for _ in range(no)]})
                     xyz.append([float(f) for f in ls[1:4]])
                     l = self.readline()
-                xyz = _a.arrayd(xyz)
-                xyz.shape = (-1, 3)
+                xyz = _a.arrayd(xyz).reshape(-1, 3)
                 self.readline()  # step past the block
 
         # Create geometry with associated lattice and atoms

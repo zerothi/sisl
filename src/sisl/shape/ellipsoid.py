@@ -108,7 +108,7 @@ class Ellipsoid(PureShape):
         """
         scale = _a.asarrayd(scale)
         if scale.size == 3:
-            scale.shape = (3, 1)
+            scale = scale.reshape(3, 1)
         return self.__class__(self._v * scale, self.center)
 
     def expand(self, radius: SeqOrScalarFloat) -> Self:
@@ -178,8 +178,7 @@ class Ellipsoid(PureShape):
         rtol : float, optional
            absolute tolerance for boundaries
         """
-        other = _a.asarrayd(other)
-        other.shape = (-1, 3)
+        other = _a.asarrayd(other).reshape(-1, 3)
 
         # First check
         tmp = np.dot(other - self.center[None, :], self._iv)

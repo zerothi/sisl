@@ -42,8 +42,7 @@ def test_tbl2(sisl_tmp):
 def test_tbl3(sisl_tmp):
     dat0 = np.arange(8).reshape(2, 2, 2)
     dat1 = np.arange(8).reshape(2, 2, 2) + 1
-    DAT = np.stack([dat0, dat1])
-    DAT.shape = (-1, 2, 2)
+    DAT = np.stack([dat0, dat1]).reshape(-1, 2, 2)
 
     io = tableSile(sisl_tmp("t.dat"), "w")
     io.write_data(dat0, dat1)

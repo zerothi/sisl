@@ -310,8 +310,8 @@ class TestLattice:
 
         lattice = Lattice(param)
 
-        param.shape = (2, 3)
-        parama.shape = (2, 3)
+        param = param.reshape(2, 3)
+        parama = parama.reshape(2, 3)
 
         assert np.allclose(param, np.array(lattice.parameters()))
         assert np.allclose(parama, np.array(lattice.parameters(True)))

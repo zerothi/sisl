@@ -390,8 +390,7 @@ class RecursiveSI(SemiInfinite):
         beta = ab[:, 1, :].view()
 
         # Get solve step arary
-        ab2 = ab.view()
-        ab2.shape = (n, 2 * n)
+        ab2 = np.reshape(ab, (n, 2 * n))
 
         if sp1.orthogonal:
             alpha[:, :] = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
@@ -423,7 +422,7 @@ class RecursiveSI(SemiInfinite):
 
         while True:
             _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
-            tab.shape = shape
+            tab = np.reshape(tab, shape)
             if info != 0:
                 raise ValueError(
                     f"{self.__class__.__name__}.green could not solve G x = B system!"
@@ -508,8 +507,7 @@ class RecursiveSI(SemiInfinite):
         beta = ab[:, 1, :].view()
 
         # Get solve step arary
-        ab2 = ab.view()
-        ab2.shape = (n, 2 * n)
+        ab2 = np.reshape(ab, (n, 2 * n))
 
         if sp1.orthogonal:
             alpha[:, :] = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
@@ -534,7 +532,7 @@ class RecursiveSI(SemiInfinite):
         tmp = empty_like(GS, order="C")
         while True:
             _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
-            tab.shape = shape
+            tab = np.reshape(tab, shape)
             if info != 0:
                 raise ValueError(
                     f"{self.__class__.__name__}.self_energy could not solve G x = B system!"
@@ -630,8 +628,7 @@ class RecursiveSI(SemiInfinite):
         beta = ab[:, 1, :].view()
 
         # Get solve step arary
-        ab2 = ab.view()
-        ab2.shape = (n, 2 * n)
+        ab2 = np.reshape(ab, (n, 2 * n))
 
         if sp1.orthogonal:
             alpha[:, :] = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
@@ -656,7 +653,7 @@ class RecursiveSI(SemiInfinite):
         tmp = empty_like(GS, order="C")
         while True:
             _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
-            tab.shape = shape
+            tab = np.reshape(tab, shape)
             if info != 0:
                 raise ValueError(
                     f"{self.__class__.__name__}.self_energy_lr could not solve G x = B system!"

@@ -39,9 +39,9 @@ def test_spherical():
     xyz = spher2cart(r, theta, phi)
     s = xyz.shape[:-1]
     r1, theta1, phi1 = cart2spher(xyz)
-    r1.shape = s
-    theta1.shape = s
-    phi1.shape = s
+    r1 = r1.reshape(s)
+    theta1 = theta1.reshape(s)
+    phi1 = phi1.reshape(s)
     assert np.allclose(r, r1)
     assert np.allclose(theta, theta1[1:2, :, 1:2])
     assert np.allclose(phi, phi1[0:1, 0:1, :])

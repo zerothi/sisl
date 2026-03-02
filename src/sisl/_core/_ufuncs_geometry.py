@@ -815,14 +815,12 @@ def tile(geometry: Geometry, reps: int, axis: CellAxis) -> Geometry:
 
     # Our first repetition *must* be with
     # the former coordinate
-    xyz = np.tile(geometry.xyz, (reps, 1))
+    xyz = np.tile(geometry.xyz, (reps, 1)).reshape(reps, geometry.na, 3)
     # We may use broadcasting rules instead of repeating stuff
-    xyz.shape = (reps, geometry.na, 3)
-    nr = _a.arangei(reps)
-    nr.shape = (reps, 1, 1)
+    nr = _a.arangei(reps).reshape(reps, 1, 1)
     # Correct the unit-cell offsets
     xyz += nr * geometry.cell[axis, :]
-    xyz.shape = (-1, 3)
+    xyz = xyz.reshape(-1, 3)
 
     # Create the geometry and return it (note the smaller atoms array
     # will also expand via tiling)
@@ -977,15 +975,13 @@ def repeat(geometry: Geometry, reps: int, axis: CellAxis) -> Geometry:
 
     # Our first repetition *must* be with
     # the former coordinate
-    xyz = np.repeat(geometry.xyz, reps, axis=0)
+    xyz = np.repeat(geometry.xyz, reps, axis=0).reshape(geometry.na, reps, 3)
     # We may use broadcasting rules instead of repeating stuff
-    xyz.shape = (geometry.na, reps, 3)
-    nr = _a.arangei(reps)
-    nr.shape = (1, reps)
+    nr = _a.arangei(reps).reshape(1, reps)
     for i in range(3):
         # Correct the unit-cell offsets along `i`
         xyz[:, :, i] += nr * geometry.cell[axis, i]
-    xyz.shape = (-1, 3)
+    xyz = xyz.reshape(-1, 3)
 
     # Create the geometry and return it
     return geometry.__class__(xyz, atoms=geometry.atoms.repeat(reps), lattice=lattice)

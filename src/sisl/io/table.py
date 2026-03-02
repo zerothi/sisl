@@ -194,9 +194,9 @@ class tableSile(Sile):
         # Reshape such that it becomes easy
         ndim = dat.ndim
         if ndim > 2:
-            dat.shape = (-1, dat.shape[-2], dat.shape[-1])
+            dat = dat.reshape(-1, dat.shape[-2], dat.shape[-1])
         elif ndim == 1:
-            dat.shape = (1, -1)
+            dat = dat.reshape(1, -1)
 
         if ndim > 2:
             _fmt = kwargs.get(
@@ -298,12 +298,12 @@ class tableSile(Sile):
         if dat.shape[0] == 1:
             s = list(dat.shape)
             s.pop(0)
-            dat.shape = tuple(s)
+            dat = dat.reshape(tuple(s))
 
         if dat.ndim == 2:
             if dat.shape[1] == 1:
                 # surely a 1D data
-                dat.shape = (-1,)
+                dat = dat.ravel()
 
         # For 2D data we need to transpose because the data is
         # read row wise, but stored column wise
