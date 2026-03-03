@@ -407,6 +407,11 @@ orphan_prefix = "orphan."
     name = "Documentation"
     showcontent = true
 
+    [[tool.towncrier.type]]
+    directory = "dev"
+    name = "Internal development changes"
+    showcontent = true
+
 [tool.rstcheck]
 ignore_directives = [
     "autosummary",

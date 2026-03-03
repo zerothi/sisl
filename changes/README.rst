@@ -18,6 +18,7 @@ Each file should be named like ``<PULL REQUEST>.<TYPE>.rst``, where
 * ``change``: Changes to API, and other operational changes.
 * ``highlight``: Adds a highlight bullet point to use as a possibly highlight
 * ``doc``: Changing or adding documentation
+* ``dev``: Changes to internal development ways of doing things, CI, pre-commit, etc.
 
 It is possible to add more files with different categories (and text), but
 same pull request if all are relevant. For example a new feature might change
