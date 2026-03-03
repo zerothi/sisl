@@ -189,7 +189,7 @@ class NeighborFinder:
             search and the lattice vectors (the more skewed the cell, the bigger
             the bins need to be).
             This argument accepts a factor by which to multiply the bin size,
-            with 1 resulting in the minimum bin size. 
+            with 1 resulting in the minimum bin size.
             Larger values reduce the amount of memory needed by the algorithm, but
             will slow down the neighbor finding since there will be more potential
             neighbors for each atom.
@@ -235,26 +235,26 @@ class NeighborFinder:
             raise ValueError(
                 "All R values are 0 or less. Please provide some positive values"
             )
-        
+
         # Find the minimum length needed in each lattice vector direction
         # (the more skewed the cell is, the bigger the bins have to be).
-        # The minimum bin size dicated by two lattice vectors (v1, v2) is:
-        #   2 * (max_R / sin[angle(v1, v2)] ) 
-        min_bin_sizes = np.zeros(3)
+        # The minimum bin size dictated by two lattice vectors (v1, v2) is:
+        #   2 * (max_R / sin[angle(v1, v2)] )
+        # The factor 2 max_R is taken out and applied after.
+        min_bin_sizes = np.ones(3)
         lattice_norms = self.geometry.length
-        for i in range(3):
-            for j in range(3):
-                if i == j: continue
+        for i in range(2):
+            for j in range(i + 1, 3):
 
                 # Compute angle of vectors i and j
                 scalar_prod = np.dot(self.geometry.cell[i], self.geometry.cell[j])
-                alpha = np.acos(
-                    scalar_prod / (lattice_norms[i] * lattice_norms[j])
-                )
+                cos_alpha = scalar_prod / (lattice_norms[i] * lattice_norms[j])
 
                 # Required bin size along vector i due to its relation with j
-                required_bin_size = 2 * max_R / np.sin(alpha)
+                # This ensures a positive number
+                required_bin_size = 1 / (1 - cos_alpha**2) ** 0.5
                 min_bin_sizes[i] = max(min_bin_sizes[i], required_bin_size)
+                min_bin_sizes[j] = max(min_bin_sizes[j], required_bin_size)
 
         bin_size = np.asarray(bin_size)
         if np.any(bin_size < 1):
@@ -263,7 +263,8 @@ class NeighborFinder:
                 f"is performed on neighboring bins. Received {bin_size}"
             )
 
-        bin_size = min_bin_sizes * bin_size
+        # Correct for maximum distance in the bin-size (R on both sides)
+        bin_size = min_bin_sizes * bin_size * 2 * max_R
 
         # We add a small amount to bin_size to avoid ambiguities when
         # a position is exactly at the center of a bin.

@@ -325,8 +325,8 @@ def test_bin_sizes():
     geom = Geometry([[0, 0, 0], [1, 0, 0]], lattice=[2, 10, 10])
 
     # We should have fewer bins along the first lattice vector
-    n1 = NeighborFinder(geom, R=1.5, bin_size=2)
-    n2 = NeighborFinder(geom, R=1.5, bin_size=4)
+    n1 = NeighborFinder(geom, R=1.5, bin_size=1)
+    n2 = NeighborFinder(geom, R=1.5, bin_size=2)
 
     assert n1.total_nbins > n2.total_nbins
     # When the bin is bigger than the unit cell, this situation
@@ -336,8 +336,8 @@ def test_bin_sizes():
     assert n1.nbins[2] > n2.nbins[2]
 
     # We should have the same number of bins the 2nd and 3rd lattice vectors
-    n3 = NeighborFinder(geom, R=1.5, bin_size=2)
-    n4 = NeighborFinder(geom, R=1.5, bin_size=(2, 4, 4))
+    n3 = NeighborFinder(geom, R=1.5, bin_size=1)
+    n4 = NeighborFinder(geom, R=1.5, bin_size=(1, 2, 2))
 
     assert n3.nbins[0] == n4.nbins[0]
     assert n3.nbins[1] > n4.nbins[1]
@@ -353,6 +353,7 @@ def test_outside_box():
     with pytest.raises(ValueError):
         n = NeighborFinder(geom, R=1.1)
 
+
 def test_skewed_cell(pbc):
     """Skewed cells are more complex for determining bin size,
     here we check that the finder works for a case where treating
@@ -360,15 +361,15 @@ def test_skewed_cell(pbc):
     """
     R = 1.12
     atom_0_xyz = np.array([R - 0.004, 0, 0])
-    atom_1_xyz = atom_0_xyz + [1, 0.5, 0] # Atom 1.118 Ang away
+    atom_1_xyz = atom_0_xyz + [1, 0.5, 0]  # Atom 1.118 Ang away
 
     geom = Geometry(
-        [atom_0_xyz, atom_1_xyz], 
+        [atom_0_xyz, atom_1_xyz],
         lattice=[
-            [(R+0.01)*6, 0, 0],
-            [-3.5, (R+0.01)*6, 0],
+            [(R + 0.01) * 6, 0, 0],
+            [-3.5, (R + 0.01) * 6, 0],
             [0, 0, 20],
-        ]
+        ],
     )
     set_pbc(geom, pbc)
 
@@ -381,4 +382,3 @@ def test_skewed_cell(pbc):
     assert neighfinder.nbins == (2, 3, 8)
     # Atoms should have one neighbor
     assert neighfinder.find_neighbors()[0].n_neighbors == 1
-
