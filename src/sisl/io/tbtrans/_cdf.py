@@ -47,7 +47,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
     def read_lattice(self) -> Lattice:
         """Returns `Lattice` object from this file"""
         cell = _a.arrayd(np.copy(self.cell))
-        cell.shape = (3, 3)
+        cell = cell.reshape(3, 3)
 
         nsc = self._value("nsc")
         lattice = Lattice(cell, nsc=nsc)
@@ -65,7 +65,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
         lattice = self.read_lattice()
 
         xyz = _a.arrayd(np.copy(self.xa))
-        xyz.shape = (-1, 3)
+        xyz = xyz.reshape(-1, 3)
 
         # Create list with correct number of orbitals
         lasto = _a.arrayi(np.copy(self.lasto) + 1)

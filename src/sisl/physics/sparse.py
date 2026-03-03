@@ -2432,12 +2432,14 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         --------
 
         Rotating 45 degrees around the :math:`x` axis can by any of the following:
+
         >>> M.spin_rotate((45, "x"), rad=False)
         >>> M.spin_rotate((45, [1, 0, 0]), rad=False)
         >>> M.spin_rotate((45, 0, 0), rad=False)
 
         Rotating 45 degrees around the :math:`x` and :math:`y` axes can be done by
         either of the following:
+
         >>> M.spin_rotate((45, "xy"), rad=False)
         >>> M.spin_rotate([(45, [1, 0, 0]), (45, [0, 1, 0])], rad=False)
         >>> M.spin_rotate([(45, [1, 0, 0]), (45, "y")], rad=False)

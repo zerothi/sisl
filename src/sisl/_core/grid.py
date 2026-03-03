@@ -632,7 +632,7 @@ class Grid(
         index = _a.asarrayi(index)
         ndim = index.ndim
 
-        index.shape = (-1, 3)
+        index = index.reshape(-1, 3)
         log_and_reduce = np.logical_and.reduce
         index = index[log_and_reduce(0 <= index, axis=1), :]
         s = _a.asarrayi(self.shape).reshape(1, 3)
@@ -679,7 +679,7 @@ class Grid(
         i[:, :, :, 1] = iy.reshape(1, -1, 1)
         i[:, :, :, 2] = iz.reshape(1, 1, -1)
         del ix, iy, iz
-        i.shape = (-1, 3)
+        i = i.reshape(-1, 3)
         i = take(i, idx, axis=0)
         del idx
 
@@ -723,7 +723,7 @@ class Grid(
         i += sa * sc
         rxyz[:, i : i + sb * sc, :] += plane(b, c)
         del a, b, c, sa, sb, sc
-        rxyz.shape = (-1, 3)
+        rxyz = rxyz.reshape(-1, 3)
 
         # Get all indices of the cuboid planes
         return self.index(rxyz)

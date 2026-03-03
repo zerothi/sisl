@@ -415,7 +415,7 @@ def test_create_2d_data_2d(s2):
         s1[i, I, 0] = data[i]
         s1[i, I, 1] = data[i]
 
-    I.shape = (-1, 1)
+    I = I.reshape(-1, 1)
 
     s2[I, I.T, 0] = data
     s2[I, I.T, 1] = data
@@ -437,7 +437,7 @@ def test_create_2d_data_3d(s2):
     for i in I:
         s1[i, I] = data[i]
 
-    I.shape = (-1, 1)
+    I = I.reshape(-1, 1)
     s2[I, I.T] = data
 
     assert s1.spsame(s2)

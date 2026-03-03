@@ -122,10 +122,10 @@ class inSileFHIaims(SileFHIaims):
 
         Parameters
         ----------
-        ret_velocity: bool, optional
+        ret_velocity:
            also return the velocities in the file, if not present, it will
            return a 0 array
-        ret_moment: bool, optional
+        ret_moment:
            also return the moments specified in the file, if not present, it will
            return a 0 array
 

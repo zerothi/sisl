@@ -352,7 +352,7 @@ def PDOS(E, eig, state, S=None, distribution: DistributionType = "gaussian", spi
             PDOS += (conj(state[i]) * (S @ state[i])).real.reshape(
                 -1, 1
             ) * distribution(E - eig[i]).reshape(1, -1)
-        PDOS.shape = (1, *PDOS.shape)
+        PDOS = PDOS.reshape(1, *PDOS.shape)
 
     return PDOS
 
@@ -886,7 +886,7 @@ def _create_sigma(n, sigma, dtype, format):
         m[idx, 0, idx, 1] = sigma[0, 1]
         m[idx, 1, idx, 0] = sigma[1, 0]
         m[idx, 1, idx, 1] = sigma[1, 1]
-        m.shape = (n * 2, n * 2)
+        m = m.reshape(n * 2, n * 2)
     else:
         m = scs.kron(scs.eye(n, dtype=dtype), sigma).tocsr()
     return m
@@ -1524,7 +1524,7 @@ def wavefunction(
     rxyz[..., 1] = stheta_sphi
     rxyz[..., 2] = cphi
     # Reshape
-    rxyz.shape = (-1, 3)
+    rxyz = rxyz.reshape(-1, 3)
     idx = rxyz @ ic_shape.T
     idxm = idx.min(0)
     idxM = idx.max(0)
@@ -1710,7 +1710,7 @@ def wavefunction(
         del idx1, r1, theta1, phi1, idx, r, theta, phi
 
         # Convert to correct shape and add the current atom contribution to the wavefunction
-        psi.shape = idxM - idxm
+        psi = psi.reshape(idxM - idxm)
         grid.grid[idxm[0] : idxM[0], idxm[1] : idxM[1], idxm[2] : idxM[2]] += psi
 
         # Clean-up

@@ -468,8 +468,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 # Grab the information
                 data = ns._tbt.transmission(
                     elec_mol_proj1, elec_mol_proj2, kavg=ns._krng
-                )[ns._Erng]
-                data.shape = (-1,)
+                )[ns._Erng].ravel()
                 ns._data.append(data)
                 ns._data_header.append(f"T:{elec_mol_proj1}-{elec_mol_proj2}")
                 ns._data_description.append(

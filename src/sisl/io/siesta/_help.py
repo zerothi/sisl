@@ -30,7 +30,7 @@ def _siesta_sc_off(nsc):
         sh = [1, 1, 1]
         sh[2 - i] = -1
         sc[..., i] = ns.reshape(*sh)
-    sc.shape = (-1, 3)
+    sc = sc.reshape(-1, 3)
     return sc
 
 

@@ -335,7 +335,7 @@ class EigenmodePhonon(ModeCPhonon):
         # Generate displacement factor
         factor = _displacement_const / fabs(self.c[idx]).reshape(-1, 1) ** 0.5
 
-        U.shape = (U.shape[0], -1, 3)
+        U = U.reshape(U.shape[0], -1, 3)
         U[idx] = (mode[idx, :] * factor).reshape(
             len(idx), -1, 3
         ) / self._geometry().mass.reshape(1, -1, 1) ** 0.5

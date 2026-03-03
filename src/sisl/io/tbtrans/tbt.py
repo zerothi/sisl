@@ -3178,8 +3178,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     )
 
                 # Grab the information
-                data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng]
-                data.shape = (-1,)
+                data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng].ravel()
                 ns._data.append(data)
                 ns._data_header.append(f"T:{e1}-{e2}")
                 ns._data_description.append(
@@ -3215,8 +3214,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     )
 
                 # Grab the information
-                data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng]
-                data.shape = (-1,)
+                data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng].ravel()
                 ns._data.append(data)
                 ns._data_header.append(f"BT:{e}")
                 ns._data_description.append(
@@ -3388,8 +3386,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     )
 
                 # Grab the information
-                data = ns._tbt.fano(e1, e2, kavg=ns._krng)[ns._Erng]
-                data.shape = (-1,)
+                data = ns._tbt.fano(e1, e2, kavg=ns._krng)[ns._Erng].ravel()
                 ns._data.append(data)
                 ns._data_header.append(f"Fano:{e1}-{e2}")
                 ns._data_description.append(
@@ -3432,8 +3429,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 # Grab the information
                 data = ns._tbt.shot_noise(e1, e2, classical=classical, kavg=ns._krng)[
                     ns._Erng
-                ]
-                data.shape = (-1,)
+                ].ravel()
                 ns._data.append(data)
                 ns._data_header.append(f"Shot:{e1}-{e2}")
                 if classical:

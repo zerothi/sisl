@@ -154,8 +154,7 @@ class gotSileGULP(SileGULP):
                     xyz.append([float(x) for x in ls[3:6]])
 
                 # Convert to array and correct size
-                xyz = np.array(xyz, np.float64)
-                xyz.shape = (-1, 3)
+                xyz = np.array(xyz, np.float64).reshape(-1, 3)
 
                 if len(Z) == 0 or len(xyz) == 0:
                     raise ValueError(

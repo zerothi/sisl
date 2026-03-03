@@ -114,7 +114,7 @@ class Cuboid(PureShape):
         """
         scale = _a.asarrayd(scale)
         if scale.size == 3:
-            scale.shape = (3, 1)
+            scale = scale.reshape(3, 1)
         return self.__class__(self._v * scale, self.center)
 
     def expand(self, length: SeqOrScalarFloat) -> Self:

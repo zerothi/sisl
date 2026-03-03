@@ -146,8 +146,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         G = -self._E2eV * (im + im.T) + (1j * self._E2eV) * (re - re.T)
         if sort:
             pvt = self.pivot(elec)
-            idx = np.argsort(pvt)
-            idx.shape = (-1, 1)
+            idx = np.argsort(pvt).reshape(-1, 1)
 
             # pivot for sorted device region
             return G[idx, idx.T]
@@ -181,8 +180,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         SE = self._E2eV * re + (1j * self._E2eV) * im
         if sort:
             pvt = self.pivot(elec)
-            idx = np.argsort(pvt)
-            idx.shape = (-1, 1)
+            idx = np.argsort(pvt).reshape(-1, 1)
 
             # pivot for sorted device region
             return SE[idx, idx.T]

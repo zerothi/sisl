@@ -163,7 +163,7 @@ class Shape(
         """
         other = _a.asarrayd(other)
         ndim = other.ndim
-        other.shape = (-1, 3)
+        other = other.reshape(-1, 3)
 
         idx = self.within_index(other, *args, **kwargs)
         # Initialize a boolean array with all false

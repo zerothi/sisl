@@ -211,7 +211,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
     def read_lattice(self):
         """Returns the `Lattice` object from this file"""
         cell = _a.arrayd(np.copy(self._value("cell"))) * Bohr2Ang
-        cell.shape = (3, 3)
+        cell = cell.reshape(3, 3)
 
         nsc = self._value("nsc")
         lattice = Lattice(cell, nsc=nsc)
@@ -228,7 +228,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         lattice = self.read_lattice()
 
         xyz = _a.arrayd(np.copy(self._value("xa"))) * Bohr2Ang
-        xyz.shape = (-1, 3)
+        xyz = xyz.reshape(-1, 3)
 
         # Create list with correct number of orbitals
         lasto = _a.arrayi(np.copy(self._value("lasto")))
@@ -370,7 +370,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         if ilvl in (2, 4):
             if lvl.variables["kpt"].size != 0:
                 kpt = _a.arrayd(lvl.variables["kpt"][:])
-                kpt.shape = (-1, 3)
+                kpt = kpt.reshape(-1, 3)
                 ik = np.argmin(np.abs(kpt - k[None, :]).sum(axis=1))
                 if not np.allclose(kpt[ik, :], k, atol=0.0001):
                     ik = -1

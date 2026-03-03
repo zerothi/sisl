@@ -270,7 +270,7 @@ def tile(
     # now tile the state vectors
     state_t = np.tile(state.state, (1, reps)).astype(np.complex128, copy=False)
     # re-shape to apply phase-factors
-    state_t.shape = (len(state), reps, -1)
+    state_t = state_t.reshape(len(state), reps, -1)
 
     # Tiling stuff is trivial since we simply
     # translate the bloch coefficients with:
@@ -281,7 +281,7 @@ def tile(
     phase = np.exp(2j * np.pi * k[axis] * (_a.aranged(reps) + offset))
 
     state_t *= phase.reshape(1, -1, 1)
-    state_t.shape = (len(state), -1)
+    state_t = state_t.reshape(len(state), -1)
 
     # update new k; when we double the system, we halve the periodicity
     # and hence we need to account for this

@@ -326,14 +326,14 @@ class cubeSile(Sile):
             grid = Grid(ngrid, dtype=np.float64, lattice=lattice)
         else:
             grid = Grid(ngrid, dtype=np.float64, geometry=geom)
-        grid.grid.shape = (-1,)
+        grid.grid = grid.grid.ravel()
 
         # TODO check performance of this
         # We are currently doing this to enable reading
         #  1-column data and 6-column data.
         lines = [item for sublist in self.fh.readlines() for item in sublist.split()]
         grid.grid[:] = np.array(lines).astype(grid.dtype, copy=False)
-        grid.grid.shape = ngrid
+        grid.grid = grid.grid.reshape(ngrid)
 
         if imag is None:
             return grid

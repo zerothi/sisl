@@ -56,7 +56,7 @@ class refSileScaleUp(SileScaleUp):
 
         cell = _a.fromiterd(map(float, self.readline().split()))
         try:
-            cell.shape = (3, 3)
+            cell = cell.reshape(3, 3)
             if primary:
                 cell[0, :] /= nsc[0]
                 cell[1, :] /= nsc[1]

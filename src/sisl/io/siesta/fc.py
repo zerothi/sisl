@@ -112,7 +112,7 @@ class fcSileSiesta(SileSiesta):
             na = fc.size // 6 // 3
 
         # Correct shape of matrix
-        fc.shape = (-1, 3, 2, na, 3)
+        fc = fc.reshape(-1, 3, 2, na, 3)
 
         return fc
 

@@ -49,7 +49,7 @@ class ncSileSiesta(SileCDFSiesta):
         cell = np.array(self._value("cell"), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
-        cell.shape = (3, 3)
+        cell = cell.reshape(3, 3)
 
         nsc = self.read_lattice_nsc()
 
@@ -140,8 +140,7 @@ class ncSileSiesta(SileCDFSiesta):
         # Read supercell
         lattice = self.read_lattice()
 
-        xyz = np.array(self._value("xa"), np.float64)
-        xyz.shape = (-1, 3)
+        xyz = np.array(self._value("xa"), np.float64).reshape(-1, 3)
 
         if "BASIS" in self.groups:
             atom = self.read_basis()

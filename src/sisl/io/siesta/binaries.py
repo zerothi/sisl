@@ -624,7 +624,7 @@ class dmSileSiesta(SileBinSiesta):
             dm = csr._D[:, : DM.S_idx]
 
         # Ensure shapes (say if only 1 spin)
-        dm.shape = (-1, DM.spin.size(DM.dtype))
+        dm = dm.reshape(-1, DM.spin.size(DM.dtype))
 
         nsc = DM.geometry.lattice.nsc.astype(np.int32)
 

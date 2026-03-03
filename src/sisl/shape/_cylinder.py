@@ -182,8 +182,7 @@ class EllipticalCylinder(PureShape):
         rtol :
            relative tolerance for boundaries.
         """
-        other = _a.asarrayd(other)
-        other.shape = (-1, 3)
+        other = _a.asarrayd(other).reshape(-1, 3)
 
         # First check
         tmp = np.dot(other - self.center, self._iv)

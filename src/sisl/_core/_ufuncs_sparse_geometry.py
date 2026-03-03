@@ -110,8 +110,7 @@ def tile(SA: SparseAtom, reps: int, axis: int) -> SparseAtom:
 
     # Create new indptr, indices and D
     indptr = _ncol_to_indptr(np.tile(csr.ncol, reps))
-    indices = _a.emptyi([indptr[-1]])
-    indices.shape = (reps, -1)
+    indices = _a.emptyi([indptr[-1]]).reshape(reps, -1)
 
     # Now we should fill the data
     isc = geom.a2isc(col)
@@ -265,8 +264,7 @@ def tile(SO: SparseOrbital, reps: int, axis: int) -> SparseOrbital:
 
     # Create new indptr, indices and D
     indptr = _ncol_to_indptr(np.tile(ncol, reps))
-    indices = _a.emptyi([indptr[-1]])
-    indices.shape = (reps, -1)
+    indices = _a.emptyi([indptr[-1]]).reshape(reps, -1)
 
     # Now we should fill the data
     isc = geom.o2isc(col)
@@ -428,9 +426,9 @@ def sub(SA: SparseAtom, atoms: AtomsIndex) -> SparseAtom:
 
     idx = np.tile(atoms, SA.n_s)
     # Use broadcasting rules
-    idx.shape = (SA.n_s, -1)
+    idx = idx.reshape(SA.n_s, -1)
     idx += (_a.arangei(SA.n_s) * SA.na).reshape(-1, 1)
-    idx.shape = (-1,)
+    idx = idx.ravel()
 
     # Now create the new sparse orbital class
     S = SA.__class__(geom, SA.dim, SA.dtype, 1, **SA._cls_kwargs())
@@ -470,9 +468,9 @@ def sub(SO: SparseOrbital, atoms: AtomsIndex) -> SparseOrbital:
 
     idx = np.tile(orbs, SO.n_s)
     # Use broadcasting rules
-    idx.shape = (SO.n_s, -1)
+    idx = idx.reshape(SO.n_s, -1)
     idx += (_a.arangei(SO.n_s) * SO.no).reshape(-1, 1)
-    idx.shape = (-1,)
+    idx = idx.ravel()
 
     # Now create the new sparse orbital class
     S = SO.__class__(geom, SO.dim, SO.dtype, 1, **SO._cls_kwargs())
