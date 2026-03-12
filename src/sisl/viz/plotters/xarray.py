@@ -9,6 +9,7 @@ from typing import Literal, Optional, Union
 
 import numpy as np
 from xarray import DataArray, Dataset
+import pandas as pd
 
 from . import plot_actions
 
@@ -461,6 +462,25 @@ def _draw_xarray_lines(
         "border_width",
         "border_color",
     )
+
+    for key, value in style.items():
+        value = style[key]
+        
+        # xarray uses pandas for casting types, and pandas decided to change
+        # the default behavior and parse [None, ""], to [nan, ""]. Passing
+        # NaN to plotting functions when they are expecting None breaks things.
+        # Here we make sure that we parse all NaN to None
+        # Pandas docs on this: 
+        # https://pandas.pydata.org/docs/user_guide/migration-3-strings.html
+        old_infer_string = pd.options.future.infer_string
+        pd.options.future.infer_string = False
+        try:
+            style[key] = value.where(value.notnull(), other=None)
+        except:
+            pass
+        finally:
+            pd.options.future.infer_string = old_infer_string
+
     for key in style_keys:
         lines_style[key] = style.get(key)
 
