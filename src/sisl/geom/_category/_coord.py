@@ -222,6 +222,14 @@ class AtomXYZ(AtomCategory):
                     spec, sdir = key.split("_")
                 else:
                     sdir, op = key.split("_")
+                    if not hasattr(operator, op):
+                        raise ValueError(
+                            f"{self.__class__.__name__} could not determine the "
+                            f"operations for {key}. "
+                            "A single value for this without an operator is ill-defined. "
+                            "Please define an operator."
+                        )
+
             elif value.size == 2:
                 sdir = key
             else:
@@ -346,7 +354,7 @@ def _new_factory(key):
             return AtomXYZ(**{key: interval}, **new_kwargs)
         elif len(interval) != 0:
             raise ValueError(
-                f"{cls.__name__} non-keyword argumest must be 1 tuple, or 2 values"
+                f"{cls.__name__} non-keyword argument must be 1 tuple, or 2 values"
             )
         return AtomXYZ(**new_kwargs)
 

@@ -90,6 +90,7 @@ from ._common import *
 
 from ._core import *
 
+
 # Import warning classes
 # We currently do not import warn and info
 # as they are too generic names in case one does from sisl import *
@@ -133,6 +134,11 @@ from .io.sile import (
     SileBin,
 )
 
+# We need to pre-import geom, because
+# The categories are necessary to be exposed (for sub-class handling).
+# Therefore lazy-loading of this module is not possible.
+from . import geom
+
 # Allow geometry to register siles
 # Ensure BaseSile works as a str
 # We have to do it after loading BaseSile and Geometry
@@ -167,18 +173,6 @@ del expose_registered_methods
 def __getattr__(attr):
     """Enables simpler access of sub-modules, without having to import them"""
 
-    # One can test that this is only ever called once
-    # per sub-module.
-    # Insert a print statement, and you'll see that:
-    # import sisl
-    # sisl.geom
-    # sisl.geom
-    # will only print *once*.
-
-    if attr == "geom":
-        import sisl.geom as geom
-
-        return geom
     if attr == "io":
         import sisl.io as io
 
@@ -211,10 +205,7 @@ def __getattr__(attr):
         import sisl.unit as unit
 
         return unit
-    if attr == "C":
-        import sisl.constant as C
 
-        return constant
     if attr == "constant":
         import sisl.constant as constant
 
