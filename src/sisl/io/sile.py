@@ -1046,7 +1046,7 @@ class Info:
 
             where `attr` is this object, and `match` is the match done on the line.
             (Note that `match.string` will return the full line used to match against).
-        updatable:
+        updateable:
             control whether a new match on the line will update using `parser`.
             If false, only the first match will update the value
         default:
@@ -1064,7 +1064,7 @@ class Info:
             "name",
             "searcher",
             "parser",
-            "updatable",
+            "updateable",
             "default",
             "value",
             "found",
@@ -1080,7 +1080,7 @@ class Info:
                 [InfoAttr, BaseSile, Union[str, re.Match]], Any
             ] = lambda attr, inst, line: line,
             doc: str = "",
-            updatable: bool = False,
+            updateable: bool = False,
             default: Optional[Any] = None,
             found: bool = False,
             not_found: Union[None, str, Callable[[Any, InfoAttr], None]] = None,
@@ -1116,7 +1116,7 @@ class Info:
 
             self.searcher = used_searcher
             self.parser = parser
-            self.updatable = updatable
+            self.updateable = updateable
 
             # Figure out if `self` is in the arguments of `default`
             # If so, instance bind it, use MethodType
@@ -1171,7 +1171,7 @@ class Info:
             self.not_found = not_found
 
         def process(self, instance, line):
-            if self.found and not self.updatable:
+            if self.found and not self.updateable:
                 return False
 
             return self.searcher(self, instance, line)
@@ -1186,7 +1186,7 @@ class Info:
                 searcher=self.searcher,
                 parser=self.parser,
                 doc=self.doc,
-                updatable=self.updatable,
+                updateable=self.updateable,
                 default=self.value,
                 found=self.found,
                 not_found=self.not_found,

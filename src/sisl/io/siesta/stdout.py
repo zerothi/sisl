@@ -202,7 +202,6 @@ class stdoutSileSiesta(SileSiesta):
             searcher=r".*Job completed",
             parser=lambda attr, instance, match: lambda: True,
             default=lambda: False,
-            not_found="warn",
         ),
         dict(
             name="spin",
