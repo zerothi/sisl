@@ -44,7 +44,7 @@ def _correct_pandas_string_none(dic: dict[str, DataArray]):
     pd.options.future.infer_string = old_infer_string
 
 
-if int(pd.__version__.split(".")[0]) >= 3:
+if int(pd.__version__.split(".")[0]) < 3:
 
     def _correct_pandas_string_none(dic: dict[str, str]):
         pass
