@@ -8,12 +8,46 @@ import typing
 from typing import Literal, Optional, Union
 
 import numpy as np
-from xarray import DataArray, Dataset
 import pandas as pd
+from xarray import DataArray, Dataset
 
 from . import plot_actions
 
 # from sisl.viz.nodes.processors.grid import get_isos
+
+
+def _correct_pandas_string_none(dic: dict[str, DataArray]):
+    """Correct string arguments in xarray arrays to avoid casting to nan
+
+    This is a migration notice from pandas >= 3.
+    They change their str implementation to a custom (new default) dtype.
+    And the result is that `None` will be parsed to `np.nan` as opposed
+    to the old `None -> None` parsing.
+    """
+
+    # xarray uses pandas for casting types, and pandas decided to change
+    # the default behavior and parse [None, ""], to [nan, ""]. Passing
+    # NaN to plotting functions when they are expecting None breaks things.
+    # Here we make sure that we parse all NaN to None
+    # Pandas docs on this:
+    # https://pandas.pydata.org/docs/user_guide/migration-3-strings.html
+    old_infer_string = pd.options.future.infer_string
+    pd.options.future.infer_string = False
+
+    for key, value in dic.items():
+        value = dic[key]
+        try:
+            dic[key] = value.where(value.notnull(), other=None)
+        except:
+            pass
+
+    pd.options.future.infer_string = old_infer_string
+
+
+if int(pd.__version__.split(",")[0]) >= 3:
+
+    def _correct_pandas_string_none(dic: dict[str, str]):
+        pass
 
 
 def _process_xarray_data(
@@ -462,24 +496,7 @@ def _draw_xarray_lines(
         "border_width",
         "border_color",
     )
-
-    for key, value in style.items():
-        value = style[key]
-        
-        # xarray uses pandas for casting types, and pandas decided to change
-        # the default behavior and parse [None, ""], to [nan, ""]. Passing
-        # NaN to plotting functions when they are expecting None breaks things.
-        # Here we make sure that we parse all NaN to None
-        # Pandas docs on this: 
-        # https://pandas.pydata.org/docs/user_guide/migration-3-strings.html
-        old_infer_string = pd.options.future.infer_string
-        pd.options.future.infer_string = False
-        try:
-            style[key] = value.where(value.notnull(), other=None)
-        except:
-            pass
-        finally:
-            pd.options.future.infer_string = old_infer_string
+    _correct_pandas_string_none(style)
 
     for key in style_keys:
         lines_style[key] = style.get(key)
