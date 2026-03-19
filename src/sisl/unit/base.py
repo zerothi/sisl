@@ -388,10 +388,10 @@ class UnitParser:
                 return f
 
         # The unit extractor
-        unit = pp.Word(pp.alphas).setParseAction(_value)
+        unit = pp.Word(pp.alphas).set_parse_action(_value)
 
         integer = pp.Word(pp.nums)
-        plusorminus = pp.oneOf("+ -")
+        plusorminus = pp.one_of("+ -")
         point = pp.Literal(".")
         e = pp.CaselessLiteral("E")
         sign_integer = pp.Combine(pp.Optional(plusorminus) + integer)
@@ -407,22 +407,22 @@ class UnitParser:
                     + pp.Optional(exponent)
                 ),
             ]  # [0-9].[0-9][E+-[0-9]]
-        ).setParseAction(_float)
+        ).set_parse_action(_float)
 
         # def _print_toks(name, op):
-        #    """ May be used in pow_op.setParseAction(_print_toks("pow", "^")) to debug """
+        #    """ May be used in pow_op.set_parse_action(_print_toks("pow", "^")) to debug """
         #    def T(t):
         #        print("{}: {}".format(name, t))
         #        return op
         #    return T
 
         # def _fix_toks(op):
-        #    """ May be used in pow_op.setParseAction(_print_toks("pow", "^")) to debug """
+        #    """ May be used in pow_op.set_parse_action(_print_toks("pow", "^")) to debug """
         #    def T(t):
         #        return op
         #    return T
 
-        pow_op = pp.oneOf("^ **").setParseAction(lambda t: "^")
+        pow_op = pp.one_of("^ **").set_parse_action(lambda t: "^")
         mul_op = pp.Literal("*")
         div_op = pp.Literal("/")
         # Since any space in units are regarded as multiplication this will catch
@@ -478,7 +478,7 @@ class UnitParser:
                 return toks[0][0] * toks[0][1]
 
         # We should parse numbers first
-        parser = pp.infixNotation(
+        parser = pp.infix_notation(
             number | unit,
             [
                 (pow_op, 2, pp.opAssoc.RIGHT, pow_action),
@@ -501,8 +501,8 @@ class UnitParser:
 
     def _convert(self, A, B):
         """Internal routine used to convert unit `A` to unit `B`"""
-        conv_A = self._p_left.parseString(A)[0]
-        conv_B = self._p_right.parseString(B)[0]
+        conv_A = self._p_left.parse_string(A)[0]
+        conv_B = self._p_right.parse_string(B)[0]
         if not self.same_group(self._left, self._right):
             left = list(self._left)
             right = list(self._right)
@@ -549,7 +549,7 @@ class UnitParser:
 
         elif len(units) == 1:
             # to default
-            conv = self._p_left.parseString(units[0])[0]
+            conv = self._p_left.parse_string(units[0])[0]
             self._left.clear()
             return conv
 
