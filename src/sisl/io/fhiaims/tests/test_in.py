@@ -23,6 +23,23 @@ def test_in_simple(sisl_tmp, sisl_system):
     assert sisl_system.g.atoms.equal(g.atoms, R=False)
 
 
+def test_in_no_lattice(sisl_tmp, sisl_system):
+    # test when the input geometry does not have any lattice.
+    # In this case it shouldn't be used.
+    f = sisl_tmp("gr.in")
+    g = sisl_system.g
+    with open(f, "w") as fh:
+        for atom, xyz in zip(g.atoms, g.xyz):
+            fh.write(f"atom {xyz[0]} {xyz[1]} {xyz[2]} {atom.symbol}\n")
+
+    gr = inSileFHIaims(f).read_geometry()
+
+    # Assert they are the same
+    assert not np.allclose(gr.cell, g.cell)
+    assert np.allclose(gr.xyz, g.xyz)
+    assert gr.atoms.equal(g.atoms, R=False)
+
+
 def test_in_velocity(sisl_tmp, sisl_system):
     f = sisl_tmp("gr.in")
     g = sisl_system.g.copy()

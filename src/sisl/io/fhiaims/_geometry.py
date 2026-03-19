@@ -88,7 +88,7 @@ class inSileFHIaims(SileFHIaims):
                 self._write(_fmtm.format(moment[ia]))
 
     @sile_fh_open()
-    def read_lattice(self) -> Lattice:
+    def read_lattice(self) -> Lattice | None:
         """Reads supercell object from the file"""
         self.fh.seek(0)
 
@@ -98,7 +98,9 @@ class inSileFHIaims(SileFHIaims):
             if line.startswith("lattice_vector"):
                 cell.append([float(f) for f in line.split()[1:]])
 
-        return Lattice(cell)
+        if cell:
+            return Lattice(cell)
+        return None
 
     @sile_fh_open()
     @deprecate_argument(

@@ -223,7 +223,7 @@ class Geometry(
 
         # First create an initial guess for the supercell
         # It HAS to be VERY large to not interact
-        closest = self.close(0, R=(0.0, 0.4, 5.0))[2]
+        closest = self.close(0, R=(0.4, 5.0))[1]
         if len(closest) < 1:
             # We could not find any atoms very close,
             # hence we simply return and now it becomes
