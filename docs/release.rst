@@ -28,6 +28,7 @@ between versions.
 .. toctree::
    :maxdepth: 2
 
+   0.16.4 <release/0.16.4-notes.rst>
    0.16.2 <release/0.16.2-notes.rst>
    0.16.1 <release/0.16.1-notes.rst>
 

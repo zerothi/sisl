@@ -1,4 +1,0 @@
-Change `trs` default in `MonkhorstPack` depending on spin
-
-Now for non-collinear or higher spin-configurations it defaults
-to ``trs=False``.

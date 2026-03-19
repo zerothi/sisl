@@ -1,1 +1,0 @@
-Fixed AtomCategory usage when sisl.geom hasn't been imported

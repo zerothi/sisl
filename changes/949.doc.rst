@@ -1,4 +1,0 @@
-Fixed wording in `Geometry.scale` documentation
-
-It is now clearer that both lattice vectors and
-atomic coordinates are scaled.
