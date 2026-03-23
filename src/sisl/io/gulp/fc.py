@@ -8,7 +8,7 @@ Sile object for reading the force constant matrix written by GULP
 """
 
 import numpy as np
-from scipy.sparse import lil_matrix
+from scipy.sparse import lil_array
 
 from sisl._internal import set_module
 from sisl.messages import deprecation
@@ -38,7 +38,7 @@ class fcSileGULP(SileGULP):
 
         Returns
         -------
-        M : Hessian/force constant in `scipy.sparse.coo_matrix` format
+        M : Hessian/force constant in `scipy.sparse.coo_array` format
         """
         # Default cutoff
         cutoff = kwargs.get("cutoff", 0.0)
@@ -48,7 +48,7 @@ class fcSileGULP(SileGULP):
         na = int(self.readline())
         no = na * 3
 
-        fc = lil_matrix((no, no), dtype=dtype)
+        fc = lil_array((no, no), dtype=dtype)
         tmp = np.empty([3, na, 3], dtype=dtype)
 
         # Reduce overhead...
