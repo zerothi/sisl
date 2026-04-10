@@ -88,7 +88,7 @@ class _sile_rule:
         self.base_names = [c.__name__.lower() for c in self.bases]
 
     def __str__(self):
-        s = ",\n ".join(map(lambda x: x.__name, self.bases))
+        s = ",\n ".join(map(lambda x: x.__name__, self.bases))
         return (
             f"{self.cls.__name__}{{case={self.case}, "
             f"suffix={self.suffix}, gzip={self.gzip},\n {s}\n}}"
@@ -244,8 +244,7 @@ def get_sile_class(filename, *args, **kwargs):
     if specification is None:
         # ensure to grab nothing
         specification = get_environ_variable("SISL_IO_DEFAULT").strip()
-    elif specification.strip() == "":
-        specification = ""
+    specification = specification.strip()
 
     # extract which comparsion method
     if "=" in specification:
@@ -277,15 +276,30 @@ def get_sile_class(filename, *args, **kwargs):
                 f"Specification requirement of the file did not result in any found files: {specification}"
             )
 
-    else:
-        # search everything
-        eligible_rules = __sile_rules
+    def reduce_rules(rules):
+        # Reduce so we are stuck with only non-equivalent ones
+        i = 0
+        n = 0
+        while n != len(rules) and i < len(rules):
+            n = len(rules)
+            # Search for classes equivalent to idx i
+            rule = rules[i]
+            pop_idx = []
+            for j in range(i + 1, n):
+                if rule.is_class(rules[j].cls):
+                    pop_idx.append(j)
+
+            # Remove equivalent ones
+            for j in reversed(pop_idx):
+                rules.pop(j)
+            # Check the next i
+            i += 1
 
     if eligible_rules:
         if len(eligible_rules) == 1:
             return eligible_rules[0].cls
     else:
-        # nothing has been found, this may meen that we need to search *everything*
+        # nothing has been found, this may mean that we need to search *everything*
         eligible_rules = __sile_rules
 
     try:
@@ -355,27 +369,60 @@ def get_sile_class(filename, *args, **kwargs):
                     eligibles.append(sr)
             return eligibles
 
-        # First we check for class AND file ending
-        for end, rules in product(end_list, (eligible_rules, __sile_rules)):
-            eligibles = get_eligibles(end, rules)
-            # Determine whether we have found a compatible sile
-            if len(eligibles) == 1:
-                return eligibles[0].cls
-            elif len(eligibles) > 1:
-                workable_eligibles = try_methods(eligibles)
-                if len(workable_eligibles) == 1:
-                    return workable_eligibles[0].cls
-                raise ValueError(
-                    f"Cannot determine the exact Sile requested, multiple hits: {tuple(e.cls.__name__ for e in eligibles)}"
-                )
+        def run_eligibles(end_list, rules) -> Optional[_sile_rule]:
+            # First we check for class AND file ending
+            for end in end_list:
+                eligibles = get_eligibles(end, rules)
+                # Determine whether we have found a compatible sile
+                if len(eligibles) == 1:
+                    return eligibles[0]
+                elif len(eligibles) > 1:
+                    workable_eligibles = try_methods(eligibles)
+                    if len(workable_eligibles) == 1:
+                        return workable_eligibles[0]
+                    raise ValueError(
+                        f"Cannot determine the exact Sile requested, multiple hits: {tuple(e.cls.__name__ for e in eligibles)}"
+                    )
+
+        # First check for the user-requested rules
+        # Specific is same object check!
+        if eligible_rules and not (eligible_rules is __sile_rules):
+            # This will test the file-endings for all found eligible_rules
+            # So file-endings are still preferred up to this point.
+            rule = run_eligibles(end_list, eligible_rules)
+
+            if rule is not None:
+                return rule.cls
+
+            # We did not find a single one, so file-endings could not produce
+            # a match in the eligible ones.
+            # Reduce and see if they are all the same.
+            reduce_rules(eligible_rules)
+            if len(eligible_rules) == 1:
+                return eligible_rules[0].cls
+
+            # At this point, we issues a warning saying that the
+            # the rules requested could not find a match
+            eligibles = list(map(lambda x: x.cls.__name__, eligible_rules))
+            warn(
+                "Specification requirement of the file resulted in too many "
+                f"matches: {eligibles}"
+            )
+
+        rule = run_eligibles(end_list, __sile_rules)
+
+        if rule is not None:
+            return rule.cls
 
         # Print-out error on which extensions it tried (and full filename)
         if len(end_list) == 1:
             ext_list = end_list
         else:
             ext_list = end_list[1:]
+        # Retrieve the possible extensions searched
+        eligibles = list(map(lambda x: x.cls.__name__, eligible_rules))
         raise NotImplementedError(
-            f"Sile for file '{filename}' ({ext_list}) could not be found, "
+            f"Sile for file '{filename}' ({ext_list}, {eligibles}) could not be found, "
             "possibly the file has not been implemented."
         )
 
