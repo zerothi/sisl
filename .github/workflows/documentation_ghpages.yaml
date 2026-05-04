@@ -39,7 +39,7 @@ jobs:
     steps:
 
       - id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v2
+        uses: SimenB/github-actions-cpu-cores@v3
 
       - name: Install OS packages
         run: sudo apt install -y pandoc
