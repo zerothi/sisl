@@ -323,6 +323,7 @@ class TestObject:
             with sile(f, mode="r") as s:
                 l = s.read_lattice()
             assert l.equal(L, atol=1e-3)  # pdb files have 8.3 for atomic coordinates
+            assert l.equal(L, atol=1e-3)  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
 

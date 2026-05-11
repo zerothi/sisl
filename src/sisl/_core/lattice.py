@@ -103,7 +103,7 @@ class Lattice(
     ----------
     cell :
        the lattice parameters of the unit cell (the actual cell
-       is returned from `tocell`.
+       is returned from `tocell`).
     nsc :
        number of supercells along each lattice vector
     origin : (3,) of float, optional
@@ -351,10 +351,10 @@ class Lattice(
                     "while having a non-periodic boundary condition."
                 )
 
-    def parameters(
-        self, rad: bool = False
-    ) -> tuple[float, float, float, float, float, float]:
+    def parameters(self, rad: bool = False) -> tuple[np.ndarray, np.ndarray]:
         r"""Cell parameters of this cell in 3 lengths and 3 angles
+
+        The parameters are in this order: :math:`a, b, c, \alpha, \beta, \gamma`.
 
         Notes
         -----
@@ -364,14 +364,14 @@ class Lattice(
 
         Parameters
         ----------
-        rad : bool, optional
-           whether the angles are returned in radians (otherwise in degree)
+        rad :
+           whether the angles are returned in radian (otherwise in degree)
 
         Returns
         -------
-        length : numpy.ndarray
+        length :
             length of each lattice vector
-        angles : numpy.ndarray
+        angles :
             angles between the lattice vectors (in Voigt notation)
             ``[0]`` is between 2nd and 3rd lattice vector, etc.
         """
@@ -389,6 +389,9 @@ class Lattice(
         angles[0] = math.acos(dot3(cell[1], cell[2])) * f
         angles[1] = math.acos(dot3(cell[0], cell[2])) * f
         angles[2] = math.acos(dot3(cell[0], cell[1])) * f
+        if cell[1, 1] < 0:
+            # this catches when a cell vector is *rotated back*
+            angles[2] *= -1
 
         return abc, angles
 
@@ -923,32 +926,29 @@ class Lattice(
 
         # Cell parameters
         if nargs == 6:
-            cell = _a.zerosd([3, 3])
-            a = args[0]
-            b = args[1]
-            c = args[2]
-            alpha = args[3]
-            beta = args[4]
-            gamma = args[5]
-
             from math import cos, pi, sin, sqrt
 
             pi180 = pi / 180.0
 
+            a, b, c = args[:3]
+
+            # convert to radian
+            alpha, beta, gamma = args[3:] * pi180
+
+            cell = _a.zerosd([3, 3])
             cell[0, 0] = a
-            g = gamma * pi180
-            cg = cos(g)
-            sg = sin(g)
+
+            cg = cos(gamma)
+            sg = sin(gamma)
             cell[1, 0] = b * cg
             cell[1, 1] = b * sg
-            b = beta * pi180
-            cb = cos(b)
-            sb = sin(b)
+
+            cb = cos(beta)
             cell[2, 0] = c * cb
-            a = alpha * pi180
-            d = (cos(a) - cb * cg) / sg
+            d = (cos(alpha) - cb * cg) / sg
             cell[2, 1] = c * d
-            cell[2, 2] = c * sqrt(sb**2 - d**2)
+            cell[2, 2] = c * sqrt(1 - cb**2 - d**2)
+
             return cell
 
         # A complete cell

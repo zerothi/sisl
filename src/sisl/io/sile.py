@@ -1378,7 +1378,7 @@ class Sile(Info, BaseSile):
         else:
             self._comment = []
 
-        self._fh_opens = 0
+        self._fh_tells = []
         self._line = 0
 
         # Initialize
@@ -1387,9 +1387,9 @@ class Sile(Info, BaseSile):
     def _open(self):
         # track how many times this has been called
         if hasattr(self, "fh"):
+            self._fh_tells.append(self.fh.tell())
             self.fh.seek(0)
         else:
-            self._fh_opens = 0
 
             if self.file.suffix == ".gz":
                 if self._mode == "r":
@@ -1401,10 +1401,11 @@ class Sile(Info, BaseSile):
             else:
                 self.fh = self.file.open(self._mode)
 
+            # We've just opened, seek to 0
+            self._fh_tells.append(0)
+
         # the file should restart the file-read (as per instructed)
         self._line = 0
-
-        self._fh_opens += 1
 
     def __enter__(self):
         """Opens the output file and returns it self"""
@@ -1418,12 +1419,12 @@ class Sile(Info, BaseSile):
 
     def close(self):
         # decrement calls
-        self._fh_opens -= 1
-        if self._fh_opens <= 0:
+        self._fh_tells.pop()
+        if len(self._fh_tells) == 0:
             self._line = 0
             self.fh.close()
             delattr(self, "fh")
-            self._fh_opens = 0
+            self._fh_tells = []
 
     @staticmethod
     def is_keys(keys):
@@ -1479,6 +1480,13 @@ class Sile(Info, BaseSile):
             l = self.fh.readline()
             self._line += 1
         return l
+
+    def readlines(self, comment: bool = False) -> str:
+        """Read all lines in the sile"""
+        lines = []
+        while line := self.readline(comment=comment):
+            lines.append(line)
+        return lines
 
     def step_to(
         self, keywords, case=True, allow_reread=True, ret_index=False, reopen=False

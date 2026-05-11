@@ -46,6 +46,7 @@ Files not specificaly related to any code.
 
   tableSile - data file in tabular form
   xyzSile - atomic coordinate file
+  cifSile - atomic coordinate file
   pdbSile - atomic coordinates and MD content
   cubeSile - atomic coordinates *and* 3D grid values
   moldenSile - atomic coordinate file specific for Molden
@@ -182,6 +183,7 @@ from .sile import *
 # isort: split
 
 # Non-code specific files
+from .cif import *
 from .cube import *
 from .molden import *
 from .pdb import *
