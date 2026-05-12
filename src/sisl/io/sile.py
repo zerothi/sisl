@@ -816,6 +816,7 @@ def sile_fh_open(from_closed: bool = False, reset: Callable[[BaseSile], None] = 
 
             @wraps(func)
             def pre_open(self, *args, **kwargs):
+                self._log(f"opening filehandle from closed -> {func.__name__}(...)")
                 with self:
                     # This happens when the file seeks to 0,
                     # so basically the same as re-opening the file
@@ -832,7 +833,9 @@ def sile_fh_open(from_closed: bool = False, reset: Callable[[BaseSile], None] = 
             @wraps(func)
             def pre_open(self, *args, **kwargs):
                 if hasattr(self, "fh"):
+                    self._log(f"using existing filehandle -> {func.__name__}(...)")
                     return func(self, *args, **kwargs)
+                self._log(f"opening filehandle -> {func.__name__}(...)")
                 with self:
                     reset(self)
                     return func(self, *args, **kwargs)

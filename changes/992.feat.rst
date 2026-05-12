@@ -1,3 +1,1 @@
-Added `cifSile` for initial support
-
-Still a lot of features missing, no symmetry (yet!)
+Added `cifSile` for initial support, basic symmetry works

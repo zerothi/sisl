@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import re
 from collections import Counter
+from fractions import Fraction
 from pathlib import Path
 from typing import Optional
 
@@ -19,6 +20,141 @@ from sisl.io.sile import Sile, SileError, sile_fh_open
 __all__ = ["cifSile"]
 
 
+# CIF tags that carry Jones-faithful symmetry operation strings, in priority order
+_SYMOP_TAGS = (
+    "_space_group_symop_operation_xyz",  # CIF 2 / newer dictionaries
+    "_symmetry_equiv_pos_as_xyz",  # CIF 1.1 legacy
+)
+
+
+def _parse_jones(op: str) -> tuple[np.ndarray, np.ndarray]:
+    """Parse a Jones-faithful symmetry string into ``(W, w)``.
+
+    Returns
+    -------
+    W : ndarray, shape (3, 3)
+        Rotation / improper-rotation matrix (integer entries).
+    w : ndarray, shape (3,)
+        Translation vector (rational, in fractional coordinates).
+
+    Examples
+    --------
+    >>> W, w = _parse_jones("-x+1/2, y, -z+3/4")
+    """
+    W = np.zeros((3, 3), dtype=np.float64)
+    w = np.zeros(3, dtype=np.float64)
+
+    # Tokenise: signed axis tokens  ±[xyz]  and rational offsets  ±N/M or ±N
+    _TOKEN = re.compile(r"([+-]?)(\d+/\d+|\d+\.?\d*|[xyz])")
+
+    for row, expr in enumerate(op.lower().split(",")):
+        expr = expr.strip()
+        pending_sign = 1
+        for m in _TOKEN.finditer(expr):
+            sign_str, val = m.group(1), m.group(2)
+            sign = {"-": -1}.get(sign_str, 1)
+            # A bare '+' or '-' before the first token has no leading digit
+            if val in ("x", "y", "z"):
+                col = ord(val) - ord("x")
+                W[row, col] = sign * pending_sign if sign_str == "" else sign
+                pending_sign = 1
+            else:
+                # numeric — could be int, float, or fraction
+                # fraction parses real numbers and str, e.g. '1/2'
+                w[row] += sign * float(Fraction(val))
+            pending_sign = sign if sign_str == "" else 1
+
+    return W, w
+
+
+def _symops_from_loop(loop: dict) -> Optional[list[tuple[np.ndarray, np.ndarray]]]:
+    """Extract ``[(W, w), …]`` from a parsed CIF loop dict, or *None*."""
+    for tag in _SYMOP_TAGS:
+        if tag in loop:
+            return [_parse_jones(s) for s in loop[tag]]
+    return None
+
+
+def _apply_symops(
+    frac: np.ndarray,
+    species: list[str],
+    symmetry_ops: list[tuple[np.ndarray, np.ndarray]],
+    symmetry_atol: float = 1e-4,
+) -> tuple[np.ndarray, list]:
+    """Expand asymmetric-unit sites by all symmetry operations.
+
+    Coordinates are mapped back into [0, 1) and duplicate sites
+    (within `symmetry_atol`) are discarded.
+
+    The unfolding will be done *per atom*, starting with the first atom.
+
+    Parameters
+    ----------
+    frac : ndarray, shape (N, 3)
+        Fractional coordinates of asymmetric-unit atoms.
+    species : list of str
+        Element symbols, length N.
+    symops : list of (W, w) pairs
+    symmetry_atol: float
+        The absolute tolerance of the fraction accuracy.
+
+    Returns
+    -------
+    frac_full : ndarray, shape (M, 3)
+    species_full : list of str, length M
+    """
+    full_frac: list = []
+    full_species: list = []
+
+    for abc, sym in zip(frac, species):
+        for W, w in symmetry_ops:
+            new = (W @ abc + w) % 1.0
+            # deduplicate: skip if already present within tolerance
+            if any(
+                np.isclose(new, f, atol=symmetry_atol, rtol=0).all() for f in full_frac
+            ):
+                continue
+            full_frac.append(new)
+            full_species.append(sym)
+
+    return np.array(full_frac), full_species
+
+
+def _jones_str(
+    W: np.ndarray,
+    w: np.ndarray,
+    symmetry_atol: float = 1e-4,
+) -> str:
+    """Serialize ``(W, w)`` back to a Jones-faithful CIF string.
+
+    Example output: ``'-x+1/2,y,-z+3/4'``
+
+    Parameters
+    ----------
+    symmetry_atol: float
+        The absolute tolerance of the fraction accuracy.
+    """
+    axes = ("x", "y", "z")
+    parts = []
+    for row in range(3):
+        expr = ""
+        for col in range(3):
+            v = int(round(W[row, col]))
+            if v == 0:
+                continue
+            sign = "+" if v > 0 and expr else ("-" if v < 0 else "")
+            expr += f"{sign}{axes[col]}"
+
+        # translation — express as exact fraction
+        t = w[row] % 1.0
+        if t > symmetry_atol:
+            # The precision is limited to integer fractions of 24
+            frac = Fraction(t).limit_denominator(24)
+            expr += f"+{frac.numerator}/{frac.denominator}"
+        parts.append(expr if expr else "0")
+    return ",".join(parts)
+
+
 @set_module("sisl.io")
 class cifSile(Sile):
     """CIF (Crystallographic Information File) reader.
@@ -26,19 +162,24 @@ class cifSile(Sile):
     Supports CIF 1.1 and a common subset of CIF 2.0.
     Currently implements :meth:`read_geometry` (and the implied
     :meth:`read_lattice`).
+    Basic crystallographic symmetry operations (``_symmetry_equiv_pos_as_xyz``
+    / ``_space_group_symop_operation_xyz``) are obeyed.
 
-    Notes
-    -----
-    There is lacking symmetry support.
+    When reading, symmetry operations are parsed and applied to the
+    asymmetric-unit sites to produce the full unit-cell geometry.
+    When writing, an optional list of ``(W, w)`` pairs may be supplied
+    via the ``symmetry_ops`` keyword; if omitted the identity operation (P 1)
+    is written.
 
     Examples
     --------
     >>> geom = cifSile("crystal.cif").read_geometry()
-    """
 
-    # ------------------------------------------------------------------ #
-    #  Internal helpers                                                    #
-    # ------------------------------------------------------------------ #
+    Write with explicit symmetry operations:
+
+    >>> symops = [("x,y,z", "-x,-y,-z")]
+    >>> cifSile("out.cif", "w").write_geometry(geom, symmetry_ops=symops)
+    """
 
     @staticmethod
     def _parse_value(raw: str) -> str:
@@ -70,6 +211,9 @@ class cifSile(Sile):
         loop_cols: list = []
         loop_rows: list = []
 
+        multiline_buf: list = []
+        multiline_tag: Optional[str] = None
+
         def _flush_loop():
             if loop_cols:
                 n_cols = len(loop_cols)
@@ -88,9 +232,6 @@ class cifSile(Sile):
                 loops.clear()
             # to make it work and not return too soon...
             yield ""
-
-        multiline_buf: list = []
-        multiline_tag: Optional[str] = None
 
         for line in self.readlines():
             line = line.strip()
@@ -226,29 +367,13 @@ class cifSile(Sile):
         (``_atom_site_fract_*``), otherwise Cartesian coordinates
         (``_atom_site_Cartn_*``) are used directly.
 
+        The symmetry operations ``_symmetry_equiv_pos_as_xyz`` and
+        ``_space_group_symop_operation_xyz`` are also parsed.
+
         Returns
         -------
         Geometry
         """
-
-        error_keywords = (
-            (
-                "A (currently) unsupported keyword {} was found in the cif file. "
-                "The resulting geometry cannot be guaranteed."
-            ),
-            (
-                "_space_group_symop_operation_xyz",
-                "_symmetry_equiv_pos_as_xyz",
-            ),
-        )
-
-        warning_keywords = (
-            (
-                "A (currently) unsupported keyword {} was found in the cif file. "
-                "The resulting geometry cannot be guaranteed."
-            ),
-            (),
-        )
 
         # ---- lattice ------------------------------------------
         lattice = self.read_lattice()
@@ -258,15 +383,15 @@ class cifSile(Sile):
 
         atoms = None
 
-        for _, data, loops in self._iter_blocks():
+        for block_name, data, loops in self._iter_blocks():
 
             # TODO need to check about symmetry operations
             # I.e. currently we silently pass and read them, but do not
             # execute them.
 
-            print("block_name", _)
-            print("data", data)
-            print("loops", loops)
+            self._log("block_name", block_name)
+            self._log("data", data)
+            self._log("loops", loops)
 
             # ---- find atom_site loop ------------------------------
             atom_loop = None
@@ -301,26 +426,42 @@ class cifSile(Sile):
                         for i in range(len(raw_species))
                     ]
                 )
-                xyz = frac @ lattice.cell  # fractional → Cartesian
             elif all(k in atom_loop for k in ATOM_CART_KEYS):
-                xyz = np.array(
+                cart = np.array(
                     [
                         [self._float(atom_loop[k][i]) for k in ATOM_CART_KEYS]
                         for i in range(len(raw_species))
                     ]
                 )
+                frac = cart @ lattice.icell.T
             else:
                 raise SileError(
                     f"{self!s}: neither fractional nor Cartesian coordinates found"
                 )
 
+            # ---- symmetry expansion ------------------------------
+            symops = next(
+                (ops for lp in loops if (ops := _symops_from_loop(lp)) is not None),
+                None,
+            )
+            if symops:
+                frac, raw_species = _apply_symops(frac, raw_species, symops)
+
+            xyz = frac @ lattice.cell
+            atoms = Atoms([Atom(s) for s in raw_species])
             return Geometry(xyz, atoms=atoms, lattice=lattice)
 
         if atoms is None:
             raise SileError(f"{self!s}: no _atom_site loop found")
 
     @sile_fh_open()
-    def write_geometry(self, geometry: Geometry, fmt: str = ".8f", **kwargs) -> None:
+    def write_geometry(
+        self,
+        geometry: Geometry,
+        symmetry_ops: None | str | list[str | tuple[np.ndarray, np.ndarray]] = None,
+        fmt: str = ".8f",
+        **kwargs,
+    ) -> None:
         """Write the crystal structure in CIF 1.1 format.
 
         Atom positions are stored as fractional coordinates
@@ -332,6 +473,8 @@ class cifSile(Sile):
         ----------
         geometry :
             Structure to write.
+        symmetry_ops :
+            Jones symmetry operations, this option might change in the future.
         fmt :
            used format for the precision of the data
         """
@@ -340,9 +483,30 @@ class cifSile(Sile):
         # ---- header & cell -----------------------------------------
         self.write_lattice(geometry.lattice)
 
-        # ---- symmetry (P1 — no symmetry reduction performed) --------
-        w("_symmetry_space_group_name_H-M   'P 1'\n")
-        w("_symmetry_Int_Tables_number       1\n\n")
+        # ---- symmetry block ----------------------------------------
+        if symmetry_ops is None:
+            self._log("writing geometry with P 1 symmetry")
+            # P 1 — identity only
+            w("_symmetry_space_group_name_H-M  'P 1'\n")
+            w("_symmetry_Int_Tables_number      1\n\n")
+            w("loop_\n")
+            w("  _symmetry_equiv_pos_as_xyz\n")
+            w("  'x,y,z'\n\n")
+        else:
+            self._log("writing geometry with UD symmetry")
+            if isinstance(symmetry_ops, str):
+                symmetry_ops = [symmetry_ops]
+
+            def op2jones(op: str | tuple) -> tuple[np.ndarray, np.ndarray]:
+                if isinstance(op, str):
+                    return _parse_jones(op)
+                return op
+
+            w("loop_\n")
+            w("  _symmetry_equiv_pos_as_xyz\n")
+            for W, t in map(op2jones, symmetry_ops):
+                w(f"  '{_jones_str(W, t)}'\n")
+            w("\n")
 
         # ---- fractional coordinates ---------------------------------
         frac = geometry.fxyz
