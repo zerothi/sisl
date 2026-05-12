@@ -75,6 +75,16 @@ def _symops_from_loop(loop: dict) -> Optional[list[tuple[np.ndarray, np.ndarray]
     return None
 
 
+def _intersect_coords(f1, f2, rtol: float = 1e-5, atol: float = 1e-8) -> np.ndarray:
+    """Find the coordinates of f1 and f2 that are common"""
+    # Find all overlapping coordinates
+    isclose = np.isclose(
+        f1[:, :, None], f2.T.reshape(1, 3, -1), atol=atol, rtol=rtol
+    ).all(axis=1)
+    idx = isclose.nonzero()
+    return idx
+
+
 def _apply_symops(
     frac: np.ndarray,
     species: list[str],
@@ -103,21 +113,49 @@ def _apply_symops(
     frac_full : ndarray, shape (M, 3)
     species_full : list of str, length M
     """
-    full_frac: list = []
+    full_frac: np.ndarray = np.empty([len(frac) * len(symmetry_ops), 3])
     full_species: list = []
 
+    i = 0
     for abc, sym in zip(frac, species):
+        sym_frac: list[float] = []
         for W, w in symmetry_ops:
             new = (W @ abc + w) % 1.0
-            # deduplicate: skip if already present within tolerance
-            if any(
-                np.isclose(new, f, atol=symmetry_atol, rtol=0).all() for f in full_frac
-            ):
-                continue
-            full_frac.append(new)
-            full_species.append(sym)
+            sym_frac.append(new)
 
-    return np.array(full_frac), full_species
+        # deduplicate: skip if already present within tolerance
+        # The symmetry operations may return indices that are
+        # on top of its own symmetry operations.
+        # These should be removed.
+        # Essentially this should be outsourced into
+        # a code that can be used elsewhere.
+        sym_frac = np.array(sym_frac)
+        keep_idx = np.arange(len(sym_frac))
+        idx0, idx1 = _intersect_coords(sym_frac, sym_frac, rtol=0, atol=symmetry_atol)
+        idx1 = np.unique(idx1[idx1 > idx0])
+        keep_idx = np.delete(keep_idx, idx1)
+        del idx0, idx1
+
+        # Now we have the internal equivalent coordinates
+        sym_frac = sym_frac[keep_idx]
+        del keep_idx
+
+        # Check with the already present elements
+        if i > 0:
+            idx1 = _intersect_coords(full_frac, sym_frac, rtol=0, atol=symmetry_atol)[1]
+            keep_idx = np.arange(len(sym_frac))
+            idx1 = np.unique(idx1)
+            keep_idx = np.delete(keep_idx, idx1)
+            sym_frac = sym_frac[keep_idx]
+            del idx1, keep_idx
+
+        full_frac[i : i + len(sym_frac)] = sym_frac
+        full_species.extend([sym] * len(sym_frac))
+        i += len(sym_frac)
+
+    # Ensures we will clean the data, note the pre-allocation in the top
+    full_frac = full_frac[:i].copy()
+    return full_frac, full_species
 
 
 def _jones_str(
@@ -149,6 +187,7 @@ def _jones_str(
         t = w[row] % 1.0
         if t > symmetry_atol:
             # The precision is limited to integer fractions of 24
+            # If this precision is too weak, we should bump it up
             frac = Fraction(t).limit_denominator(24)
             expr += f"+{frac.numerator}/{frac.denominator}"
         parts.append(expr if expr else "0")
