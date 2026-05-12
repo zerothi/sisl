@@ -630,6 +630,8 @@ class BaseSile:
     @property
     def base_file(self):
         """File of the current `Sile`"""
+        if isinstance(self._file, ZipPath):
+            return basename(self._file.root.filename)
         return basename(self._file)
 
     def base_directory(self, relative_to="."):

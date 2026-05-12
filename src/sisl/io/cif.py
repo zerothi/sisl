@@ -409,11 +409,13 @@ class cifSile(Sile):
             if "_atom_site_type_symbol" in atom_loop:
                 raw_species = atom_loop["_atom_site_type_symbol"]
             else:
-                # fall back to label, strip trailing digits/signs
-                raw_species = [
-                    re.sub(r"[^A-Za-z].*$", "", s)
-                    for s in atom_loop["_atom_site_label"]
-                ]
+                raw_species = atom_loop["_atom_site_label"]
+
+            # strip trailing digits/signs
+            # Some programs also put this into the _type_symbol (gosh)!
+            raw_species = [
+                re.sub(r"[^A-Za-z].*$", "", s) for s in atom_loop["_atom_site_label"]
+            ]
 
             atoms = Atoms([Atom(s) for s in raw_species])
 
