@@ -1,0 +1,6 @@
+implemented a tensor-IPR method
+
+It retains the complex part as it is not
+guaranteed to be a real quantity. Note, depending
+on the size of the states, this can yield a really
+big matrix.

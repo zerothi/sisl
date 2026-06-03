@@ -572,6 +572,46 @@ state coefficients
         # abs2 is already having the exponent 2
         return (state_abs2**q).sum(-1) / state_abs2.sum(-1) ** q
 
+    def ipr_tensor(self, tensor: str = "abcd") -> np.ndarray:
+        r"""Calculate the full tensor IPR quantity.
+
+        This can be written as:
+
+        .. math::
+
+           I^T_{\alpha\beta\gamma\delta} \propto
+           \sum_i \psi_{\alpha,i}^* \psi_{\beta,i}^* \psi_{\gamma,i} \psi_{\delta,i}
+
+        Parameters
+        ----------
+        tensor:
+            the tensor product.
+
+            If you want to extract the 2-index tensor product, use ``tensor=abab``
+            (or ``tensor=ab``).
+        """
+        state_c = self.state.conj()
+        state = self.state
+
+        if "i" in tensor:
+            raise ValueError(
+                f"{self.__class__.__name__}.ipr_tensor only accepts tensor descriptors "
+                "different from 'i'."
+            )
+
+        # Normalize the tensor description
+        ntensor = len(tensor)
+        if ntensor == 2:
+            tensor = tensor * 2
+            ntensor = len(tensor)
+        assert ntensor % 2 == 0, "Tensor must be divisible by 2."
+        args = [state_c] * (ntensor // 2)
+        args += [state] * (ntensor // 2)
+        final_path = "".join(sorted(set(tensor), key=lambda x: tensor.index(x)))
+        # Now sort according to old index
+        path = "i,".join(tensor) + "i->" + final_path
+        return np.einsum(path, *args, optimize=True)
+
     def normalize(self):
         r"""Return a normalized state where each state has :math:`|\psi|^2=1`
 
