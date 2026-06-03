@@ -300,6 +300,29 @@ def test_state_ipr():
     assert ipr.shape == (10,)
 
 
+def test_state_ipr_tensor():
+    state = State(ortho_matrix(10))
+    ipr = state.ipr_tensor()
+    assert ipr.shape == (10, 10, 10, 10)
+
+
+def test_state_ipr_tensor_2():
+    N = 10
+    state = State(ortho_matrix(N))
+    ipr2 = state.ipr_tensor("ab")
+    assert ipr2.shape == (N, N)
+    ipr4 = state.ipr_tensor("abab")
+    assert np.allclose(ipr2, ipr4)
+    del ipr4
+    ipr = state.ipr_tensor()
+
+    # Extract the diagonals
+    idx = np.arange(N * N)
+    idx1, idx2 = np.unravel_index(idx, shape=(N, N))
+    ipr = np.reshape(ipr[idx1, idx2, idx1, idx2], (N, N))
+    assert np.allclose(ipr2, ipr)
+
+
 def test_state_align_norm():
     state = ortho_matrix(10)
     state1 = State(state)
