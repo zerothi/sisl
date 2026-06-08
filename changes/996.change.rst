@@ -1,1 +1,0 @@
-Fix non-standard object identity test in `SparseOrbital.iter_nnz`.
