@@ -1497,7 +1497,7 @@ class SparseOrbital(_SparseGeometry):
         """
         if atoms is not None:
             orbitals = self.geometry.a2o(atoms, all=True)
-        elif not orbitals is None:
+        elif orbitals is not None:
             orbitals = _a.asarrayi(orbitals)
         if orbitals is None:
             yield from self._csr
