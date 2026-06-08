@@ -72,11 +72,11 @@ class BaseMinimize:
         # log
         log = ""
 
-        if not out is None:
+        if out is not None:
             log += f" out={str(out)}"
             self.out = Path(out)
 
-        if not norm is None:
+        if norm is not None:
             log += f" norm={str(norm)}"
             if isinstance(norm, str):
                 self.norm = (norm, 1.0)

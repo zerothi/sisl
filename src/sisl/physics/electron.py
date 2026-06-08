@@ -1762,7 +1762,7 @@ class _electron_State:
                 }
                 for key in ("gauge",):
                     val = self.info.get(key, None)
-                    if not val is None:
+                    if val is not None:
                         opt[key] = val
                 return self.parent.Sk(**opt)
 

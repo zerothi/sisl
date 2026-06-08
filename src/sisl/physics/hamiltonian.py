@@ -372,7 +372,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         for name in ("spin",):
             if name in kwargs:
                 info[name] = kwargs[name]
-        if not format is None:
+        if format is not None:
             info["format"] = format
         return EigenvalueElectron(e, self, **info)
 
@@ -413,7 +413,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         for name in ("spin",):
             if name in kwargs:
                 info[name] = kwargs[name]
-        if not format is None:
+        if format is not None:
             info["format"] = format
         # Since eigh returns the eigenvectors [:, i] we have to transpose
         return EigenstateElectron(v.T, e, self, **info)

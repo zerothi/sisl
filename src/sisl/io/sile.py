@@ -258,7 +258,7 @@ def get_sile_class(filename, *args, **kwargs):
 
     # searchable rules
     eligible_rules = []
-    if cls is None and not cls_search is None:
+    if cls is None and cls_search is not None:
         # cls has not been set, and fcls is found
         # Figure out if fcls is a valid sile, if not
         # do nothing (it may be part of the file name)
@@ -1378,7 +1378,7 @@ class Sile(Info, BaseSile):
         comment = kwargs.pop("comment", None)
         if isinstance(comment, (list, tuple)):
             self._comment = list(comment)
-        elif not comment is None:
+        elif comment is not None:
             self._comment = [comment]
         else:
             self._comment = []

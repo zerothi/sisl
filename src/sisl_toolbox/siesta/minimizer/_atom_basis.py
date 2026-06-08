@@ -337,7 +337,7 @@ class AtomBasis:
                     # a confinement potential below 1meV makes no sense
                     if V0 > 0.001:
                         line += f" E {V0*_eV2Ry:.10f}"
-                        if not ri is None:
+                        if ri is not None:
                             if ri > 0:
                                 # explicit radius, convert to Bohr
                                 ri *= _Ang2Bohr
@@ -359,9 +359,9 @@ class AtomBasis:
                     if abs(Z) > 0.005:
                         # only consider charges above 0.005 electrons
                         line += f" Q {Z:.10f}"
-                        if not yukawa is None:
+                        if yukawa is not None:
                             line += f" {yukawa/_Ang2Bohr:.10f}"
-                        if not width is None:
+                        if width is not None:
                             line += f" {width*_Ang2Bohr:.10f}"
                 else:
                     raise ValueError(f"Unknown option for n={n} l={l}: {key}")

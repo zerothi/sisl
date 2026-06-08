@@ -1890,7 +1890,7 @@ class SparseOrbital(_SparseGeometry):
         transfer_idx = _a.arangei(self.geometry.no_s).reshape(-1, self.geometry.no)
         transfer_idx += _a.arangei(self.geometry.n_s).reshape(-1, 1) * other.geometry.no
         # Remove couplings along axis
-        if not axis is None:
+        if axis is not None:
             idx = (self.geometry.lattice.sc_off[:, axis] != 0).nonzero()[0]
             # Tell the routine to delete these indices
             transfer_idx[idx, :] = full_no_s + 1

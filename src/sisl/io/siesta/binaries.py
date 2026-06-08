@@ -836,7 +836,7 @@ class hsxSileSiesta(SileBinSiesta):
 
         def get_geom_handle(xij):
             atoms = self.read_basis(geometry=geometry, **kwargs)
-            if not atoms is None:
+            if atoms is not None:
                 return Geometry(np.zeros([len(atoms), 3]), atoms)
 
             N = len(xij)

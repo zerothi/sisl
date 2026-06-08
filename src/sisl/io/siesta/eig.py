@@ -359,7 +359,7 @@ class eigSileSiesta(SileSiesta):
                         ax.scatter(ik, y[:, ib], s=s)
                     ax.set_xlabel("k-index")
                     ax.set_xlim(-0.5, len(y) + 0.5)
-                    if not E is None:
+                    if E is not None:
                         ax.set_ylim(E[0], E[1])
 
                 if E.shape[0] == 2:

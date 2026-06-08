@@ -164,7 +164,7 @@ class bandsSileSiesta(SileSiesta):
                         ax.plot(x, y[ib, :])
                     ax.set_ylabel("E-Ef [eV]")
                     ax.set_xlim(x.min(), x.max())
-                    if not E is None:
+                    if E is not None:
                         ax.set_ylim(E[0], E[1])
 
                 if b.shape[1] == 2:

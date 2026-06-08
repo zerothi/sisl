@@ -1732,15 +1732,15 @@ class stdoutSileSiesta(SileSiesta):
         if not (FOUND_SCF or FOUND_MD):
             # none of these are found
             # we request that user does not request any input
-            if (opt_iscf or (not iscf is None)) or (opt_imd or (not imd is None)):
+            if (opt_iscf or (iscf is not None)) or (opt_imd or (imd is not None)):
                 raise SileError(f"{self!s} does not contain MD/SCF charges")
 
         elif not FOUND_SCF:
-            if opt_iscf or (not iscf is None):
+            if opt_iscf or (iscf is not None):
                 raise SileError(f"{self!s} does not contain SCF charges")
 
         elif not FOUND_MD:
-            if opt_imd or (not imd is None):
+            if opt_imd or (imd is not None):
                 raise SileError(f"{self!s} does not contain MD charges")
 
         # if either are options they may hold

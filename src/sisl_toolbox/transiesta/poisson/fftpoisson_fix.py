@@ -219,7 +219,7 @@ def solve_poisson(
     # Short-hand notation
     xyz = geometry.xyz
 
-    if not device_val is None:
+    if device_val is not None:
         print(f"\nApplying device potential = {device_val}")
         idx = geometry.names["Device"]
         device = _create_shape_tree(xyz, idx)
@@ -345,7 +345,7 @@ def solve_poisson(
 
 
 def fftpoisson_fix_cli(subp=None, parser_kwargs={}):
-    is_sub = not subp is None
+    is_sub = subp is not None
 
     title = "FFT Poisson corrections for TranSiesta calculations for arbitrary number of electrodes."
     if is_sub:
@@ -572,7 +572,7 @@ def fftpoisson_fix_run(args):
         **elecs_V,
     )
 
-    if not args.plot is None:
+    if args.plot is not None:
         dat = V.average(args.plot)
         import matplotlib.pyplot as plt
 
@@ -601,7 +601,7 @@ def fftpoisson_fix_run(args):
 
     print("")
     # Write solution to the output
-    if not args.out is None:
+    if args.out is not None:
         for out in args.out:
             print(f"Writing to file: {out}...")
             V.write(out)

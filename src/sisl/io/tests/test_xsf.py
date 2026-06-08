@@ -60,7 +60,7 @@ def test_xsf_geometry(sisl_tmp):
     grid = Grid(0.2, geometry=geom)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
-    assert not grid.geometry is None
+    assert grid.geometry is not None
 
 
 def test_xsf_imaginary(sisl_tmp):
@@ -73,7 +73,7 @@ def test_xsf_imaginary(sisl_tmp):
     grid = Grid(0.2, geometry=geom, dtype=np.complex128)
     grid.grid = np.random.rand(*grid.shape) + 1j * np.random.rand(*grid.shape)
     grid.write(f)
-    assert not grid.geometry is None
+    assert grid.geometry is not None
 
 
 def test_axsf_geoms(sisl_tmp):

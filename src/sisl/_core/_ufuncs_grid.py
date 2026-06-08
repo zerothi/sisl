@@ -147,7 +147,7 @@ def sub(grid: Grid, idx: Union[int, Sequence[int]], axis: CellAxis) -> Grid:
     shift_geometry = False
     if len(idx) > 1:
         if np.allclose(np.diff(idx), 1):
-            shift_geometry = not grid.geometry is None
+            shift_geometry = grid.geometry is not None
 
     if shift_geometry:
         out = grid._copy_sub(len(idx), axis)
@@ -193,7 +193,7 @@ def append(grid: Grid, other: GridLike, axis: CellAxis) -> Grid:
     shape[axis] += other.shape[axis]
     d = grid._sc_geometry_dict()
     if "geometry" in d:
-        if not other.geometry is None:
+        if other.geometry is not None:
             d["geometry"] = d["geometry"].append(other.geometry, axis)
     else:
         d["geometry"] = other.geometry

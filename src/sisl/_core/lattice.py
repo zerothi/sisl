@@ -313,7 +313,7 @@ class Lattice(
             self._bc = _a.fulli([3, 2], getitem("Unknown"))
         old = self._bc.copy()
 
-        if not boundary is None:
+        if boundary is not None:
             if isinstance(boundary, (Integral, str, bool)):
                 try:
                     getitem(boundary)
@@ -450,9 +450,9 @@ class Lattice(
         c : int, optional
            number of supercells in the third unit-cell vector direction
         """
-        if not nsc is None:
+        if nsc is not None:
             for i in range(3):
-                if not nsc[i] is None:
+                if nsc[i] is not None:
                     self.nsc[i] = nsc[i]
         if a:
             self.nsc[0] = a
@@ -601,7 +601,7 @@ class Lattice(
         ireps = np.amax(ix, axis=0) - np.amin(ix, axis=0) + 1
 
         # Reduce the non-set axis
-        if not axes is None:
+        if axes is not None:
             axes = map(direction, listify(axes))
             for ax in (0, 1, 2):
                 if ax not in axes:
@@ -857,10 +857,10 @@ class Lattice(
         else:
             idx = (self.sc_off[:, 0] == sc_off[0]).nonzero()[0]
 
-        if not sc_off[1] is None:
+        if sc_off[1] is not None:
             idx = idx[(self.sc_off[idx, 1] == sc_off[1]).nonzero()[0]]
 
-        if not sc_off[2] is None:
+        if sc_off[2] is not None:
             idx = idx[(self.sc_off[idx, 2] == sc_off[2]).nonzero()[0]]
 
         return idx
