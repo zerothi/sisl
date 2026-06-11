@@ -231,7 +231,7 @@ def array_replace(array, *replace, **kwargs):
     others = []
 
     for idx, val in replace:
-        if not val is None:
+        if val is not None:
             ar[idx] = val
         others.append(np.asarray(idx).ravel())
 

@@ -1497,7 +1497,7 @@ class SparseOrbital(_SparseGeometry):
         """
         if atoms is not None:
             orbitals = self.geometry.a2o(atoms, all=True)
-        elif not orbitals is None:
+        elif orbitals is not None:
             orbitals = _a.asarrayi(orbitals)
         if orbitals is None:
             yield from self._csr
@@ -1890,7 +1890,7 @@ class SparseOrbital(_SparseGeometry):
         transfer_idx = _a.arangei(self.geometry.no_s).reshape(-1, self.geometry.no)
         transfer_idx += _a.arangei(self.geometry.n_s).reshape(-1, 1) * other.geometry.no
         # Remove couplings along axis
-        if not axis is None:
+        if axis is not None:
             idx = (self.geometry.lattice.sc_off[:, axis] != 0).nonzero()[0]
             # Tell the routine to delete these indices
             transfer_idx[idx, :] = full_no_s + 1

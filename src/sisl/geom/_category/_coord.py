@@ -247,11 +247,11 @@ class AtomXYZ(AtomCategory):
             # Now we are ready to build our scheme
             if value.size == 2:
                 # do it twice
-                if not value[0] is None:
+                if value[0] is not None:
                     coord_ops.append(
                         create2(is_frac, is_abs, operator.ge, sdir, value[0])
                     )
-                if not value[1] is None:
+                if value[1] is not None:
                     coord_ops.append(
                         create2(is_frac, is_abs, operator.le, sdir, value[1])
                     )

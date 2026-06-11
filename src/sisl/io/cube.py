@@ -298,7 +298,7 @@ class cubeSile(Sile):
             the imaginary part of the grid. If the geometries does not match
             an error will be raised.
         """
-        if not imag is None:
+        if imag is not None:
             if not isinstance(imag, Grid):
                 imag = Grid.read(imag)
 

@@ -484,7 +484,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 NORM = geom.orbitals[a].sum()
             return NORM
 
-        if not orbitals is None:
+        if orbitals is not None:
             raise ValueError(
                 f"{self.__class__.__name__}.norm both atom and orbital cannot be specified!"
             )
@@ -528,7 +528,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         if isinstance(orbitals, bool):
             if not orbitals:
                 orbitals = None
-        if not atoms is None and not orbitals is None:
+        if atoms is not None and orbitals is not None:
             raise ValueError(
                 "Both atoms and orbitals keyword in DOS request "
                 "cannot be specified, only one at a time."
@@ -1174,7 +1174,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         col = self._value("list_col") - 1
 
         # get subset orbitals
-        if not orbitals is None:
+        if orbitals is not None:
             orbitals = geom._sanitize_orbs(orbitals)
 
             # select values for all supercells
@@ -1222,7 +1222,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             for i in (0, 1, 2):
                 if nsc[i] == 1:
                     isc[i] = 0
-                if not isc[i] is None:
+                if isc[i] is not None:
                     nsc[i] = 1
 
             # Small function for creating the supercells allowed
@@ -2777,7 +2777,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec : str or int
            the electrode to request information from
         """
-        if not elec is None:
+        if elec is not None:
             elec = self._elec(elec)
 
         # Create a StringIO object to retain the information
@@ -3234,7 +3234,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
-                if not value is None:
+                if value is not None:
                     # we are storing the spectral DOS
                     e = ns._tbt._elec(value)
                     if e not in ns._tbt.elecs:

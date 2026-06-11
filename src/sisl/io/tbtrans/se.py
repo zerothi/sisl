@@ -195,7 +195,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         elec : str or int
            the electrode to request information from
         """
-        if not elec is None:
+        if elec is not None:
             elec = self._elec(elec)
 
         # Create a StringIO object to retain the information

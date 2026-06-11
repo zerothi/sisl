@@ -113,7 +113,7 @@ class AtomNeighbors(AtomCategory):
             return NullCategory()
 
         # Check if we have a condition
-        if not self._in is None:
+        if self._in is not None:
             # Get category of neighbors
             cat = self._in.categorize(geometry, geometry.asc2uc(idx))
             idx = [i for i, c in zip(idx, cat) if not isinstance(c, NullCategory)]

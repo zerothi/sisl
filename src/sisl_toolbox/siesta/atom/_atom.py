@@ -640,13 +640,13 @@ class AtomInput:
                 orb = self.atom.orbitals[il]
 
                 r, w = get_xy(f"AEWFNR{il}")
-                if not r is None:
+                if r is not None:
                     p = ax.plot(r, w, label=f"AE {_spdfgh[il]}")
                     color = p[0].get_color()
                     ax.axvline(orb.R * _Ang2Bohr, color=color, alpha=0.5)
 
                 r, w = get_xy(f"PSWFNR{il}")
-                if not r is None:
+                if r is not None:
                     ax.plot(r, w, "--", label=f"PS {_spdfgh[il]}")
 
             ax.set_xlim(0, atom_r * 5)
@@ -662,7 +662,7 @@ class AtomInput:
             ae_r, ae_cc = get_xy("AECHARGE", [0, 0, 0, 1])
             _, ae_vc = get_xy("AECHARGE", [0, 1, 1, -1])
 
-            if not ae_cc is None:
+            if ae_cc is not None:
                 p = ax.plot(ae_r, ae_cc, label=f"AE core")
                 color = p[0].get_color()
                 if self.opts.get("cc", False):
@@ -672,7 +672,7 @@ class AtomInput:
             ps_r, ps_cc = get_xy("PSCHARGE", [0, 0, 0, 1])
             _, ps_vc = get_xy("PSCHARGE", [0, 1, 1])
 
-            if not ps_r is None:
+            if ps_r is not None:
                 ax.plot(ps_r, ps_cc, "--", label=f"PS core")
                 ax.plot(ps_r, ps_vc, ":", label=f"PS valence")
 
@@ -730,7 +730,7 @@ class AtomInput:
                 if emark.ndim == 1:
                     emark = emark.reshape(1, -1)
                 emark = emark[:, 0]
-                if not e is None:
+                if e is not None:
                     p = ax.plot(e, log, label=f"AE {_spdfgh[il]}")
 
                     idx_mark = np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1)).argmin(
@@ -744,7 +744,7 @@ class AtomInput:
                 if emark.ndim == 1:
                     emark = emark.reshape(1, -1)
                 emark = emark[:, 0]
-                if not e is None:
+                if e is not None:
                     p = ax.plot(e, log, ":", label=f"PS {_spdfgh[il]}")
 
                     idx_mark = np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1)).argmin(
@@ -764,7 +764,7 @@ class AtomInput:
                 orb = self.atom.orbitals[il]
 
                 r, V = get_xy(f"PSPOTR{il}")
-                if not r is None:
+                if r is not None:
                     p = ax.plot(r, V, label=f"PS {_spdfgh[il]}")
                     color = p[0].get_color()
                     ax.axvline(orb.R * _Ang2Bohr, color=color, alpha=0.5)
@@ -806,7 +806,7 @@ class AtomInput:
 def atom_plot_cli(subp=None, parser_kwargs={}):
     """Run plotting command for the output of atom"""
 
-    is_sub = not subp is None
+    is_sub = subp is not None
 
     title = "Plotting facility for atom output (run in the atom output directory)"
     if is_sub:

@@ -46,16 +46,16 @@ def test_geometry(sisl_tmp):
     grid.write(f)
     read = grid.read(f)
     assert np.allclose(grid.grid, read.grid)
-    assert not grid.geometry is None
-    assert not read.geometry is None
+    assert grid.geometry is not None
+    assert read.geometry is not None
     assert grid.geometry == read.geometry
 
     # write in another unit
     grid.write(f, unit="nm")
     read = grid.read(f)
     assert np.allclose(grid.grid, read.grid)
-    assert not grid.geometry is None
-    assert not read.geometry is None
+    assert grid.geometry is not None
+    assert read.geometry is not None
     assert grid.geometry == read.geometry
 
 
@@ -75,8 +75,8 @@ def test_imaginary(sisl_tmp):
     read_i = grid.read(fi)
     read.grid = read.grid + 1j * read_i.grid
     assert np.allclose(grid.grid, read.grid)
-    assert not grid.geometry is None
-    assert not read.geometry is None
+    assert grid.geometry is not None
+    assert read.geometry is not None
     assert grid.geometry == read.geometry
 
     read = grid.read(fr, imag=fi)

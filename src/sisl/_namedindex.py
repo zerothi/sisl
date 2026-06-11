@@ -35,7 +35,7 @@ class NamedIndex:
 
         if isinstance(name, str):
             self.add_name(name, index)
-        elif not name is None:
+        elif name is not None:
             for n, i in zip(name, index):
                 self.add_name(n, i)
 

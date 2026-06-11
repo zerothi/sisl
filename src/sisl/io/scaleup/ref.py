@@ -162,7 +162,7 @@ class restartSileScaleUp(refSileScaleUp):
             ref = None
 
         restart = super().read_geometry()
-        if not ref is None:
+        if ref is not None:
             restart.lattice = Lattice(
                 np.dot(ref.lattice.cell, restart.lattice.cell.T), nsc=restart.nsc
             )

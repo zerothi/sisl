@@ -371,7 +371,7 @@ class NotCategory(GenericCategory):
 
 def _composite_name(sep):
     def getter(self):
-        if not self._name is None:
+        if self._name is not None:
             return self._name
 
         # Name is unset, we simply return the other parts

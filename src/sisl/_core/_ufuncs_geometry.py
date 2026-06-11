@@ -395,7 +395,7 @@ def sort(
 
         def __init__(geometry, idx=None, sort=False):
             geometry._idx = []
-            if not idx is None:
+            if idx is not None:
                 geometry.append(idx, sort)
 
         def append(geometry, idx, sort=False):

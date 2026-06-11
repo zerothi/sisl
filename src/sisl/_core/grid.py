@@ -402,7 +402,7 @@ class Grid(
         """Internal routine for copying the Lattice and Geometry"""
         d = dict()
         d["lattice"] = self.lattice.copy()
-        if not self.geometry is None:
+        if self.geometry is not None:
             d["geometry"] = self.geometry.copy()
         return d
 
@@ -429,7 +429,7 @@ class Grid(
         grid = self.__class__(shape, dtype=self.dtype, **self._sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_lattice(cell)
-        if scale_geometry and not self.geometry is None:
+        if scale_geometry and self.geometry is not None:
             geom = self.geometry.copy()
             fxyz = geom.fxyz.copy()
             geom.set_lattice(grid.lattice)
@@ -847,7 +847,7 @@ class Grid(
             s += f"commensurate: [{l[0]} {l[1]} {l[2]}]"
         else:
             s += "{}".format(str(self.lattice).replace("\n", "\n "))
-        if not self.geometry is None:
+        if self.geometry is not None:
             s += ",\n {}".format(str(self.geometry).replace("\n", "\n "))
         return f"{s}\n}}"
 

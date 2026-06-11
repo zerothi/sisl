@@ -1,0 +1,3 @@
+Refactor non-standard object identity tests.
+
+Refactors `not object is None` to `object is not None` to improve readability and adhere to the standard.

@@ -392,7 +392,7 @@ class omxSileOpenMX(SileOpenMX):
         cell = np.empty([3, 3], np.float64)
 
         lc = self.get("Atoms.UnitVectors")
-        if not lc is None:
+        if lc is not None:
             for i in range(3):
                 cell[i, :] = [float(k) for k in lc[i].split()[:3]]
         else:

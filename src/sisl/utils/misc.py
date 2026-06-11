@@ -337,9 +337,9 @@ def direction(d: Union[int, str], abc=None, xyz=None) -> Union[int, Any]:
     # We take it as a string
     d = d.lower().strip()
 
-    if not abc is None and d in "abc012":
+    if abc is not None and d in "abc012":
         return abc["a0b1c2".index(d) // 2]
-    elif not xyz is None and d in "xyz012":
+    elif xyz is not None and d in "xyz012":
         return xyz["x0y1z2".index(d) // 2]
     else:
         if d in ("x", "y", "z", "a", "b", "c", "0", "1", "2"):
@@ -456,7 +456,7 @@ def allow_kwargs(*args):
             elif p.kind == p.VAR_KEYWORD:
                 kwargs_name = name
 
-        if not kwargs_name is None:
+        if kwargs_name is not None:
             return func
 
         # First we figure out which arguments are already in the lists
