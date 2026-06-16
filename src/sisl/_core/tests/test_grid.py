@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 from sisl import (
     Atom,
@@ -398,7 +398,7 @@ class TestGrid:
         g = setup.g.copy()
         g.lattice.set_boundary_condition(g.PERIODIC)  # periodic boundary conditions
         n = np.prod(g.shape)
-        A = csr_matrix((n, n))
+        A = csr_array((n, n))
         b = np.zeros(A.shape[0])
 
         lb = g.mgrid(slice(0, 1), slice(0, g.shape[1]), slice(0, g.shape[2]))
@@ -425,7 +425,7 @@ class TestGrid:
         with pytest.warns(SislWarning, match=r"is having image connections"):
             g.lattice.set_boundary_condition(bc)
         n = np.prod(g.shape)
-        A = csr_matrix((n, n))
+        A = csr_array((n, n))
         b = np.zeros(A.shape[0])
         g.pyamg_boundary_condition(A, b)
 

@@ -143,7 +143,7 @@ class EnergyDensityMatrix(_densitymatrix):
            the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
            Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
@@ -160,7 +160,7 @@ class EnergyDensityMatrix(_densitymatrix):
 
         Returns
         -------
-        matrix : numpy.ndarray or scipy.sparse.*_matrix
+        matrix : numpy.ndarray or scipy.sparse.*_array
             the energy density matrix at :math:`\mathbf k`. The returned object depends on `format`.
         """
         pass
@@ -208,7 +208,7 @@ class EnergyDensityMatrix(_densitymatrix):
            the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
@@ -271,7 +271,7 @@ class EnergyDensityMatrix(_densitymatrix):
            the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
