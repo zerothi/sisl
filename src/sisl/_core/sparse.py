@@ -685,6 +685,48 @@ column indices of the sparse elements
             return setdiff1d(edges, exclude, assume_unique=True)
         return edges
 
+    def _delete_stored(self, idx: np.ndarray[int], mask: np.ndarray[bool]) -> int:
+        """Delete the stored elements selected by `mask` (in-place action)
+
+        `mask` is a boolean array over the stored elements in row order, i.e.
+        aligned with ``array_arange(self.ptr[:-1], n=self.ncol)``. The masked
+        entries are removed from ``col``/``_D`` and ``ncol``/``ptr``/``_nnz``
+        are updated to reflect the deletion.
+
+        Note that this does *not* renumber columns nor change the ``shape``;
+        callers requiring that must do it themselves.
+
+        Parameters
+        ----------
+        idx :
+           row-ordered index of the stored elements to delete
+        mask :
+           row-ordered boolean mask of the stored elements to delete
+
+        Returns
+        -------
+        int
+           the number of deleted elements
+        """
+        ptr = self.ptr
+        ncol = self.ncol
+
+        # Number of deleted elements per row
+        ndel = _a.fromiteri(map(count_nonzero, split(mask, _a.cumsumi(ncol[:-1]))))
+        # Backconvert the mask to the deleted indices in col/_D
+        idx = idx[mask]
+
+        # Reduce the column indices and the data in one pass
+        self.col = delete(self.col, idx)
+        self._D = delete(self._D, idx, axis=0)
+
+        # Correct number of elements per row, the pointers and the nnz count
+        ncol[:] -= ndel
+        ptr[1:] -= _a.cumsumi(ndel)
+        self._nnz = int(ncol.sum())
+
+        return len(idx)
+
     def delete_columns(self, cols: SeqOrScalarInt, keep_shape: bool = False):
         """Delete all columns in `columns` (in-place action)
 
@@ -712,14 +754,9 @@ column indices of the sparse elements
         # Get indices of deleted columns
         idx = array_arange(ptr[:-1], n=ncol)
         # Convert to boolean array where we have columns to be deleted
-        lidx = isin(col[idx], cols)
-        # Count number of deleted entries per row
-        ndel = _a.fromiteri(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
-        # Backconvert lidx to deleted indices
-        lidx = idx[lidx]
-        del idx
+        mask = isin(col[idx], cols)
 
-        if len(lidx) == 0:
+        if not mask.any():
             # Simply update the shape and return
             # We have nothing to delete!
             if not keep_shape:
@@ -728,14 +765,9 @@ column indices of the sparse elements
                 self._shape = tuple(shape)
             return
 
-        # Reduce the column indices and the data
-        self.col = delete(self.col, lidx)
-        self._D = delete(self._D, lidx, axis=0)
-        del lidx
-
-        # Update pointer
-        #  col
-        col = self.col
+        # Reduce the column indices and the data, updating ncol/ptr/nnz
+        self._delete_stored(idx, mask)
+        del mask
 
         # Figure out if it is necessary to update columns
         # This is only necessary when the deleted columns
@@ -745,11 +777,9 @@ column indices of the sparse elements
             # Check that we really do have to update
             update_col = np_any(cols < self.shape[1] - n_cols)
 
-        # Correct number of elements per column, and the pointers
-        ncol[:] -= ndel
-        ptr[1:] -= _a.cumsumi(ndel)
-
         if update_col:
+            col = self.col
+
             # Create a count array to subtract
             count = _a.zerosi(self.shape[1])
             count[cols] = 1
@@ -759,9 +789,6 @@ column indices of the sparse elements
             idx = array_arange(ptr[:-1], n=ncol)
             col[idx] -= count[col[idx]]
             del idx
-
-        # Update number of non-zeroes
-        self._nnz = int(ncol.sum())
 
         if not keep_shape:
             shape = list(self.shape)
@@ -782,27 +809,13 @@ column indices of the sparse elements
         # Get indices of columns
         idx = array_arange(ptr[:-1], n=ncol)
         # Convert to boolean array where we have columns to be deleted
-        lidx = invalid_index(col[idx], nc)
-        # Count number of deleted entries per row
-        ndel = _a.fromiteri(map(count_nonzero, split(lidx, _a.cumsumi(ncol[:-1]))))
-        # Backconvert lidx to deleted indices
-        lidx = idx[lidx]
-        del idx
+        mask = invalid_index(col[idx], nc)
 
-        # Reduce column indices and data
-        self.col = delete(self.col, lidx)
-        self._D = delete(self._D, lidx, axis=0)
-        del lidx
-
-        # Update number of entries per row, and pointers
-        ncol[:] -= ndel
-        ptr[1:] -= _a.cumsumi(ndel)
-
-        # Update number of non-zeroes
-        self._nnz = int(ncol.sum())
+        # Reduce column indices and data, updating ncol/ptr/nnz
+        self._delete_stored(idx, mask)
 
         # We are *only* deleting columns, so if it is finalized,
-        # it will still be
+        # it will still be finalized.
 
     def translate_columns(
         self,
@@ -1493,7 +1506,6 @@ column indices of the sparse elements
 
         ptr = self.ptr
         ncol = self.ncol
-        col = self.col
         D = self._D
 
         # Get short-hand
@@ -1503,24 +1515,12 @@ column indices of the sparse elements
         # Indices of all stored elements (in row order)
         idx = array_arange(ptr[:-1], n=ncol)
         # Mask of elements that are zero (all dimensions <= atol)
-        zero = nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2
-        if not zero.any():
+        mask = nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2
+        if not mask.any():
             return
 
-        # Number of removed elements per row (same idiom as _clean_columns)
-        ndel = _a.fromiteri(map(count_nonzero, split(zero, _a.cumsumi(ncol[:-1]))))
-
-        # Backconvert to deleted indices in the col/_D arrays and remove in one pass
-        idx = idx[zero]
-        self.col = delete(self.col, idx)
-        self._D = delete(self._D, idx, axis=0)
-
-        # Update number of entries per row, and pointers
-        ncol[:] -= ndel
-        ptr[1:] -= _a.cumsumi(ndel)
-
-        # Update number of non-zeroes
-        self._nnz = int(ncol.sum())
+        # Reduce the stored elements, updating ncol/ptr/nnz
+        self._delete_stored(idx, mask)
         # The finalized state does not change because
         # the element deletions are direct, and no re-ordering is done.
 
