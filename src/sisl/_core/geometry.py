@@ -2804,20 +2804,15 @@ class Geometry(
             shapes = [shapes]
         nshapes = len(shapes)
 
-        ret = [[np.empty([0], np.int32)] * nshapes]
         i = 0
         if ret_xyz:
-            ixyz = i + 1
             i += 1
-            ret.append([np.empty([0, 3], np.float64)] * nshapes)
+            ixyz = i
         if ret_rij:
-            irij = i + 1
             i += 1
-            ret.append([np.empty([0], np.float64)] * nshapes)
+            irij = i
         if ret_isc:
-            iisc = i + 1
             i += 1
-            ret.append([np.empty([0, 3], np.int32)] * nshapes)
 
         # number of special returns
         n_ret = i
@@ -2825,6 +2820,20 @@ class Geometry(
 
         def isc_tile(isc, n):
             return tile(isc.reshape(1, -1), (n, 1))
+
+        # Accumulate each supercell's contributions in per-shape lists and do a
+        # single concatenation at the end. Growing the arrays with `concatenate`
+        # inside the loop copies the entire accumulated result every iteration,
+        # i.e. O(n_s**2) in copied elements; collecting + one concatenation is
+        # O(n_s). Each shape is seeded with an empty array so an untouched shape
+        # keeps the exact dtype/shape of the previous implementation.
+        acc_idx = [[np.empty([0], np.int32)] for _ in range(nshapes)]
+        if ret_xyz:
+            acc_xyz = [[np.empty([0, 3], np.float64)] for _ in range(nshapes)]
+        if ret_rij:
+            acc_rij = [[np.empty([0], np.float64)] for _ in range(nshapes)]
+        if ret_isc:
+            acc_isc = [[np.empty([0, 3], np.int32)] for _ in range(nshapes)]
 
         for s in range(self.n_s):
             na = self.na * s
@@ -2846,31 +2855,32 @@ class Geometry(
             if isinstance(sret[0], list):
                 # we have a list of arrays (nshapes > 1)
                 for i, x in enumerate(sret[0]):
-                    ret[0][i] = concatenate((ret[0][i], x + na), axis=0)
+                    acc_idx[i].append(x + na)
                     if ret_xyz:
-                        ret[ixyz][i] = concatenate(
-                            (ret[ixyz][i], sret[ixyz][i]), axis=0
-                        )
+                        acc_xyz[i].append(sret[ixyz][i])
                     if ret_rij:
-                        ret[irij][i] = concatenate(
-                            (ret[irij][i], sret[irij][i]), axis=0
-                        )
+                        acc_rij[i].append(sret[irij][i])
                     if ret_isc:
-                        ret[iisc][i] = concatenate(
-                            (ret[iisc][i], isc_tile(isc, len(x))), axis=0
-                        )
+                        acc_isc[i].append(isc_tile(isc, len(x)))
             elif len(sret[0]) > 0:
                 # We can add it to the list (nshapes == 1)
                 # We add the atomic offset for the supercell index
-                ret[0][0] = concatenate((ret[0][0], sret[0] + na), axis=0)
+                acc_idx[0].append(sret[0] + na)
                 if ret_xyz:
-                    ret[ixyz][0] = concatenate((ret[ixyz][0], sret[ixyz]), axis=0)
+                    acc_xyz[0].append(sret[ixyz])
                 if ret_rij:
-                    ret[irij][0] = concatenate((ret[irij][0], sret[irij]), axis=0)
+                    acc_rij[0].append(sret[irij])
                 if ret_isc:
-                    ret[iisc][0] = concatenate(
-                        (ret[iisc][0], isc_tile(isc, len(sret[0]))), axis=0
-                    )
+                    acc_isc[0].append(isc_tile(isc, len(sret[0])))
+
+        # Build the structured return, one concatenation per shape.
+        ret = [[concatenate(a, axis=0) for a in acc_idx]]
+        if ret_xyz:
+            ret.append([concatenate(a, axis=0) for a in acc_xyz])
+        if ret_rij:
+            ret.append([concatenate(a, axis=0) for a in acc_rij])
+        if ret_isc:
+            ret.append([concatenate(a, axis=0) for a in acc_isc])
 
         if nshapes == 1:
             if n_ret == 0:
@@ -2953,20 +2963,15 @@ class Geometry(
         elif not isndarray(xyz_ia):
             xyz_ia = _a.asarrayd(xyz_ia)
 
-        ret = [[np.empty([0], np.int32)] * nR]
         i = 0
         if ret_xyz:
-            ixyz = i + 1
             i += 1
-            ret.append([np.empty([0, 3], np.float64)] * nR)
+            ixyz = i
         if ret_rij:
-            irij = i + 1
             i += 1
-            ret.append([np.empty([0], np.float64)] * nR)
+            irij = i
         if ret_isc:
-            iisc = i + 1
             i += 1
-            ret.append([np.empty([0, 3], np.int32)] * nR)
 
         # number of special returns
         n_ret = i
@@ -2974,6 +2979,20 @@ class Geometry(
 
         def isc_tile(isc, n):
             return tile(isc.reshape(1, -1), (n, 1))
+
+        # Accumulate each supercell's contributions in per-shell lists and do a
+        # single concatenation at the end. Growing the arrays with `concatenate`
+        # inside the loop copies the entire accumulated result every iteration,
+        # i.e. O(n_s**2) in copied elements; collecting + one concatenation is
+        # O(n_s). Each shell is seeded with an empty array so an untouched shell
+        # keeps the exact dtype/shape of the previous implementation.
+        acc_idx = [[np.empty([0], np.int32)] for _ in range(nR)]
+        if ret_xyz:
+            acc_xyz = [[np.empty([0, 3], np.float64)] for _ in range(nR)]
+        if ret_rij:
+            acc_rij = [[np.empty([0], np.float64)] for _ in range(nR)]
+        if ret_isc:
+            acc_isc = [[np.empty([0, 3], np.int32)] for _ in range(nR)]
 
         for s in range(self.n_s):
             na = self.na * s
@@ -2996,31 +3015,32 @@ class Geometry(
             if isinstance(sret[0], list):
                 # we have a list of arrays (len(R) > 1)
                 for i, x in enumerate(sret[0]):
-                    ret[0][i] = concatenate((ret[0][i], x + na), axis=0)
+                    acc_idx[i].append(x + na)
                     if ret_xyz:
-                        ret[ixyz][i] = concatenate(
-                            (ret[ixyz][i], sret[ixyz][i]), axis=0
-                        )
+                        acc_xyz[i].append(sret[ixyz][i])
                     if ret_rij:
-                        ret[irij][i] = concatenate(
-                            (ret[irij][i], sret[irij][i]), axis=0
-                        )
+                        acc_rij[i].append(sret[irij][i])
                     if ret_isc:
-                        ret[iisc][i] = concatenate(
-                            (ret[iisc][i], isc_tile(isc, len(x))), axis=0
-                        )
+                        acc_isc[i].append(isc_tile(isc, len(x)))
             elif len(sret[0]) > 0:
                 # We can add it to the list (len(R) == 1)
                 # We add the atomic offset for the supercell index
-                ret[0][0] = concatenate((ret[0][0], sret[0] + na), axis=0)
+                acc_idx[0].append(sret[0] + na)
                 if ret_xyz:
-                    ret[ixyz][0] = concatenate((ret[ixyz][0], sret[ixyz]), axis=0)
+                    acc_xyz[0].append(sret[ixyz])
                 if ret_rij:
-                    ret[irij][0] = concatenate((ret[irij][0], sret[irij]), axis=0)
+                    acc_rij[0].append(sret[irij])
                 if ret_isc:
-                    ret[iisc][0] = concatenate(
-                        (ret[iisc][0], isc_tile(isc, len(sret[0]))), axis=0
-                    )
+                    acc_isc[0].append(isc_tile(isc, len(sret[0])))
+
+        # Build the structured return, one concatenation per shell.
+        ret = [[concatenate(a, axis=0) for a in acc_idx]]
+        if ret_xyz:
+            ret.append([concatenate(a, axis=0) for a in acc_xyz])
+        if ret_rij:
+            ret.append([concatenate(a, axis=0) for a in acc_rij])
+        if ret_isc:
+            ret.append([concatenate(a, axis=0) for a in acc_isc])
 
         if nR == 1:
             if n_ret == 0:
