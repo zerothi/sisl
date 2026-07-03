@@ -1343,7 +1343,6 @@ class SparseAtom(_SparseGeometry):
         structure is completed.
         """
         geom = self.geometry
-        Rij = geom.Rij
 
         # Pointers
         ncol = self._csr.ncol
@@ -1360,9 +1359,12 @@ class SparseAtom(_SparseGeometry):
         R._csr._nnz = self._csr.nnz
         R._csr._D = np.zeros([self._csr._D.shape[0], 3], dtype=dtype)
         R._csr._finalized = self.finalized
-        for ia in range(self.shape[0]):
-            sl = slice(ptr[ia], ptr[ia] + ncol[ia])
-            R._csr._D[sl, :] = Rij(ia, col[sl])
+
+        # Vectorize over all stored elements in one call.
+        # `Rij` returns element-wise vectors for equal-length array inputs.
+        idx = array_arange(ptr[:-1], n=ncol)
+        rows = repeat(_a.arangei(self.shape[0]), ncol)
+        R._csr._D[idx, :] = geom.Rij(rows, col[idx])
 
         return R
 
@@ -1799,7 +1801,6 @@ class SparseOrbital(_SparseGeometry):
         elif what in ("orbital", "orb"):
             # We create an *exact* copy of the Rij
             R = SparseOrbital(geom, 3, dtype, nnzpr=1)
-            Rij = geom.oRij
 
             # Re-create the sparse matrix data
             R._csr.ptr = ptr.copy()
@@ -1809,9 +1810,11 @@ class SparseOrbital(_SparseGeometry):
             R._csr._D = np.zeros([self._csr._D.shape[0], 3], dtype=dtype)
             R._csr._finalized = self.finalized
 
-            for io in range(self.shape[0]):
-                sl = slice(ptr[io], ptr[io] + ncol[io])
-                R._csr._D[sl, :] = Rij(io, col[sl])
+            # Vectorize over all stored elements in one call.
+            # `oRij` returns element-wise vectors for equal-length array inputs.
+            idx = array_arange(ptr[:-1], n=ncol)
+            rows = repeat(_a.arangei(self.shape[0]), ncol)
+            R._csr._D[idx, :] = geom.oRij(rows, col[idx])
 
         else:
             raise ValueError(

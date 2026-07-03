@@ -1499,24 +1499,30 @@ column indices of the sparse elements
         # Get short-hand
         nsum = np.sum
         nabs = np.abs
-        arangei = _a.arangei
 
-        # Fast check to see for return (skips loop)
+        # Indices of all stored elements (in row order)
         idx = array_arange(ptr[:-1], n=ncol)
-        if (nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2).nonzero()[0].sum() == 0:
+        # Mask of elements that are zero (all dimensions <= atol)
+        zero = nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2
+        if not zero.any():
             return
 
-        for r in range(self.shape[0]):
-            # Create short-hand slice
-            idx = arangei(ptr[r], ptr[r] + ncol[r])
+        # Number of removed elements per row (same idiom as _clean_columns)
+        ndel = _a.fromiteri(map(count_nonzero, split(zero, _a.cumsumi(ncol[:-1]))))
 
-            # Retrieve columns with zero values (summed over all elements)
-            C0 = (nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2).nonzero()[0]
-            if len(C0) == 0:
-                continue
+        # Backconvert to deleted indices in the col/_D arrays and remove in one pass
+        idx = idx[zero]
+        self.col = delete(self.col, idx)
+        self._D = delete(self._D, idx, axis=0)
 
-            # Remove all entries with 0 values
-            del self[r, col[idx[C0]]]
+        # Update number of entries per row, and pointers
+        ncol[:] -= ndel
+        ptr[1:] -= _a.cumsumi(ndel)
+
+        # Update number of non-zeroes
+        self._nnz = int(ncol.sum())
+        # The finalized state does not change because
+        # the element deletions are direct, and no re-ordering is done.
 
     def copy(self, dims: Optional[SeqOrScalarInt] = None, dtype=None):
         """A deepcopy of the sparse matrix
@@ -2162,11 +2168,13 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
 
         asl = arow(r)
         aidx = afindidx(ocol, acol[asl], offset)
-        asl = _a.arangei(asl.start, asl.stop)
+        # local positions map to global data indices by a simple offset,
+        # so avoid materializing a full per-row arange
+        astart = asl.start
 
         bsl = brow(r)
         bidx = bfindidx(ocol, bcol[bsl], offset)
-        bsl = _a.arangei(bsl.start, bsl.stop)
+        bstart = bsl.start
 
         # Common indices
         iover, aover, bover, iaonly, ibonly = intersect_and_diff_sets(aidx, bidx)
@@ -2177,15 +2185,15 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
         # overlapping indices
         if iover.size > 0:
             out._D[iover, :] = ufunc(
-                adata[asl[aover], :], bdata[bsl[bover], :], **kwargs
+                adata[astart + aover, :], bdata[bstart + bover, :], **kwargs
             )
 
         if iaonly.size > 0:
             # only a
-            out._D[aidx[iaonly]] = ufunc(adata[asl[iaonly], :], 0, **kwargs)
+            out._D[aidx[iaonly]] = ufunc(adata[astart + iaonly, :], 0, **kwargs)
         if ibonly.size > 0:
             # only b
-            out._D[bidx[ibonly]] = ufunc(0, bdata[bsl[ibonly], :], **kwargs)
+            out._D[bidx[ibonly]] = ufunc(0, bdata[bstart + ibonly, :], **kwargs)
 
     return out
 
