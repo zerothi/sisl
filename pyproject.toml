@@ -52,7 +52,7 @@ keywords = [
 # lower bound of dependencies.
 dependencies = [
     # We need npt.NDArray
-    "numpy>=1.22",
+    "numpy>=1.24",
     "scipy>=1.9",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
