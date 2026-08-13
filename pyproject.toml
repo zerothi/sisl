@@ -53,11 +53,11 @@ keywords = [
 dependencies = [
     # We need npt.NDArray
     "numpy>=1.22",
-    "scipy>=1.8",
+    "scipy>=1.9",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
     # xarray fixes get_loc in 0.21
-    "xarray>=0.21",
+    "xarray>=2022",
 ]
 
 authors = [
