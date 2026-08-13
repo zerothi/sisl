@@ -17,6 +17,7 @@ docs/tutorials/**/*.{cube,xyz,fdf}
 src/sisl/**/*.html
 src/sisl/_version.py
 src/sisl/_debug_info.py
+CLAUDE.local.md
 
 # OS generated files
 .DS_Store

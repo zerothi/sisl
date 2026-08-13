@@ -118,12 +118,6 @@ jobs:
           CIBW_BUILD: "cp311-*"
           CIBW_ARCHS: ${{ matrix.cibw_archs }}
 
-      - name: Build wheels for CPython 3.10
-        uses: pypa/cibuildwheel@v4.2.0
-        env:
-          CIBW_BUILD: "cp310-*"
-          CIBW_ARCHS: ${{ matrix.cibw_archs }}
-
       - name: Store artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -188,7 +182,7 @@ jobs:
       - name: Python installation
         uses: actions/setup-python@v7
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Wait for testpypi to catch up
         run: |
