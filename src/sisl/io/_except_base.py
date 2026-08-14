@@ -19,6 +19,7 @@ __all__ = [
     "MissingInputSileError",
     "MissingInputSileInfo",
     "MissingInputSileWarning",
+    "MissingFortranSileError",
     "missing_input",
 ]
 
@@ -54,6 +55,7 @@ class SileInfo(SislInfo):
 InputsType = Optional[Union[list[tuple[str, str]], list[str], str]]
 
 
+@set_module("sisl.io")
 class MissingInputSileException(SislException):
     """Container for constructing error/warnings when a fdf flag is missing from the input file.
 
@@ -93,14 +95,41 @@ class MissingInputSileException(SislException):
         )
 
 
+@set_module("sisl.io")
+class MissingFortranSileError(SileError):
+    """sisl was built without the Fortran sources required by this Sile"""
+
+
+class _MissingFortranModule:
+    """Stand-in for `sisl.io.*` when built without Fortran sources
+
+    Any attribute lookup raises `MissingFortranSileError` so the failure
+    happens where the routine is used, rather than at import time.
+    """
+
+    exists = False
+
+    def __init__(self, module_name: str):
+        self.__module_name = module_name
+
+    def __getattr__(self, name):
+        raise MissingFortranSileError(
+            f"{self.__module_name}.{name} is unavailable since sisl was built without the "
+            "Fortran sources, please re-install sisl with Fortran enabled."
+        )
+
+
+@set_module("sisl.io")
 class MissingInputSileError(MissingInputSileException, SileError):
     """Issued when specific flags in the input file can be used to extract data"""
 
 
+@set_module("sisl.io")
 class MissingInputSileWarning(MissingInputSileException, SileWarning):
     """Issued when specific flags in the input file can be used to extract data"""
 
 
+@set_module("sisl.io")
 class MissingInputSileInfo(MissingInputSileException, SileInfo):
     """Issued when specific flags in the input file can be used to extract data"""
 

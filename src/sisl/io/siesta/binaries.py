@@ -10,15 +10,6 @@ from typing import Optional
 
 import numpy as np
 
-from sisl.physics.brillouinzone import MonkhorstPack
-
-try:
-    from . import _siesta
-
-    has_fortran_module = True
-except ImportError as _e:
-    has_fortran_module = False
-
 import sisl._array as _a
 from sisl import (
     Atom,
@@ -34,6 +25,7 @@ from sisl._core.sparse import _ncol_to_indptr
 from sisl._internal import set_module
 from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.physics import BrillouinZone, DensityMatrix, EnergyDensityMatrix, Hamiltonian
+from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.physics.electron import EigenstateElectron
 from sisl.physics.overlap import Overlap
 from sisl.physics.sparse import SparseOrbitalBZ
@@ -42,7 +34,7 @@ from sisl.unit.siesta import unit_convert
 from .._help import grid_reduce_indices
 from ..sile import MissingFermiLevelWarning, SileError, SileWarning, add_sile
 from ._help import *
-from .sile import SileBinSiesta
+from .sile import SileBinSiesta, _siesta
 
 __all__ = ["tshsSileSiesta", "onlysSileSiesta", "tsdeSileSiesta"]
 __all__ += ["hsxSileSiesta", "dmSileSiesta"]
@@ -2944,64 +2936,64 @@ def _type(name, obj, dic=None):
 tsgfSileSiesta = _type("tsgfSileSiesta", _gfSileSiesta)
 gridSileSiesta = _type("gridSileSiesta", _gridSileSiesta, {"grid_unit": 1.0})
 
-if has_fortran_module:
-    add_sile("TSHS", tshsSileSiesta)
-    add_sile("onlyS", onlysSileSiesta)
-    add_sile("TSDE", tsdeSileSiesta)
-    add_sile("DM", dmSileSiesta)
-    add_sile("HSX", hsxSileSiesta)
-    add_sile("TSGF", tsgfSileSiesta)
-    add_sile("WFSX", wfsxSileSiesta)
-    # These have unit-conversions
-    add_sile(
-        "RHO",
-        _type("rhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile(
-        "LDOS",
-        _type("ldosSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile(
-        "RHOINIT",
-        _type("rhoinitSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile(
-        "RHOXC",
-        _type("rhoxcSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile(
-        "DRHO",
-        _type("drhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile(
-        "BADER",
-        _type("baderSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile(
-        "IOCH",
-        _type("iorhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile(
-        "TOCH",
-        _type("totalrhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    # The following two files *require* that
-    #  STM.DensityUnits   Ele/bohr**3
-    #  which I can't check!
-    # They are however the default
-    add_sile(
-        "STS",
-        _type("stsSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile(
-        "STM.LDOS",
-        _type("stmldosSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
-    )
-    add_sile("VH", _type("hartreeSileSiesta", _gridSileSiesta, {"grid_unit": _Ry2eV}))
-    add_sile(
-        "VNA",
-        _type("neutralatomhartreeSileSiesta", _gridSileSiesta, {"grid_unit": _Ry2eV}),
-    )
-    add_sile(
-        "VT", _type("totalhartreeSileSiesta", _gridSileSiesta, {"grid_unit": _Ry2eV})
-    )
+# The Siles below require the Fortran sources.
+# They are registered regardless, so that users get a descriptive
+# error (MissingFortranSiestaError) when reading/writing them.
+add_sile("TSHS", tshsSileSiesta)
+add_sile("onlyS", onlysSileSiesta)
+add_sile("TSDE", tsdeSileSiesta)
+add_sile("DM", dmSileSiesta)
+add_sile("HSX", hsxSileSiesta)
+add_sile("TSGF", tsgfSileSiesta)
+add_sile("WFSX", wfsxSileSiesta)
+# These have unit-conversions
+add_sile(
+    "RHO",
+    _type("rhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile(
+    "LDOS",
+    _type("ldosSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile(
+    "RHOINIT",
+    _type("rhoinitSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile(
+    "RHOXC",
+    _type("rhoxcSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile(
+    "DRHO",
+    _type("drhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile(
+    "BADER",
+    _type("baderSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile(
+    "IOCH",
+    _type("iorhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile(
+    "TOCH",
+    _type("totalrhoSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+# The following two files *require* that
+#  STM.DensityUnits   Ele/bohr**3
+#  which I can't check!
+# They are however the default
+add_sile(
+    "STS",
+    _type("stsSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile(
+    "STM.LDOS",
+    _type("stmldosSileSiesta", _gridSileSiesta, {"grid_unit": 1.0 / _Bohr2Ang**3}),
+)
+add_sile("VH", _type("hartreeSileSiesta", _gridSileSiesta, {"grid_unit": _Ry2eV}))
+add_sile(
+    "VNA",
+    _type("neutralatomhartreeSileSiesta", _gridSileSiesta, {"grid_unit": _Ry2eV}),
+)
+add_sile("VT", _type("totalhartreeSileSiesta", _gridSileSiesta, {"grid_unit": _Ry2eV}))

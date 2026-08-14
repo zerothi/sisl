@@ -14,6 +14,7 @@ import pytest
 
 from sisl import Atom, Geometry, Hamiltonian, Lattice, _environ
 from sisl._help import has_module
+from sisl.io.sile import MissingFortranSileError
 
 # Here we create the necessary methods and fixtures to enabled/disable
 # tests depending on whether a sisl-files directory is present.
@@ -40,6 +41,22 @@ def pytest_collection_modifyitems(config, items):
         # GLOBAL skipping of ALL tests that don't have this fixture
         if "sisl_files" in item.fixturenames:
             item.add_marker(xfail_sisl_files)
+
+
+# Tests requiring the Fortran sources (sisl.io.siesta._siesta) cannot be
+# detected up-front (they are spread across the test-suite, and only some
+# tests in a file may use them). Instead we let them run, and convert the
+# raised error into an xfail. This makes builds without Fortran sources
+# (-DWITH_FORTRAN=OFF) report xfail, rather than a failure.
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+    if call.excinfo is not None and isinstance(
+        call.excinfo.value, MissingFortranSileError
+    ):
+        report.outcome = "skipped"
+        report.wasxfail = "requires sisl built with the Fortran sources"
 
 
 @pytest.fixture(scope="function")

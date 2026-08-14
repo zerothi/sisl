@@ -3,13 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-try:
-    from . import _siesta
-
-    has_fortran_module = True
-except ImportError:
-    has_fortran_module = False
-
 from sisl._internal import set_module
 
 from ..sile import (
@@ -30,6 +23,17 @@ __all__ = [
     "MissingFDFSiestaInfo",
     "missing_input_fdf",
 ]
+
+
+try:
+    from . import _siesta
+
+    # Notify at the module level
+    _siesta.exists = True
+except ImportError:
+    from sisl.io._except_base import _MissingFortranModule
+
+    _siesta = _MissingFortranModule("sisl.io.siesta._siesta")
 
 
 @set_module("sisl.io.siesta")
