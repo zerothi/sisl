@@ -119,7 +119,7 @@ class NeighborFinder:
     #: Memory control of the finder
     memory: tuple[str, float] = ("200MB", 1.5)
     #: Number of bins along each cell direction
-    nbins: tuple[int, int, int]
+    nbins: np.ndarray
     #: Total number of bins
     total_nbins: int
 
@@ -278,7 +278,7 @@ class NeighborFinder:
             # to the closest next odd number.
             nsc = np.ceil(bin_size / lattice_norms) // 2 * 2 + 1
             # And then set it as the number of supercells.
-            self.geometry.set_nsc(nsc.astype(int))
+            self.geometry.set_nsc(nsc.astype(np.int64))
             if self._aux_R.ndim == 1:
                 self._aux_R = np.tile(self._aux_R, self.geometry.n_s)
 
@@ -299,7 +299,7 @@ class NeighborFinder:
 
         # Get the number of bins along each cell direction.
         nbins_float = lattice_norms / bin_size
-        self.nbins = tuple(np.floor(nbins_float).astype(int))
+        self.nbins = np.floor(nbins_float).astype(np.int64)
         self.total_nbins = np.prod(self.nbins)
 
         # Get the scalar bin indices of all atoms
@@ -359,17 +359,17 @@ class NeighborFinder:
         """
         return self._counts[scalar_bin_indices.ravel()].reshape(-1, 8).sum(axis=1)
 
-    def _get_bin_indices(self, fxyz, cartesian=False, floor=True):
+    def _get_bin_indices(self, fxyz, cartesian: bool = False, floor: bool = True):
         """Gets the bin indices for a given fractional coordinate.
 
         Parameters
         -----------
         fxyz: np.ndarray of shape (N, 3)
             the fractional coordinates for which we want to get the bin indices.
-        cartesian: bool, optional
+        cartesian:
             whether the indices should be returned as cartesian.
             If `False`, scalar indices are returned.
-        floor: bool, optional
+        floor:
             whether to floor the indices or not.
 
             If asking for scalar indices (i.e. `cartesian=False`), the indices will
@@ -392,14 +392,14 @@ class NeighborFinder:
         bin_indices = bin_indices % self.nbins
 
         if floor or not cartesian:
-            bin_indices = np.floor(bin_indices).astype(int)
+            bin_indices = np.floor(bin_indices).astype(np.int64)
 
         if not cartesian:
             bin_indices = self._cartesian_to_scalar_index(bin_indices)
 
         return bin_indices
 
-    def _get_search_indices(self, fxyz, cartesian=False):
+    def _get_search_indices(self, fxyz, cartesian: bool = False):
         r"""Gets the bin indices to explore for a given fractional coordinate.
 
         Given a fractional coordinate, we will need to look for neighbors
@@ -409,7 +409,7 @@ class NeighborFinder:
         -----------
         fxyz: np.ndarray of shape (N, 3)
             the fractional coordinates for which we want to get the search indices.
-        cartesian: bool, optional
+        cartesian:
             whether the indices should be returned as cartesian.
             If `False`, scalar indices are returned.
 
@@ -433,13 +433,13 @@ class NeighborFinder:
 
         # Determine which is the neighboring cell that we need to look for
         # along each direction.
-        signs = np.ones(bin_indices.shape, dtype=int)
+        signs = np.ones(bin_indices.shape, dtype=np.int64)
         signs[(bin_indices % 1) < 0.5] = -1
 
         # Build and arrays with all the indices that we need to look for. Since
         # we have to move one bin away in each direction, we have to look for
         # neighbors along a total of 8 bins (2**3)
-        search_indices = np.tile(bin_indices.astype(int), 8).reshape(-1, 8, 3)
+        search_indices = np.tile(bin_indices.astype(np.int64), 8).reshape(-1, 8, 3)
 
         search_indices[:, 1::2, 0] += signs[:, 0].reshape(-1, 1)
         search_indices[:, [2, 3, 6, 7], 1] += signs[:, 1].reshape(-1, 1)
@@ -455,11 +455,13 @@ class NeighborFinder:
 
     def _cartesian_to_scalar_index(self, index):
         """Converts cartesian indices to scalar indices"""
-        if not np.issubdtype(index.dtype, int):
+        if not np.issubdtype(index.dtype, np.integer):
             raise ValueError(
                 "Decimal scalar indices do not make sense, please floor your cartesian indices."
             )
-        return index.dot([1, self.nbins[0], self.nbins[0] * self.nbins[1]])
+        return index.dot([1, self.nbins[0], self.nbins[0] * self.nbins[1]]).astype(
+            np.int64
+        )
 
     def _scalar_to_cartesian_index(self, index):
         """Converts cartesian indices to scalar indices"""
@@ -470,7 +472,7 @@ class NeighborFinder:
 
         third, index = np.divmod(index, self.nbins[0] * self.nbins[1])
         second, first = np.divmod(index, self.nbins[0])
-        return np.column_stack([first, second, third])
+        return np.column_stack([first, second, third]).astype(np.int64)
 
     def _correct_pairs_R_too_big(
         self,
@@ -537,7 +539,7 @@ class NeighborFinder:
         """
         unsanitized_atoms = atoms
         # Sanitize atoms
-        atoms = self.geometry._sanitize_atoms(atoms)
+        atoms = self.geometry._sanitize_atoms(atoms).astype(np.int64)
 
         # Cast R into array of appropiate shape and type.
         thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)

@@ -32,7 +32,8 @@ def test_array_fill_repeat2():
 
 
 @pytest.mark.xfail(
-    sys.platform.startswith("win"), reason="Datatype cannot be int64 on windows"
+    sys.platform.startswith("win") or sys.platform.startswith("emscripten"),
+    reason="Datatype cannot be int64 on Windows/Emscripten",
 )
 def test_get_dtype1():
     assert np.int32 == get_dtype(1)
