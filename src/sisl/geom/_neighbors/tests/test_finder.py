@@ -118,7 +118,7 @@ def test_neighfinder_setup(sphere_overlap, multiR, post_setup):
     # Check that the total number of bins is correct. If sphere_overlap is
     # True, bins are much bigger.
     nbins = (1, 1, 1) if sphere_overlap else (3, 3, 2)
-    assert finder.nbins == nbins
+    assert np.all(finder.nbins == nbins)
 
     total_bins = 1 if sphere_overlap else 18
     assert finder.total_nbins == total_bins
@@ -379,6 +379,6 @@ def test_skewed_cell(pbc):
 
     # Check that the finder took into account the skewed cell
     # by dividing space in (2, 3, 8) instead of (3, 3, 8).
-    assert neighfinder.nbins == (2, 3, 8)
+    assert np.all(neighfinder.nbins == (2, 3, 8))
     # Atoms should have one neighbor
     assert neighfinder.find_neighbors()[0].n_neighbors == 1

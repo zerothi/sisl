@@ -229,7 +229,7 @@ def test_diags_2():
     assert csr2.nnz == 10
     assert csr1.spsame(csr2)
     # TODO fix diags such that it won't affect
-    assert csr1.dtype == np.int64
+    assert csr1.dtype == np.dtype(int).type
     assert csr2.dtype == np.int16
 
 
