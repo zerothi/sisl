@@ -206,7 +206,7 @@ test = [
 [dependency-groups]
 
 sphinx = [
-    "sphinx<8",
+    "sphinx<10",
     "nbsphinx",
     "sphinx-rtd-theme",
     "sphinx-design",
