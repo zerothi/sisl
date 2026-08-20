@@ -9,7 +9,7 @@ from typing import Optional
 
 import numpy as np
 import scipy.sparse as sps
-from scipy.sparse import lil_matrix
+from scipy.sparse import lil_array
 
 import sisl._array as _a
 from sisl._core import Atom, AtomicOrbital, Atoms, Geometry, Lattice
@@ -71,7 +71,7 @@ class _realSileDFTB(SileDFTB):
         # different resulting supercells.
         # The final construction happens in the end.
         # Remember that DFTB+ only returns the lower triangle of the matrix.
-        Hsc = defaultdict(lambda: lil_matrix((no, no), dtype=np.float64))
+        Hsc = defaultdict(lambda: lil_array((no, no), dtype=np.float64))
 
         isc = [0, 0, 0]
         for ia in range(na):

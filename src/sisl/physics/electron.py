@@ -68,7 +68,7 @@ from numpy import (
     sort,
     zeros,
 )
-from scipy.sparse import csr_matrix, hstack, issparse
+from scipy.sparse import csr_array, hstack, issparse
 
 import sisl._array as _a
 from sisl import BoundaryCondition as BC
@@ -460,7 +460,7 @@ def COP(
         idx = np.arange(no)
 
         def tosize(diag, idx):
-            return csr_matrix((diag, (idx, idx)), shape=M.shape)
+            return csr_array((diag, (idx, idx)), shape=M.shape)
 
         cop = oplist(tosize(d, idx) for d in cop)
 
