@@ -158,7 +158,7 @@ ctypedef fused _type2dtype_types_st:
     uint64_t
 
 
-cdef object type2dtype(const _type2dtype_types_st v) noexcept
+cdef object type2dtype(const _type2dtype_types_st v)
 
 
 ctypedef fused _inline_sum_st:
