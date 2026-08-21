@@ -221,4 +221,9 @@ def _sparse_dense(int_sp_st[::1] ptr,
     for r in range(ncol.shape[0]):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
             for ix in range(s2):
-                dense[r, col[ind], ix] += data[ind, ix]
+                # not an in-place ``+=``: for complex fused types Cython lowers
+                # in-place operators on memoryview elements to a raw C ``+=``,
+                # which does not compile when complex numbers are represented
+                # as a struct (CYTHON_CCOMPLEX == 0, e.g. MSVC) or as
+                # std::complex (C++)
+                dense[r, col[ind], ix] = dense[r, col[ind], ix] + data[ind, ix]

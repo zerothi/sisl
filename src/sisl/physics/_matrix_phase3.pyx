@@ -15,6 +15,7 @@ from sisl._indices cimport _index_sorted
 from sisl._core._sparse import fold_csr_matrix
 
 from sisl._core._dtypes cimport (
+    cast_add,
     complexs_st,
     floatcomplexs_st,
     floats_st,
@@ -71,7 +72,6 @@ def phase3_csr(const int_sp_st[::1] ptr,
     cdef int_sp_st[::1] v_ncol = V_NCOL
     cdef int_sp_st[::1] v_col = V_COL
 
-    # This may fail, when floatcomplexs_st is complex, but phases_st is float
     cdef object dtype = type2dtype[phases_st](1)
     cdef cnp.ndarray[phases_st, mode='c'] Vx = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef cnp.ndarray[phases_st, mode='c'] Vy = np.zeros([v_col.shape[0]], dtype=dtype)
@@ -93,9 +93,9 @@ def phase3_csr(const int_sp_st[::1] ptr,
                     c = col[ind] % nr
                     s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                     d = D[ind, idx]
-                    vx[v_ptr[r] + s_idx] += <phases_st> (d * phases[ind, 0])
-                    vy[v_ptr[r] + s_idx] += <phases_st> (d * phases[ind, 1])
-                    vz[v_ptr[r] + s_idx] += <phases_st> (d * phases[ind, 2])
+                    cast_add(&vx[v_ptr[r] + s_idx], d * phases[ind, 0])
+                    cast_add(&vy[v_ptr[r] + s_idx], d * phases[ind, 1])
+                    cast_add(&vz[v_ptr[r] + s_idx], d * phases[ind, 2])
 
         else:
             for r in range(nr):
@@ -104,9 +104,9 @@ def phase3_csr(const int_sp_st[::1] ptr,
                     s = col[ind] / nr
                     s_idx = _index_sorted(v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]], c)
                     d = D[ind, idx]
-                    vx[v_ptr[r] + s_idx] += <phases_st> (d * phases[s, 0])
-                    vy[v_ptr[r] + s_idx] += <phases_st> (d * phases[s, 1])
-                    vz[v_ptr[r] + s_idx] += <phases_st> (d * phases[s, 2])
+                    cast_add(&vx[v_ptr[r] + s_idx], d * phases[s, 0])
+                    cast_add(&vy[v_ptr[r] + s_idx], d * phases[s, 1])
+                    cast_add(&vz[v_ptr[r] + s_idx], d * phases[s, 2])
 
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
@@ -141,9 +141,9 @@ def phase3_array(const int_sp_st[::1] ptr,
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] % nr
                     d = D[ind, idx]
-                    vx[r, c] += <phases_st> (d * phases[ind, 0])
-                    vy[r, c] += <phases_st> (d * phases[ind, 1])
-                    vz[r, c] += <phases_st> (d * phases[ind, 2])
+                    cast_add(&vx[r, c], d * phases[ind, 0])
+                    cast_add(&vy[r, c], d * phases[ind, 1])
+                    cast_add(&vz[r, c], d * phases[ind, 2])
 
         else:
             for r in range(nr):
@@ -151,9 +151,9 @@ def phase3_array(const int_sp_st[::1] ptr,
                     c = col[ind] % nr
                     s = col[ind] / nr
                     d = D[ind, idx]
-                    vx[r, c] += <phases_st> (d * phases[s, 0])
-                    vy[r, c] += <phases_st> (d * phases[s, 1])
-                    vz[r, c] += <phases_st> (d * phases[s, 2])
+                    cast_add(&vx[r, c], d * phases[s, 0])
+                    cast_add(&vy[r, c], d * phases[s, 1])
+                    cast_add(&vz[r, c], d * phases[s, 2])
 
     return Vx, Vy, Vz
 

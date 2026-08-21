@@ -8,7 +8,13 @@ import numpy as np
 
 cimport numpy as cnp
 
-from sisl._core._dtypes cimport complexs_st, floatcomplexs_st, int_sp_st, reals_st
+from sisl._core._dtypes cimport (
+    cast_add,
+    complexs_st,
+    floatcomplexs_st,
+    int_sp_st,
+    reals_st,
+)
 
 """
 These routines converts an array of n-values into a spin-box matrix.
@@ -43,24 +49,30 @@ M[7] == Delta[1, 1]
 """
 
 
+# NOTE: the accumulations below go through `cast_add` rather than an in-place
+# ``v[i] += M[n]``. For complex fused types Cython lowers an in-place operator on
+# a memoryview element to a raw C ``+=``, which does not compile when complex
+# numbers are represented as a struct (CYTHON_CCOMPLEX == 0, e.g. MSVC) or as
+# std::complex (C++ mode). `v` and `M` share `complexs_st` here, so `cast_add`
+# resolves to a plain addition and compiles to identical machine code.
 cdef inline void matrix_add_csr_nc(const int_sp_st[::1] v_ptr,
                                    const int_sp_st r,
                                    const int_sp_st r_idx,
                                    complexs_st[::1] v,
                                    const complexs_st *M) noexcept nogil:
-    v[v_ptr[r] + r_idx] += M[0]
-    v[v_ptr[r] + r_idx+1] += M[1]
-    v[v_ptr[r+1] + r_idx] += M[2]
-    v[v_ptr[r+1] + r_idx+1] += M[3]
+    cast_add(&v[v_ptr[r] + r_idx], M[0])
+    cast_add(&v[v_ptr[r] + r_idx+1], M[1])
+    cast_add(&v[v_ptr[r+1] + r_idx], M[2])
+    cast_add(&v[v_ptr[r+1] + r_idx+1], M[3])
 
 cdef inline void matrix_add_array_nc(const int_sp_st r,
                                      const int_sp_st c,
                                      complexs_st[:, ::1] v,
                                      const complexs_st *M) noexcept nogil:
-    v[r, c] += M[0]
-    v[r, c+1] += M[1]
-    v[r+1, c] += M[2]
-    v[r+1,c+1] += M[3]
+    cast_add(&v[r, c], M[0])
+    cast_add(&v[r, c+1], M[1])
+    cast_add(&v[r+1, c], M[2])
+    cast_add(&v[r+1,c+1], M[3])
 
 cdef inline void matrix_box_nc_real(const reals_st *data,
                                     const complexs_st phase,
@@ -104,58 +116,58 @@ cdef inline void matrix_add_csr_nambu(const int_sp_st[::1] v_ptr,
                                       complexs_st[::1] v,
                                       const complexs_st *M) noexcept nogil:
     # H e-e
-    v[v_ptr[r] + r_idx] += M[0]
-    v[v_ptr[r] + r_idx+1] += M[1]
+    cast_add(&v[v_ptr[r] + r_idx], M[0])
+    cast_add(&v[v_ptr[r] + r_idx+1], M[1])
     # Delta [e-h]
-    v[v_ptr[r] + r_idx+2] += M[4]
-    v[v_ptr[r] + r_idx+3] += M[5]
+    cast_add(&v[v_ptr[r] + r_idx+2], M[4])
+    cast_add(&v[v_ptr[r] + r_idx+3], M[5])
     # H e-e
-    v[v_ptr[r+1] + r_idx] += M[2]
-    v[v_ptr[r+1] + r_idx+1] += M[3]
+    cast_add(&v[v_ptr[r+1] + r_idx], M[2])
+    cast_add(&v[v_ptr[r+1] + r_idx+1], M[3])
     # Delta [e-h]
-    v[v_ptr[r+1] + r_idx+2] += M[6]
-    v[v_ptr[r+1] + r_idx+3] += M[7]
+    cast_add(&v[v_ptr[r+1] + r_idx+2], M[6])
+    cast_add(&v[v_ptr[r+1] + r_idx+3], M[7])
     # -Delta^* [h-e]
-    v[v_ptr[r+2] + r_idx] += M[12]
-    v[v_ptr[r+2] + r_idx+1] += M[13]
+    cast_add(&v[v_ptr[r+2] + r_idx], M[12])
+    cast_add(&v[v_ptr[r+2] + r_idx+1], M[13])
     # H h-h: -H^*
-    v[v_ptr[r+2] + r_idx+2] += M[8]
-    v[v_ptr[r+2] + r_idx+3] += M[9]
+    cast_add(&v[v_ptr[r+2] + r_idx+2], M[8])
+    cast_add(&v[v_ptr[r+2] + r_idx+3], M[9])
     # -Delta^* [h-e]
-    v[v_ptr[r+3] + r_idx] += M[14]
-    v[v_ptr[r+3] + r_idx+1] += M[15]
+    cast_add(&v[v_ptr[r+3] + r_idx], M[14])
+    cast_add(&v[v_ptr[r+3] + r_idx+1], M[15])
     # H h-h: -H^*
-    v[v_ptr[r+3] + r_idx+2] += M[10]
-    v[v_ptr[r+3] + r_idx+3] += M[11]
+    cast_add(&v[v_ptr[r+3] + r_idx+2], M[10])
+    cast_add(&v[v_ptr[r+3] + r_idx+3], M[11])
 
 cdef inline void matrix_add_array_nambu(const int_sp_st r,
                                         const int_sp_st c,
                                         complexs_st[:, ::1] v,
                                         const complexs_st *M) noexcept nogil:
     # H e-e
-    v[r, c] += M[0]
-    v[r, c+1] += M[1]
+    cast_add(&v[r, c], M[0])
+    cast_add(&v[r, c+1], M[1])
     # Delta [e-h]
-    v[r, c+2] += M[4]
-    v[r, c+3] += M[5]
+    cast_add(&v[r, c+2], M[4])
+    cast_add(&v[r, c+3], M[5])
     # H e-e
-    v[r+1, c] += M[2]
-    v[r+1,c+1] += M[3]
+    cast_add(&v[r+1, c], M[2])
+    cast_add(&v[r+1,c+1], M[3])
     # Delta [e-h]
-    v[r+1, c+2] += M[6]
-    v[r+1, c+3] += M[7]
+    cast_add(&v[r+1, c+2], M[6])
+    cast_add(&v[r+1, c+3], M[7])
     # -Delta^* [h-e]
-    v[r+2, c] += M[12]
-    v[r+2, c+1] += M[13]
+    cast_add(&v[r+2, c], M[12])
+    cast_add(&v[r+2, c+1], M[13])
     # H h-h: -H^*
-    v[r+2, c+2] += M[8]
-    v[r+2, c+3] += M[9]
+    cast_add(&v[r+2, c+2], M[8])
+    cast_add(&v[r+2, c+3], M[9])
     # -Delta^* [h-e]
-    v[r+3, c] += M[14]
-    v[r+3, c+1] += M[15]
+    cast_add(&v[r+3, c], M[14])
+    cast_add(&v[r+3, c+1], M[15])
     # H h-h: -H^*
-    v[r+3, c+2] += M[10]
-    v[r+3, c+3] += M[11]
+    cast_add(&v[r+3, c+2], M[10])
+    cast_add(&v[r+3, c+3], M[11])
 
 
 cdef inline void matrix_box_nambu_real(const reals_st *data,
