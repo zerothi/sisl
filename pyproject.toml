@@ -436,32 +436,24 @@ skip = "*-musllinux_aarch64"
 manylinux-x86_64-image = "manylinux_2_28"
 
 # Clean the build from before.
-before-build = "rm -rf {project}/build"
+before-build = "rm -rf {package}/build"
 
 # install sisl with: pip install .[test]
 test-extras = "test"
 test-command = [
-    "bash {project}/tools/build_tools/test_wheels.sh",
+    "bash {package}/tools/build_tools/test_wheels.sh",
 ]
 test-environment = "PIP_PREFER_BINARY=true"
 
 
-#[tool.cibuildwheel.windows]
-## Clean the build from before.
-#before-build = "Remove-Item -Path {project}/build -Force -Recurse"
+[tool.cibuildwheel.windows]
+before-build = [
+    "pip install delvewheel",
+    "rm -rf {package}/build",
+]
+repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
 
 [tool.cibuildwheel.windows.environment]
-# DISABLE fortran on windows
-SKBUILD_CMAKE_ARGS = "-DWITH_FORTRAN=NO"
-
-[tool.cibuildwheel.pyodide]
-# Pyodide ensures that the wheels are already repaired by auditwheel-emscripten
-repair-wheel-command = ""
-
-[tool.cibuildwheel.pyodide.config-settings]
-build-dir = "build"
-
-[tool.cibuildwheel.pyodide.environment]
 # DISABLE fortran on windows
 SKBUILD_CMAKE_ARGS = "-DWITH_FORTRAN=NO"
 
@@ -477,3 +469,15 @@ SKBUILD_CMAKE_ARGS = "-DWITH_FORTRAN=NO"
 #    "-Db_vscrt=mt",
 #    "-Dcpp_link_args=['ucrt.lib','vcruntime.lib','/nodefaultlib:libucrt.lib','/nodefaultlib:libvcruntime.lib']",
 #]
+
+
+[tool.cibuildwheel.pyodide]
+# Pyodide ensures that the wheels are already repaired by auditwheel-emscripten
+repair-wheel-command = ""
+
+[tool.cibuildwheel.pyodide.config-settings]
+build-dir = "build"
+
+[tool.cibuildwheel.pyodide.environment]
+# DISABLE fortran on windows
+SKBUILD_CMAKE_ARGS = "-DWITH_FORTRAN=NO"
