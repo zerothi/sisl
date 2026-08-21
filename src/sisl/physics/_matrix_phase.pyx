@@ -15,6 +15,7 @@ from sisl._indices cimport _index_sorted
 from sisl._core._sparse import fold_csr_matrix, fold_csr_matrix_diag
 
 from sisl._core._dtypes cimport (
+    cast_add,
     complexs_st,
     floatcomplexs_st,
     floats_st,
@@ -92,7 +93,6 @@ def phase_csr(const int_sp_st[::1] ptr,
     cdef int_sp_st[::1] v_col = V_COL
     cdef int_sp_st[::1] tmp
 
-    # This may fail, when floatcomplexs_st is complex, but phases_st is float
     cdef object dtype = type2dtype[phases_st](1)
     cdef cnp.ndarray[phases_st, mode='c'] V = np.zeros([v_col.shape[0]], dtype=dtype)
     cdef phases_st[::1] v = V
@@ -109,7 +109,7 @@ def phase_csr(const int_sp_st[::1] ptr,
 
                     tmp = v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]]
                     s_idx = _index_sorted(tmp, c)
-                    v[v_ptr[r] + s_idx] += <phases_st> D[ind, idx]
+                    cast_add(&v[v_ptr[r] + s_idx], D[ind, idx])
 
         elif p_opt == 0:
             for r in range(nr):
@@ -118,7 +118,7 @@ def phase_csr(const int_sp_st[::1] ptr,
 
                     tmp = v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]]
                     s_idx = _index_sorted(tmp, c)
-                    v[v_ptr[r] + s_idx] += <phases_st> (D[ind, idx] * phases[ind])
+                    cast_add(&v[v_ptr[r] + s_idx], D[ind, idx] * phases[ind])
 
         else:
             for r in range(nr):
@@ -128,7 +128,7 @@ def phase_csr(const int_sp_st[::1] ptr,
 
                     tmp = v_col[v_ptr[r]:v_ptr[r] + v_ncol[r]]
                     s_idx = _index_sorted(tmp, c)
-                    v[v_ptr[r] + s_idx] += <phases_st> (D[ind, idx] * phases[s])
+                    cast_add(&v[v_ptr[r] + s_idx], D[ind, idx] * phases[s])
 
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
@@ -156,20 +156,20 @@ def phase_array(const int_sp_st[::1] ptr,
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] % nr
-                    v[r, c] += <phases_st> (D[ind, idx])
+                    cast_add(&v[r, c], D[ind, idx])
 
         elif p_opt == 0:
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] % nr
-                    v[r, c] += <phases_st> (D[ind, idx] * phases[ind])
+                    cast_add(&v[r, c], D[ind, idx] * phases[ind])
 
         else:
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     c = col[ind] % nr
                     s = col[ind] / nr
-                    v[r, c] += <phases_st> (D[ind, idx] * phases[s])
+                    cast_add(&v[r, c], D[ind, idx] * phases[s])
 
     return V
 
@@ -212,7 +212,7 @@ def phase_csr_diag(const int_sp_st[::1] ptr,
 
                     d = <complexs_st> D[ind, idx]
                     for ic in range(per_row):
-                        v[v_ptr[rr+ic] + s_idx] += d
+                        cast_add(&v[v_ptr[rr+ic] + s_idx], d)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -225,7 +225,7 @@ def phase_csr_diag(const int_sp_st[::1] ptr,
 
                     d = phases[ind] * D[ind, idx]
                     for ic in range(per_row):
-                        v[v_ptr[rr+ic] + s_idx] += d
+                        cast_add(&v[v_ptr[rr+ic] + s_idx], d)
 
         else:
             for r in range(nr):
@@ -239,7 +239,7 @@ def phase_csr_diag(const int_sp_st[::1] ptr,
 
                     d = phases[s] * D[ind, idx]
                     for ic in range(per_row):
-                        v[v_ptr[rr+ic] + s_idx] += d
+                        cast_add(&v[v_ptr[rr+ic] + s_idx], d)
 
     nr = nr * per_row
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
@@ -274,7 +274,7 @@ def phase_array_diag(const int_sp_st[::1] ptr,
                     c = (col[ind] % nr) * per_row
                     d = D[ind, idx]
                     for ic in range(per_row):
-                        v[rr + ic, c + ic] += d
+                        cast_add(&v[rr + ic, c + ic], d)
 
         elif p_opt == 0:
             for r in range(nr):
@@ -283,7 +283,7 @@ def phase_array_diag(const int_sp_st[::1] ptr,
                     c = (col[ind] % nr) * per_row
                     d = phases[ind] * D[ind, idx]
                     for ic in range(per_row):
-                        v[rr + ic, c + ic] += d
+                        cast_add(&v[rr + ic, c + ic], d)
 
         else:
             for r in range(nr):
@@ -293,7 +293,7 @@ def phase_array_diag(const int_sp_st[::1] ptr,
                     s = col[ind] / nr
                     d = phases[s] * D[ind, idx]
                     for ic in range(per_row):
-                        v[rr + ic, c + ic] += d
+                        cast_add(&v[rr + ic, c + ic], d)
 
     return V
 

@@ -11,6 +11,7 @@ cimport numpy as cnp
 from scipy.sparse import csr_matrix
 
 from sisl._core._dtypes cimport (
+    cast_assign,
     complexs_st,
     floatcomplexs_st,
     floats_st,
@@ -96,7 +97,7 @@ def phase_sc_csr(int_sp_st[::1] ptr,
             for r in range(nr):
                 v_ptr[r] = cind
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    v[cind] = <phases_st> D[ind, idx]
+                    cast_assign(&v[cind], D[ind, idx])
                     v_col[cind] = col[ind]
                     cind = cind + 1
 
@@ -105,7 +106,7 @@ def phase_sc_csr(int_sp_st[::1] ptr,
                 v_ptr[r] = cind
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     ph = phases[ind]
-                    v[cind] = <phases_st> (D[ind, idx] * ph)
+                    cast_assign(&v[cind], D[ind, idx] * ph)
                     v_col[cind] = col[ind]
                     cind = cind + 1
 
@@ -114,7 +115,7 @@ def phase_sc_csr(int_sp_st[::1] ptr,
                 v_ptr[r] = cind
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     ph = phases[col[ind] / nr]
-                    v[cind] = <phases_st> (D[ind, idx] * ph)
+                    cast_assign(&v[cind], D[ind, idx] * ph)
                     v_col[cind] = col[ind]
                     cind = cind + 1
 
@@ -145,19 +146,19 @@ def phase_sc_array(int_sp_st[::1] ptr,
         if p_opt == -1:
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
-                    v[r, col[ind]] = <phases_st> D[ind, idx]
+                    cast_assign(&v[r, col[ind]], D[ind, idx])
 
         elif p_opt == 0:
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     ph = phases[ind]
-                    v[r, col[ind]] = <phases_st> (D[ind, idx] * ph)
+                    cast_assign(&v[r, col[ind]], D[ind, idx] * ph)
 
         else:
             for r in range(nr):
                 for ind in range(ptr[r], ptr[r] + ncol[r]):
                     ph = phases[col[ind] / nr]
-                    v[r, col[ind]] = <phases_st> (D[ind, idx] * ph)
+                    cast_assign(&v[r, col[ind]], D[ind, idx] * ph)
 
     return V
 
