@@ -94,6 +94,7 @@ jobs:
       - name: Ensure fortran
         uses: fortran-lang/setup-fortran@v1
         id: setup-fortran
+        if: ${{ ! startsWith(matrix.os, 'windows') }}
         with:
           compiler: gcc
           version: 14

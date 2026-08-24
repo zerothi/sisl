@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 
 list(APPEND CMAKE_MESSAGE_CONTEXT "sisl")
 
+
 project(sisl
   DESCRIPTION "Cythonized or fortran codes"
   HOMEPAGE_URL "https://github.com/zerothi/sisl"
@@ -13,6 +14,13 @@ project(sisl
 
 # Print out the discovered paths
 include(CMakePrintHelpers)
+include(CheckIPOSupported)
+
+check_ipo_supported(RESULT sisl_has_ipo)
+if(NOT sisl_has_ipo)
+  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
+endif()
+
 
 # Build configuration details
 message(STATUS "Build configuration information")
@@ -114,6 +122,7 @@ option(WITH_GDB
 set(NO_COMPILATION ""
   CACHE STRING
   "A list of files that should not be compiled [_sparse_grid_ops|_sparse_grid_ops.py]")
+
 
 
 message(STATUS "Compilation flags")
@@ -426,7 +435,7 @@ function(add_cython_library)
   endif()
   sisl_has_substring(_has "${_c_CYTHON_FLAGS}" "--annotate")
   if(_has)
-    set(_comment "${_comment} | annotation")
+    string(APPEND _comment " | annotation")
   endif()
 
   if( _c_GDB )
@@ -434,7 +443,7 @@ function(add_cython_library)
   endif()
   sisl_has_substring(_has "${_c_CYTHON_FLAGS}" "--gdb")
   if(_has)
-    set(_comment "${_comment} | GDB")
+    string(APPEND _comment " | GDB")
   endif()
 
   if( _c_LINE_DIRECTIVES )
@@ -442,8 +451,10 @@ function(add_cython_library)
   endif()
   sisl_has_substring(_has "${_c_CYTHON_FLAGS}" "--line-directives")
   if(_has)
-    set(_comment "${_comment} | line-directives")
+    string(APPEND _comment " | line-directives")
   endif()
+  string(APPEND _comment "
+            full path: ${_c_output_full}")
 
   # ensure no two flags will be present
   list(REMOVE_DUPLICATES _c_CYTHON_FLAGS)
@@ -477,6 +488,7 @@ function(add_cython_library)
     SISL_GENERATE_TARGET "${_gen_target}"
     INCLUDE_DIRECTORIES "${Python_NumPy_INCLUDE_DIRS}"
     )
+
 
   # now we have a source file, lets create a library if required
   if(DEFINED _c_LIBRARY)
@@ -737,4 +749,4 @@ endfunction(add_f2py_library)
 
 
 # Add the sisl directory (nested CMakeLists.txt files)
-add_subdirectory("src")
+add_subdirectory("src/sisl")

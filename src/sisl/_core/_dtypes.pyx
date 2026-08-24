@@ -23,7 +23,7 @@ from numpy cimport (
 
 
 @cython.initializedcheck(False)
-cdef inline object type2dtype(const _type2dtype_types_st v) noexcept:
+cdef inline object type2dtype(const _type2dtype_types_st v):
     if _type2dtype_types_st is int8_t:
         return np.int8
     elif _type2dtype_types_st is int16_t:

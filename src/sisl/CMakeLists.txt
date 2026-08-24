@@ -1,30 +1,30 @@
 set_property(DIRECTORY
   APPEND
   PROPERTY INCLUDE_DIRECTORIES
-  ${CMAKE_CURRENT_SOURCE_DIR}/_core
+  "${CMAKE_CURRENT_SOURCE_DIR}/_core"
   )
 
-foreach(source _indices _math_small)
+foreach(library _indices _math_small)
   add_cython_library(
-    SOURCE ${source}.pyx
-    LIBRARY ${source}
-    OUTPUT ${source}_C
+    SOURCE ${library}.pyx
+    LIBRARY ${library}
+    OUTPUT ${library}_C
     )
-  install(TARGETS ${source} LIBRARY
-    DESTINATION ${SKBUILD_PROJECT_NAME})
+  install(TARGETS ${library}
+    DESTINATION "${SKBUILD_PROJECT_NAME}")
 endforeach()
 
 # Python files that can be compiled with cython (Pure Python syntax)
-foreach(source _sparse_grid_ops)
-  sisl_compile_source(${source} compile)
+foreach(library _sparse_grid_ops)
+  sisl_compile_source(${library} compile)
   if( compile )
     add_cython_library(
-      SOURCE ${source}.py
-      LIBRARY ${source}
-      OUTPUT ${source}_C
+      SOURCE ${library}.py
+      LIBRARY ${library}
+      OUTPUT ${library}_C
       )
-    install(TARGETS ${source} LIBRARY
-      DESTINATION ${SKBUILD_PROJECT_NAME})
+    install(TARGETS ${library}
+      DESTINATION "${SKBUILD_PROJECT_NAME}")
   endif()
 endforeach()
 
@@ -33,15 +33,15 @@ endforeach()
 # Otherwise it would be installed together with it
 # Also get the compile definitions
 get_directory_property( SISL_DEFINITIONS DIRECTORY
-  ${CMAKE_CURRENT_SOURCE_DIR}
+  "${CMAKE_CURRENT_SOURCE_DIR}"
   COMPILE_DEFINITIONS )
 
 # Join to stringify list
 list(JOIN SISL_DEFINITIONS " " SISL_DEFINITIONS)
 
 configure_file(
-  ${PROJECT_SOURCE_DIR}/tools/_debug_info.py.conf
-  ${CMAKE_CURRENT_SOURCE_DIR}/_debug_info.py
+  "${PROJECT_SOURCE_DIR}/tools/_debug_info.py.conf"
+  "${CMAKE_CURRENT_SOURCE_DIR}/_debug_info.py"
   @ONLY
   )
 

@@ -28,7 +28,6 @@ set_source_files_properties("${name}"
   PROPERTIES SISL_SIGNATURE_SKIP "iostat_update;iostat_reset"
   )
 
-get_filename_component(name _src/hsx_write.f90 NAME)
 
 # Additional sources which we do not need interfaces
 # to in the Python front
@@ -62,6 +61,6 @@ if(WITH_FORTRAN)
     SOURCES ${siesta_sources}
     )
 
-  install(TARGETS ${siesta_module} LIBRARY
-    DESTINATION ${SKBUILD_PROJECT_NAME}/io/siesta)
+  install(TARGETS ${siesta_module}
+    DESTINATION "${SKBUILD_PROJECT_NAME}/io/siesta")
 endif()
