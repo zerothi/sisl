@@ -21,7 +21,6 @@ if(NOT sisl_has_ipo)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION FALSE)
 endif()
 
-
 # Build configuration details
 message(STATUS "Build configuration information")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
@@ -75,9 +74,21 @@ message(CHECK_PASS "Found Cython")
 
 
 # Define global definitions
+# Comment from Cython documentation:
+# > In order to prevent the joined binary from exporting all of the module
+# > init functions as public symbols, Cython 0.28 and later can hide these
+# > symbols if the macro CYTHON_NO_PYINIT_EXPORT is defined while C-compiling
+# > the module C files.
+# Cython's PyMODINIT_FUNC carries __declspec(dllexport) on Windows, which is what
+# makes PyInit_<module> visible in the resulting .pyd. Defining
+# CYTHON_NO_PYINIT_EXPORT strips that attribute, so it may only be used on
+# platforms where symbols are exported by default (ELF/Mach-O).
+if(NOT WIN32)
+  add_compile_definitions(CYTHON_NO_PYINIT_EXPORT=1)
+endif()
+
 # We will never use the deprecated API any-more
 add_compile_definitions(NPY_NO_DEPRECATED_API=NPY_1_20_API_VERSION)
-add_compile_definitions(CYTHON_NO_PYINIT_EXPORT=1)
 
 # All libraries in sisl will *not* be prefixed with
 #: lib, perhaps we should change this

@@ -6,11 +6,7 @@ cimport cython
 import numpy as np
 
 cimport numpy as cnp
-from numpy cimport (
-    complex64_t,
-    complex128_t,
-    float32_t,
-    float64_t,
+from libc.stdint cimport (
     int8_t,
     int16_t,
     int32_t,
@@ -21,6 +17,9 @@ from numpy cimport (
     uint64_t,
 )
 
+ctypedef long long _longlong
+ctypedef float complex _complex64_t
+ctypedef double complex _complex128_t
 
 @cython.initializedcheck(False)
 cdef inline object type2dtype(const _type2dtype_types_st v):
@@ -28,31 +27,21 @@ cdef inline object type2dtype(const _type2dtype_types_st v):
         return np.int8
     elif _type2dtype_types_st is int16_t:
         return np.int16
-    elif _type2dtype_types_st is cython.short:
-        return np.int16
     elif _type2dtype_types_st is int32_t:
-        return np.int32
-    elif _type2dtype_types_st is cython.int:
         return np.int32
     elif _type2dtype_types_st is int64_t:
         return np.int64
-    elif _type2dtype_types_st is cython.long:
+    elif _type2dtype_types_st is int:
+        return np.int32
+    elif _type2dtype_types_st is _longlong:
         return np.int64
-    elif _type2dtype_types_st is float32_t:
+    elif _type2dtype_types_st is float:
         return np.float32
-    elif _type2dtype_types_st is cython.float:
-        return np.float32
-    elif _type2dtype_types_st is float64_t:
+    elif _type2dtype_types_st is double:
         return np.float64
-    elif _type2dtype_types_st is cython.double:
-        return np.float64
-    elif _type2dtype_types_st is complex64_t:
+    elif _type2dtype_types_st is _complex64_t:
         return np.complex64
-    elif _type2dtype_types_st is cython.floatcomplex:
-        return np.complex64
-    elif _type2dtype_types_st is complex128_t:
-        return np.complex128
-    elif _type2dtype_types_st is cython.doublecomplex:
+    elif _type2dtype_types_st is _complex128_t:
         return np.complex128
 
     # More special cases
@@ -64,6 +53,8 @@ cdef inline object type2dtype(const _type2dtype_types_st v):
         return np.uint32
     elif _type2dtype_types_st is uint64_t:
         return np.uint64
+
+    raise ValueError("Could not determine data-type (type2dtype)")
 
 
 @cython.wraparound(False)

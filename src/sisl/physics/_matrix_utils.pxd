@@ -13,6 +13,7 @@ ctypedef fused _internal_complexs_st:
     float complex
     double complex
 
+
 ctypedef void(*f_matrix_box_nc)(const floatcomplexs_st *data,
                                 const complexs_st phase,
                                 complexs_st *M) noexcept nogil

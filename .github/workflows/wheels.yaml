@@ -82,8 +82,8 @@ jobs:
             deployment_target: "14.0"
 
           # Windows
-          #- os: windows-latest
-          #  cibw_archs: "AMD64"
+          - os: windows-latest
+            cibw_archs: "AMD64"
 
     steps:
 
