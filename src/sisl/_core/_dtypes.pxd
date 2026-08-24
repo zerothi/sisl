@@ -6,11 +6,7 @@ cimport cython
 import numpy as np
 
 cimport numpy as cnp
-from numpy cimport (
-    complex64_t,
-    complex128_t,
-    float32_t,
-    float64_t,
+from libc.stdint cimport (
     int8_t,
     int16_t,
     int32_t,
@@ -21,15 +17,44 @@ from numpy cimport (
     uint64_t,
 )
 
+
+cdef extern from *:
+    """
+    #include <limits.h>
+    #if INT_MAX != 2147483647
+    #error "sisl requires a 32-bit int"
+    #endif
+    #if LLONG_MAX != 9223372036854775807LL
+    #error "sisl requires a 64-bit long long"
+    #endif
+    """
+    pass
+
 # Generic typedefs for sisl internal naming convention
 ctypedef size_t size_st
 
 
+# Signed integers.
+#
+# The members are the *fixed width* types, deliberately not `int`/`long`:
+# `long` is 64-bit on LP64 (Linux/macOS) but 32-bit on LLP64 (Windows/MSVC).
+# A fused (int, long) therefore expands to two *identical* 32-bit
+# specializations on Windows, and then nothing matches an int64 array at all
+# (dispatch is on itemsize+kind, so the second specialization is simply dead
+# code). int32_t and int64_t are distinct on every platform we build for, so
+# the fused type has exactly one member per width, everywhere.
+#
+# There is no way to make the member list itself conditional: the fused `is`
+# test is only valid inside a function body (where it is a compile-time
+# branch per specialization), and the compile-time IF/DEF statements are
+# deprecated and slated for removal. Choosing non-overlapping types is the
+# way to avoid duplicate specializations.
 ctypedef fused ints_st:
     int
-    long
+    long long
 
 
+# Index type of the scipy sparse matrices (int32 everywhere)
 ctypedef fused int_sp_st:
     int
 
@@ -124,30 +149,19 @@ cdef inline void cast_add(floatcomplexs_st *out,
 # We need this fused data-type to omit complex data-types
 ctypedef fused reals_st:
     int
-    long
+    long long
     float
     double
 
 ctypedef fused numerics_st:
     int
-    long
+    long long
     float
     double
     float complex
     double complex
 
 ctypedef fused _type2dtype_types_st:
-    short
-    int
-    long
-    float
-    double
-    float complex
-    double complex
-    float32_t
-    float64_t
-    #complex64_t # not usable...
-    #complex128_t
     int8_t
     int16_t
     int32_t
@@ -156,21 +170,26 @@ ctypedef fused _type2dtype_types_st:
     uint16_t
     uint32_t
     uint64_t
+    int
+    long long
+    float
+    double
+    float complex
+    double complex
 
 
 cdef object type2dtype(const _type2dtype_types_st v)
 
 
 ctypedef fused _inline_sum_st:
-    short
-    int
-    long
     int16_t
     int32_t
     int64_t
     uint16_t
     uint32_t
     uint64_t
+    int
+    long long
 
 
 cdef Py_ssize_t inline_sum(const _inline_sum_st[::1] array) noexcept nogil
