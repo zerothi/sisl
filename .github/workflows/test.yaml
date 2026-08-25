@@ -70,17 +70,13 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.11', '3.14']
-        full-test: [true]
-        minimal-dep: [false]
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
+          - minimal-dep: false
+          - full-test: true
           - python-version: '3.11'
             minimal-dep: true
           - python-version: '3.11'
-            full-test: false
-        exclude:
-          # only full test suite on 3.14
-          - python-version: '3.14'
             full-test: false
 
     steps:
