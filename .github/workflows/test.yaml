@@ -7,8 +7,8 @@ defaults:
 
 env:
   CFLAGS: -Og
-  # Never use progress-bar
-  PIP_PROGRESS_BAR: OFF
+  # Never use progress-bar (only allows lcase)
+  PIP_PROGRESS_BAR: off
 
 on:
   push:
