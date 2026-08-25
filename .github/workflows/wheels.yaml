@@ -68,18 +68,18 @@ jobs:
       matrix:
         include:
           # Linux
-          #- os: ubuntu-latest
-          #  cibw_archs: "x86_64"
-          #- os: ubuntu-24.04-arm
-          #  cibw_archs: "aarch64"
+          - os: ubuntu-latest
+            cibw_archs: "x86_64"
+          - os: ubuntu-24.04-arm
+            cibw_archs: "aarch64"
 
-          ## MacOS
-          #- os: macos-15-intel
-          #  cibw_archs: "x86_64"
-          #  deployment_target: "15.0"
-          #- os: macos-14
-          #  cibw_archs: "arm64"
-          #  deployment_target: "14.0"
+          # MacOS
+          - os: macos-15-intel
+            cibw_archs: "x86_64"
+            deployment_target: "15.0"
+          - os: macos-14
+            cibw_archs: "arm64"
+            deployment_target: "14.0"
 
           # Windows
           - os: windows-latest
@@ -94,7 +94,7 @@ jobs:
       - name: Ensure fortran
         uses: fortran-lang/setup-fortran@v1
         id: setup-fortran
-        #if: ${{ ! startsWith(matrix.os, 'windows') }}
+        if: ${{ ! startsWith(matrix.os, 'windows') }}
         with:
           compiler: gcc
           version: 14
@@ -152,7 +152,6 @@ jobs:
     name: pyodide | wheels
     runs-on: ubuntu-latest
     needs: build_sdist
-    if: false
 
     steps:
 

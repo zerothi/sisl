@@ -452,9 +452,6 @@ SKBUILD_CMAKE_ARGS = "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=true"
 [tool.cibuildwheel.windows]
 skip = "cp3??t-win*"
 
-[tool.cibuildwheel.windows.environment]
-# DISABLE fortran on windows
-SKBUILD_CMAKE_ARGS = "-DWITH_FORTRAN=YES;-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=true"
 
 [tool.cibuildwheel.pyodide]
 # Pyodide ensures that the wheels are already repaired by auditwheel-emscripten
