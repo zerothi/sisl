@@ -94,7 +94,11 @@ endif()
 
 # Determine whether we are in CIBUILDWHEEL
 # and whether we are building for the universal target
-set(_def_fortran $<NOT:WIN32>)
+if( WIN32 )
+  set(_def_fortran FALSE)
+else()
+  set(_def_fortran TRUE)
+endif()
 
 option(WITH_FORTRAN
   "Whether to compile and ship fortran sources (default ${_def_fortran})" ${_def_fortran})
@@ -145,7 +149,7 @@ cmake_print_variables(CXXFLAGS)
 cmake_print_variables(CMAKE_CXX_COMPILER)
 cmake_print_variables(CMAKE_CXX_FLAGS)
 cmake_print_variables(CMAKE_CXX_STANDARD)
-if(WITH_FORTRAN)
+if( WITH_FORTRAN )
   set(FC $ENV{FC})
   set(FFLAGS $ENV{FFLAGS})
   cmake_print_variables(FC)
@@ -192,7 +196,7 @@ endif()
 
 
 # Decide for fortran stuff
-if(WITH_FORTRAN)
+if( WITH_FORTRAN )
 
   # Enable Fortran language
   enable_language(Fortran)
@@ -237,7 +241,7 @@ if(WITH_FORTRAN)
     target_compile_definitions(f2py_fortranobject PRIVATE F2PY_REPORT_ON_ARRAY_COPY=${F2PY_REPORT_ON_ARRAY_COPY})
   endif()
 
-endif(WITH_FORTRAN)
+endif( WITH_FORTRAN )
 
 
 message(STATUS "Python variables:")
@@ -245,7 +249,7 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 cmake_print_variables(Python_INCLUDE_DIRS)
 cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
-if(WITH_FORTRAN)
+if( WITH_FORTRAN )
   cmake_print_variables(Python_NumPy_F2Py_INCLUDE_DIR)
 endif()
 
@@ -262,7 +266,7 @@ cmake_print_variables(WITH_GDB)
 cmake_print_variables(NO_COMPILATION)
 
 cmake_print_variables(WITH_FORTRAN)
-if(WITH_FORTRAN)
+if( WITH_FORTRAN )
   cmake_print_variables(WITH_F2PY_REPORT_COPY)
   if(WITH_F2PY_REPORT_COPY)
     cmake_print_variables(F2PY_REPORT_ON_ARRAY_COPY)
