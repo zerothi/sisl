@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 # We will use cmake_path for file-name manipulation
 
 list(APPEND CMAKE_MESSAGE_CONTEXT "sisl")
@@ -43,6 +43,10 @@ find_package(Python COMPONENTS
   Development.Module
   NumPy # needed for f2py
   REQUIRED)
+# Exposes these values:
+# Python_SOSABI:
+#   The extension for the SO ABI name.
+
 
 # Retrive the cython executable
 message(CHECK_START "Checking Cython")
@@ -74,35 +78,23 @@ message(CHECK_PASS "Found Cython")
 
 
 # Define global definitions
-# Comment from Cython documentation:
-# > In order to prevent the joined binary from exporting all of the module
-# > init functions as public symbols, Cython 0.28 and later can hide these
-# > symbols if the macro CYTHON_NO_PYINIT_EXPORT is defined while C-compiling
-# > the module C files.
-# Cython's PyMODINIT_FUNC carries __declspec(dllexport) on Windows, which is what
-# makes PyInit_<module> visible in the resulting .pyd. Defining
-# CYTHON_NO_PYINIT_EXPORT strips that attribute, so it may only be used on
-# platforms where symbols are exported by default (ELF/Mach-O).
-if(NOT WIN32)
-  add_compile_definitions(CYTHON_NO_PYINIT_EXPORT=1)
-endif()
 
 # We will never use the deprecated API any-more
-add_compile_definitions(NPY_NO_DEPRECATED_API=NPY_1_20_API_VERSION)
+add_compile_definitions(NPY_NO_DEPRECATED_API=NPY_1_24_API_VERSION)
+
 
 # All libraries in sisl will *not* be prefixed with
 #: lib, perhaps we should change this
 set(CMAKE_SHARED_MODULE_PREFIX "")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(CMAKE_SHARED_MODULE_SUFFIX ".${SKBUILD_SOABI}.pyd")
+else()
+  set(CMAKE_SHARED_MODULE_SUFFIX ".${SKBUILD_SOABI}${CMAKE_SHARED_MODULE_SUFFIX}")
+endif()
 
 # Determine whether we are in CIBUILDWHEEL
 # and whether we are building for the universal target
-set(_def_fortran TRUE)
-#if( APPLE AND
-#    "$ENV{CIBUILDWHEEL}" STREQUAL "1" AND
-#    "$ENV{CIBW_ARCHS}" MATCHES "(universal2|arm64)")
-#  # Disable fortran here, it shouldn't be needed
-#  set(_def_fortran FALSE)
-#endif()
+set(_def_fortran $<NOT:WIN32>)
 
 option(WITH_FORTRAN
   "Whether to compile and ship fortran sources (default ${_def_fortran})" ${_def_fortran})
@@ -175,6 +167,8 @@ elseif( WIN32 )
   # See https://github.com/cython/cython/issues/3405
   add_compile_definitions(MS_WIN64)
 endif()
+cmake_print_variables(CMAKE_SHARED_MODULE_PREFIX)
+cmake_print_variables(CMAKE_SHARED_MODULE_SUFFIX)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 

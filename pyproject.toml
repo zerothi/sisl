@@ -105,7 +105,7 @@ build-dir = "build/{wheel_tag}"
 
 # cmake and ninja stuff
 build.verbose = true
-cmake.version = ">=3.20"
+cmake.version = ">=3.26"
 
 # source configuration
 sdist.reproducible = true
@@ -454,7 +454,7 @@ skip = "cp3??t-win*"
 
 [tool.cibuildwheel.windows.environment]
 # DISABLE fortran on windows
-SKBUILD_CMAKE_ARGS = "-DWITH_FORTRAN=NO;-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=true"
+SKBUILD_CMAKE_ARGS = "-DWITH_FORTRAN=YES;-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=true"
 
 [tool.cibuildwheel.pyodide]
 # Pyodide ensures that the wheels are already repaired by auditwheel-emscripten
