@@ -224,8 +224,7 @@ class SileBound:
         else:
             default_slice = self.default_slice
 
-        docs_slicer = dedent(
-            f"""
+        docs_slicer = dedent(f"""
         Notes
         -----
         This method defaults to return {default_slice} item(s).
@@ -247,8 +246,7 @@ class SileBound:
 
         While one can store the sliced function ``tmp = obj.{base_name}[:]`` one
         will loose the slice after each call.
-        """
-        )
+        """)
 
         # Correctly parse the doc strings.
         # Generally the first line has the wrong indentation.

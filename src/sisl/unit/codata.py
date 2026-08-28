@@ -41,14 +41,12 @@ def read_codata(year: Union[int, str] = 2022) -> dict:
         # Locate all files in the sub-directory
         data_dir = data_file.parent
         codata_files = list(map(str, data_dir.glob("codata_*.txt")))
-        raise FileNotFoundError(
-            f"""\
+        raise FileNotFoundError(f"""\
 Requesting codata_{year}.txt file which does not exist!
 
 Only located these CODATA files:
 {codata_files}
-"""
-        )
+""")
 
     Constant = namedtuple("Constant", "name value uncertainty unit")
     data = dict()

@@ -12,8 +12,7 @@ pytestmark = [pytest.mark.io, pytest.mark.siesta]
 
 def test_ani(sisl_tmp):
     f = sisl_tmp("sisl.ANI")
-    open(f, "w").write(
-        """1
+    open(f, "w").write("""1
 
 C   0.00000000  0.00000000  0.00000000
 2
@@ -31,8 +30,7 @@ C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
 C   3.00000  0.00000000  0.00000000
-"""
-    )
+""")
     a = aniSileSiesta(f)
     g = a.read_geometry[:]()
     assert len(g) == 4

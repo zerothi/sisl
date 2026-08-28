@@ -90,7 +90,6 @@ from ._common import *
 
 from ._core import *
 
-
 # Import warning classes
 # We currently do not import warn and info
 # as they are too generic names in case one does from sisl import *

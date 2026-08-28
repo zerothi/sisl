@@ -233,8 +233,7 @@ class pdosSileSiesta(SileSiesta):
         D = np.moveaxis(np.stack(D, axis=0), 2, 0)
         return geom, E, D
 
-    @default_ArgumentParser(
-        description="""
+    @default_ArgumentParser(description="""
 Extract/Plot data from a PDOS/PDOS.xml file
 
 The arguments are parsed as they are passed to the command line; hence order is important.
@@ -258,8 +257,7 @@ be plotted/saved and all prior options will be reset. Hence
    --spin x --atom all --out spin_x_all.dat --spin y --atom all --out spin_y_all.dat
 
 will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat, respectively.
-"""
-    )
+""")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """Returns the arguments that is available for this Sile"""
 

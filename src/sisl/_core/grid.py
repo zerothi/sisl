@@ -1574,13 +1574,11 @@ The 3rd argument is the mode to use; wrap/mirror/constant/reflect/nearest
                     )
                     sile.write_data(dx, grid.grid.ravel())
                 else:
-                    raise ValueError(
-                        f"""Either of these two cases are not fullfilled:
+                    raise ValueError(f"""Either of these two cases are not fullfilled:
 
 1. {sile} do not have the `write_grid` method
 
-2. The grid is not 1D data; averaged or summed along 2 directions."""
-                    )
+2. The grid is not 1D data; averaged or summed along 2 directions.""")
 
                 # Issue to the namespace that the grid has been written, at least once.
                 ns._stored_grid = True

@@ -86,11 +86,6 @@ add_compile_definitions(NPY_NO_DEPRECATED_API=NPY_1_24_API_VERSION)
 # All libraries in sisl will *not* be prefixed with
 #: lib, perhaps we should change this
 set(CMAKE_SHARED_MODULE_PREFIX "")
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  set(CMAKE_SHARED_MODULE_SUFFIX ".${SKBUILD_SOABI}.pyd")
-else()
-  set(CMAKE_SHARED_MODULE_SUFFIX ".${SKBUILD_SOABI}${CMAKE_SHARED_MODULE_SUFFIX}")
-endif()
 
 # Determine whether we are in CIBUILDWHEEL
 # and whether we are building for the universal target

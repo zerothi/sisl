@@ -5,6 +5,7 @@
 
 This class is the basis of many different objects.
 """
+
 from __future__ import annotations
 
 import logging

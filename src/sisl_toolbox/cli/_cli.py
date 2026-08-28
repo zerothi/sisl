@@ -7,6 +7,7 @@
 This is a wrapper with sub-commands the toolboxes that are
 accessible.
 """
+
 from __future__ import annotations
 
 import argparse

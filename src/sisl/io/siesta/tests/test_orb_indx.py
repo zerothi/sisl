@@ -48,8 +48,7 @@ def test_orb_indx_order(sisl_tmp):
     f = sisl_tmp("test.ORD_INDX")
 
     with open(f, "w") as fh:
-        fh.write(
-            """\
+        fh.write("""\
      29  29 = orbitals in unit cell and supercell. See end of file.
 
     io    ia is   spec iao  n  l  m  z  p          sym      rc    isc     iuo
@@ -82,8 +81,7 @@ def test_orb_indx_order(sisl_tmp):
     27     2  1     Pt  12  5  2  2  2  F       dx2-y2   3.022  0  0  0    27
     28     2  1     Pt  13  6  1 -1  1  T          Ppy   7.158  0  0  0    28
     29     2  1     Pt  14  6  1  0  1  T          Ppz   7.158  0  0  0    29
-"""
-        )
+""")
 
     atoms = orbindxSileSiesta(f).read_basis()
 

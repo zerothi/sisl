@@ -214,14 +214,12 @@ def register_sisl_dispatch(
                     "been registered, and cannot be converted to a sisl type."
                 )
 
-            doc = dedent(
-                f"""\
+            doc = dedent(f"""\
                     Dispatcher for `{name}`
 
                     See Also
                     --------
-                    """
-            )
+                    """)
             method_registry.__doc__ = doc
             method_registry.__name__ = name
             method_registry.__module__ = module

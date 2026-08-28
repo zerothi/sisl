@@ -156,12 +156,10 @@ register_environ_variable(
 register_environ_variable(
     "SISL_FILES_TESTS",
     "_THIS_DIRECTORY_DOES_NOT_EXIST_",
-    dedent(
-        """\
+    dedent("""\
                           Full path of the sisl/files folder.
                           Generally this is only used for tests and for documentations.
-                          """
-    ),
+                          """),
     process=_abs_path,
 )
 

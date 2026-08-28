@@ -16,8 +16,7 @@ pytestmark = [pytest.mark.io, pytest.mark.wannier90, pytest.mark.w90]
 def test_seedname_read_frac(sisl_tmp, unit):
     f = sisl_tmp("read_frac.win")
     with open(f, "w") as fh:
-        fh.write(
-            """
+        fh.write("""
 begin unit_cell_cart
   {} 2. 0. 0.
   0. 2. 0
@@ -27,10 +26,7 @@ end unit_cell_cart
 begin atoms_frac
   C 0.5 0.5 0.5
 end
-""".format(
-                unit
-            )
-        )
+""".format(unit))
     g = winSileWannier90(f).read_geometry(order=["win"])
 
     if len(unit) == 0:
@@ -46,8 +42,7 @@ end
 def test_seedname_read_coord(sisl_tmp, unit_sc, unit):
     f = sisl_tmp("read_coord.win")
     with open(f, "w") as fh:
-        fh.write(
-            """
+        fh.write("""
 begin unit_cell_cart
   {} 2. 0. 0.
   0. 2. 0
@@ -57,10 +52,7 @@ end unit_cell_cart
 begin atoms_cart
   {} C 0.5 0.5 0.5
 end
-""".format(
-                unit_sc, unit
-            )
-        )
+""".format(unit_sc, unit))
     g = winSileWannier90(f).read_geometry(order=["win"])
 
     if len(unit) == 0:

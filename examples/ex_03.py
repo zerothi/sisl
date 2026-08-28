@@ -14,8 +14,7 @@ from __future__ import annotations
 import sisl
 
 with open("zz.gin", "w") as f:
-    f.write(
-        """opti conv dist full nosymmetry phon dynamical_matrix nod3
+    f.write("""opti conv dist full nosymmetry phon dynamical_matrix nod3
 output she
 cutd 3.0
 
@@ -152,13 +151,11 @@ C core 15.62000 17.21659 0.00000 0 1 0 1 1 1
 C core 13.49000 18.44634 0.00000 0 1 0 1 1 1
 C core 14.91000 18.44634 0.00000 0 1 0 1 1 1
 
-brenner"""
-    )
+brenner""")
 
 # Create PHtrans input
 with open("ZZ.fdf", "w") as f:
-    f.write(
-        """SystemLabel ZZ
+    f.write("""SystemLabel ZZ
 
 TBT.DOS.Gf T
 
@@ -183,8 +180,7 @@ TBT.HS DEVICE_zz.nc
   semi-inf-direction +a2
   electrode-position end -1
 %endblock
-"""
-    )
+""")
 
 import os
 

@@ -4,6 +4,7 @@
 """
 Sile object for reading/writing XYZ files
 """
+
 from __future__ import annotations
 
 from typing import Optional

@@ -42,6 +42,7 @@ automatically passes the correct ``S`` because it knows the states :math:`\mathb
    EigenstateElectron
 
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable

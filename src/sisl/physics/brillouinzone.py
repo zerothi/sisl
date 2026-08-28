@@ -140,6 +140,7 @@ on the chunksize of the jobs. By default the chunksize is controlled by
    BandStructure
 
 """
+
 from __future__ import annotations
 
 import itertools

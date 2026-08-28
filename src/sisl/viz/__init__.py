@@ -12,15 +12,13 @@ Visualization utilities
 try:
     import nodify as _  # noqa: F401
 except ModuleNotFoundError as e:
-    raise ModuleNotFoundError(
-        """\
+    raise ModuleNotFoundError("""\
 sisl.viz requires additional packages.
 Install them with pip:
    pip install sisl[viz]
 Or conda (only possible if inside a conda environment):
    conda install nodify plotly netCDF4 scikit-image pathos
-"""
-    ) from e
+""") from e
 
 # Placeholders for 'plot' attributes are set in the classes while
 # sisl.viz is not loaded. Now we are loading it, so just remove those

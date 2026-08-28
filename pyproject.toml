@@ -14,6 +14,7 @@ fallback_version = "0.16.4"
 
 # First we define the build-system which we will probably alter the most
 [build-system]
+# Copy this down to the group == build
 requires = [
     "setuptools_scm[toml]>=8",
     "scikit-build-core[pyproject]>=1",
@@ -203,6 +204,14 @@ test = [
 
 [dependency-groups]
 
+# A copy of the build-system section for requirements.
+build = [
+    "setuptools_scm[toml]>=8",
+    "scikit-build-core[pyproject]>=1",
+    "Cython>=3.0.8",
+    "numpy>=2.0.0rc1",
+]
+
 sphinx = [
     "sphinx<8",
     "nbsphinx",
@@ -325,25 +334,39 @@ commands = pytest -s -rXs {posargs}
 
 [tool.isort]
 # how should sorting be done
+# Make isort aware of black-interoperability
 profile = "black"
 sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
 known_first_party = ["sisl_toolbox", "sisl"]
 line_length = 88
 overwrite_in_place = true
 extend_skip = ["src/sisl/__init__.py", "src/sisl/_version.py"]
-extend_skip_glob = ["files/*", "*/.*"]
+extend_skip_glob = [
+    "files/*",
+    "**/*.sh",
+    "**/.*",
+    "**/*.psf",
+    "**/*.tex",
+    "**/*.rst",
+    "**/*.f90",
+]
 multi_line_output = "VERTICAL_HANGING_INDENT"
 
 [tool.black]
 line-length = 88
-target-version = ["py39", "py310", "py311", "py312"]
-extend-exclude = """
-(
+required-version = "26"
+target-version = ["py311"]
+extend-exclude = '''
+/(
  ^/files/*
- | /\\..*
- | .*/\\..*
-)
-"""
+ | .*\.sh
+ | .*/\..*
+ | .*\.psf
+ | .*\.tex
+ | .*\.rst
+ | .*\.f90
+)/
+'''
 
 
 [tool.numpydoc_validation]

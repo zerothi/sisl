@@ -28,14 +28,12 @@ def test_xyz_sisl(sisl_tmp):
     f = sisl_tmp("sisl.xyz")
 
     with open(f, "w") as fh:
-        fh.write(
-            """3
+        fh.write("""3
 sisl-version=1 nsc=1 1 3 cell=10 0 0 0 12 0 0 0 13
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
-"""
-        )
+""")
     g = xyzSile(f).read_geometry()
 
     # Assert they are the same
@@ -52,14 +50,12 @@ C   2.00000  0.00000000  0.00000000
 def test_xyz_ase(sisl_tmp):
     f = sisl_tmp("ase.xyz")
     with open(f, "w") as fh:
-        fh.write(
-            """3
+        fh.write("""3
 Lattice="10 0 0 0 12 0 0 0 13" Properties=species:S:1:pos:R:3 pbc="F F T"
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
-"""
-        )
+""")
     g = xyzSile(f).read_geometry()
 
     # Assert they are the same
@@ -74,14 +70,12 @@ C   2.00000  0.00000000  0.00000000
 def test_xyz_arbitrary(sisl_tmp):
     f = sisl_tmp("ase.xyz")
     with open(f, "w") as fh:
-        fh.write(
-            """3
+        fh.write("""3
 
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
-"""
-        )
+""")
     g = xyzSile(f).read_geometry()
 
     # Assert they are the same
@@ -94,8 +88,7 @@ C   2.00000  0.00000000  0.00000000
 def test_xyz_multiple(sisl_tmp):
     f = sisl_tmp("sisl_multiple.xyz")
     with open(f, "w") as fh:
-        fh.write(
-            """1
+        fh.write("""1
 
 C   0.00000000  0.00000000  0.00000000
 2
@@ -107,8 +100,7 @@ C   1.000000  0.00000000  0.00000000
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
-"""
-        )
+""")
     g = xyzSile(f).read_geometry()
     assert g.na == 1
     g = xyzSile(f).read_geometry[1]()

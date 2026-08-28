@@ -523,9 +523,7 @@ def test_fdf_block_write_print(sisl_tmp):
     assert f"""%block hello
  {block_value[0]}
 %endblock hello
-""" == fdf.print(
-        "hello", block_value
-    )
+""" == fdf.print("hello", block_value)
 
 
 def test_fdf_write_bandstructure(sisl_tmp, sisl_system):
@@ -579,8 +577,7 @@ def test_fdf_read_from_xv(sisl_tmp):
 
     f_xv = sisl_tmp("read_from_xv.XV")
     with open(f_xv, "w") as fh:
-        fh.write(
-            """\
+        fh.write("""\
 1. 0. 0.  0. 0. 0.
 0. 1. 0.  0. 0. 0.
 0. 0. 2.  0. 0. 0.
@@ -591,8 +588,7 @@ def test_fdf_read_from_xv(sisl_tmp):
 2 6 0. 1. 0.  0. 0. 0.
 4 3 1. 1. 1.  0. 0. 0.
 1 2 0. 1. 1.  0. 0. 0.
-"""
-        )
+""")
 
     fdf = fdfSileSiesta(f_fdf, track=True, base=sisl_tmp.getbase())
     geom_fdf = fdf.read_geometry(order="fdf")
@@ -695,8 +691,7 @@ def test_fdf_multiple_simple(sisl_tmp):
     f = sisl_tmp("multiple_simple.fdf")
 
     with open(f, "w") as fh:
-        fh.write(
-            """
+        fh.write("""
 %block ChemicalSpeciesLabel
     1   79  Au
     2    8   O
@@ -713,8 +708,7 @@ AtomicCoordinatesFormat Ang
     0 0 0  2
     2 0 0  1
 %endblock AtomicCoordinatesAndAtomicSpecies
-                """
-        )
+                """)
 
     geom = fdfSileSiesta(f).read_geometry()
     assert geom.na == 2
@@ -722,8 +716,7 @@ AtomicCoordinatesFormat Ang
     assert np.allclose(geom.atoms.species, [1, 0])
 
     with open(f, "w") as fh:
-        fh.write(
-            """
+        fh.write("""
 %block ChemicalSpeciesLabel
     1   79  Au
     2    8   O
@@ -741,8 +734,7 @@ AtomicCoordinatesFormat Ang
     2 0 0  1
     0 0 0  2
 %endblock AtomicCoordinatesAndAtomicSpecies
-                """
-        )
+                """)
 
     geom = fdfSileSiesta(f).read_geometry()
     assert geom.na == 3

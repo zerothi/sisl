@@ -80,8 +80,7 @@ def test_xv_missing_atoms(sisl_tmp):
     # test for #778
     f = sisl_tmp("missing.XV")
     with open(f, "w") as fh:
-        fh.write(
-            """\
+        fh.write("""\
 1. 0. 0.  0. 0. 0.
 0. 1. 0.  0. 0. 0.
 0. 0. 2.  0. 0. 0.
@@ -92,8 +91,7 @@ def test_xv_missing_atoms(sisl_tmp):
 4 3 0. 1. 0.  0. 0. 0.
 1 2 0. 1. 0.  0. 0. 0.
 2 6 0. 1. 0.  0. 0. 0.
-"""
-        )
+""")
     geom = xvSileSiesta(f).read_geometry()
     assert len(geom) == 6
     assert len(geom.atoms.atom) == 4
@@ -109,8 +107,7 @@ def test_xv_missing_atoms_end(sisl_tmp):
     # test for #778
     f = sisl_tmp("missing_end.XV")
     with open(f, "w") as fh:
-        fh.write(
-            """\
+        fh.write("""\
 1. 0. 0.  0. 0. 0.
 0. 1. 0.  0. 0. 0.
 0. 0. 2.  0. 0. 0.
@@ -121,8 +118,7 @@ def test_xv_missing_atoms_end(sisl_tmp):
 3 3 0. 1. 0.  0. 0. 0.
 3 3 0. 1. 0.  0. 0. 0.
 2 6 0. 1. 0.  0. 0. 0.
-"""
-        )
+""")
     atoms = Atoms([2, 6, 3, 5])
     geom = xvSileSiesta(f).read_geometry(atoms=atoms)
     assert len(geom) == 6
@@ -134,8 +130,7 @@ def test_xv_missing_atoms_species(sisl_tmp):
     # test for #778
     f = sisl_tmp("missing_species.XV")
     with open(f, "w") as fh:
-        fh.write(
-            """\
+        fh.write("""\
 1. 0. 0.  0. 0. 0.
 0. 1. 0.  0. 0. 0.
 0. 0. 2.  0. 0. 0.
@@ -146,8 +141,7 @@ def test_xv_missing_atoms_species(sisl_tmp):
 3 1 0. 1. 0.  0. 0. 0.
 3 1 0. 1. 0.  0. 0. 0.
 2 1 0. 1. 0.  0. 0. 0.
-"""
-        )
+""")
 
     atoms = Atoms([Atom(1, tag=tag) for tag in "ABCD"])
     geom = xvSileSiesta(f).read_geometry(atoms=atoms)

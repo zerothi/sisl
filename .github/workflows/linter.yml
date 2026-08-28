@@ -8,8 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+
       - uses: psf/black@stable
         with:
-          version: "~= 25.0"
+          version: "~= 26.5.1"
           jupyter: true
-      - uses: isort/isort-action@master
+
+      - uses: isort/isort-action@f8b020d137a888583a410435694c269075ef9e92
+        with:
+          isort-version: "~=9.0.1"
