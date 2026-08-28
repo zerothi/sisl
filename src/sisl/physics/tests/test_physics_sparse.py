@@ -793,10 +793,10 @@ def test_sparseorbital_spin_dtypes(dtype, spin):
     assert M.dtype == dtype
 
 
-def test_sparseorbital_fromsp_csr_matrix():
+def test_sparseorbital_fromsp_csr_array():
     gr = geom.graphene()
     no, no_s = gr.no, gr.no_s
-    s1 = sps.csr_matrix((no, no_s))
+    s1 = sps.csr_array((no, no_s))
 
     M = SparseOrbitalBZ.fromsp(gr, s1)
     assert M.shape == (no, no_s, 1)
@@ -837,7 +837,7 @@ def test_sparseorbital_fromsp_combined():
     gr = geom.graphene()
     no, no_s = gr.no, gr.no_s
     s1 = SparseCSR((no, no_s, 2))
-    s2 = sps.csr_matrix((no, no_s))
+    s2 = sps.csr_array((no, no_s))
 
     M = SparseOrbitalBZ.fromsp(gr, [s1, s2])
     assert M.shape == (no, no_s, 3)
@@ -854,7 +854,7 @@ def test_sparseorbital_fromsp_orthogonal():
     gr = geom.graphene()
     no, no_s = gr.no, gr.no_s
     s1 = SparseCSR((no, no_s, 2))
-    s2 = sps.csr_matrix((no, no_s))
+    s2 = sps.csr_array((no, no_s))
 
     M = SparseOrbitalBZ.fromsp(gr, [s1, s2], orthogonal=False)
     assert M.shape == (no, no_s, 3)
