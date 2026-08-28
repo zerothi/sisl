@@ -1,0 +1,161 @@
+sisl 0.17.0 Release Notes
+*************************
+
+Released on 2026-08-28.
+
+
+New features
+============
+
+- Added `cifSile` for initial support, basic symmetry works
+
+  (:pull:`992`)
+
+
+- implemented a tensor-IPR method
+
+  It retains the complex part as it is not
+  guaranteed to be a real quantity. Note, depending
+  on the size of the states, this can yield a really
+  big matrix.
+
+  (:pull:`993`)
+
+
+
+Changes and improvements
+========================
+
+- Fixed Pyparsing deprecation warnings
+
+  (:pull:`984`)
+
+
+- Sped up `Geometry.close` and `Geometry.within` for large auxiliary supercells
+
+  The supercell results were accumulated with a `np.concatenate` on every
+  supercell iteration, copying the whole growing array each time (scaling as the
+  square of the number of supercells). They are now collected and concatenated
+  once, which is noticeably faster for geometries with many supercells (large
+  ``nsc``) or long-range searches.
+
+  (:pull:`1001`)
+
+
+- Moved fortran import checks to the module itself
+
+  Now everything is accessible, but not usable.
+  Instead an error is issued when a fortran module attribute
+  is tried accessed.
+
+
+- Sped up sparse matrix element-wise operations, `Rij` and `eliminate_zeros`
+
+  `SparseAtom.Rij`/`SparseOrbital.Rij` (and the derived `rij`) now build the
+  distance vectors in a single vectorized call instead of looping over every
+  row in Python. Element-wise operations between two sparse matrices (e.g.
+  ``H1 + H2``) no longer allocate a per-row index array, and
+  `SparseCSR.eliminate_zeros` now compacts all zero elements in one pass rather
+  than deleting row-by-row.
+
+
+
+Bugfixes
+========
+
+- Fixed sile exploration with specification
+
+  E.g. `sgeom test{car}` has to be changed to
+  `sgeom test{startswith=car}` to get a singular
+  sile match.
+
+  (:pull:`988`)
+
+
+- Fixed `SparseCSR.eliminate_zeros` skipping matrices whose only zero was in row 0
+
+  The early-return short-circuit summed row *indices* rather than counting zero
+  elements, so a matrix whose only explicit zero resided in row 0 was left
+  untouched. The zeros are now detected and removed correctly.
+
+
+- portable complex arithmetic in the fused-type Cython kernels
+
+  The k-space matrix kernels are templated on independent fused types for the
+  matrix data and the phases, so Cython instantiates real/complex combinations
+  that never occur at runtime. Those instantiations emitted a cast from a
+  complex to a real value, and in-place ``+=`` on complex memoryview elements,
+  neither of which compiles unless the C compiler maps complex numbers onto the
+  native C99 ``_Complex`` type. Both are now routed through the new
+  ``cast_add``/``cast_assign`` helpers in ``sisl/_core/_dtypes.pxd``, which
+  resolve the real/complex distinction at compile time, so the extensions also
+  build with the struct-based complex fallback (MSVC) and in C++ mode.
+
+
+- reading fhiaims input geometries for molecules
+
+  Previously it failed when the lattice was not
+  defined in the file. Now it reads but puts
+  an arbitrary lattice.
+
+
+
+Internal development changes
+============================
+
+- Refactor non-standard object identity tests.
+
+  Refactors `not object is None` to `object is not None` to improve readability and adhere to the standard.
+
+  (:pull:`996`)
+
+
+- Consolidated the element-deletion + pointer-update idiom in `SparseCSR`
+
+  The three copies of the element deletion logic
+  now share a single ``SparseCSR._delete_stored`` helper.
+  This is a pure internal refactor with no change in behavior.
+
+
+- Enabled pyodide builds and more architechtures
+
+
+- enabled windows wheels
+
+  Fully compilable wheels for windows.
+  The cython sources has been fixed such
+  that Windows builds are enabled.
+  Note that the shipped wheels do not
+  enable Fortran sources.
+
+Contributors
+============
+
+A total of 3 people contributed to this release. People with a "+" by their
+names contributed a patch for the first time.
+
+* Arnold Kole +
+* Hood Chatham +
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 5 pull requests were merged for this release.
+
+* :pull:`1001`
+* :pull:`1002`
+* :pull:`1011`
+* :pull:`1012`
+* :pull:`1014`
+
+Maintenance pull requests merged
+--------------------------------
+
+* :pull:`1003`
+* :pull:`1004`
+* :pull:`1005`
+* :pull:`1006`
+* :pull:`1007`
+* :pull:`1008`
+* :pull:`1013`

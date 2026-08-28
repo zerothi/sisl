@@ -1,5 +1,0 @@
-Fixed sile exploration with specification
-
-E.g. `sgeom test{car}` has to be changed to
-`sgeom test{startswith=car}` to get a singular
-sile match.

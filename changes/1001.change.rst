@@ -1,7 +1,0 @@
-Sped up `Geometry.close` and `Geometry.within` for large auxiliary supercells
-
-The supercell results were accumulated with a `np.concatenate` on every
-supercell iteration, copying the whole growing array each time (scaling as the
-square of the number of supercells). They are now collected and concatenated
-once, which is noticeably faster for geometries with many supercells (large
-``nsc``) or long-range searches.

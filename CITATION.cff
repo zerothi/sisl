@@ -1,6 +1,6 @@
-version: 0.16.4
-commit: "v0.16.4"
-date-released: "2026-03-19"
+version: 0.17.0
+commit: "v0.17.0"
+date-released: "2026-08-28"
 cff-version: 1.2.0
 message: "Please cite sisl in any paper to acknowledge and support development."
 type: software
