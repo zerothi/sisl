@@ -1,0 +1,14 @@
+`NeighborFinder` no longer misses neighbors for large cutoff radii
+
+When the cutoff radius required bins bigger than the unit cell, the binning
+was done on an auxiliary tiled geometry that was constructed without a
+lattice. `~sisl.Geometry` then invented one from the bounding box of the
+coordinates, so the bins were assigned in a different fractional frame than
+the one used when querying, and neighbors were silently dropped (or the setup
+crashed with an ``IndexError``). The supercell index of the tiled lattice was
+also discarded when mapping the pairs back to the original geometry.
+
+Additionally, the minimum bin size for skewed cells is now derived from the
+distance between the lattice planes instead of the pairwise angles between
+lattice vectors, which was too small for genuinely triclinic cells, and
+`NeighborFinder.find_close` now handles coordinates outside the unit cell.

@@ -382,3 +382,83 @@ def test_skewed_cell(pbc):
     assert np.all(neighfinder.nbins == (2, 3, 8))
     # Atoms should have one neighbor
     assert neighfinder.find_neighbors()[0].n_neighbors == 1
+
+
+def _brute_force_neighbors(geom, R, nsc):
+    """Reference implementation, looping explicitly over all periodic images"""
+    import itertools
+
+    pairs = set()
+    ranges = [range(-(n // 2), n // 2 + 1) for n in nsc]
+    for isc in itertools.product(*ranges):
+        offset = np.array(isc, dtype=np.float64) @ geom.cell
+        dist = np.linalg.norm(
+            geom.xyz[None, :, :] + offset - geom.xyz[:, None, :], axis=-1
+        )
+        for i, j in zip(*np.where(dist < R)):
+            if isc == (0, 0, 0) and i == j:
+                continue
+            pairs.add((int(i), int(j), *isc))
+    return pairs
+
+
+def _finder_neighbors(neighs):
+    return set(
+        (int(i), int(j), *map(int, isc))
+        for i, j, isc in zip(neighs.I, neighs.J, neighs.isc)
+    )
+
+
+@pytest.mark.parametrize(
+    "cell",
+    [
+        # Orthorhombic cells where R exceeds (some of) the lattice vectors, so
+        # that the finder needs to bin on a tiled auxiliary geometry.
+        [9.534, 11.138, 6.761],
+        [3.322, 5.867, 5.392],
+        [11.379, 2.948, 2.049],
+        # A skewed cell, where the bin size is dictated by the perpendicular
+        # distance between the lattice planes, not by the lattice vector lengths.
+        [[14.765, -0.525, -3.954], [-2.950, 7.912, -3.101], [-0.679, -0.894, 2.192]],
+    ],
+)
+def test_R_too_big_against_brute_force(cell):
+    """R spanning several unit cells must find exactly the same neighbors
+    as an explicit loop over the periodic images.
+
+    Regression test: the auxiliary tiled geometry used for binning was built
+    without a lattice, so the bins were assigned in a different fractional
+    frame than the one used when searching, silently dropping neighbors.
+    """
+    R = 5.031
+
+    rng = np.random.default_rng(42)
+    geom = Geometry(rng.random((5, 3)) @ Lattice(cell).cell, lattice=cell)
+
+    finder = NeighborFinder(geom, R=R)
+    assert finder._R_too_big
+    finder.assert_consistency()
+
+    # Enough images to cover a sphere of radius R around the unit cell.
+    # The relevant length is the distance between the lattice planes.
+    heights = 1 / np.linalg.norm(geom.icell, axis=1)
+    nsc = [int(2 * np.ceil(R / height) + 1) for height in heights]
+
+    assert _finder_neighbors(finder.find_neighbors()) == _brute_force_neighbors(
+        geom, R, nsc
+    )
+
+
+def test_find_close_outside_unit_cell():
+    """Coordinates outside the unit cell must give the same neighbors as their
+    periodic image inside it."""
+    geom = Geometry([[1, 1, 1], [3, 3, 3]], lattice=[5.0, 6.0, 7.0])
+
+    finder = NeighborFinder(geom, R=1.5)
+
+    inside = finder.find_close([[1.2, 1.0, 1.0]])[0]
+    outside = finder.find_close([[1.2 + 5.0, 1.0, 1.0]])[0]
+
+    assert np.all(inside.J == outside.J)
+    # The neighbor is one cell further away when searching from outside
+    assert np.all(outside.isc - inside.isc == [1, 0, 0])

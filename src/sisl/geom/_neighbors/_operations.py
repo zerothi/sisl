@@ -153,6 +153,12 @@ def get_pairs(
     ref_xyz: cnp.float64_t[:] = np.empty(3, dtype=np.float64)
     neigh_isc: cnp.int64_t[:] = np.empty(3, dtype=np.int64)
 
+    neighs_obj: cnp.ndarray = np.empty([init_npairs, 5], dtype=np.int64)
+    neighs: cnp.int64_t[:, :] = neighs_obj
+
+    split_indices_obj: cnp.ndarray = np.zeros(N_ind, dtype=np.int64)
+    split_indices: cnp.int64_t[:] = split_indices_obj
+
     def grow():
         nonlocal neighs_obj, neighs, grow_factor
 
@@ -161,12 +167,6 @@ def get_pairs(
         new_neighs_obj[:n, :] = neighs_obj[:, :]
         neighs_obj = new_neighs_obj
         neighs = neighs_obj
-
-    neighs_obj: cnp.ndarray = np.empty([init_npairs, 5], dtype=np.int64)
-    neighs: cnp.int64_t[:, :] = neighs_obj
-
-    split_indices_obj: cnp.ndarray = np.zeros(N_ind, dtype=np.int64)
-    split_indices: cnp.int64_t[:] = split_indices_obj
 
     # Counter for filling neighs
     i_pair: cython.size_t = 0
@@ -238,7 +238,7 @@ def get_pairs(
                     # to sum the radius of the neighbor to the threshold
                     threshold = threshold + thresholds[neigh_at]
 
-                if dist < threshold:
+                if dist <= threshold:
 
                     if i_pair >= neighs.shape[0]:
                         grow()

@@ -3,6 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import sys
+
 from .utils._sisl_cmd import sisl_cmd
 
-sisl_cmd()
+if __name__ == "__main__":
+    sys.exit(sisl_cmd())

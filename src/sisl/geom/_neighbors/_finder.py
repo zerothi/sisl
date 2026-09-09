@@ -128,6 +128,11 @@ class NeighborFinder:
     # Geometry actually used for binning. Can be the provided geometry
     # or a tiled geometry if the search radius is too big (compared to the lattice size).
     _bins_geometry: Geometry
+    # Number of times the geometry was tiled along each direction to build
+    # `_bins_geometry` (all ones when no tiling was needed).
+    _bins_nsc: np.ndarray
+    # Translation from the geometry coordinates to the `_bins_geometry` ones.
+    _bins_offset: np.ndarray
 
     #: The cutoff radius for each atom in the geometry.
     R: np.ndarray
@@ -236,32 +241,28 @@ class NeighborFinder:
                 "All R values are 0 or less. Please provide some positive values"
             )
 
-        # Find the minimum length needed in each lattice vector direction
-        # (the more skewed the cell is, the bigger the bins have to be).
-        # The minimum bin size dictated by two lattice vectors (v1, v2) is:
-        #   2 * (max_R / sin[angle(v1, v2)] )
-        # The factor 2 max_R is taken out and applied after.
-        min_bin_sizes = np.ones(3)
-        lattice_norms = self.geometry.length
-        for i in range(2):
-            for j in range(i + 1, 3):
-
-                # Compute angle of vectors i and j
-                scalar_prod = np.dot(self.geometry.cell[i], self.geometry.cell[j])
-                cos_alpha = scalar_prod / (lattice_norms[i] * lattice_norms[j])
-
-                # Required bin size along vector i due to its relation with j
-                # This ensures a positive number
-                required_bin_size = 1 / (1 - cos_alpha**2) ** 0.5
-                min_bin_sizes[i] = max(min_bin_sizes[i], required_bin_size)
-                min_bin_sizes[j] = max(min_bin_sizes[j], required_bin_size)
-
         bin_size = np.asarray(bin_size)
         if np.any(bin_size < 1):
             raise ValueError(
                 "The bin_size argument must be larger than 1 so that the search"
                 f"is performed on neighboring bins. Received {bin_size}"
             )
+
+        # Find the minimum length needed in each lattice vector direction
+        # (the more skewed the cell is, the bigger the bins have to be).
+        # Only searching the adjacent bins requires every bin to be at least
+        # 2 * max_R thick *perpendicular* to its faces. A bin spans
+        # ``bin_size`` along the lattice vector v_i, so its thickness is
+        # ``bin_size * h_i / |v_i|``, with h_i the distance between the planes
+        # spanned by the two other lattice vectors. Hence the minimum bin size is
+        #   2 * max_R * |v_i| / h_i
+        # The factor 2 max_R is taken out and applied after.
+        # Note that h_i = V / |v_j x v_k|, so |v_i| / h_i = |v_i| |v_j x v_k| / V.
+        cell = self.geometry.cell
+        lattice_norms = self.geometry.length
+        volume = self.geometry.volume
+        cross_norms = np.linalg.norm(np.cross(cell[[1, 2, 0]], cell[[2, 0, 1]]), axis=1)
+        min_bin_sizes = lattice_norms * cross_norms / volume
 
         # Correct for maximum distance in the bin-size (R on both sides)
         bin_size = min_bin_sizes * bin_size * 2 * max_R
@@ -276,9 +277,9 @@ class NeighborFinder:
 
             # We round the amount of cells needed in each direction
             # to the closest next odd number.
-            nsc = np.ceil(bin_size / lattice_norms) // 2 * 2 + 1
+            nsc = (np.ceil(bin_size / lattice_norms) // 2 * 2 + 1).astype(np.int64)
             # And then set it as the number of supercells.
-            self.geometry.set_nsc(nsc.astype(np.int64))
+            self.geometry.set_nsc(nsc)
             if self._aux_R.ndim == 1:
                 self._aux_R = np.tile(self._aux_R, self.geometry.n_s)
 
@@ -287,8 +288,24 @@ class NeighborFinder:
                 ats_xyz = self.geometry.axyz(isc=isc)
                 all_xyz.append(ats_xyz)
 
+            # The supercells span [-(nsc//2), nsc//2], so shifting by (nsc//2) cells
+            # places every atom inside [0, nsc*cell). This is required because the
+            # binning wraps the fractional coordinates (``fxyz % 1``) while the
+            # distances are computed on the raw coordinates; an atom binned at a
+            # wrapped position would be compared against an unwrapped coordinate.
+            self._bins_offset = (nsc // 2) @ self.geometry.cell
+            self._bins_nsc = nsc
+
+            # The binning geometry holds every atom of the `nsc` supercells, which
+            # is exactly one period of the crystal in the lattice `nsc * cell`.
+            # The lattice *must* be passed explicitly: otherwise `Geometry` invents
+            # one from the bounding box of the coordinates, and then the fractional
+            # coordinates used for binning no longer relate to the ones used when
+            # searching (and the bin size may even not fit in the invented lattice).
             self._bins_geometry = Geometry(
-                np.concatenate(all_xyz), atoms=self.geometry.atoms
+                np.concatenate(all_xyz) + self._bins_offset,
+                atoms=self.geometry.atoms,
+                lattice=self.geometry.cell * nsc.reshape(3, 1),
             )
 
             # Recompute lattice sizes
@@ -296,6 +313,8 @@ class NeighborFinder:
 
         else:
             self._bins_geometry = self.geometry
+            self._bins_offset = np.zeros(3)
+            self._bins_nsc = np.ones(3, dtype=np.int64)
 
         # Get the number of bins along each cell direction.
         nbins_float = lattice_norms / bin_size
@@ -384,8 +403,7 @@ class NeighborFinder:
         # Avoid numerical errors in coordinates
         fxyz[(fxyz <= 0) & (fxyz > -1e-8)] = 1e-8
         fxyz[(fxyz >= 1) & (fxyz < 1 + 1e-8)] = 1 - 1e-8
-
-        bin_indices = ((fxyz) % 1) * self.nbins
+        bin_indices = (fxyz % 1) * self.nbins
         # Atoms that are exactly at the limit of the cell might have fxyz = 1
         # which would result in a bin index outside of range.
         # We just bring it back to the unit cell.
@@ -480,34 +498,42 @@ class NeighborFinder:
         split_ind: Union[int, np.ndarray],  # (n_queried_atoms, )
     ):
         """Correction to atom and supercell indices when the binning has been done on a tiled geometry"""
-        is_sc_neigh = neighbor_pairs[:, 1] >= self.geometry.na
+        neighbor_pairs = neighbor_pairs.copy()
+
+        # The neighbor index runs over the atoms of the tiled geometry, so it encodes
+        # both the atom in the unit cell and the supercell it was tiled into.
+        sc_neigh, uc_neigh = np.divmod(neighbor_pairs[:, 1], self.geometry.na)
+
+        # The search was done in the tiled lattice (`nsc * cell`), hence one supercell
+        # step there amounts to `nsc` steps in the original lattice. Both contributions
+        # must be added, dropping either of them loses/mislabels connections.
+        isc = neighbor_pairs[:, 2:] * self._bins_nsc + self.geometry.sc_off[sc_neigh]
+
+        neighbor_pairs[:, 1] = uc_neigh
+        neighbor_pairs[:, 2:] = isc
+
+        return self._drop_non_pbc_pairs(neighbor_pairs, split_ind)
+
+    def _drop_non_pbc_pairs(
+        self,
+        neighbor_pairs: np.ndarray,  # (n_pairs, 5)
+        split_ind: Union[int, np.ndarray],  # (n_queried_atoms, )
+    ):
+        """Removes pairs that connect through a non-periodic direction"""
         pbc = self.geometry.lattice.pbc
+        if np.all(pbc):
+            return neighbor_pairs, split_ind
 
-        invalid = None
-        if not np.any(pbc):
-            invalid = is_sc_neigh
+        invalid = neighbor_pairs[:, 2:][:, ~pbc].any(axis=1)
+
+        neighbor_pairs = neighbor_pairs[~invalid]
+        if isinstance(split_ind, int):
+            split_ind = split_ind - invalid.sum()
         else:
-            pbc_neighs = neighbor_pairs.copy()
-
-            sc_neigh, uc_neigh = np.divmod(
-                neighbor_pairs[:, 1][is_sc_neigh], self.geometry.na
-            )
-            isc_neigh = self.geometry.sc_off[sc_neigh]
-
-            pbc_neighs[is_sc_neigh, 1] = uc_neigh
-            pbc_neighs[is_sc_neigh, 2:] = isc_neigh
-
-            if not np.all(pbc):
-                invalid = pbc_neighs[:, 2:][:, ~pbc].any(axis=1)
-
-            neighbor_pairs = pbc_neighs
-
-        if invalid is not None:
-            neighbor_pairs = neighbor_pairs[~invalid]
-            if isinstance(split_ind, int):
-                split_ind = split_ind - invalid.sum()
-            else:
-                split_ind = split_ind - np.cumsum(invalid)[split_ind - 1]
+            # Number of dropped pairs before each break-point
+            dropped = np.zeros(len(invalid) + 1, dtype=split_ind.dtype)
+            np.cumsum(invalid, out=dropped[1:])
+            split_ind = split_ind - dropped[split_ind]
 
         return neighbor_pairs, split_ind
 
@@ -541,12 +567,13 @@ class NeighborFinder:
         # Sanitize atoms
         atoms = self.geometry._sanitize_atoms(atoms).astype(np.int64)
 
-        # Cast R into array of appropiate shape and type.
+        # Cast R into array of appropriate shape and type.
         thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)
 
-        # Get search indices
+        # Get search indices. Note the fractional coordinates must be the ones of
+        # the binning geometry, which is the one the bins were built from.
         search_indices, isc = self._get_search_indices(
-            self.geometry.fxyz[atoms], cartesian=False
+            self._bins_geometry.fxyz[atoms], cartesian=False
         )
 
         # Get atom counts
@@ -634,7 +661,7 @@ class NeighborFinder:
 
         # Get search indices
         search_indices, isc = self._get_search_indices(
-            self.geometry.fxyz, cartesian=False
+            self._bins_geometry.fxyz, cartesian=False
         )
 
         # Get atom counts
@@ -687,10 +714,19 @@ class NeighborFinder:
         thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)
 
         xyz = np.atleast_2d(xyz).astype(float)
+        # Move the coordinates to the frame the bins were built in.
+        fxyz = (xyz + self._bins_offset).dot(self._bins_geometry.icell.T)
+
+        # Points may lie outside the binning cell. The bins are looked up on the
+        # wrapped fractional coordinate, so the coordinate used for the distances
+        # has to be wrapped as well. The translation applied here is added back as
+        # a supercell offset of the found neighbors.
+        wrap_isc = np.floor(fxyz).astype(np.int64)
+        fxyz = fxyz - wrap_isc
+        bins_xyz = fxyz.dot(self._bins_geometry.cell)
+
         # Get search indices
-        search_indices, isc = self._get_search_indices(
-            xyz.dot(self._bins_geometry.icell.T) % 1, cartesian=False
-        )
+        search_indices, isc = self._get_search_indices(fxyz, cartesian=False)
 
         # Get atom counts
         at_counts = self._get_search_atom_counts(search_indices)
@@ -705,23 +741,36 @@ class NeighborFinder:
 
         # Find the neighbor pairs
         neighbor_pairs, split_ind = _operations.get_close(
-            xyz,
+            bins_xyz,
             search_indices,
             isc,
             self._heads,
             self._list,
             self._bins_geometry.xyz,
             self._bins_geometry.cell,
-            self.geometry.lattice.pbc,
+            # The search coordinates may have been wrapped into the cell, so the
+            # supercell indices only become meaningful once un-wrapped below.
+            # Hence the periodicity is imposed afterwards, not here.
+            np.ones(3, dtype=bool),
             thresholds,
             init_pairs,
             self.memory[1],
         )
 
+        # Undo the wrapping of the search coordinates, in the binning lattice.
+        if np.any(wrap_isc):
+            neighbor_pairs[:, 2:] += np.repeat(
+                wrap_isc, np.diff(split_ind, prepend=0), axis=0
+            )
+
         # Correct neighbor indices for the case where R was too big and
         # we needed to create an auxiliary supercell.
         if self._R_too_big:
             neighbor_pairs, split_ind = self._correct_pairs_R_too_big(
+                neighbor_pairs, split_ind
+            )
+        else:
+            neighbor_pairs, split_ind = self._drop_non_pbc_pairs(
                 neighbor_pairs, split_ind
             )
 
