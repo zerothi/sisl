@@ -68,25 +68,12 @@ The release cycle should be performed like this:
 7. Create conda uploads.
 
    The conda uploads are based on conda-forge and an associated
-   sisl-feedstock is used. To update it, follow these steps:
+   sisl-feedstock is used.
+
+   To update it, follow these steps:
 
    1. branch off https://github.com/conda-forge/sisl-feedstock
    2. Edit `recipe/meta.yaml` by updating version and sha256
    3. Propose merge-request.
    4. Check CI succeeds.
    5. Accept merge and the new version will be uploaded.
-
-8. Update pyodide version
-
-   Until web assembly (wasm) wheels are supported by PyPi, they
-   are managed directly in the pyodide repository. The update steps
-   are very similar to conda, except all packages are managed
-   in a single repository. The meta.yaml is at `packages/sisl/meta.yaml`.
-   Follow these steps:
-
-   1. branch off https://github.com/pyodide/pyodide
-   2. Edit `packages/sisl/meta.yaml` by updating version, source url and sha256
-   3. Propose merge-request.
-   4. Check CI succeeds. If it doesn't you can test locally by following
-      instructions [here](https://pyodide.org/en/stable/development/new-packages.html#building-a-python-package-in-tree)
-   5. Wait for the pyodide team to accept your request.
