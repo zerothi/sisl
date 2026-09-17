@@ -54,6 +54,7 @@ from sisl.typing import OrSequence, SeqOrScalarFloat, SeqOrScalarInt, SparseMatr
 from sisl.utils.mathematics import intersect_and_diff_sets
 
 from ._sparse import sparse_dense
+from ._sparse_distribute import distribute_changes
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
@@ -322,10 +323,17 @@ column indices of the sparse elements
 
         # unpack size and check the sizes are "physical"
         M, N, K = arg1
-        if M <= 0 or N <= 0 or K <= 0:
+        if M < 0 or N < 0:
             raise ValueError(
                 self.__class__.__name__
-                + f" invalid size of sparse matrix, one of the dimensions is zero: M={M}, N={N}, K={K}"
+                + f" invalid size of sparse matrix, the matrix dimensions must be "
+                f"non-negative: M={M}, N={N}"
+            )
+        if K <= 0:
+            raise ValueError(
+                self.__class__.__name__
+                + f" invalid size of sparse matrix, the data dimension must be "
+                f"positive: K={K}"
             )
 
         # Store shape
@@ -342,7 +350,8 @@ column indices of the sparse elements
         else:
             # number of non-zero elements is give AND larger
             # than the provided non-zero elements per row
-            nnzpr = nnz // M
+            # (M may be 0 for an empty block, which owns no rows to spread over)
+            nnzpr = nnz // max(M, 1)
 
         # Correct input in case very few elements are requested
         nnzpr = max(nnzpr, 1)
@@ -500,6 +509,7 @@ column indices of the sparse elements
 
         return D
 
+    @distribute_changes
     def empty(self, keep_nnz: bool = False) -> None:
         """Delete all sparse information from the sparsity pattern
 
@@ -563,6 +573,7 @@ column indices of the sparse elements
         """Whether the contained data is finalized and non-used elements have been removed"""
         return self._finalized
 
+    @distribute_changes
     def finalize(self, sort: bool = True) -> None:
         """Finalizes the sparse matrix by removing all non-set elements
 
@@ -683,6 +694,7 @@ column indices of the sparse elements
             return setdiff1d(edges, exclude, assume_unique=True)
         return edges
 
+    @distribute_changes
     def _delete_stored(self, idx: np.ndarray[int], mask: np.ndarray[bool]) -> int:
         """Delete the stored elements selected by `mask` (in-place action)
 
@@ -815,6 +827,7 @@ column indices of the sparse elements
         # We are *only* deleting columns, so if it is finalized,
         # it will still be finalized.
 
+    @distribute_changes
     def translate_columns(
         self,
         old: SeqOrScalarInt,
@@ -1032,6 +1045,7 @@ column indices of the sparse elements
     # Define default iterator
     __iter__ = iter_nnz
 
+    @distribute_changes
     def _extend(self, i, j, ret_indices=True):
         """Extends the sparsity pattern to retain elements `j` in row `i`
 
@@ -1163,6 +1177,7 @@ column indices of the sparse elements
         if ret_indices:
             return indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
 
+    @distribute_changes
     def _extend_empty(self, i, n):
         """Extends the sparsity pattern with `n` elements in row `i`
 
@@ -1254,6 +1269,7 @@ column indices of the sparse elements
 
         return indices_only(self.col[ptr : ptr + self.ncol[i]], j) + ptr
 
+    @distribute_changes
     def __delitem__(self, key):
         """Remove items from the sparse patterns"""
         # Get indices of sparse data (-1 if non-existing)
