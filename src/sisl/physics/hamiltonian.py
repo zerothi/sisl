@@ -320,10 +320,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # When the energy is zero, there is no shift
             return
 
-        if self.spin.is_nambu:
-            nspin = 2
-        else:
-            nspin = self.spin.spinor
+        nspin = min(2, self.spin.spinor)
 
         if self.orthogonal:
             for i in range(self.shape[0]):
