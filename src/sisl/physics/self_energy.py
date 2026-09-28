@@ -44,7 +44,7 @@ def _orbs2spinor_dimension(orbs, spin: "Spin"):
         reps = spin.spinor
         orbs = np.repeat(orbs, reps) * reps
         for off in range(1, reps):
-            orbs[off:reps] += off
+            orbs[off::reps] += off
     return orbs
 
 
