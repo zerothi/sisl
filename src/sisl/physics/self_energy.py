@@ -36,6 +36,18 @@ __all__ += ["SemiInfinite", "RecursiveSI"]
 __all__ += ["RealSpaceSE", "RealSpaceSI"]
 
 
+def _orbs2spinor_dimension(orbs, spin: "Spin"):
+    """Expand an orbital array into the spinor dimension"""
+    if spin.is_diagonal:
+        pass
+    else:
+        reps = spin.spinor
+        orbs = np.repeat(orbs, reps) * reps
+        for off in range(1, reps):
+            orbs[off:reps] += off
+    return orbs
+
+
 @set_module("sisl.physics")
 class SelfEnergy:
     r"""Self-energy object able to calculate the dense self-energy for a given sparse matrix
@@ -972,16 +984,7 @@ class RealSpaceSE(SelfEnergy):
         V_atoms = self.real_space_coupling(True)[1]
         orbs = P0.a2o(V_atoms, all=True)
         try:
-            if P0.spin.is_nambu:
-                # expand in case we have a non-colinear|spin-orbit
-                orbs = np.repeat(orbs, 4) * 4
-                orbs[1::4] += 1
-                orbs[2::4] += 2
-                orbs[3::4] += 3
-            elif not P0.spin.is_diagonal:
-                # expand in case we have a non-colinear|spin-orbit
-                orbs = np.repeat(orbs, 2) * 2
-                orbs[1::2] += 1
+            orbs = _orbs2spinor_dimension(orbs, P0.spin)
         except AttributeError:
             pass
 
@@ -1489,16 +1492,7 @@ class RealSpaceSI(SelfEnergy):
         # Surface orbitals to put in the semi-infinite self-energy into.
         orbs = self.surface.geometry.a2o(atoms, all=True)
         try:
-            if self.surface.spin.is_nambu:
-                # expand in case we have a non-colinear|spin-orbit
-                orbs = np.repeat(orbs, 4) * 4
-                orbs[1::4] += 1
-                orbs[2::4] += 2
-                orbs[3::4] += 3
-            elif not self.surface.spin.is_diagonal:
-                # expand in case we have a non-colinear|spin-orbit
-                orbs = np.repeat(orbs, 2) * 2
-                orbs[1::2] += 1
+            orbs = _orbs2spinor_dimension(orbs, self.surface.spin)
         except AttributeError:
             pass
         self._surface_orbs = orbs.reshape(-1, 1)
@@ -1735,16 +1729,7 @@ class RealSpaceSI(SelfEnergy):
         V_atoms = self.real_space_coupling(True)[1]
         orbs = P0.a2o(V_atoms, all=True)
         try:
-            if P0.spin.is_nambu:
-                # expand in case we have a non-colinear|spin-orbit
-                orbs = np.repeat(orbs, 4) * 4
-                orbs[1::4] += 1
-                orbs[2::4] += 2
-                orbs[3::4] += 3
-            elif not P0.spin.is_diagonal:
-                # expand in case we have a non-colinear|spin-orbit
-                orbs = np.repeat(orbs, 2) * 2
-                orbs[1::2] += 1
+            orbs = _orbs2spinor_dimension(orbs, P0.spin)
         except AttributeError:
             pass
 
