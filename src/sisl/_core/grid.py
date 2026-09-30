@@ -12,6 +12,8 @@ from typing import Optional
 import numpy as np
 from numpy import add, asarray, cos, dot, floor, int32, ogrid, sin, take
 from scipy.ndimage import zoom as ndimage_zoom
+
+# TODO: scipy >= 1.11 use diags_array
 from scipy.sparse import SparseEfficiencyWarning
 from scipy.sparse import diags as sp_diags
 
@@ -1067,7 +1069,7 @@ class Grid(
 
         Parameters
         ----------
-        A : `~scipy.sparse.csr_matrix`/`~scipy.sparse.csc_matrix`
+        A : `~scipy.sparse.csr_array`/`~scipy.sparse.csc_matrix`
            sparse matrix describing the LHS for the linear system of equations
         b : numpy.ndarray
            a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil
@@ -1111,7 +1113,7 @@ class Grid(
 
         Parameters
         ----------
-        A : scipy.sparse.csr_matrix
+        A : scipy.sparse.csr_array
            sparse matrix describing the grid
         b : numpy.ndarray
            a vector containing RHS of :math:`\mathbf A \mathbf x = \mathbf b` for the solution of the grid stencil
@@ -1203,7 +1205,7 @@ class Grid(
 
         Returns
         -------
-        scipy.sparse.csr_matrix
+        scipy.sparse.csr_array
             the stencil for the `pyamg` solver
         numpy.ndarray
             RHS of the linear system of equations

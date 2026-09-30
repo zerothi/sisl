@@ -520,7 +520,7 @@ class TestSparseAtom:
 
     def test_fromsp1(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
-        lil = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil = sc.sparse.lil_array((g.na, g.na_s), dtype=np.int32)
         lil[0, [1, 2, 3]] = 1
         lil[1, [2, 4, 1]] = 2
         s1 = SparseAtom.fromsp(g, [lil], unknown_key="hello")
@@ -536,8 +536,8 @@ class TestSparseAtom:
 
     def test_fromsp2(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
-        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
-        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil1 = sc.sparse.lil_array((g.na, g.na_s), dtype=np.int32)
+        lil2 = sc.sparse.lil_array((g.na, g.na_s), dtype=np.int32)
         lil1[0, [1, 2, 3]] = 1
         lil2[1, [2, 4, 1]] = 2
         s1 = SparseAtom.fromsp(g, [lil1, lil2])
@@ -551,8 +551,8 @@ class TestSparseAtom:
 
     def test_fromsp4(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
-        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
-        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil1 = sc.sparse.lil_array((g.na, g.na_s), dtype=np.int32)
+        lil2 = sc.sparse.lil_array((g.na, g.na_s), dtype=np.int32)
         lil1[0, [1, 2, 3]] = 1
         lil2[1, [2, 4, 1]] = 2
 
@@ -564,8 +564,8 @@ class TestSparseAtom:
         import pickle as p
 
         g = setup.g.repeat(2, 0).tile(2, 1)
-        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
-        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
+        lil1 = sc.sparse.lil_array((g.na, g.na_s), dtype=np.int32)
+        lil2 = sc.sparse.lil_array((g.na, g.na_s), dtype=np.int32)
         lil1[0, [1, 2, 3]] = 1
         lil2[1, [2, 4, 1]] = 2
         S = SparseAtom.fromsp(g, [lil1, lil2])
