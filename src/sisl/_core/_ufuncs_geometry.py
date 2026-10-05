@@ -1056,7 +1056,7 @@ def sub(geometry: Geometry, atoms: AtomsIndex) -> Geometry:
     Parameters
     ----------
     atoms :
-        indices/boolean of all atoms to be removed
+        indices/boolean of all atoms to be retained
 
     See Also
     --------
