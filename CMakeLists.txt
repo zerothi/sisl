@@ -754,3 +754,4 @@ endfunction(add_f2py_library)
 
 # Add the sisl directory (nested CMakeLists.txt files)
 add_subdirectory("src/sisl")
+add_subdirectory("src/sisl_toolbox/btd/pivot")

@@ -3,13 +3,77 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import numpy as np
 import numpy.typing as npt
 
+from sisl import SparseCSR
 from sisl._array import array_arange
 from sisl._internal import set_module
 
-__all__ = ["BlockMatrixIndexer", "BlockMatrix"]
+from .pivot import _reduce_bandwidth, btd_blocks, csr_graph
+
+__all__ = ["BlockMatrixIndexer", "BlockMatrix", "PermuteBTD", "btd_partition"]
+
+
+@set_module("sisl_toolbox.btd")
+@dataclass
+class PermuteBTD:
+    """Pivoting table and block sizes of a block-tridiagonal matrix
+
+    Parameters
+    ----------
+    permute :
+        the pivoting table, ``permute[new] = old``
+    blocks :
+        the block sizes, ``blocks.sum() == len(permute)``
+    """
+
+    permute: np.ndarray
+    blocks: np.ndarray
+
+
+@set_module("sisl_toolbox.btd")
+def btd_partition(
+    csr: SparseCSR,
+    method: str = "gps",
+    cost: str = "speed",
+    refine: bool = True,
+    **kwargs,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Pivoting table and block sizes of the block-tridiagonal matrix of minimal cost
+
+    The pivoting table reduces the bandwidth of `csr` (see
+    `~sisl_toolbox.btd.pivot.reduce_bandwidth`), and the pivoted matrix is partitioned
+    into the block-tridiagonal matrix that minimizes the `cost` model,
+    see `~sisl_toolbox.btd.pivot.btd_blocks`.
+    The indices within each block are sorted, which improves memory access
+    when assembling and post-processing the blocks.
+
+    Parameters
+    ----------
+    csr :
+        the sparse matrix, columns may extend into supercells
+    method :
+        the bandwidth reduction method, see `~sisl_toolbox.btd.pivot.reduce_bandwidth`
+    cost : {"speed", "memory", "speed-diagonal"}
+        the cost model of the block-tridiagonal matrix, see `~sisl_toolbox.btd.pivot.btd_blocks`
+    refine :
+        refine the pivoting table, see `~sisl_toolbox.btd.pivot.reduce_bandwidth`
+    **kwargs :
+        passed to the routine of `method`
+
+    Returns
+    -------
+    PermuteBTD : holding both the block-sizes and the permutation table.
+    """
+    ptr, col = csr_graph(csr)
+    perm = _reduce_bandwidth(ptr, col, method, refine, **kwargs)
+    blocks = btd_blocks(ptr, col, perm, cost)
+    # sorting within a block retains the block-tridiagonal structure
+    perm = perm[np.lexsort((perm, np.repeat(np.arange(len(blocks)), blocks)))]
+    return PermuteBTD(perm, blocks)
 
 
 @set_module("sisl_toolbox.btd")

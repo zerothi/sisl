@@ -214,9 +214,22 @@ class DeviceGreen:
         # There may be no electrodes
         self.elecs = elecs
 
-        # In case the pivot scheme does match the spin-orbit case
-        # We should fix things
-        expand = get_expand(len(H), pivot.no_u)
+        if isinstance(pivot, str):
+            pivot = btd_partition(H, method=pivot)
+        if isinstance(pivot, PermuteBTD):
+            no_u = len(pivot.permute)
+            permute = pivot.permute
+            btd = pivot.blocks
+        else:
+            if hasattr(pivot, "no_d"):
+                no_u = pivot.no_d
+            else:
+                no_u = pivot.no_u
+            permute = pivot.pivot()
+            btd = pivot.btd()
+
+        # Retrieve the expansion of the blocks/orbitals
+        expand = get_expand(len(H), no_u)
 
         if expand > 1:
             info(
@@ -226,9 +239,9 @@ class DeviceGreen:
             )
 
         # the pivoting table for the device region
-        self.pvt = expand_orbs(pivot.pivot(), expand)
+        self.pvt = expand_orbs(permute, expand)
         # the BTD blocks (in the pivoted space) for the device region
-        self.btd = expand_btd(pivot.btd(), expand)
+        self.btd = expand_btd(btd, expand)
 
         # global device eta
         self.eta = eta
@@ -458,7 +471,10 @@ class DeviceGreen:
 
         # Now we can estimate the device eta value.
         # It is based on the electrode values
-        eta_dev_tbt = tbt.eta()
+        try:
+            eta_dev_tbt = tbt.eta()
+        except KeyError:
+            eta_dev_tbt = 1e-6
         if is_tbtrans:
             eta_key = "TBT.Contours.Eta"
         else:
