@@ -530,7 +530,7 @@ _PARALLEL = """
     from mpi4py import MPI
 
     from sisl._core.sparse import SparseCSR
-    from sisl._core._distribute import BlockCyclicPartition, Distribution
+    from sisl._core.mpi import BlockCyclicPartition, Distribution
     import sisl.mpi as smpi
 
     comm = smpi.get_comm()

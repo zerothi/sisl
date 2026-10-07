@@ -6,4 +6,4 @@ from __future__ import annotations
 # Nothing gets exposed here
 __all__ = []
 
-from .comm.sparse_distribute import *
+from .mpi.sparse_distribute import *

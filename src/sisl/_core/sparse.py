@@ -54,7 +54,7 @@ from sisl.typing import OrSequence, SeqOrScalarFloat, SeqOrScalarInt, SparseMatr
 from sisl.utils.mathematics import intersect_and_diff_sets
 
 from ._sparse import sparse_dense
-from .comm.distribute import distribute_changes
+from .mpi.distribute import distribute_changes
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
@@ -686,7 +686,7 @@ column indices of the sparse elements
         --------
         distribute : the implementation, and the details
         """
-        from .comm.sparse_distribute import distribute
+        from .mpi.sparse_distribute import distribute
 
         return distribute(self, op)
 
