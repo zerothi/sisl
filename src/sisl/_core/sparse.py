@@ -54,7 +54,7 @@ from sisl.typing import OrSequence, SeqOrScalarFloat, SeqOrScalarInt, SparseMatr
 from sisl.utils.mathematics import intersect_and_diff_sets
 
 from ._sparse import sparse_dense
-from ._sparse_distribute import distribute_changes
+from .comm.distribute import distribute_changes
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
@@ -663,6 +663,32 @@ column indices of the sparse elements
     def _(self, idx: slice, axis: int = 0) -> ndarray:
         idx = idx.indices(self.shape[axis])
         return _a.arangei(*idx)
+
+    def __sisl_distribute__(self, op: str = "single"):
+        """Make this matrix coherent with the distribution attached to it.
+
+        ``__sisl_distribute__`` is the protocol every distributable object
+        implements, so a consumer can make whatever it was handed coherent
+        without knowing what it is.  `distribute` is this class's
+        implementation of it.
+
+        Structural changes only mark the matrix stale; the communication happens
+        here, once, when a consumer needs a coherent matrix.  Collective: every
+        rank must call it.
+
+        Parameters
+        ----------
+        op :
+            how to merge entries several ranks wrote to the same position;
+            ``"single"`` keeps one, ``"sum"`` sums them.
+
+        See Also
+        --------
+        distribute : the implementation, and the details
+        """
+        from .comm.sparse_distribute import distribute
+
+        return distribute(self, op)
 
     def edges(self, rows: SeqOrScalarInt, exclude: Optional[SeqOrScalarInt] = None):
         """Retrieve edges (connections) of given `rows`

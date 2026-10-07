@@ -18,6 +18,7 @@ from .geometry import *
 from .grid import *
 from .sparse import *
 from .sparse_geometry import *
+from .comm import *
 
 # isort: on
 

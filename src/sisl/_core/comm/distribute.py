@@ -1,14 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-"""Row-block distribution for `SparseCSR`.
-
-`SparseCSR` is geometry-blind: it is ``(nr, nc, dim)`` over ``ptr``/``ncol``/
-``col``/``_D`` and knows nothing about where its rows sit in space.  The
-distribution here is blind in the same way -- rows are divided by index alone.
-That is general, working for any CSR, at the cost of ignoring spatial locality;
-a geometry-aware partition belongs one layer up, in `SparseOrbital`, where the
-`Geometry` can bound the halo by interaction range.
+"""Block distributions.
 
 `Partition` states how indices map to ranks and nothing more, so the same
 schemes serve rows, columns, k-points or energy points.  `BlockCyclicPartition`
@@ -16,25 +9,6 @@ covers the useful range: one contiguous run per rank, which preserves whatever
 locality the sparsity pattern has and keeps extraction a slice; plain cyclic,
 which balances load when work varies along the axis but destroys that locality;
 and the block-cyclic layout in between that ScaLAPACK expects.
-
-Other schemes -- an explicit permutation, or a split balanced by nnz rather
-than by row count -- fit the same contract by implementing `range` and `owner`
-alone.
-
-Coherence is deferred, not eager
---------------------------------
-Redistribution is not triggered by mutation.  A method that changes the
-sparsity structure bumps an integer and returns; the redistribution happens at
-the point of *use*.  This follows PETSc's assembly model, and it matters
-because `transpose` on a row-distributed CSR is a full all-to-all: assembling
-eagerly would turn ``H.transpose().transform(...).eliminate_zeros()`` into three
-redistributions instead of one, and sisl's construction loops perform thousands
-of ``__setitem__`` calls.
-
-The marking is by decorator rather than a bare attribute so that forgetting to
-mark a method -- which would corrupt results silently, the worst failure mode in
-a physics code -- can be caught mechanically; see
-``tests/test_sparse_distribute.py``.
 """
 
 from __future__ import annotations
@@ -52,7 +26,6 @@ __all__ = [
     "BlockCyclicPartition",
     "Distribution",
     "distribute_changes",
-    "local_rows",
 ]
 
 
@@ -310,13 +283,22 @@ class Distribution:
     __slots__ = ("_comm", "_partition", "_epoch", "_assembled")
 
     def __init__(self, comm, partition: Partition):
+        # None means "whatever sisl.mpi hands out", resolved on first use so
+        # that building a Distribution never acquires MPI by itself.
         self._comm = comm
         self._partition = partition
         self._epoch = 0
-        self._assembled = 0
+        # -1, not 0: a distribution that has never assembled cannot be coherent.
+        # Starting "assembled" would let the first consumer use replicated data
+        # as though it had been distributed.
+        self._assembled = -1
 
     @property
     def comm(self):
+        if self._comm is None:
+            from sisl.mpi import get_comm
+
+            self._comm = get_comm()
         return self._comm
 
     @property
@@ -352,7 +334,7 @@ class Distribution:
 def distribute_changes(method):
     """Mark `method` as invalidating the distribution.
 
-    Applied to the few methods that change the sparsity structure.  On an
+    Applied to the few methods that change a structure.  On an
     undistributed matrix -- which is every matrix today -- this costs one failed
     attribute lookup on a path that is already doing array surgery.
 
@@ -370,41 +352,3 @@ def distribute_changes(method):
 
     wrapper._distribute_changes = True
     return wrapper
-
-
-def local_rows(csr, partition: Partition, rank: int):
-    """Extract the rows of `csr` owned by `rank` as a new `SparseCSR`.
-
-    Purely local: no communication.  Correct for an unfinalized matrix, where
-    ``ptr`` is over-allocated and only ``ncol[r]`` entries per row are valid,
-    and for any `Partition` -- a contiguous split yields one run per rank, a
-    cyclic one several.
-
-    A rank owning no rows gets a matrix with zero rows, which is a perfectly
-    good `SparseCSR` and still participates in collectives.
-
-    The column dimension is left at its full extent.  Columns index the whole
-    matrix -- for `SparseOrbital` the supercell -- so renumbering them here
-    would destroy the only information a later halo exchange has to work with.
-    """
-    # Imported here: this module is imported from sparse.py, so the dependency
-    # can only run the other way at call time.
-    from .sparse import SparseCSR
-
-    # A single run keeps the common contiguous case a view rather than a gather.
-    ranges = partition.range(rank)
-    if len(ranges) == 1:
-        selection = slice(*ranges[0])
-    else:
-        selection = partition.indices(rank)
-
-    ncol = csr.ncol[selection]
-    idx = array_arange(csr.ptr[selection], n=ncol)
-
-    ptr = np.insert(np.cumsum(ncol), 0, 0).astype(np.int32)
-    return SparseCSR(
-        (csr._D[idx].copy(), csr.col[idx].copy(), ptr),
-        shape=(partition.count(rank), csr.shape[1]),
-        dim=csr.shape[2],
-        dtype=csr.dtype,
-    )

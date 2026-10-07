@@ -3,7 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-# Nothing gets exposed here
-__all__ = []
+""" Local sisl fixtures """
+import pytest
 
-from .comm.sparse_distribute import *
+
+@pytest.fixture(scope="module", params=["mpi4py"])
+def backend(request):
+    pytest.importorskip(request.param)
+    return request.param
