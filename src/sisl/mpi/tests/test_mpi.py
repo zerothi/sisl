@@ -24,13 +24,11 @@ import textwrap
 
 import pytest
 
-HAS_MPI4PY = importlib.util.find_spec("mpi4py") is not None
+pytestmark = [pytest.mark.mpi]
+
 MPIRUN = shutil.which("mpirun")
 
-needs_mpi4py = pytest.mark.skipif(not HAS_MPI4PY, reason="mpi4py not installed")
-needs_mpirun = pytest.mark.skipif(
-    MPIRUN is None or not HAS_MPI4PY, reason="mpirun or mpi4py unavailable"
-)
+needs_mpirun = pytest.mark.skipif(MPIRUN is None, reason="mpirun unavailable")
 
 
 def run(code, *, nprocs=None, env=None, timeout=120):
@@ -103,7 +101,6 @@ def test_serial_shim_when_mpi4py_missing():
     assert_ok(proc)
 
 
-@needs_mpi4py
 def test_sisl_mpi_env_var_disables():
     """SISL_MPI=0 forces the serial shim even when mpi4py is installed."""
     proc = run(
@@ -223,7 +220,6 @@ def test_no_module_level_wrappers_and_one_shared_contract():
         assert name not in vars(m.Communicator), f"{name!r} should not be wrapped"
 
 
-@needs_mpi4py
 def test_owns_mpi_when_nobody_else_did():
     """No launcher, no foreign owner: sisl claims MPI and cleans up after itself."""
     proc = run("""
@@ -256,7 +252,6 @@ def test_owns_mpi_under_launcher():
     assert_ok(proc)
 
 
-@needs_mpi4py
 def test_attaches_to_foreign_owner():
     """If another component initialized MPI first, sisl attaches and never finalizes."""
     proc = run("""
@@ -271,7 +266,6 @@ def test_attaches_to_foreign_owner():
     assert_ok(proc)
 
 
-@needs_mpi4py
 def test_repeated_acquisition_is_idempotent():
     """A second MPI_Init aborts uncatchably, so acquisition must happen once."""
     proc = run("""
@@ -285,7 +279,6 @@ def test_repeated_acquisition_is_idempotent():
     assert_ok(proc)
 
 
-@needs_mpi4py
 def test_initialized_with_init_thread_not_init():
     """sisl must request FUNNELED; a plain MPI.Init would leave us at SINGLE.
 
@@ -338,7 +331,6 @@ def test_excepthook_aborts_instead_of_hanging():
     assert "should never get here" not in proc.stdout, combined
 
 
-@needs_mpi4py
 def test_no_excepthook_when_serial():
     """Serial users must keep ordinary Python tracebacks and exit codes."""
     proc = run("""
@@ -352,7 +344,6 @@ def test_no_excepthook_when_serial():
     assert "Traceback" in combined, combined
 
 
-@needs_mpi4py
 def test_unknown_operations_delegate_to_the_raw_communicator():
     """The full MPI surface stays reachable without a wrapper per operation."""
     proc = run("""

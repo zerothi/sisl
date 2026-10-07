@@ -15,19 +15,19 @@ import textwrap
 import numpy as np
 import pytest
 
-from sisl._core.comm.distribute import (
+from sisl._core.mpi.distribute import (
     BlockCyclicPartition,
     Distribution,
     Partition,
     distribute_changes,
 )
-from sisl._core.comm.sparse_distribute import (
+from sisl._core.mpi.sparse_distribute import (
     distribute,
     local_rows,
 )
 from sisl._core.sparse import SparseCSR
 
-pytestmark = [pytest.mark.sparse, pytest.mark.comm]
+pytestmark = [pytest.mark.sparse, pytest.mark.mpi]
 
 
 def build(nr=10, nc=14, dim=2, seed=3, finalize=False):
