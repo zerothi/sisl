@@ -3,7 +3,4 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-# Nothing gets exposed here
-__all__ = []
-
-from .comm.sparse_distribute import *
+""" tests for sisl """

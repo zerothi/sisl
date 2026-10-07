@@ -55,9 +55,13 @@ def test_fail_init1():
         SparseCSR((10, 100, 20, 20), dtype=np.int32)
 
 
-def test_fail_init_shape0():
-    with pytest.raises(ValueError):
-        SparseCSR((0, 10, 10), dtype=np.int32)
+def test_init_shape0():
+    # Zero rows/columns used to raise. They are allowed now, so that a rank
+    # owning no rows of a distributed matrix still has a usable object to carry
+    # into collectives. Negative sizes, and a zero data dimension, still raise.
+    csr = SparseCSR((0, 10, 10), dtype=np.int32)
+    assert csr.shape == (0, 10, 10)
+    assert csr.nnz == 0
 
 
 def test_fail_init2():
@@ -1630,3 +1634,35 @@ def test_fromsp_csr_large():
             csr_._D[idx, ic] += c.data[sl]
     if print_time:
         print(f"timing: slice(ptr[]:ptr[]) {time() - t0}")
+
+
+def test_empty_dimensions_are_allowed():
+    """A sparsity pattern may hold zero rows or zero columns.
+
+    Needed so that a rank owning no rows of a distributed matrix still has a
+    usable object to carry into collectives.
+    """
+    for shape in [(0, 14, 2), (5, 0, 1), (0, 0, 1)]:
+        csr = SparseCSR(shape, dtype=np.float64)
+        assert csr.shape == shape
+        assert csr.nnz == 0
+        assert csr.todense().shape == shape
+        csr.finalize()
+        assert csr.nnz == 0
+
+
+def test_empty_rows_with_requested_nnz():
+    """`nnz` is spread over rows; with no rows there is nothing to divide by."""
+    csr = SparseCSR((0, 4, 1), nnz=10)
+    assert csr.shape == (0, 4, 1)
+    assert csr.nnz == 0
+
+
+def test_negative_and_zero_dimensions_are_still_rejected():
+    with pytest.raises(ValueError):
+        SparseCSR((-1, 4, 1))
+    with pytest.raises(ValueError):
+        SparseCSR((4, -1, 1))
+    with pytest.raises(ValueError):
+        # a matrix with no data dimension cannot hold anything
+        SparseCSR((4, 4, 0))

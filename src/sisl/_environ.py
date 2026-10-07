@@ -101,6 +101,13 @@ def _abs_path(path: str):
     return path.resolve()
 
 
+def _bool(value: Union[str, bool, int]) -> bool:
+    """Interpret an environment variable as an on/off flag."""
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() not in ("0", "false", "no", "off", "")
+
+
 def _float_or_int(value: Union[str, float, int]):
     value = float(value)
     # See if it is an integer
@@ -129,6 +136,14 @@ register_environ_variable(
     1,
     "Maximum number of CPU's used for parallel computing (len(os.sched_getaffinity(0)) is a good guess)",
     process=int,
+)
+
+
+register_environ_variable(
+    "SISL_MPI",
+    True,
+    "Whether sisl may acquire an MPI communicator; set to 0 to force serial behaviour",
+    process=_bool,
 )
 
 

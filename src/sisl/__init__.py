@@ -180,6 +180,10 @@ def __getattr__(attr):
         import sisl.physics as physics
 
         return physics
+    if attr == "mpi":
+        import sisl.mpi as mpi
+
+        return mpi
     if attr == "linalg":
         import sisl.linalg as linalg
 

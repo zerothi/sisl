@@ -276,6 +276,8 @@ collect_ignore_glob = []
 _skip_paths = []
 if not has_module("nodify"):
     _skip_paths.append(os.path.join("sisl", "viz"))
+if not has_module("mpi4py"):
+    _skip_paths.append(os.path.join("sisl", "_core", "comm"))
 
 
 def pytest_ignore_collect(collection_path, config):
