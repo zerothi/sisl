@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Callable, Literal, Optional, Tuple, Union
+from typing import Callable, Literal, Self
 
 import numpy as np
 import scipy.sparse as ssp
@@ -31,10 +31,21 @@ from sisl.typing._core import SileLike
 from sisl.utils.misc import PropertyDict
 
 from ._btd import *
+from ._btd import _blocks_in_range
 from ._electrode import *
 from ._help import *
 
 __all__ = ["DeviceGreen"]
+
+
+# shift added to the diagonal of the spectral function before diagonalization,
+# it improves the precision for states with small DOS and is subtracted from
+# the eigenvalues afterwards
+_SPECTRAL_DIAG_SHIFT = 0.1
+
+# keyword arguments consumed by the scattering state methods, see `_scat_state_svd`
+# and `DeviceGreen._scattering_state_svd_a`
+_SCAT_STATE_KWARGS = ("scale", "ret_uv", "driver", "ncv", "tol", "v0", "cutoff_elec")
 
 
 def _scat_state_svd(A, **kwargs):
@@ -137,7 +148,7 @@ class DeviceGreen:
 
        # Calculate the scattering state from the left electrode
        # and then the eigen channels to the right electrode
-       state = G.scattering_state("Left", E=0.1)
+       state = G.scattering_state(0.1, "Left")
        eig_channel = G.eigenchannel(state, "Right")
 
     The above ``DeviceGreen.from_fdf`` is a short-hand for something
@@ -148,7 +159,8 @@ class DeviceGreen:
        import sisl
        from sisl_toolbox.btd import *
        # First read in the required data
-       H_elec = sisl.Hamiltonian.read("ELECTRODE.nc")
+       H_left = sisl.Hamiltonian.read("LEFT.nc")
+       H_right = sisl.Hamiltonian.read("RIGHT.nc")
        H = sisl.Hamiltonian.read("DEVICE.nc")
        # remove couplings along the self-energy direction
        # to ensure no fake couplings.
@@ -162,12 +174,14 @@ class DeviceGreen:
        # Define the self-energy calculators which will downfold the
        # self-energies into the device region.
        # Since a downfolding will be done it requires the device Hamiltonian.
-       H_elec.shift(tbt.mu("Left"))
-       left = DownfoldSelfEnergy("Left", s.RecursiveSI(H_elec, "-C", eta=tbt.eta("Left"),
-                                 tbt, H)
-       H_elec.shift(tbt.mu("Right"))
-       left = DownfoldSelfEnergy("Right", s.RecursiveSI(H_elec, "+C", eta=tbt.eta("Right"),
-                                 tbt, H)
+       H_left.shift(tbt.mu("Left"))
+       left = DownfoldSelfEnergy(
+           "Left", sisl.RecursiveSI(H_left, "-C", eta=tbt.eta("Left")), tbt, H
+       )
+       H_right.shift(tbt.mu("Right"))
+       right = DownfoldSelfEnergy(
+           "Right", sisl.RecursiveSI(H_right, "+C", eta=tbt.eta("Right")), tbt, H
+       )
 
        G = DeviceGreen(H, [left, right], tbt)
 
@@ -265,7 +279,7 @@ class DeviceGreen:
         fdf: SileLike,
         prefix: Literal["TBT", "TS"] = "TBT",
         use_tbt_se: bool = False,
-        eta: Optional[float] = None,
+        eta: float | None = None,
         **kwargs,
     ) -> Self:
         """Return a new `DeviceGreen` using information gathered from the fdf file.
@@ -316,7 +330,7 @@ class DeviceGreen:
 
         def get_line(line):
             """Parse lines in the %block constructs of fdf's"""
-            key, val = line.split(" ", 1)
+            key, val = line.split(None, 1)
             return key.lower().strip(), val.split("#", 1)[0].strip()
 
         def read_electrode(elec_prefix):
@@ -325,23 +339,15 @@ class DeviceGreen:
 
             ret = PropertyDict()
 
-            if is_tbtrans:
-
-                def block_get(dic, key, default=None, unit=None):
-                    ret = dic.get(f"tbt.{key}", dic.get(key, default))
-                    if unit is None or not isinstance(ret, str):
-                        return ret
-                    ret, un = ret.split()
-                    return float(ret) * unit_convert(un, unit)
-
-            else:
-
-                def block_get(dic, key, default=None, unit=None):
-                    ret = dic.get(key, default)
-                    if unit is None or not isinstance(ret, str):
-                        return ret
-                    ret, un = ret.split()
-                    return float(ret) * unit_convert(un, unit)
+            def block_get(dic, key, default=None, unit=None):
+                ret = dic.get(key, default)
+                if is_tbtrans:
+                    # TBT prefixed keys take precedence
+                    ret = dic.get(f"tbt.{key}", ret)
+                if unit is None or not isinstance(ret, str):
+                    return ret
+                ret, un = ret.split()
+                return float(ret) * unit_convert(un, unit)
 
             tbt_prefix = f"TBT.{elec_prefix}"
             ts_prefix = f"TS.{elec_prefix}"
@@ -440,7 +446,6 @@ class DeviceGreen:
             use_tbt_se = [use_tbt_se]
 
         elec_data = {}
-        eta_dev = 1e123  # just a very large number so we default to the smallest one
         for elec in tbt.elecs:
             # read from the block
             data = read_electrode(f"Elec.{elec}")
@@ -463,7 +468,8 @@ class DeviceGreen:
                     f"  {tbt} = {bloch}\n  {fdf} = {data.bloch}"
                 )
 
-            eta_dev = min(data.eta, eta_dev)
+        # default to the smallest electrode eta
+        eta_dev = min((data.eta for data in elec_data.values()), default=np.inf)
 
         # Correct by a factor 1/10 to minimize smearing for device states.
         # We want the electrode to smear.
@@ -556,7 +562,7 @@ class DeviceGreen:
         """Length of Green function matrix."""
         return len(self.pvt)
 
-    def _elec(self, elec) -> Union[int, Sequence[int]]:
+    def _elec(self, elec) -> int | Sequence[int]:
         """Convert a string electrode to the proper linear index"""
         if isinstance(elec, str):
             for iel, el in enumerate(self.elecs):
@@ -568,7 +574,7 @@ class DeviceGreen:
             return [self._elec(e) for e in elec]
         return elec
 
-    def _serialize_elecs(self, elecs, omit_elecs: Optional = None):
+    def _serialize_elecs(self, elecs, omit_elecs=None):
         """Convert a list/str/int of elecs into a list of ints"""
         is_all = elecs is None  # TODO change this to something more sensible
         if is_all:
@@ -582,7 +588,7 @@ class DeviceGreen:
         elecs = self._elec(elecs)
         if is_all and omit_elecs is not None:
             _, omit_elecs = self._serialize_elecs(omit_elecs)
-            elecs = list(filter(lambda elec: not elec in omit_elecs, elecs))
+            elecs = [elec for elec in elecs if elec not in omit_elecs]
             is_single = len(elecs) == 1
 
         return is_single, elecs
@@ -618,7 +624,6 @@ class DeviceGreen:
             return cutoff
 
         def cutoff_func(v):
-            nonlocal cutoff
             rel_v = v / np.max(v)
             return (rel_v >= cutoff).nonzero()[0]
 
@@ -673,9 +678,21 @@ class DeviceGreen:
         self._data.gamma = gamma
 
     def _prepare_tgamma(self, E: complex, k: KPoint, dtype, cutoff, **kwargs) -> None:
+        r"""Pre-calculate the :math:`\tilde{\boldsymbol\Gamma}` matrices for `cutoff`
+
+        `cutoff` is the value passed by the user (a value or a function).
+        It is stored (not its hash) to ensure that a function's id
+        cannot be reused by another function.
+        """
         if self._check_Ek(E, k, **kwargs):
             if hasattr(self._data, "tgamma"):
-                if hash(cutoff) == self._data.tgamma_cutoff:
+                prev = self._data.tgamma_cutoff
+                if callable(cutoff) or callable(prev):
+                    # functions can only be compared by identity
+                    same = cutoff is prev
+                else:
+                    same = np.array_equal(cutoff, prev)
+                if same:
                     return
         else:
             self.clear("A", "se")
@@ -684,13 +701,13 @@ class DeviceGreen:
         self._prepare(E, k, dtype, **kwargs)
 
         tgamma = []
+        cutoff_func = self._as_cutoff_func(cutoff)
 
         # See Sanz, Mach-Zender paper
         # Get the sqrt of the level broadening matrix
         def eigh_sqrt(gam):
-            nonlocal cutoff
             eig, U = eigh(gam)
-            idx = cutoff(eig)
+            idx = cutoff_func(eig)
             eig = np.emath.sqrt(eig[idx])
             U = U[:, idx]
             return eig * U
@@ -699,7 +716,7 @@ class DeviceGreen:
             tgamma.append(eigh_sqrt(gam))
 
         self._data.tgamma = tgamma
-        self._data.tgamma_cutoff = hash(cutoff)
+        self._data.tgamma_cutoff = cutoff
 
     def _prepare(self, E: complex, k: KPoint, dtype, **kwargs) -> None:
         r"""Pre-calculate the needed quantities for Green function calculation
@@ -814,8 +831,9 @@ class DeviceGreen:
         ----------
         M :
             the matrix to convert to a BTD matrix form
-        sparse :
-            whether each block in the BTD matrix may be sparse or not.
+        format :
+            the format of the blocks when `M` is a sparse matrix,
+            any format ``X`` for which ``M.toX()`` exists.
         """
         BM = BlockMatrix(self.btd)
         BI = BM.block_indexer
@@ -836,41 +854,30 @@ class DeviceGreen:
 
         return BM
 
-    def Sk(self, *args, **kwargs):
-        """Return the overlap matrix in the pivoted device region"""
+    def _pivot_k(self, func: Callable, *args, **kwargs):
+        """Call ``func(*args, **kwargs)`` and pivot the result to the device region
+
+        ``format="btd"`` returns the matrix as a `BlockMatrix`, any other
+        `format` is passed to `func`.
+        """
         is_btd = False
         if "format" in kwargs:
             if kwargs["format"].lower() == "btd":
                 is_btd = True
                 del kwargs["format"]
 
-        M = self._pivot_matrix(self.H.Sk(*args, **kwargs))
+        M = self._pivot_matrix(func(*args, **kwargs))
         if is_btd:
             return self._matrix_to_btd(M)
         return M
+
+    def Sk(self, *args, **kwargs):
+        """Return the overlap matrix in the pivoted device region"""
+        return self._pivot_k(self.H.Sk, *args, **kwargs)
 
     def Hk(self, *args, **kwargs):
         """Return the Hamiltonian matrix in the pivoted device region"""
-        is_btd = False
-        if "format" in kwargs:
-            if kwargs["format"].lower() == "btd":
-                is_btd = True
-                del kwargs["format"]
-
-        M = self._pivot_matrix(self.H.Hk(*args, **kwargs))
-        if is_btd:
-            return self._matrix_to_btd(M)
-        return M
-
-    def _get_blocks(self, idx):
-        """Returns the blocks that an index belongs to"""
-        block1 = (idx.min() < self.btd_cum0[1:]).nonzero()[0][0]
-        block2 = (idx.max() < self.btd_cum0[1:]).nonzero()[0][0]
-        if block1 == block2:
-            blocks = [block1]
-        else:
-            blocks = [b for b in range(block1, block2 + 1)]
-        return blocks
+        return self._pivot_k(self.H.Hk, *args, **kwargs)
 
     def green(
         self,
@@ -879,7 +886,7 @@ class DeviceGreen:
         format="array",
         dtype=np.complex128,
         **kwargs,
-    ) -> Union[np.ndarray, BlockMatrix]:
+    ) -> np.ndarray | BlockMatrix:
         r"""Calculate the Green function for a given `E` and `k` point
 
         The Green function is calculated as:
@@ -1127,7 +1134,7 @@ class DeviceGreen:
         nbm1 = nb - 1
 
         # Find parts we need to calculate
-        blocks = self._get_blocks(cols)
+        blocks = _blocks_in_range(self.btd_cum0, cols)
         assert (
             len(blocks) <= 2
         ), f"{self.__class__.__name__} green(diagonal) requires maximally 2 blocks"
@@ -1196,7 +1203,7 @@ class DeviceGreen:
         nbm1 = nb - 1
 
         # Find parts we need to calculate
-        blocks = self._get_blocks(cols)
+        blocks = _blocks_in_range(self.btd_cum0, cols)
         assert (
             len(blocks) <= 2
         ), f"{self.__class__.__name__}.green(column) requires maximally 2 blocks"
@@ -1279,7 +1286,7 @@ class DeviceGreen:
         herm: bool = True,
         dtype=np.complex128,
         **kwargs,
-    ) -> Union[np.ndarray, BlockMatrix]:
+    ) -> np.ndarray | BlockMatrix:
         r"""Calculate the spectral function for a given `E` and `k` point from a given electrode
 
         The spectral function is calculated as:
@@ -1321,9 +1328,6 @@ class DeviceGreen:
             as specified by `format`. Note that some formats does not calculate
             the entire spectral function matrix.
         """
-        # the herm flag is considered useful for testing, there is no need to
-        # play with it. So it isn't documented.
-
         elec = self._elec(elec)
         self._prepare(E, k, dtype, **kwargs)
         format = format.lower()
@@ -1710,10 +1714,10 @@ class DeviceGreen:
         E: complex,
         elec,
         k: KPoint = (0, 0, 0),
-        cutoff: Union[float, Callable] = 0.0,
+        *,
+        cutoff: float | Callable = 0.0,
         method: Literal["svd:gamma", "svd:A", "eig"] = "svd:gamma",
         dtype=np.complex128,
-        *args,
         **kwargs,
     ) -> si.physics.StateCElectron:
         r"""Calculate the scattering states for a given `E` and `k` point from a given electrode
@@ -1767,30 +1771,36 @@ class DeviceGreen:
            One may recreate the spectral function with ``scat.outer(matrix=scat.c * 2 * pi)``.
         """
         elec = self._elec(elec)
-        self._prepare(E, k, dtype)
+        # split the arguments for the scattering state methods from the ones
+        # passed to the matrix and self-energy calculations
+        method_kwargs = {
+            key: kwargs.pop(key) for key in _SCAT_STATE_KWARGS if key in kwargs
+        }
+        self._prepare(E, k, dtype, **kwargs)
+        method_name = method
         method = method.lower().replace(":", "_")
         func = getattr(self, f"_scattering_state_{method}", None)
         if func is None:
             raise ValueError(
-                f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]"
+                f"{self.__class__.__name__}.scattering_state got unknown method={method_name!r}, "
+                "must be one of [svd:gamma, svd:A, eig]"
             )
-        return func(method, elec, cutoff, *args, **kwargs)
+        return func(method, elec, cutoff, **method_kwargs)
 
     def _scattering_state_eig(self, _method, elec, cutoff, **kwargs):
         # We know that scattering_state has called prepare!
-        A = self.spectral(elec, self._data.E, self._data.k, **kwargs)
+        A = self.spectral(self._data.E, elec, self._data.k)
         cutoff = self._as_cutoff_func(cutoff)
 
         # add something to the diagonal (improves diag precision for small states)
         idx = np.arange(len(A))
-        CONST = 0.1
-        np.add.at(A, (idx, idx), CONST)
+        np.add.at(A, (idx, idx), _SPECTRAL_DIAG_SHIFT)
         del idx
 
         # Now diagonalize A
         DOS, A = eigh_destroy(A)
         # backconvert diagonal
-        DOS -= CONST
+        DOS -= _SPECTRAL_DIAG_SHIFT
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
         DOS /= 2 * np.pi
         DOS, A = self._coefficient_state_reduce(elec, DOS, A, cutoff)
@@ -1840,7 +1850,7 @@ class DeviceGreen:
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def _scattering_state_svd_a(
-        self, _method, elec, cutoff: Union[float, Tuple[float, float]] = 0, **kwargs
+        self, _method, elec, cutoff: float | tuple[float, float] = 0, **kwargs
     ):
         # Parse the cutoff value
         # Here we may use 2 values, one for cutting off the initial space
@@ -1862,14 +1872,13 @@ class DeviceGreen:
 
         # add something to the diagonal (improves diag precision)
         idx = np.arange(len(u))
-        CONST = 0.1
-        np.add.at(u, (idx, idx), CONST)
+        np.add.at(u, (idx, idx), _SPECTRAL_DIAG_SHIFT)
         del idx
 
         # Calculate eigenvalues
         DOS, u = eigh_destroy(u)
         # backconvert diagonal
-        DOS -= CONST
+        DOS -= _SPECTRAL_DIAG_SHIFT
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
         DOS /= 2 * np.pi
 
@@ -1937,7 +1946,7 @@ class DeviceGreen:
         elec_to=None,
         k: KPoint = (0, 0, 0),
         dtype=np.complex128,
-    ) -> Union[float, tuple[float, ...]]:
+    ) -> float | tuple[float, ...]:
         r"""Calculate the transmission between an electrode, and one or more other electrodes
 
         The transmission function is calculated as:
@@ -1996,13 +2005,13 @@ class DeviceGreen:
         k: KPoint = (0, 0, 0),
         cutoff: float = 1e-4,
         dtype=np.complex128,
-    ) -> Union[si.physics.StateElectron, tuple[si.physics.StateElectron, ...]]:
+    ) -> si.physics.StateElectron | tuple[si.physics.StateElectron, ...]:
         r""" Calculate the scattering matrix (S-matrix) between `elec_from` and `elec_to`
 
         The scattering matrix is calculated as
 
         .. math::
-               \mathbf S_{\mathfrak e'\mathfrak e}(E, \mathbf) = -\delta_{\alpha\beta} + i
+               \mathbf S_{\mathfrak e'\mathfrak e}(E, \mathbf k) = -\delta_{\alpha\beta} + i
                \tilde{\boldsymbol\Gamma}_{\mathfrak e'}
                \mathbf G
                \tilde{\boldsymbol\Gamma}_{\mathfrak e}
@@ -2057,7 +2066,6 @@ class DeviceGreen:
         elec_from = self._elec(elec_from)
         is_single, elec_to = self._serialize_elecs(elec_to, elec_from)
 
-        cutoff = self._as_cutoff_func(cutoff)
         # Prepare calculation @ E and k
         self._prepare(E, k, dtype)
         self._prepare_tgamma(E, k, dtype, cutoff)
@@ -2094,10 +2102,10 @@ class DeviceGreen:
         self,
         scat_matrix: si.physics.StateElectron,
         ret_out: bool = False,
-    ) -> Union[si.physics.StateCElectron, tuple[si.physics.StateCElectron, ...]]:
+    ) -> si.physics.StateCElectron | tuple[si.physics.StateCElectron, ...]:
         r"""Calculate the eigenchannel from a scattering matrix
 
-        The energy and k-point is inferred from the `state_matrix` object as returned from
+        The energy and k-point is inferred from the `scat_matrix` object as returned from
         `scattering_matrix`.
 
         The eigenchannels are the SVD of the scattering matrix in the
@@ -2105,8 +2113,10 @@ class DeviceGreen:
 
         Parameters
         ----------
-        state_matrix :
+        scat_matrix :
             the scattering matrix as obtained from `scattering_matrix`
+        ret_out :
+            also return the eigenchannels as seen from the outgoing state
 
         Returns
         -------
@@ -2118,11 +2128,11 @@ class DeviceGreen:
             eigenvalues.
             Only returned if `ret_out` is true.
         """
-        tt_eig, U = _scat_state_svd(state_matrix.state.T, ret_uv=ret_out)
+        tt_eig, U = _scat_state_svd(scat_matrix.state.T, ret_uv=ret_out)
         # Here there is a wrong pre-factor of 2pi
         tt_eig *= 2 * np.pi
 
-        info = {**state_matrix.info}
+        info = {**scat_matrix.info}
         SCE = si.physics.StateCElectron
         if ret_out:
             U_in = SCE(U[0].T, tt_eig, self, **info)
@@ -2135,10 +2145,10 @@ class DeviceGreen:
 
     def eigenchannel(
         self, state: si.physics.StateCElectron, elec_to=None, ret_coeff: bool = False
-    ) -> Union[
-        si.physics.StateCElectron,
-        tuple[si.physics.StateCElectron, si.physics.StateElectron],
-    ]:
+    ) -> (
+        si.physics.StateCElectron
+        | tuple[si.physics.StateCElectron, si.physics.StateElectron]
+    ):
         r""" Calculate the eigenchannel from scattering states entering electrodes `elec_to`
 
         The energy and k-point is inferred from the `state` object as returned from

@@ -5,8 +5,6 @@
 
 from __future__ import annotations
 
-from typing import Optional, Tuple, Union
-
 import numpy as np
 
 import sisl as si
@@ -23,34 +21,30 @@ from ._help import expand_btd, expand_orbs, get_expand
 __all__ = ["PivotSelfEnergy", "DownfoldSelfEnergy"]
 
 
-"""
-In the following code sections the comments
-will be referring to systems of varying details.
-
-Imagine a system of atoms:
-
-       Device
-       ⌜   ⌝
-[1 2 3 4 5 6 7 8]
- ⌞ ⌟         ⌞ ⌟
-  |           |
-  E1          E2
-
-We will use these terms:
-
-- full system: atoms 1-8
-- device: atoms 4-6
-- downfolding of E1: 1-3
-- downfolding of E1 and device: 1-4
-- pure electrode E1 in full: 1-2
-- electrode E1 in device: 4
-- downfolding in device: 4 (assuming only NN interactions)
-
-"indices of the downfolding of E1 in the device region":
-    would be index 1 (because 4 is the first atom in the cut-out device.
-So "indices of the downfolding of E1 in the device region" would be
-index 1 (because 4 is the first atom in the cut-out device.
-"""
+# In the following code sections the comments
+# will be referring to systems of varying details.
+#
+# Imagine a system of atoms:
+#
+#        Device
+#        ⌜   ⌝
+# [1 2 3 4 5 6 7 8]
+#  ⌞ ⌟         ⌞ ⌟
+#   |           |
+#   E1          E2
+#
+# We will use these terms:
+#
+# - full system: atoms 1-8
+# - device: atoms 4-6
+# - downfolding of E1: 1-3
+# - downfolding of E1 and device: 1-4
+# - pure electrode E1 in full: 1-2
+# - electrode E1 in device: 4
+# - downfolding in device: 4 (assuming only NN interactions)
+#
+# So "indices of the downfolding of E1 in the device region" would be
+# index 1 (because 4 is the first atom in the cut-out device).
 
 
 @set_module("sisl_toolbox.btd")
@@ -69,7 +63,7 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         name: str,
         se,
         pivot=None,
-        bloch: Optional[Union[si.Bloch, Tuple[int, int, int]]] = None,
+        bloch: si.Bloch | tuple[int, int, int] | None = None,
     ):
 
         # Name of electrode
@@ -202,7 +196,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         Hdevice: si.Hamiltonian,
         eta_device: float = 0.0,
         bulk: bool = True,
-        bloch: Optional = None,
+        bloch: si.Bloch | tuple[int, int, int] | None = None,
     ):
 
         # Default initialize from the super (PivotSelfEnergy)
@@ -336,11 +330,11 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
             data.SeH[data.elec, data.elec.T] = self._bloch(hsk, k, **kwargs)
 
     def self_energy(
-        self, E: complex, k: KPoint = (0, 0, 0), dtype=np.complex128, *args, **kwargs
+        self, E: complex, k: KPoint = (0, 0, 0), *, dtype=np.complex128, **kwargs
     ):
         self._prepare(E, k, dtype, **kwargs)
         data = self._data
-        se = super().self_energy(E, k=k, *args, dtype=dtype, **kwargs)
+        se = super().self_energy(E, k=k, dtype=dtype, **kwargs)
 
         # now put it in the matrix
         M = data.SeH.copy()

@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Self
 
 import numpy as np
 import numpy.typing as npt
 
 from sisl import SparseCSR
 from sisl._array import array_arange
+from sisl._core.sparse_geometry import _SparseGeometry
 from sisl._internal import set_module
 
 from .pivot import _reduce_bandwidth, btd_blocks, csr_graph
@@ -33,15 +35,28 @@ class PermuteBTD:
     permute: np.ndarray
     blocks: np.ndarray
 
+    def __post_init__(self):
+        self.permute = np.asarray(self.permute)
+        self.blocks = np.asarray(self.blocks)
+        if self.permute.ndim != 1 or self.blocks.ndim != 1:
+            raise ValueError(
+                f"{self.__class__.__name__} permute and blocks must be 1D arrays"
+            )
+        if self.blocks.sum() != len(self.permute):
+            raise ValueError(
+                f"{self.__class__.__name__} blocks must sum to the length of permute "
+                f"({self.blocks.sum()} != {len(self.permute)})"
+            )
+
 
 @set_module("sisl_toolbox.btd")
 def btd_partition(
-    csr: SparseCSR,
+    csr: SparseCSR | _SparseGeometry,
     method: str = "gps",
     cost: str = "speed",
     refine: bool = True,
     **kwargs,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> PermuteBTD:
     """Pivoting table and block sizes of the block-tridiagonal matrix of minimal cost
 
     The pivoting table reduces the bandwidth of `csr` (see
@@ -54,7 +69,9 @@ def btd_partition(
     Parameters
     ----------
     csr :
-        the sparse matrix, columns may extend into supercells
+        the sparse matrix, columns may extend into supercells.
+        For a sparse geometry object (e.g. `~sisl.Hamiltonian`) its sparse
+        pattern is used.
     method :
         the bandwidth reduction method, see `~sisl_toolbox.btd.pivot.reduce_bandwidth`
     cost : {"speed", "memory", "speed-diagonal"}
@@ -68,12 +85,29 @@ def btd_partition(
     -------
     PermuteBTD : holding both the block-sizes and the permutation table.
     """
+    if isinstance(csr, _SparseGeometry):
+        csr = csr._csr
     ptr, col = csr_graph(csr)
     perm = _reduce_bandwidth(ptr, col, method, refine, **kwargs)
     blocks = btd_blocks(ptr, col, perm, cost)
     # sorting within a block retains the block-tridiagonal structure
     perm = perm[np.lexsort((perm, np.repeat(np.arange(len(blocks)), blocks)))]
     return PermuteBTD(perm, blocks)
+
+
+def _blocks_in_range(blocks_cum0: np.ndarray, indices: np.ndarray) -> np.ndarray:
+    """Blocks spanned by the range ``[indices.min(), indices.max()]``
+
+    Parameters
+    ----------
+    blocks_cum0 :
+        cumulative sum of the block sizes, starting with 0
+    indices :
+        matrix indices
+    """
+    block1 = (indices.min() < blocks_cum0[1:]).nonzero()[0][0]
+    block2 = (indices.max() < blocks_cum0[1:]).nonzero()[0][0]
+    return np.arange(block1, block2 + 1)
 
 
 @set_module("sisl_toolbox.btd")
@@ -160,26 +194,21 @@ class BlockMatrix:
         return (n, n)
 
     @property
-    def dtype(self):
-        """Retrieve the data-type of the first element of the matrix dictionary"""
-        # Retrieve the dtype for the first element of the dictionary
-        values = self._M.values()
-        if values:
-            return values[0].dtype
-        return np.float64  # the default data-type of numpy arrays
+    def dtype(self) -> np.dtype:
+        """Data-type of the matrix, promoted from all stored blocks
+
+        Defaults to ``float64`` (the default data-type of numpy arrays)
+        when no blocks are stored.
+        """
+        if self._M:
+            return np.result_type(*(M.dtype for M in self._M.values()))
+        return np.dtype(np.float64)
 
     def _get_blocks(self, indices, in_range: bool = False):
         """Returns the blocks that an index belongs to"""
         if in_range:
-            block1 = (indices.min() < self._blocks_cum0[1:]).nonzero()[0][0]
-            block2 = (indices.max() < self._blocks_cum0[1:]).nonzero()[0][0]
-            if block1 == block2:
-                blocks = [block1]
-            else:
-                blocks = np.arange(block1, block2 + 1)
-        else:
-            blocks = np.unique(self._index_blocks[indices])
-        return blocks
+            return _blocks_in_range(self._blocks_cum0, indices)
+        return np.unique(self._index_blocks[indices])
 
     def _get_block_indices(self, blocks):
         """Convert a list of blocks into a list of indices for each block

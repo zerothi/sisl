@@ -266,7 +266,7 @@ def cuthill_mckee(const int[::1] ptr, const int[::1] col, bint reverse=False):
     cdef int[::1] order2 = ORDER2
     cdef int[::1] lptr = LPTR
     cdef int[::1] lptr2 = LPTR2
-    cdef int s, v, u, i, j, ind, head, start
+    cdef int s, v, u, i, x, j, ind, head, start
     cdef int nperm = 0
 
     with nogil:
@@ -282,10 +282,10 @@ def cuthill_mckee(const int[::1] ptr, const int[::1] col, bint reverse=False):
             head = nperm
             nperm += 1
             while head < nperm:
-                i = perm[head]
+                x = perm[head]
                 head += 1
                 start = nperm
-                for ind in range(ptr[i], ptr[i + 1]):
+                for ind in range(ptr[x], ptr[x + 1]):
                     j = col[ind]
                     if level[j] == -1:
                         level[j] = 0
@@ -402,6 +402,24 @@ def _gps(const int[::1] ptr, const int[::1] col, bint generalized, max_roots, vs
     cdef int nperm = 0
     cdef int p = 0
     cdef bint swapped
+    # Legend of the variables, see [GPS1976]_ and [GGPS2009]_:
+    #   s      : seed of the component (-1 for the component of the electrodes)
+    #   v, u   : pseudo-peripheral nodes at the "v" and "u" ends
+    #   roots  : all roots, the first p are at the "v" end, the rest at the "u" end
+    #   m      : number of rooted level structures (root sets)
+    #   nc, nl : number of nodes, and levels, in the current component
+    #   A, AA  : associated level sets, A[t, i] is the level of order[i] in the t'th
+    #            rooted structure (memoryview and array)
+    #   k      : last level of the combined level structure (levels are [0, k])
+    #   lvl    : level of each node in the combined level structure
+    #   cnt    : number of nodes in each level of the combined structure
+    #   hcnt   : per-level histogram of a connected part when placed on a structure
+    #   h      : width of the combined structure when a connected part is placed,
+    #            hmin is the smallest h and best the structure giving it
+    #   j1     : structure selected for the largest connected part
+    #   t, x, a: structure index, node and level (loop variables)
+    #   start  : the node the numbering starts from, s0 its position in perm
+    #   swapped: whether the levels are reversed for the numbering
 
     if generalized:
         # sum of the adjacent node codes (1-based codes, as in the paper)
@@ -749,6 +767,73 @@ cdef inline void _swap(int[::1] lab, int[::1] perm, const int v, const int u) no
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
+cdef void _refine(const int[::1] ptr, const int[::1] col, int[::1] perm, int[::1] lab,
+                  int[::1] hist, const unsigned char[::1] fixed, const int max_sweeps) noexcept:
+    """Hill-climbing of `refine_bandwidth`, `perm` and `lab` are updated in-place"""
+    cdef int n = ptr.shape[0] - 1
+    cdef int sweep, v, u, i, ind, l, lo, hi, mid, dist, dlt, side, B, B_new, C
+    cdef bint improved, critical
+
+    with nogil:
+        # histogram of edge lengths (each edge is counted twice)
+        for i in range(n):
+            for ind in range(ptr[i], ptr[i + 1]):
+                hist[abs(lab[i] - lab[col[ind]])] += 1
+        B = n
+        while B > 0 and hist[B] == 0:
+            B -= 1
+
+        for sweep in range(max_sweeps):
+            improved = False
+            for v in range(n):
+                # a bandwidth of 1 is optimal for any graph with edges
+                if B <= 1:
+                    break
+                if fixed[v]:
+                    continue
+                critical = False
+                lo = n
+                hi = -1
+                for ind in range(ptr[v], ptr[v + 1]):
+                    l = lab[col[ind]]
+                    lo = min(lo, l)
+                    hi = max(hi, l)
+                    critical = critical or abs(lab[v] - l) == B
+                if not critical:
+                    continue
+
+                # try labels by increasing distance to mid(v)
+                mid = (lo + hi) // 2
+                dist = abs(lab[v] - mid)
+                for dlt in range(dist):
+                    for side in range(2 if dlt > 0 else 1):
+                        l = mid - dlt if side == 0 else mid + dlt
+                        if l < 0 or l >= n:
+                            continue
+                        u = perm[l]
+                        if fixed[u]:
+                            continue
+                        C = hist[B]
+                        _shift(ptr, col, lab, hist, v, u, -2)
+                        _swap(lab, perm, v, u)
+                        B_new = max(B, _shift(ptr, col, lab, hist, v, u, 2))
+                        while B_new > 0 and hist[B_new] == 0:
+                            B_new -= 1
+                        if B_new < B or (B_new == B and hist[B] < C):
+                            B = B_new
+                            improved = True
+                            break
+                        # revert
+                        _shift(ptr, col, lab, hist, v, u, -2)
+                        _swap(lab, perm, v, u)
+                        _shift(ptr, col, lab, hist, v, u, 2)
+                    else:
+                        continue
+                    break
+            if not improved:
+                break
+
+
 def refine_bandwidth(const int[::1] ptr, const int[::1] col, perm, fixed=None, int max_sweeps=100):
     """Local refinement of a pivoting table that never increases the bandwidth
 
@@ -792,91 +877,36 @@ def refine_bandwidth(const int[::1] ptr, const int[::1] col, perm, fixed=None, i
     FIXED = np.zeros(n, dtype=np.uint8)
     if fixed is not None:
         FIXED[np.asarray(fixed, dtype=np.int32)] = 1
-    cdef unsigned char[::1] fix = FIXED
-    cdef int[::1] perm_ = PERM
-    cdef int[::1] lab = LAB
-    cdef int[::1] hist = HIST
-    cdef int sweep, v, u, i, ind, l, lo, hi, mid, dist, dlt, side, B, B_new, C
-    cdef bint improved, critical
-
-    # histogram of edge lengths (each edge is counted twice)
-    for i in range(n):
-        for ind in range(ptr[i], ptr[i + 1]):
-            hist[abs(lab[i] - lab[col[ind]])] += 1
-    B = n
-    while B > 0 and hist[B] == 0:
-        B -= 1
-
-    with nogil:
-        for sweep in range(max_sweeps):
-            improved = False
-            for v in range(n):
-                # a bandwidth of 1 is optimal for any graph with edges
-                if B <= 1:
-                    break
-                if fix[v]:
-                    continue
-                critical = False
-                lo = n
-                hi = -1
-                for ind in range(ptr[v], ptr[v + 1]):
-                    l = lab[col[ind]]
-                    lo = min(lo, l)
-                    hi = max(hi, l)
-                    critical = critical or abs(lab[v] - l) == B
-                if not critical:
-                    continue
-
-                # try labels by increasing distance to mid(v)
-                mid = (lo + hi) // 2
-                dist = abs(lab[v] - mid)
-                for dlt in range(dist):
-                    for side in range(2 if dlt > 0 else 1):
-                        l = mid - dlt if side == 0 else mid + dlt
-                        if l < 0 or l >= n:
-                            continue
-                        u = perm_[l]
-                        if fix[u]:
-                            continue
-                        C = hist[B]
-                        _shift(ptr, col, lab, hist, v, u, -2)
-                        _swap(lab, perm_, v, u)
-                        B_new = max(B, _shift(ptr, col, lab, hist, v, u, 2))
-                        while B_new > 0 and hist[B_new] == 0:
-                            B_new -= 1
-                        if B_new < B or (B_new == B and hist[B] < C):
-                            B = B_new
-                            improved = True
-                            break
-                        # revert
-                        _shift(ptr, col, lab, hist, v, u, -2)
-                        _swap(lab, perm_, v, u)
-                        _shift(ptr, col, lab, hist, v, u, 2)
-                    else:
-                        continue
-                    break
-            if not improved:
-                break
-
+    _refine(ptr, col, PERM, LAB, HIST, FIXED, max_sweeps)
     return PERM
 
 
 # BTD cost models, see btd_blocks
-_BTD_COSTS = {"memory": 0, "speed": 1, "speed-diagonal": 2}
+cdef enum BTDCost:
+    COST_MEMORY
+    COST_SPEED
+    COST_SPEED_DIAGONAL
 
 
-cdef inline double _single(const int model, const double d) noexcept nogil:
+_BTD_COSTS = {
+    "memory": COST_MEMORY,
+    "speed": COST_SPEED,
+    "speed-diagonal": COST_SPEED_DIAGONAL,
+}
+
+
+cdef inline double _single(const BTDCost model, const double d) noexcept nogil:
     """Cost of a diagonal block of size `d`"""
-    if model == 0:
+    if model == COST_MEMORY:
         return d * d
     return d * d * d
 
 
-cdef inline double _pair(const int model, const double a, const double b) noexcept nogil:
+cdef inline double _pair(const BTDCost model, const double a, const double b) noexcept nogil:
     """Cost of the coupling between consecutive blocks of sizes `a` and `b`"""
-    if model == 0:
+    if model == COST_MEMORY:
         return 2 * a * b
-    if model == 1:
+    if model == COST_SPEED:
         return a * b * (a + b)
     return 0.
 
@@ -889,6 +919,30 @@ cdef int _grow(int** st, double** val, const int cap) noexcept nogil:
     st[0] = <int*> realloc(st[0], 8 * cap * sizeof(int))
     val[0] = <double*> realloc(val[0], 2 * cap * sizeof(double))
     return 2 * cap
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef void _block_bounds(const int[::1] ptr, const int[::1] col, const int[::1] perm,
+                        const int[::1] lab, int[::1] g, int[::1] m) noexcept nogil:
+    """Bounds of the allowed blocks of the graph ordered by `perm`
+
+    ``g[c]``: a block starting at ``c`` must end at ``>= g[c]`` (non-decreasing),
+    ``m[c]``: the minimal size of a block starting at ``c``.
+    """
+    cdef int n = ptr.shape[0] - 1
+    cdef int r, i, ind, c
+    cdef int f = 0
+    g[0] = 1
+    for r in range(n):
+        i = perm[r]
+        f = max(f, r)
+        for ind in range(ptr[i], ptr[i + 1]):
+            f = max(f, lab[col[ind]])
+        g[r + 1] = f + 1
+    for c in range(n):
+        m[c] = max(g[c], c + 1) - c
 
 
 @cython.boundscheck(False)
@@ -932,7 +986,7 @@ def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"
     """
     if cost not in _BTD_COSTS:
         raise ValueError(f"btd_blocks: cost must be one of {list(_BTD_COSTS)}, got {cost!r}")
-    cdef int model = _BTD_COSTS[cost]
+    cdef BTDCost model = _BTD_COSTS[cost]
     cdef int n = ptr.shape[0] - 1
     PERM = np.asarray(perm, dtype=np.int32)
     if PERM.shape != (n,) or not np.array_equal(np.sort(PERM), np.arange(n)):
@@ -947,34 +1001,21 @@ def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"
     LOW = np.empty(n + 1, dtype=np.float64)
     PREV = np.empty(n + 1, dtype=np.int32)
     HEAD = np.full(n + 1, -1, dtype=np.int32)
-    cdef const int[::1] perm_ = PERM
-    cdef int[::1] lab = LAB
     cdef int[::1] g = G
     cdef int[::1] m = M
     cdef double[::1] best = BEST
     cdef double[::1] low = LOW
     cdef int[::1] prev = PREV
     cdef int[::1] head = HEAD
-    cdef int r, i, ind, c, cp, c2, h, f, d, s, t, nst, cap, last
+    cdef int c, cp, c2, h, d, s, t, nst, cap, last
     cdef double cost_, upper, v
     # branch and bound states: (c, d, back, next) and value
     cdef int* st = NULL
     cdef double* val = NULL
 
-    with nogil:
-        # g[c]: a block starting at c must end at >= g[c] (non-decreasing),
-        # m[c]: the minimal size of a block starting at c
-        f = 0
-        g[0] = 1
-        for r in range(n):
-            i = perm_[r]
-            f = max(f, r)
-            for ind in range(ptr[i], ptr[i + 1]):
-                f = max(f, lab[col[ind]])
-            g[r + 1] = f + 1
-        for c in range(n):
-            m[c] = max(g[c], c + 1) - c
+    _block_bounds(ptr, col, PERM, LAB, g, m)
 
+    with nogil:
         # optimal partition of the diagonal terms
         best[0] = 0.
         h = 0
@@ -991,7 +1032,7 @@ def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"
                     best[c] = best[cp] + cost_
                     prev[c] = cp
 
-    if model == 2:
+    if model == COST_SPEED_DIAGONAL:
         return _btd_backtrack(prev, n)
 
     with nogil:

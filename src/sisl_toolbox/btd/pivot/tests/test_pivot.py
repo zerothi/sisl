@@ -10,7 +10,7 @@ import pytest
 import scipy.sparse as sps
 
 import sisl
-from sisl_toolbox.btd import btd_partition
+from sisl_toolbox.btd import PermuteBTD, btd_partition
 from sisl_toolbox.btd.pivot import (
     bandwidth,
     btd_blocks,
@@ -273,9 +273,10 @@ def test_btd_blocks_error():
         btd_blocks(ptr, col, [0, 1, 2, 3], "unknown")
 
 
+@pytest.mark.parametrize("csr", [True, False])
 @pytest.mark.parametrize("cost", ["speed", "memory", "speed-diagonal"])
 @pytest.mark.parametrize("method", methods)
-def test_btd_partition(method, cost):
+def test_btd_partition(method, cost, csr):
 
     g = sisl.geom.graphene(orthogonal=True).tile(12, 0).tile(3, 1)
     g = g.sub(np.random.default_rng(0).permutation(g.na))
@@ -283,7 +284,7 @@ def test_btd_partition(method, cost):
     H = sisl.Hamiltonian(g)
     H.construct([(0.1, 1.44), (0, -2.7)])
 
-    permbtd = btd_partition(H._csr, method, cost)
+    permbtd = btd_partition(H._csr if csr else H, method, cost)
     assert _is_perm(permbtd.permute, g.no)
     assert permbtd.blocks.sum() == g.no
     A = H.tocsr()
@@ -295,3 +296,13 @@ def test_btd_partition(method, cost):
         assert np.all(np.diff(p) > 0)
     # a ribbon along x has many small blocks
     assert len(permbtd.blocks) > 5
+
+
+def test_permute_btd_validation():
+    p = PermuteBTD([2, 0, 1], [1, 2])
+    assert isinstance(p.permute, np.ndarray)
+    assert isinstance(p.blocks, np.ndarray)
+    with pytest.raises(ValueError):
+        PermuteBTD([2, 0, 1], [1, 1])
+    with pytest.raises(ValueError):
+        PermuteBTD([[2, 0, 1]], [3])
