@@ -5,9 +5,10 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Callable, Literal, Self
+from typing import Callable, Literal, NamedTuple, Self
 
 import numpy as np
+import numpy.typing as npt
 import scipy.sparse as ssp
 from scipy.sparse.linalg import svds
 
@@ -120,6 +121,17 @@ def _scat_state_svd(A, **kwargs):
     return DOS * DOS.conj() / (2 * np.pi), A
 
 
+class _DeviceElectrode(NamedTuple):
+    """An electrode placed in the pivoted device region of `DeviceGreen`"""
+
+    #: the electrode self-energy
+    elec: ElectrodeSelfEnergy
+    #: positions of the self-energy in the pivoted device region (sorted)
+    pvt: np.ndarray
+    #: pivots the self-energy rows and columns to match `pvt`
+    sort: np.ndarray
+
+
 @set_module("sisl_toolbox.btd")
 class DeviceGreen:
     r"""Block-tri-diagonal Green function calculator
@@ -173,17 +185,29 @@ class DeviceGreen:
 
        # Define the self-energy calculators which will downfold the
        # self-energies into the device region.
-       # Since a downfolding will be done it requires the device Hamiltonian.
-       H_left.shift(tbt.mu("Left"))
-       left = DownfoldSelfEnergy(
-           "Left", sisl.RecursiveSI(H_left, "-C", eta=tbt.eta("Left")), tbt, H
-       )
-       H_right.shift(tbt.mu("Right"))
-       right = DownfoldSelfEnergy(
-           "Right", sisl.RecursiveSI(H_right, "+C", eta=tbt.eta("Right")), tbt, H
-       )
+       # Since a downfolding will be done it requires the device Hamiltonian,
+       # and the downfolding region (taken from TBtrans).
+       def downfold(name, H_elec, semi_inf):
+           H_elec.shift(tbt.mu(name))
+           se = sisl.RecursiveSI(H_elec, semi_inf, eta=tbt.eta(name))
+           elec = BlochSelfEnergy(name, se, bloch=tbt.bloch(name))
+           return DownfoldSelfEnergy(
+               elec,
+               H,
+               tbt.pivot_down(name),
+               H.a2o(tbt.a_elec(name), all=True),
+               tbt.btd(name),
+               eta_device=tbt.eta(),
+           )
 
-       G = DeviceGreen(H, [left, right], tbt)
+       left = downfold("Left", H_left, "-C")
+       right = downfold("Right", H_right, "+C")
+
+       # The electrode self-energies are placed in the device region
+       # at the orbitals ``tbt.pivot(name)`` (the last downfolding block).
+       G = DeviceGreen(
+           H, [(left, tbt.pivot("Left")), (right, tbt.pivot("Right"))], tbt
+       )
 
 
     Notes
@@ -220,30 +244,42 @@ class DeviceGreen:
     #      That would probably require us to use a method to retrieve
     #      the elements which determines if it has been calculated or not.
 
-    def __init__(self, H: si.Hamiltonian, elecs, pivot, eta: float = 0.0):
-        """Create Green function with Hamiltonian and BTD matrix elements"""
-        self.H = H
+    def __init__(
+        self,
+        H: si.Hamiltonian,
+        elecs: Sequence[tuple[ElectrodeSelfEnergy, npt.ArrayLike]],
+        pivot,
+        eta: float = 0.0,
+    ):
+        """Create Green function with Hamiltonian and BTD matrix elements
 
-        # Store electrodes (for easy retrieval of the SE)
-        # There may be no electrodes
-        self.elecs = elecs
+        Parameters
+        ----------
+        H :
+            the Hamiltonian containing the device region
+        elecs :
+            the electrodes, each a tuple of the electrode self-energy and
+            the orbitals in `H` (not accounting for spin) which corresponds
+            to the rows of the self-energy matrix.
+        pivot :
+            the pivoting table and BTD blocks of the device region
+        eta :
+            imaginary part of the device region (for real energies)
+        """
+        self.H = H
 
         if isinstance(pivot, str):
             pivot = btd_partition(H, method=pivot)
         if isinstance(pivot, PermuteBTD):
-            no_u = len(pivot.permute)
             permute = pivot.permute
             btd = pivot.blocks
         else:
-            if hasattr(pivot, "no_d"):
-                no_u = pivot.no_d
-            else:
-                no_u = pivot.no_u
             permute = pivot.pivot()
             btd = pivot.btd()
 
-        # Retrieve the expansion of the blocks/orbitals
-        expand = get_expand(len(H), no_u)
+        # Retrieve the (spin) expansion of the blocks/orbitals.
+        # The pivoting tables are orbital indices, without spin.
+        expand = get_expand(len(H), H.no)
 
         if expand > 1:
             info(
@@ -257,6 +293,29 @@ class DeviceGreen:
         # the BTD blocks (in the pivoted space) for the device region
         self.btd = expand_btd(btd, expand)
 
+        # the electrode orbitals in the pivoted device region
+        # inv_pvt[orbital in H] = index in the pivoted device region
+        inv_pvt = np.full(len(H), -1, dtype=self.pvt.dtype)
+        inv_pvt[self.pvt] = np.arange(len(self.pvt))
+        # The positions are sorted (required by the block algorithms),
+        # and the self-energies are pivoted accordingly, see `_DeviceElectrode`.
+        # There may be no electrodes
+        self._elecs = []
+        for elec, orbs in elecs:
+            pvt = inv_pvt[expand_orbs(np.asarray(orbs).ravel(), expand)]
+            if np.any(pvt < 0):
+                raise ValueError(
+                    f"{self.__class__.__name__} electrode {elec.name} has orbitals "
+                    "outside the device region."
+                )
+            if len(pvt) != len(elec):
+                raise ValueError(
+                    f"{self.__class__.__name__} electrode {elec.name} has size {len(elec)}, "
+                    f"but its orbitals gives {len(pvt)}"
+                )
+            sort = np.argsort(pvt)
+            self._elecs.append(_DeviceElectrode(elec, pvt[sort], sort))
+
         # global device eta
         self.eta = eta
 
@@ -265,6 +324,11 @@ class DeviceGreen:
         self.btd_cum0[0] = 0
         self.btd_cum0[1:] = np.cumsum(self.btd)
         self.clear()
+
+    @property
+    def elecs(self) -> list[ElectrodeSelfEnergy]:
+        """The electrode self-energies"""
+        return [el.elec for el in self._elecs]
 
     def __str__(self) -> str:
         ret = f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.btd)}, eta: {self.eta:.3e}"
@@ -278,7 +342,6 @@ class DeviceGreen:
         cls,
         fdf: SileLike,
         prefix: Literal["TBT", "TS"] = "TBT",
-        use_tbt_se: bool = False,
         eta: float | None = None,
         **kwargs,
     ) -> Self:
@@ -292,9 +355,6 @@ class DeviceGreen:
            which prefix to use, if TBT it will prefer TBT prefix, but fall back
            to TS prefixes.
            If TS, only these prefixes will be used.
-        use_tbt_se :
-           whether to use the TBT.SE.nc files for self-energies
-           or calculate them on the fly.
         eta :
             force a specific eta value
         kwargs :
@@ -328,128 +388,14 @@ class DeviceGreen:
             hs_default = f"{slabel}.TSHS"
         Hdev = si.get_sile(fdf.get("TBT.HS", hs_default)).read_hamiltonian()
 
-        def get_line(line):
-            """Parse lines in the %block constructs of fdf's"""
-            key, val = line.split(None, 1)
-            return key.lower().strip(), val.split("#", 1)[0].strip()
-
-        def read_electrode(elec_prefix):
-            """Parse the electrode information and return a dictionary with content"""
-            from sisl.unit.siesta import unit_convert
-
-            ret = PropertyDict()
-
-            def block_get(dic, key, default=None, unit=None):
-                ret = dic.get(key, default)
-                if is_tbtrans:
-                    # TBT prefixed keys take precedence
-                    ret = dic.get(f"tbt.{key}", ret)
-                if unit is None or not isinstance(ret, str):
-                    return ret
-                ret, un = ret.split()
-                return float(ret) * unit_convert(un, unit)
-
-            tbt_prefix = f"TBT.{elec_prefix}"
-            ts_prefix = f"TS.{elec_prefix}"
-
-            block = fdf.get(f"{ts_prefix}")
-            Helec = fdf.get(f"{ts_prefix}.HS")
-            bulk = fdf.get("TS.Elecs.Bulk", True)
-            eta = fdf.get("TS.Elecs.Eta", 1e-3, unit="eV")
-            bloch = [1, 1, 1]
-            for i in range(3):
-                bloch[i] = fdf.get(f"{ts_prefix}.Bloch.A{i+1}", 1)
-            if is_tbtrans:
-                block = fdf.get(f"{tbt_prefix}", block)
-                Helec = fdf.get(f"{tbt_prefix}.HS", Helec)
-                bulk = fdf.get("TBT.Elecs.Bulk", bulk)
-                eta = fdf.get("TBT.Elecs.Eta", eta, unit="eV")
-                for i in range(3):
-                    bloch[i] = fdf.get(f"{tbt_prefix}.Bloch.A{i+1}", bloch[i])
-
-            # Convert to key value based function
-            dic = {key: val for key, val in map(get_line, block)}
-
-            # Retrieve data
-            for key in ("hs", "hs-file", "tshs", "tshs-file"):
-                Helec = block_get(dic, key, Helec)
-            if Helec:
-                Helec = si.get_sile(Helec).read_hamiltonian()
-            else:
-                raise ValueError(
-                    f"{cls.__name__}.from_fdf could not find "
-                    f"electrode HS in block: {prefix} ??"
-                )
-
-            # Get semi-infinite direction
-            semi_inf = None
-            for suf in ("-direction", "-dir", ""):
-                semi_inf = block_get(dic, f"semi-inf{suf}", semi_inf)
-            if semi_inf is None:
-                raise ValueError(
-                    f"{cls.__name__}.from_fdf could not find "
-                    f"electrode semi-inf-direction in block: {prefix} ??"
-                )
-            # convert to sisl infinite
-            semi_inf = semi_inf.lower()
-            semi_inf = semi_inf[0] + {"a1": "a", "a2": "b", "a3": "c"}.get(
-                semi_inf[1:], semi_inf[1:]
-            )
-            # Check that semi_inf is a recursive one!
-            if semi_inf not in ("-a", "+a", "-b", "+b", "-c", "+c"):
-                raise NotImplementedError(
-                    f"{cls.__name__} does not implement other "
-                    "self energies than the recursive one."
-                )
-
-            bulk = bool(block_get(dic, "bulk", bulk))
-            # loop for 0
-            for i, sufs in enumerate([("a", "a1"), ("b", "a2"), ("c", "a3")]):
-                for suf in sufs:
-                    bloch[i] = block_get(dic, f"bloch-{suf}", bloch[i])
-
-            bloch = [
-                int(b)
-                for b in block_get(
-                    dic, "bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}"
-                ).split()
-            ]
-
-            ret.eta = block_get(dic, "eta", eta, unit="eV")
-            # manual shift of the fermi-level
-            dEf = block_get(dic, "delta-Ef", 0.0, unit="eV")
-            # shift electronic structure here, we store it in the returned
-            # dictionary, for information, but it shouldn't be used!
-            Helec.shift(dEf)
-            ret.dEf = dEf
-            # add a fraction of the bias in the coupling elements of the
-            # E-C region, only meaningful for
-            ret.V_fraction = block_get(dic, "V-fraction", 0.0)
-            if ret.V_fraction > 0.0:
-                warn(
-                    f"{cls.__name__}.from_fdf(electrode={elec}) found a non-zero V-fraction value. "
-                    "This is currently not implemented."
-                )
-            ret.Helec = Helec
-            ret.bloch = bloch
-            ret.semi_inf = semi_inf
-            ret.bulk = bulk
-            return ret
-
         # Loop electrodes and read in and construct data
-        if isinstance(use_tbt_se, bool):
-            if use_tbt_se:
-                use_tbt_se = tbt.elecs
-            else:
-                use_tbt_se = []
-        elif isinstance(use_tbt_se, str):
-            use_tbt_se = [use_tbt_se]
-
-        elec_data = {}
+        elec_bloch = {}
         for elec in tbt.elecs:
             # read from the block
-            data = read_electrode(f"Elec.{elec}")
-            elec_data[elec] = data
+            elec_bloch[elec] = BlochSelfEnergy.from_fdf(
+                fdf, elec, prefix=prefix, mu=tbt.mu(elec)
+            )
+            data = elec_bloch[elec]
 
             # read from the TBT file (to check if the user has changed the input file)
             elec_eta = tbt.eta(elec)
@@ -461,15 +407,15 @@ class DeviceGreen:
                 )
 
             bloch = tbt.bloch(elec)
-            if not np.allclose(bloch, data.bloch):
+            if not np.allclose(bloch, data.bloch.bloch):
                 warn(
                     f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
                     f"Bloch expansions from the fdf vs. TBT output, will use fdf value.\n"
-                    f"  {tbt} = {bloch}\n  {fdf} = {data.bloch}"
+                    f"  {tbt} = {bloch}\n  {fdf} = {data.bloch.bloch}"
                 )
 
         # default to the smallest electrode eta
-        eta_dev = min((data.eta for data in elec_data.values()), default=np.inf)
+        eta_dev = min((data.eta for data in elec_bloch.values()), default=np.inf)
 
         # Correct by a factor 1/10 to minimize smearing for device states.
         # We want the electrode to smear.
@@ -506,44 +452,36 @@ class DeviceGreen:
 
         elecs = []
         for elec in tbt.elecs:
-            mu = tbt.mu(elec)
-            data = elec_data[elec]
-
-            if elec in use_tbt_se:
-                if Path(f"{slabel}.TBT.SE.nc").is_file():
-                    tbtse = si.get_sile(f"{slabel}.TBT.SE.nc")
-                else:
-                    raise FileNotFoundError(
-                        f"{cls.__name__}.from_fdf "
-                        f"could not find file {slabel}.TBT.SE.nc "
-                        "but it was requested by 'use_tbt_se'!"
-                    )
-
-            # shift according to potential
-            data.Helec.shift(mu)
-            data.mu = mu
-            se = si.RecursiveSI(data.Helec, data.semi_inf, eta=data.eta)
+            data = elec_bloch[elec]
 
             # Limit connections of the device along the semi-inf directions
             # TODO check whether there are systems where it is important
             # we do all set_nsc before passing it for each electrode.
-            kw = {"abc"[se.semi_inf]: 1}
+            kw = {"abc"[data.se.semi_inf]: 1}
             Hdev.set_nsc(**kw)
 
-            if elec in use_tbt_se:
-                elec_se = PivotSelfEnergy(elec, tbtse)
-            else:
-                elec_se = DownfoldSelfEnergy(
-                    elec,
-                    se,
-                    tbt,
-                    Hdev,
-                    eta_device=eta_dev,
-                    bulk=data.bulk,
-                    bloch=data.bloch,
+            # The downfolding region, in the BTD order of TBtrans.
+            # The last block is the electrode self-energy in the device region.
+            orbs_down = tbt.pivot_down(elec)
+            btd_down = tbt.btd(elec)
+            orbs_dev = tbt.pivot(elec)
+            if not np.array_equal(orbs_down[-btd_down[-1] :], orbs_dev):
+                raise ValueError(
+                    f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
+                    f"down-folding and device orbitals in {tbt}."
                 )
 
-            elecs.append(elec_se)
+            elec_se = DownfoldSelfEnergy(
+                data,
+                Hdev,
+                orbs_down,
+                Hdev.a2o(tbt.a_elec(elec), all=True),
+                btd_down,
+                eta_device=eta_dev,
+                bulk=data.info.bulk,
+            )
+
+            elecs.append((elec_se, orbs_dev))
 
         return cls(Hdev, elecs, tbt, eta=eta_dev, **kwargs)
 
@@ -565,10 +503,15 @@ class DeviceGreen:
     def _elec(self, elec) -> int | Sequence[int]:
         """Convert a string electrode to the proper linear index"""
         if isinstance(elec, str):
-            for iel, el in enumerate(self.elecs):
-                if el.name == elec:
+            for iel, el in enumerate(self._elecs):
+                if el.elec.name == elec:
                     return iel
-        elif isinstance(elec, PivotSelfEnergy):
+            names = [el.elec.name for el in self._elecs]
+            raise KeyError(
+                f"{self.__class__.__name__} has no electrode {elec!r}, "
+                f"available electrodes: {names}"
+            )
+        elif isinstance(elec, ElectrodeSelfEnergy):
             return self._elec(elec.name)
         elif isinstance(elec, (tuple, list)):
             return [self._elec(e) for e in elec]
@@ -578,7 +521,7 @@ class DeviceGreen:
         """Convert a list/str/int of elecs into a list of ints"""
         is_all = elecs is None  # TODO change this to something more sensible
         if is_all:
-            elecs = list(range(len(self.elecs)))
+            elecs = list(range(len(self._elecs)))
         is_single = not isinstance(elecs, (tuple, list))
         if is_single:
             # ensure it is a list
@@ -597,9 +540,9 @@ class DeviceGreen:
         """Convert an electrode index or str to the name of the electrode"""
         if isinstance(elec, str):
             return elec
-        elif isinstance(elec, PivotSelfEnergy):
+        elif isinstance(elec, ElectrodeSelfEnergy):
             return elec.name
-        return self.elecs[elec].name
+        return self._elecs[elec].elec.name
 
     def _pivot_matrix(self, M):
         """Pivot's a (full) matrix, i.e. not one that is already reduced."""
@@ -668,11 +611,12 @@ class DeviceGreen:
         # Create all self-energies (and store the Gamma's)
         se = []
         gamma = []
-        for elec in self.elecs:
+        for el in self._elecs:
+            sort = el.sort.reshape(-1, 1)
             # Insert values
-            SE = elec.self_energy(E, k=k, dtype=dtype, **kwargs)
+            SE = el.elec.self_energy(E, k=k, dtype=dtype, **kwargs)[sort, sort.T]
             se.append(SE)
-            gamma.append(elec.se2broadening(SE))
+            gamma.append(el.elec.se2broadening(SE))
 
         self._data.se = se
         self._data.gamma = gamma
@@ -750,17 +694,18 @@ class DeviceGreen:
 
         # Create all self-energies (and store the Gamma's)
         if hasattr(data, "se"):
-            for elec, SE in zip(self.elecs, data.se):
-                pvt = elec.pvt_dev
+            for el, SE in zip(self._elecs, data.se):
+                pvt = el.pvt.reshape(-1, 1)
                 invG[pvt, pvt.T] -= SE
         else:
             gamma = []
-            for elec in self.elecs:
-                pvt = elec.pvt_dev
+            for el in self._elecs:
+                pvt = el.pvt.reshape(-1, 1)
+                sort = el.sort.reshape(-1, 1)
                 # Insert values
-                SE = elec.self_energy(E, k=k, dtype=dtype, **kwargs)
+                SE = el.elec.self_energy(E, k=k, dtype=dtype, **kwargs)[sort, sort.T]
                 invG[pvt, pvt.T] -= SE
-                gamma.append(elec.se2broadening(SE))
+                gamma.append(el.elec.se2broadening(SE))
             del SE
             data.gamma = gamma
         # convert to csr format (that's how will mostly convert it)
@@ -1347,7 +1292,7 @@ class DeviceGreen:
 
     def _spectral_column_array(self, elec, herm: bool) -> np.ndarray:
         """Spectral function from a column array (`herm` not used)"""
-        G = self._green_column(self.elecs[elec].pvt_dev.ravel())
+        G = self._green_column(self._elecs[elec].pvt)
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ np.conj(G.T)
 
@@ -1363,7 +1308,7 @@ class DeviceGreen:
            the Hermitian part to the upper triangular part.
            Else, calculate the full matrix via MM.
         """
-        G = self._green_column(self.elecs[elec].pvt_dev.ravel())
+        G = self._green_column(self._elecs[elec].pvt)
         nb = len(self.btd)
 
         Gam = self._data.gamma[elec]
@@ -1408,7 +1353,7 @@ class DeviceGreen:
            the Hermitian part to the upper triangular part.
            Else, calculate the full matrix via MM.
         """
-        G = self._green_column(self.elecs[elec].pvt_dev.ravel())
+        G = self._green_column(self._elecs[elec].pvt)
         nb = len(self.btd)
 
         Gam = self._data.gamma[elec]
@@ -1445,7 +1390,7 @@ class DeviceGreen:
         nbm1 = nb - 1
 
         # First we need to calculate diagonal blocks of the spectral matrix
-        blocks, A = self._green_diag_block(self.elecs[elec].pvt_dev.ravel())
+        blocks, A = self._green_diag_block(self._elecs[elec].pvt)
         nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ np.conj(A.T)
 
@@ -1544,7 +1489,7 @@ class DeviceGreen:
         BI = BM.block_indexer
 
         # First we need to calculate diagonal blocks of the spectral matrix
-        blocks, A = self._green_diag_block(self.elecs[elec].pvt_dev.ravel())
+        blocks, A = self._green_diag_block(self._elecs[elec].pvt)
         nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ np.conj(A.T)
 
@@ -1639,7 +1584,7 @@ class DeviceGreen:
         BI = BM.block_indexer
 
         # First we need to calculate diagonal blocks of the spectral matrix
-        blocks, A = self._green_diag_block(self.elecs[elec].pvt_dev.ravel())
+        blocks, A = self._green_diag_block(self._elecs[elec].pvt)
         A = A @ self._data.gamma[elec] @ np.conj(A.T)
 
         BI[blocks[0], blocks[0]] = A[: btd[blocks[0]], : btd[blocks[0]]]
@@ -1814,7 +1759,7 @@ class DeviceGreen:
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def _scattering_state_svd_gamma(self, _method, elec, cutoff, **kwargs):
-        A = self._green_column(self.elecs[elec].pvt_dev.ravel())
+        A = self._green_column(self._elecs[elec].pvt)
         cutoff = self._as_cutoff_func(cutoff)
 
         # This calculation uses the cholesky decomposition of Gamma
@@ -1865,7 +1810,7 @@ class DeviceGreen:
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
         # But only in the 1/2 diagonal blocks of Gf
-        blocks, u = self._green_diag_block(self.elecs[elec].pvt_dev.ravel())
+        blocks, u = self._green_diag_block(self._elecs[elec].pvt)
         # Calculate the spectral function only for the blocks that host the
         # scattering matrix
         u = u @ self._data.gamma[elec] @ np.conj(u.T)
@@ -1977,14 +1922,14 @@ class DeviceGreen:
         self._prepare(E, k, dtype)
 
         # Get full G in column of 'from'
-        G = self._green_column(self.elecs[elec_from].pvt_dev)
+        G = self._green_column(self._elecs[elec_from].pvt)
 
         # The gamma matrices
         Gam = self._data.gamma
 
         # Now calculate the transmission
         def calc(Gam_from, elec_to, Gam_to, G):
-            pvt = self.elecs[elec_to].pvt_dev.ravel()
+            pvt = self._elecs[elec_to].pvt
             g = G[pvt, :]
             A = g @ Gam_from @ dagger(g)
 
@@ -2071,7 +2016,7 @@ class DeviceGreen:
         self._prepare_tgamma(E, k, dtype, cutoff)
 
         # Get full G in column of 'from'
-        G = self._green_column(self.elecs[elec_from].pvt_dev.ravel())
+        G = self._green_column(self._elecs[elec_from].pvt)
 
         # the \tilde \Gamma functions
         tG = self._data.tgamma
@@ -2081,7 +2026,7 @@ class DeviceGreen:
 
         # Now calculate the S matrices
         def calc(elec_from, jtgam_from, elec_to, tgam_to, G):
-            pvt = self.elecs[elec_to].pvt_dev.ravel()
+            pvt = self._elecs[elec_to].pvt
             g = G[pvt, :]
             ret = dagger(tgam_to) @ g @ jtgam_from
             if elec_from == elec_to:
@@ -2206,7 +2151,7 @@ class DeviceGreen:
 
         # Create the first electrode
         el = elec_to[0]
-        idx = self.elecs[el].pvt_dev.ravel()
+        idx = self._elecs[el].pvt
 
         u = A[idx]
         # the summed transmission matrix
@@ -2214,7 +2159,7 @@ class DeviceGreen:
 
         # same for other electrodes
         for el in elec_to[1:]:
-            idx = self.elecs[el].pvt_dev.ravel()
+            idx = self._elecs[el].pvt
             u = A[idx]
             Ut += u.conj().T @ G[el] @ u
 

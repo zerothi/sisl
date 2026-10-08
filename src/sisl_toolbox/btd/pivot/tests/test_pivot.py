@@ -306,3 +306,20 @@ def test_permute_btd_validation():
         PermuteBTD([2, 0, 1], [1, 1])
     with pytest.raises(ValueError):
         PermuteBTD([[2, 0, 1]], [3])
+
+
+def test_permute_btd_split_blocks():
+    p = PermuteBTD([[2], [0, 1, 3]])
+    assert np.array_equal(p.permute, [2, 0, 1, 3])
+    assert np.array_equal(p.blocks, [1, 3])
+
+    ref = PermuteBTD([2, 0, 1, 3], [1, 3])
+    blocks = np.split(ref.permute, np.cumsum(ref.blocks)[:-1])
+    p = PermuteBTD(blocks)
+    assert np.array_equal(p.permute, ref.permute)
+    assert np.array_equal(p.blocks, ref.blocks)
+
+    with pytest.raises(ValueError):
+        PermuteBTD([])
+    with pytest.raises(ValueError):
+        PermuteBTD([[[2, 0]], [1]])

@@ -1,24 +1,34 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-"""Block-tri-diagonal electrode handling"""
+"""Block-tri-diagonal electrode handling
+
+The electrode classes only calculate self-energies. They have no knowledge of
+the device region, nor its pivoting. The rows (and columns) of the returned
+self-energies are in the orbital order the electrode was created with,
+`DeviceGreen` is responsible for placing them in the device region.
+"""
 
 from __future__ import annotations
 
+from typing import Literal, Optional, Self
+
 import numpy as np
+import numpy.typing as npt
 
 import sisl as si
+import sisl.io.siesta
 import sisl.io.siesta.binaries
-import sisl.io.tbtrans
-from sisl._indices import indices, indices_only
 from sisl._internal import set_module
 from sisl.linalg import solve
+from sisl.messages import warn
 from sisl.typing import KPoint
+from sisl.typing._core import SileLike
 from sisl.utils.misc import PropertyDict
 
 from ._help import expand_btd, expand_orbs, get_expand
 
-__all__ = ["PivotSelfEnergy", "DownfoldSelfEnergy"]
+__all__ = ["ElectrodeSelfEnergy", "BlochSelfEnergy", "DownfoldSelfEnergy"]
 
 
 # In the following code sections the comments
@@ -42,306 +52,446 @@ __all__ = ["PivotSelfEnergy", "DownfoldSelfEnergy"]
 # - pure electrode E1 in full: 1-2
 # - electrode E1 in device: 4
 # - downfolding in device: 4 (assuming only NN interactions)
-#
-# So "indices of the downfolding of E1 in the device region" would be
-# index 1 (because 4 is the first atom in the cut-out device).
 
 
 @set_module("sisl_toolbox.btd")
-class PivotSelfEnergy(si.physics.SelfEnergy):
-    """Container for the self-energy object
+class ElectrodeSelfEnergy(si.physics.SelfEnergy):
+    """Base class for electrode self-energies used in `DeviceGreen`
 
-    This may either be a
+    Sub-classes must implement `__len__` and `self_energy`.
 
-    - `tbtsencSileTBtrans`
-    - `tbtgfSileTBtrans`
-    - `sisl.physics.SelfEnergy`
+    Parameters
+    ----------
+    name :
+        name of the electrode
+    """
+
+    def __init__(self, name: str):
+        self.name = name
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}{{name: {self.name}, no: {len(self)}}}"
+
+    def broadening_matrix(self, *args, **kwargs) -> np.ndarray:
+        """Return the broadening matrix, see `self_energy` for arguments"""
+        return self.se2broadening(self.self_energy(*args, **kwargs))
+
+
+@set_module("sisl_toolbox.btd")
+class BlochSelfEnergy(ElectrodeSelfEnergy):
+    """Self-energy of a (possibly Bloch expanded) electrode
+
+    The rows of the self-energy are the orbitals of the Bloch expanded electrode,
+    i.e. matching ``se.spgeom0.tile(...)`` for the `bloch` expansions.
+
+    Parameters
+    ----------
+    name :
+        name of the electrode
+    se :
+        the self-energy calculator, a `sisl.physics.SelfEnergy` or a
+        Siesta GF file (`~sisl.io.siesta.gfSileSiesta`).
+        A GF file is already Bloch expanded.
+    bloch :
+        Bloch expansion of the self-energy
     """
 
     def __init__(
         self,
         name: str,
         se,
-        pivot=None,
         bloch: si.Bloch | tuple[int, int, int] | None = None,
     ):
-
-        # Name of electrode
-        self.name = name
-
-        # File containing the self-energy
-        # This may be either of:
-        #  tbtsencSileTBtrans
-        #  tbtgfSileTBtrans
-        #  SelfEnergy object (for direct calculation)
-        self._se = se
-
-        # Store the pivoting for faster indexing
-        # Ensure we have a correct `pivot` argument
-        if pivot is None:
-            if not isinstance(se, si.io.tbtrans.tbtsencSileTBtrans):
-                raise ValueError(
-                    f"{self.__class__.__name__} must be passed a sisl.io.tbtrans.tbtsencSileTBtrans. "
-                    "Otherwise use the DownfoldSelfEnergy object with appropriate arguments."
-                )
-            pivot = se
+        super().__init__(name)
+        self.se = se
 
         if bloch is None:
-            # necessary to get bloch-expansion of the electrode
-            # In case the `pivot` holds that information, lets use it
-            bloch = pivot.bloch(name)
-
+            bloch = (1, 1, 1)
         if not isinstance(bloch, si.Bloch):
             bloch = si.Bloch(bloch)
+        self.bloch = bloch
 
-        if len(bloch) == 1:
+        if isinstance(se, sisl.io.siesta.binaries._gfSileSiesta):
+            if len(bloch) > 1:
+                raise ValueError(
+                    f"{self.__class__.__name__} got a GF file and a Bloch expansion, "
+                    "GF files are already Bloch expanded."
+                )
+        elif not isinstance(se, si.physics.SelfEnergy):
+            raise ValueError(f"{self.__class__.__name__} got an unknown 'se' argument.")
 
-            def _bloch(func, k, *args, **kwargs):
-                """Simple no-up wrapper"""
-                return func(*args, k=k, **kwargs)
+    @classmethod
+    def from_fdf(
+        cls,
+        fdf: SileLike,
+        name: str,
+        prefix: Literal["TBT", "TS"] = "TBT",
+        mu: float = 0.0,
+    ) -> Self:
+        """Create the electrode from the ``%block TS.Elec.<name>`` in an fdf file
 
+        The returned electrode uses a `sisl.physics.RecursiveSI` self-energy.
+        The electrode Hamiltonian is shifted by ``delta-Ef`` and `mu`.
+
+        Other options from the fdf file are stored in the ``info`` attribute:
+
+        - ``bulk``: whether the electrode is bulk in the downfolding region
+        - ``dEf``: the ``delta-Ef`` shift of the electrode Hamiltonian
+        - ``mu``: the chemical potential shift (`mu`)
+        - ``V_fraction``: the fraction of the bias in the electrode couplings
+
+        Parameters
+        ----------
+        fdf :
+           fdf file to read the parameters from
+        name :
+           name of the electrode, i.e. the block ``TS.Elec.<name>``
+        prefix :
+           which prefix to use, if TBT it will prefer TBT prefix, but fall back
+           to TS prefixes.
+           If TS, only these prefixes will be used.
+        mu :
+           chemical potential of the electrode, the electrode Hamiltonian is shifted
+           by this value [eV]
+        """
+        from sisl.unit.siesta import unit_convert
+
+        if not isinstance(fdf, si.BaseSile):
+            fdf = si.io.siesta.fdfSileSiesta(fdf)
+        is_tbtrans = prefix.upper() == "TBT"
+        clsname = f"{cls.__name__}.from_fdf(electrode={name})"
+
+        def get_line(line):
+            """Parse lines in the %block constructs of fdf's"""
+            key, val = line.split(None, 1)
+            return key.lower().strip(), val.split("#", 1)[0].strip()
+
+        def block_get(dic, key, default=None, unit=None):
+            # keys are stored in lower-case, see get_line
+            key = key.lower()
+            ret = dic.get(key, default)
+            if is_tbtrans:
+                # TBT prefixed keys take precedence
+                ret = dic.get(f"tbt.{key}", ret)
+            if unit is None or not isinstance(ret, str):
+                return ret
+            ret, un = ret.split()
+            return float(ret) * unit_convert(un, unit)
+
+        tbt_prefix = f"TBT.Elec.{name}"
+        ts_prefix = f"TS.Elec.{name}"
+
+        block = fdf.get(f"{ts_prefix}")
+        Helec = fdf.get(f"{ts_prefix}.HS")
+        bulk = fdf.get("TS.Elecs.Bulk", True)
+        eta = fdf.get("TS.Elecs.Eta", 1e-3, unit="eV")
+        bloch = [1, 1, 1]
+        for i in range(3):
+            bloch[i] = fdf.get(f"{ts_prefix}.Bloch.A{i+1}", 1)
+        if is_tbtrans:
+            block = fdf.get(f"{tbt_prefix}", block)
+            Helec = fdf.get(f"{tbt_prefix}.HS", Helec)
+            bulk = fdf.get("TBT.Elecs.Bulk", bulk)
+            eta = fdf.get("TBT.Elecs.Eta", eta, unit="eV")
+            for i in range(3):
+                bloch[i] = fdf.get(f"{tbt_prefix}.Bloch.A{i+1}", bloch[i])
+        if block is None:
+            raise ValueError(f"{clsname} could not find block: {ts_prefix}")
+
+        # Convert to key value based function
+        dic = {key: val for key, val in map(get_line, block)}
+
+        # Retrieve data
+        for key in ("hs", "hs-file", "tshs", "tshs-file"):
+            Helec = block_get(dic, key, Helec)
+        if Helec:
+            Helec = si.get_sile(Helec).read_hamiltonian()
         else:
-            _bloch = bloch
+            raise ValueError(
+                f"{clsname} could not find electrode HS in block: {ts_prefix}"
+            )
 
-        # Store the Bloch-expansion function
-        self._bloch = _bloch
-
-        # Recall that device region geometries uses the Bloch-expanded
-        # electrodes. So we have to also figure out the full matrix
-        # for the electrode calculation.
-        # So we take out the number of orbitals in the electrode.
-        # The electrode atoms for a pivoting matrix is the *actual*
-        # number of orbitals *after* Bloch-expansion.
-        n_orbs = pivot.read_geometry().sub(pivot.a_elec(name)).no
-
-        if isinstance(se, sisl.io.tbtrans.tbtsencSileTBtrans):
-            # We can't figure out what it is.
-            raise NotImplementedError
-        elif isinstance(se, sisl.io.siesta.binaries._gfSileSiesta):
-            # The GF files automatically handle the bloch expansion
-            # *AND* it also doubles based on spin-configuration
-            # It likely shouldn't
-            len_H = se._no_u
-        elif isinstance(se, si.physics.SelfEnergy):
-            len_H = len(se) * len(bloch)
-        else:
-            raise ValueError("Unknown 'se' argument.")
-
-        # Determine whether the pivoting elements should be accounted for
-        # by the spin-dimensions.
-        # E.g. if this is a non-collinear spin configuration, we should double
-        # everything.
-        expand = get_expand(len_H, n_orbs)
-
-        # Pivoting indices for the self-energy in a system if one does
-        # not remove anything. So for a system
-        # I.e. where self.self_energy is placed in self.Hk()
-        self.pvt = expand_orbs(pivot.pivot(name), expand).reshape(-1, 1)
-
-        # Pivoting indices for the self-energy in the device region
-        self.pvt_dev = expand_orbs(pivot.pivot(name, in_device=True), expand).reshape(
-            -1, 1
+        # Get semi-infinite direction
+        semi_inf = None
+        for suf in ("-direction", "-dir", ""):
+            semi_inf = block_get(dic, f"semi-inf{suf}", semi_inf)
+        if semi_inf is None:
+            raise ValueError(
+                f"{clsname} could not find electrode semi-inf-direction "
+                f"in block: {ts_prefix}"
+            )
+        # convert to sisl infinite
+        semi_inf = semi_inf.lower()
+        semi_inf = semi_inf[0] + {"a1": "a", "a2": "b", "a3": "c"}.get(
+            semi_inf[1:], semi_inf[1:]
         )
+        # Check that semi_inf is a recursive one!
+        if semi_inf not in ("-a", "+a", "-b", "+b", "-c", "+c"):
+            raise NotImplementedError(
+                f"{clsname} does not implement other "
+                "self energies than the recursive one."
+            )
 
-        # Retrieve BTD matrices for the corresponding electrode
-        self.btd = expand_btd(pivot.btd(name), expand)
+        info = PropertyDict()
+        info.bulk = bool(block_get(dic, "bulk", bulk))
+        # loop for 0
+        for i, sufs in enumerate([("a", "a1"), ("b", "a2"), ("c", "a3")]):
+            for suf in sufs:
+                bloch[i] = block_get(dic, f"bloch-{suf}", bloch[i])
 
-        # Get the individual matrices
-        cbtd = np.cumsum(self.btd)
-        # self.pvt_btd = np.concatenate(pvt_btd).reshape(-1, 1)
-        # self.pvt_btd_sort = _a.arangei(o)
+        bloch = [
+            int(b)
+            for b in block_get(
+                dic, "bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}"
+            ).split()
+        ]
 
-        if isinstance(se, si.io.tbtrans.tbtsencSileTBtrans):
+        eta = block_get(dic, "eta", eta, unit="eV")
+        # manual shift of the fermi-level
+        info.dEf = block_get(dic, "delta-Ef", 0.0, unit="eV")
+        Helec.shift(info.dEf)
+        # shift according to potential
+        info.mu = mu
+        Helec.shift(mu)
+        # add a fraction of the bias in the coupling elements of the
+        # E-C region, only meaningful for
+        info.V_fraction = block_get(dic, "V-fraction", 0.0)
+        if info.V_fraction > 0.0:
+            warn(
+                f"{clsname} found a non-zero V-fraction value. "
+                "This is currently not implemented."
+            )
 
-            def se_func(*args, **kwargs):
-                return self._se.self_energy(self.name, *args, **kwargs)
+        elec = cls(name, si.RecursiveSI(Helec, semi_inf, eta=eta), bloch=bloch)
+        elec.info = info
+        return elec
 
-            def broad_func(*args, **kwargs):
-                return self._se.broadening_matrix(self.name, *args, **kwargs)
-
-        else:
-
-            def se_func(*args, **kwargs):
-                return self._se.self_energy(*args, **kwargs)
-
-            def broad_func(*args, **kwargs):
-                return self._se.broadening_matrix(*args, **kwargs)
-
-        self._se_func = se_func
-        self._broad_func = broad_func
-
-    def __str__(self) -> str:
-        return f"{self.__class__.__name__}{{no: {len(self)}}}"
+    @property
+    def eta(self) -> float | None:
+        """Imaginary part used for the self-energy calculation (if known)"""
+        return getattr(self.se, "eta", None)
 
     def __len__(self) -> int:
-        """Length of the self-energy once it has been downfolded into the device."""
-        return len(self.pvt_dev)
+        """Size of the self-energy matrix (including spin)"""
+        if isinstance(self.se, sisl.io.siesta.binaries._gfSileSiesta):
+            # Includes spin (non-colinear) and Bloch expansions
+            return self.se._no_u
+        return len(self.se) * len(self.bloch)
 
-    def self_energy(self, E: complex, k: KPoint = (0, 0, 0), *args, **kwargs):
-        """Return self-energy for given parameters."""
-        return self._bloch(self._se_func, k, *args, E=E, **kwargs)
+    def __str__(self) -> str:
+        se = str(self.se).replace("\n", "\n ")
+        return f"{self.__class__.__name__}{{name: {self.name}, no: {len(self)}, bloch: {self.bloch.bloch},\n {se}\n}}"
 
-    def broadening_matrix(self, E: complex, k: KPoint = (0, 0, 0), *args, **kwargs):
-        """Return broadening matrix for given parameters."""
-        return self._bloch(self._broad_func, k, *args, E=E, **kwargs)
+    def _call_bloch(self, func, k: KPoint, **kwargs) -> np.ndarray:
+        """Call `func` with the Bloch expansion"""
+        if len(self.bloch) == 1:
+            return func(k=k, **kwargs)
+        return self.bloch(func, k, **kwargs)
+
+    def self_energy(self, E: complex, k: KPoint = (0, 0, 0), **kwargs) -> np.ndarray:
+        """Return the (Bloch expanded) self-energy"""
+        if isinstance(self.se, sisl.io.siesta.binaries._gfSileSiesta):
+            # GF files have no dtype argument
+            dtype = kwargs.pop("dtype", None)
+            SE = self.se.self_energy(E, k=k, **kwargs)
+            if dtype is None:
+                return SE
+            return SE.astype(dtype, copy=False)
+        return self._call_bloch(self.se.self_energy, k, E=E, **kwargs)
 
 
 @set_module("sisl_toolbox.btd")
-class DownfoldSelfEnergy(PivotSelfEnergy):
+class DownfoldSelfEnergy(ElectrodeSelfEnergy):
+    r"""Self-energy of an electrode downfolded through a region of `H`
+
+    The downfolding region is described by the orbitals `orbs_down` of `H`, in
+    the block-tri-diagonal order given by `btd_down`.
+    The electrode self-energy is placed on the orbitals `orbs_elec` of `H`
+    (which must be part of `orbs_down`), and is then downfolded to the
+    orbitals of the last block.
+
+    The rows of the returned self-energy are the orbitals of the last block,
+    in the order they appear in `orbs_down`.
+
+    Parameters
+    ----------
+    electrode :
+        the electrode self-energy
+    H :
+        Hamiltonian containing (at least) the downfolding region
+    orbs_down :
+        orbitals of `H` in the downfolding region (including the electrode
+        and the returned orbitals), in the order of the BTD blocks
+    orbs_elec :
+        orbitals of `H` corresponding to the rows of the electrode self-energy
+    btd_down :
+        BTD block sizes of `orbs_down`, the last block are the orbitals that the
+        self-energy is downfolded to
+    eta_device :
+        imaginary part used in the downfolding region (for real energies)
+    bulk :
+        whether the electrode region of `H` is replaced by the
+        (Bloch expanded) electrode Hamiltonian. Requires the `electrode` to
+        be a `BlochSelfEnergy` with a `sisl.physics.SemiInfinite` self-energy.
+    name :
+        name of the electrode, defaults to the `electrode` name
+    """
+
     def __init__(
         self,
-        name: str,
-        se,
-        pivot,
-        Hdevice: si.Hamiltonian,
+        electrode: ElectrodeSelfEnergy,
+        H: si.Hamiltonian,
+        orbs_down: npt.ArrayLike,
+        orbs_elec: npt.ArrayLike,
+        btd_down: npt.ArrayLike,
         eta_device: float = 0.0,
         bulk: bool = True,
-        bloch: si.Bloch | tuple[int, int, int] | None = None,
+        name: Optional[str] = None,
     ):
-
-        # Default initialize from the super (PivotSelfEnergy)
-        # This also determines whether the thing requires expansion
-        # due to pivoting stemming from a diagonal spin calculation.
-        super().__init__(name, se, pivot, bloch)
-
+        if name is None:
+            name = electrode.name
+        super().__init__(name)
+        self.electrode = electrode
         self._eta_device = eta_device
 
-        # To re-create the downfoldable self-energies we need a few things:
-        # pivot == for pivoting indices and BTD downfolding region
-        # se == SelfEnergy for calculating self-energies and broadening matrix
-        # Hdevice == device H for downfolding the electrode self-energy
-        # bulk == whether the electrode self-energy argument should be passed bulk
-        #         or not
-        # name == just the name
+        orbs_down = np.asarray(orbs_down).ravel()
+        orbs_elec = np.asarray(orbs_elec).ravel()
+        btd_down = np.asarray(btd_down).ravel()
+        cls = self.__class__.__name__
+        if btd_down.sum() != len(orbs_down):
+            raise ValueError(
+                f"{cls} btd_down must sum to the length of orbs_down "
+                f"({btd_down.sum()} != {len(orbs_down)})"
+            )
+        if len(np.unique(orbs_down)) != len(orbs_down):
+            raise ValueError(f"{cls} orbs_down has duplicate orbitals")
+        if len(btd_down) < 2:
+            raise ValueError(f"{cls} btd_down must have at least 2 blocks")
+        if not np.isin(orbs_elec, orbs_down[: -btd_down[-1]]).all():
+            raise ValueError(
+                f"{cls} orbs_elec must be a subset of orbs_down, excluding the last block"
+            )
 
         # storage data
         self._data = PropertyDict()
         data = self._data
         data.bulk = bulk
 
-        # Create BTD indices
-        # Necessary for the down-folding
+        if bulk:
+            if not (
+                isinstance(electrode, BlochSelfEnergy)
+                and hasattr(electrode.se, "spgeom0")
+            ):
+                raise ValueError(
+                    f"{cls}(bulk=True) requires a BlochSelfEnergy with a "
+                    "SemiInfinite self-energy."
+                )
+
+        # The Hamiltonian of the atoms in the downfolding region.
+        # Its orbitals are the (sorted) orbitals of all atoms in the downfolding
+        # region, they need not all be part of `orbs_down`.
+        atoms_down = H.o2a(orbs_down, unique=True)
+        data.H = H.sub(atoms_down)
+        orbs_sub = H.a2o(atoms_down, all=True)
+
+        def positions(orbs):
+            """Positions of `orbs` in `orbs_sub` (sorted)"""
+            idx = np.searchsorted(orbs_sub, orbs)
+            assert np.array_equal(orbs_sub[idx], orbs)
+            return idx
+
+        # Spin expansion (non-colinear) of the matrices
+        expand = get_expand(len(data.H), data.H.no)
+        if len(electrode) != len(orbs_elec) * expand:
+            raise ValueError(
+                f"{cls} electrode {electrode.name} has size {len(electrode)}, "
+                f"but orbs_elec gives {len(orbs_elec) * expand}"
+            )
+
+        # Indices in data.H (expanded)
+        #  elec: the electrode orbitals, in the order of the electrode self-energy
+        #  down: the downfolding orbitals, in the BTD order
+        data.elec = expand_orbs(positions(orbs_elec), expand).reshape(-1, 1)
+        data.down = expand_orbs(positions(orbs_down), expand).reshape(-1, 1)
+        self.btd = expand_btd(btd_down, expand)
         data.btd_cum0 = np.append(0, np.cumsum(self.btd))
 
-        # These are the:
-        #  pivoting indices for the electrode in the full system
-        pvt = pivot.pivot(self.name)
-        # TODO , this kind-of makes PivotSelfEnergy obsolete...
-        # We cheat here, the super class does the calculation.
-        # The parent calls 'pivot.pivot' and stores it in 'pvt' (after
-        # expanding). So here we can get the exact expansion
-        expand = get_expand(len(self.pvt), len(pvt))
-        # note that the last orbitals in pivot_down is the returned self-energies
-        # that we want to calculate in this class
-
-        # The orbital indices in self.H.device.geometry
-        # which transfers the orbitals to the downfolding region
-
-        # Now we need to figure out the pivoting indices from the sub-set
-        # geometry
-
-        data.H = PropertyDict()
-        # Store the electrode Hamiltonian used for creating the bulk part
-        data.H.electrode = self._se.spgeom0
-
-        # The *device* is now the shrunk Hamiltonian, only containing the
-        # down-folding atoms for the electrode + the device part.
-        # NOTE, this geometry/Hamiltonian, is *not* sorted according
-        # to the down-folding scheme (unique=True).
-        # This is:
-        #  atoms of the downfolding and device in the full system
-        atoms_down = Hdevice.o2a(
-            expand_orbs(pivot.pivot_down(name), expand), unique=True
-        )
-        # This is:
-        #  the downfolding and device
-        data.H.device = Hdevice.sub(atoms_down)
-
-        orbitals_down = Hdevice.a2o(atoms_down, all=True)
-        orbitals_elec = Hdevice.a2o(pivot.a_elec(name), all=True)
-        # These are the:
-        #  indices for the self-energy of the electrode in the downfolding and device
-        #  (before pivoting!)
-        data.elec = indices_only(orbitals_down, orbitals_elec).reshape(-1, 1)
-
-        # the pivoting in the downfolding, in [0:len(pivot_down)]
-        # The:
-        #  pivoting table in the downfolding region only
-        data.pvt_down_down = expand_orbs(
-            pivot.pivot_down(name, in_down=True), expand
-        ).reshape(-1, 1)
+    def __len__(self) -> int:
+        """Size of the self-energy matrix (including spin)"""
+        return self.btd[-1]
 
     def __str__(self) -> str:
-        eta = None
-        try:
-            eta = self._se.eta
-        except Exception:
-            pass
-        se = str(self._se).replace("\n", "\n ")
-        return f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.btd)}, eta: {eta}, eta_device: {self._eta_device},\n {se}\n}}"
+        se = str(self.electrode).replace("\n", "\n ")
+        return f"{self.__class__.__name__}{{name: {self.name}, no: {len(self)}, blocks: {len(self.btd)}, eta_device: {self._eta_device}, bulk: {self._data.bulk},\n {se}\n}}"
 
-    def _check_Ek(self, E: complex, k: KPoint, **kwargs):
+    def _check_Ek(self, E: complex, k: KPoint, dtype, **kwargs) -> bool:
         """Check whether we have already runned this exact energy point.
 
         If not, then setup the data set for the next iteration.
         """
-        if hasattr(self._data, "E"):
-            if np.allclose(self._data.E, E) and np.allclose(self._data.k, k):
+        data = self._data
+        if hasattr(data, "E"):
+            if (
+                np.allclose(data.E, E)
+                and np.allclose(data.k, k)
+                and data.dtype == dtype
+                and data.kwargs == kwargs
+            ):
                 # we have already prepared the calculation
                 return True
 
-        self._data.E = E
-        self._data.Ed = E
-        self._data.Eb = E
+        data.E = E
+        data.Ed = E
+        data.Eb = E
         if np.isrealobj(E):
-            self._data.Ed = E + 1j * self._eta_device
-            try:
-                self._data.Eb = E + 1j * self._se.eta
-            except Exception:
-                pass
-        self._data.k = np.asarray(k, dtype=np.float64)
+            data.Ed = E + 1j * self._eta_device
+            eta = getattr(self.electrode, "eta", None)
+            if eta is not None:
+                data.Eb = E + 1j * eta
+        data.k = np.asarray(k, dtype=np.float64)
+        data.dtype = dtype
+        data.kwargs = kwargs
 
         return False
 
     def _prepare(
         self, E: complex, k: KPoint = (0, 0, 0), dtype=np.complex128, **kwargs
-    ):
-        if self._check_Ek(E, k, **kwargs):
+    ) -> None:
+        if self._check_Ek(E, k, dtype, **kwargs):
             return
 
         # Prepare the matrices
         data = self._data
         H = data.H
 
-        Ed = data.Ed
-        Eb = data.Eb
-        data.SeH = H.device.Sk(k, dtype=dtype) * Ed - H.device.Pk(
-            k, dtype=dtype, **kwargs
-        )
+        data.SeH = H.Sk(k, dtype=dtype) * data.Ed - H.Pk(k, dtype=dtype, **kwargs)
         if data.bulk:
+            Eb = data.Eb
+            Helec = self.electrode.se.spgeom0
 
             def hsk(k, **kwargs):
-                Helec = H.electrode
                 # constructor for the H and S part
                 return Helec.Sk(k, format="array", dtype=dtype) * Eb - Helec.Hk(
                     k, format="array", dtype=dtype, **kwargs
                 )
 
-            data.SeH[data.elec, data.elec.T] = self._bloch(hsk, k, **kwargs)
+            data.SeH[data.elec, data.elec.T] = self.electrode._call_bloch(
+                hsk, k, **kwargs
+            )
 
     def self_energy(
         self, E: complex, k: KPoint = (0, 0, 0), *, dtype=np.complex128, **kwargs
-    ):
+    ) -> np.ndarray:
+        """Return the downfolded self-energy"""
         self._prepare(E, k, dtype, **kwargs)
         data = self._data
-        se = super().self_energy(E, k=k, dtype=dtype, **kwargs)
+        se = self.electrode.self_energy(E, k=k, dtype=dtype, **kwargs)
 
         # now put it in the matrix
         M = data.SeH.copy()
-        # the electrode, is not pivoted, i.e. the indices are not changed.
         M[data.elec, data.elec.T] -= se
-        # Pivot the matrix to the downfolding order
-        M = M[data.pvt_down_down, data.pvt_down_down.T]
+        # Reduce to the downfolding region, in the BTD order
+        M = M[data.down, data.down.T]
 
         def gM(M, idx1, idx2):
             return M[idx1, :][:, idx2].toarray()
@@ -361,6 +511,3 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
             )
             sli = sli1
         return Mr
-
-    def broadening_matrix(self, *args, **kwargs):
-        return self.se2broadening(self.self_energy(*args, **kwargs))

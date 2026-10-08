@@ -15,6 +15,7 @@ Enables block-tri-diagonal inversion algorithms directly in Python.
 
    BlockMatrix
    BlockMatrixIndexer
-   PivotSelfEnergy
+   ElectrodeSelfEnergy
+   BlochSelfEnergy
    DownfoldSelfEnergy
    DeviceGreen

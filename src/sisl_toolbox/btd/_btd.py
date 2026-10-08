@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Self
+from typing import Optional, Self
 
 import numpy as np
 import numpy.typing as npt
@@ -27,15 +27,35 @@ class PermuteBTD:
     Parameters
     ----------
     permute :
-        the pivoting table, ``permute[new] = old``
+        the pivoting table, ``permute[new] = old``.
+        If `blocks` is not passed, this should be a sequence of the pivoting
+        indices for each block (e.g. ``np.split(permute, np.cumsum(blocks)[:-1])``),
+        the pivoting table is then their concatenation, and the block sizes
+        are their lengths.
     blocks :
         the block sizes, ``blocks.sum() == len(permute)``
+
+    Examples
+    --------
+    The two forms are equivalent:
+
+    >>> PermuteBTD([2, 0, 1, 3], [1, 3])
+    >>> PermuteBTD([[2], [0, 1, 3]])
     """
 
     permute: np.ndarray
-    blocks: np.ndarray
+    blocks: Optional[np.ndarray] = None
 
     def __post_init__(self):
+        if self.blocks is None:
+            permute = [np.asarray(p) for p in self.permute]
+            if len(permute) == 0 or any(p.ndim != 1 for p in permute):
+                raise ValueError(
+                    f"{self.__class__.__name__} permute must be a non-empty "
+                    "sequence of 1D arrays when blocks is not passed"
+                )
+            self.blocks = np.array([len(p) for p in permute])
+            self.permute = np.concatenate(permute)
         self.permute = np.asarray(self.permute)
         self.blocks = np.asarray(self.blocks)
         if self.permute.ndim != 1 or self.blocks.ndim != 1:
@@ -91,6 +111,7 @@ def btd_partition(
     perm = _reduce_bandwidth(ptr, col, method, refine, **kwargs)
     blocks = btd_blocks(ptr, col, perm, cost)
     # sorting within a block retains the block-tridiagonal structure
+    # but speeds up memory access by limiting pivoting.
     perm = perm[np.lexsort((perm, np.repeat(np.arange(len(blocks)), blocks)))]
     return PermuteBTD(perm, blocks)
 
