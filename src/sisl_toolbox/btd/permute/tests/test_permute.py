@@ -11,7 +11,7 @@ import scipy.sparse as sps
 
 import sisl
 from sisl_toolbox.btd import PermuteBTD, btd_partition
-from sisl_toolbox.btd.pivot import (
+from sisl_toolbox.btd.permute import (
     bandwidth,
     btd_blocks,
     cuthill_mckee,

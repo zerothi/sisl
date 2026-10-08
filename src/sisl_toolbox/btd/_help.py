@@ -18,20 +18,20 @@ def get_expand(H_len: int, matrix_len: int) -> int:
     return H_len // matrix_len
 
 
-def expand_btd(btd: np.ndarray, expand: int) -> np.ndarray:
+def expand_blocks(blocks: np.ndarray, expand: int) -> np.ndarray:
     """Convert a BTD segment array to have `expand` bigger chunks
 
     Examples
     --------
 
     >>> a = np.array([20, 10, 30])
-    >>> expand_btd(a, 2)
+    >>> expand_blocks(a, 2)
     array([40, 20, 60])
     """
     if expand > 1:
-        return btd * expand
+        return blocks * expand
 
-    return btd
+    return blocks
 
 
 def expand_orbs(orbs: np.ndarray, expand: int) -> np.ndarray:

@@ -37,7 +37,7 @@ from ._btd import (
     _blocks_in_range,
     _btd_blocks_sub,
     _device_permute,
-    _downfold_pivot,
+    _downfold_permute,
     _graph,
 )
 from ._electrode import *
@@ -184,27 +184,27 @@ def _fdf_electrode_atoms(elec: BlochSelfEnergy, na: int) -> np.ndarray:
     return np.arange(atom - 1, atom - 1 + n)
 
 
-def _fdf_pivot_method(value: str) -> str:
-    """Convert a TBtrans pivoting method to a `reduce_bandwidth` method"""
+def _fdf_permute_method(value: str) -> str:
+    """Convert a TBtrans permutation method to a `reduce_bandwidth` method"""
     method = value.lower()
     for prefix in ("atom+", "orb+"):
         if method.startswith(prefix):
             method = method[len(prefix) :]
     method = {"rev-cm": "rcm"}.get(method, method)
     if method not in ("gps", "ggps", "cm", "rcm"):
-        warn(f"pivoting method {value!r} is not implemented, using GPS")
+        warn(f"permutation method {value!r} is not implemented, using GPS")
         method = "gps"
     return method
 
 
 class _DeviceElectrode(NamedTuple):
-    """An electrode placed in the pivoted device region of `DeviceGreen`"""
+    """An electrode placed in the permuted device region of `DeviceGreen`"""
 
     #: the electrode self-energy
     elec: ElectrodeSelfEnergy
-    #: positions of the self-energy in the pivoted device region (sorted)
-    pvt: np.ndarray
-    #: pivots the self-energy rows and columns to match `pvt`
+    #: positions of the self-energy in the permuted device region (sorted)
+    permute: np.ndarray
+    #: permutes the self-energy rows and columns to match `permute`
     sort: np.ndarray
 
 
@@ -240,9 +240,9 @@ class DeviceGreen:
        eig_channel = G.eigenchannel(state, "Right")
 
     ``DeviceGreen.from_fdf`` only reads the fdf file (and the Hamiltonian files
-    it refers to). The downfolding regions and the pivoting tables are calculated.
+    it refers to). The downfolding regions and the permutation tables are calculated.
 
-    To re-use the downfolding regions and pivoting tables of a TBtrans calculation,
+    To re-use the downfolding regions and permutation tables of a TBtrans calculation,
     use ``DeviceGreen.from_tbt``, which requires the electrode Hamiltonians
     and their semi-infinite directions (these are not stored in the TBtrans output):
 
@@ -305,10 +305,10 @@ class DeviceGreen:
         self,
         H: si.Hamiltonian,
         elecs: Sequence[tuple[ElectrodeSelfEnergy, npt.ArrayLike]],
-        pivot: PermuteBTD | npt.ArrayLike | str = "gps",
-        eta: float = 0.0,
+        permute: PermuteBTD | npt.ArrayLike | str = "gps",
+        eta: float | None = None,
     ):
-        """Create Green function with Hamiltonian and BTD matrix elements
+        r"""Create Green function with Hamiltonian and BTD matrix elements
 
         Parameters
         ----------
@@ -318,11 +318,11 @@ class DeviceGreen:
             the electrodes, each a tuple of the electrode self-energy and
             the orbitals in `H` (not accounting for spin) which corresponds
             to the rows of the self-energy matrix.
-        pivot :
-            the pivoting table and BTD blocks of the device region.
-            The pivoting table are orbitals in `H` (not accounting for spin).
-            If an array, it is the pivoting table and the BTD blocks are
-            found with `~sisl_toolbox.btd.pivot.btd_blocks`.
+        permute :
+            the permutation table and BTD blocks of the device region.
+            The permutation table are orbitals in `H` (not accounting for spin).
+            If an array, it is the permutation table and the BTD blocks are
+            found with `~sisl_toolbox.btd.permute.btd_blocks`.
             For an array and a `str` the electrode orbitals are dense blocks
             in the partitioning, see `btd_partition`.
             If a `str`, the full `H` is the device region and it is passed
@@ -330,71 +330,71 @@ class DeviceGreen:
             For ``"electrode"`` the (at most 2) electrode orbitals are placed
             at the start and end of the BTD matrix.
         eta :
-            imaginary part of the device region (for real energies)
+            imaginary part of the device region (for real energies).
+            Defaults to the minimum :math:`\eta/10` for the smallest :math:`\eta`
+            value in the electrodes.
         """
         self.H = H
 
         # The electrode self-energies are dense blocks in the device region
         dense = [np.asarray(orbs).ravel() for _, orbs in elecs]
-        if isinstance(pivot, str):
+        if isinstance(permute, str):
             kwargs = {}
-            if pivot.lower() == "electrode":
+            if permute.lower() == "electrode":
                 # the electrodes are placed at the ends of the BTD matrix
                 if len(elecs) > 2:
                     raise ValueError(
-                        f"{self.__class__.__name__}(pivot='electrode') requires at most 2 electrodes"
+                        f"{self.__class__.__name__}(permute='electrode') requires at most 2 electrodes"
                     )
                 kwargs = dict(zip(("start", "end"), dense))
-            pivot = btd_partition(H, method=pivot, dense=dense, **kwargs)
-        elif not isinstance(pivot, PermuteBTD):
-            permute = np.asarray(pivot).ravel()
-            pivot = PermuteBTD(permute, _btd_blocks_sub(H, permute, dense=dense))
-        permute = pivot.permute
-        btd = pivot.blocks
+            permute = btd_partition(H, method=permute, dense=dense, **kwargs)
+        elif not isinstance(permute, PermuteBTD):
+            permute = np.asarray(permute).ravel()
+            permute = PermuteBTD(permute, _btd_blocks_sub(H, permute, dense=dense))
 
         # Retrieve the (spin) expansion of the blocks/orbitals.
-        # The pivoting tables are orbital indices, without spin.
+        # The permutation tables are orbital indices, without spin.
         expand = get_expand(len(H), H.no)
 
         if expand > 1:
             info(
-                f"{self.__class__.__name__} expands the pivoting table and blocks "
+                f"{self.__class__.__name__} expands the permutation table and blocks "
                 f"by {expand} to account for the spin-configuration of the Hamiltonian."
             )
 
-        # the pivoting table for the device region
-        self.pvt = expand_orbs(permute, expand)
-        # the BTD blocks (in the pivoted space) for the device region
-        self.btd = expand_btd(btd, expand)
+        # the permutation table for the device region
+        self.permute = expand_orbs(permute.permute, expand)
+        # the BTD blocks (in the permuted space) for the device region
+        self.blocks = expand_blocks(permute.blocks, expand)
 
-        # the electrode orbitals in the pivoted device region
-        # inv_pvt[orbital in H] = index in the pivoted device region
-        inv_pvt = np.full(len(H), -1, dtype=self.pvt.dtype)
-        inv_pvt[self.pvt] = np.arange(len(self.pvt))
+        # the electrode orbitals in the permuted device region
+        # inv_permute[orbital in H] = index in the permuted device region
+        inv_permute = np.full(len(H), -1, dtype=self.permute.dtype)
+        inv_permute[self.permute] = np.arange(len(self.permute))
         # The positions are sorted (required by the block algorithms),
-        # and the self-energies are pivoted accordingly, see `_DeviceElectrode`.
+        # and the self-energies are permuted accordingly, see `_DeviceElectrode`.
         # There may be no electrodes
         self._elecs = []
         for elec, orbs in elecs:
-            pvt = inv_pvt[expand_orbs(np.asarray(orbs).ravel(), expand)]
-            if np.any(pvt < 0):
+            permute = inv_permute[expand_orbs(np.asarray(orbs).ravel(), expand)]
+            if np.any(permute < 0):
                 raise ValueError(
                     f"{self.__class__.__name__} electrode {elec.name} has orbitals "
                     "outside the device region."
                 )
-            if len(pvt) != len(elec):
+            if len(permute) != len(elec):
                 raise ValueError(
                     f"{self.__class__.__name__} electrode {elec.name} has size {len(elec)}, "
-                    f"but its orbitals gives {len(pvt)}"
+                    f"but its orbitals gives {len(permute)}"
                 )
-            sort = np.argsort(pvt)
-            self._elecs.append(_DeviceElectrode(elec, pvt[sort], sort))
+            sort = np.argsort(permute)
+            self._elecs.append(_DeviceElectrode(elec, permute[sort], sort))
 
         # Each electrode is a dense block, which must maximally span
         # 2 (neighboring) blocks.
-        btd_end = np.cumsum(self.btd)
+        blocks_end = np.cumsum(self.blocks)
         for el in self._elecs:
-            b0, b1 = np.searchsorted(btd_end, el.pvt[[0, -1]], side="right")
+            b0, b1 = np.searchsorted(blocks_end, el.permute[[0, -1]], side="right")
             if b1 - b0 > 1:
                 raise ValueError(
                     f"{self.__class__.__name__} electrode {el.elec.name} spans the "
@@ -406,9 +406,9 @@ class DeviceGreen:
         self.eta = eta
 
         # Create BTD indices
-        self.btd_cum0 = np.empty([len(self.btd) + 1], dtype=self.btd.dtype)
-        self.btd_cum0[0] = 0
-        self.btd_cum0[1:] = np.cumsum(self.btd)
+        self.blocks_cum0 = np.empty([len(self.blocks) + 1], dtype=self.blocks.dtype)
+        self.blocks_cum0[0] = 0
+        self.blocks_cum0[1:] = np.cumsum(self.blocks)
         self.clear()
 
     @property
@@ -417,7 +417,7 @@ class DeviceGreen:
         return [el.elec for el in self._elecs]
 
     def __str__(self) -> str:
-        ret = f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.btd)}, eta: {self.eta:.3e}"
+        ret = f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.blocks)}, eta: {self.eta:.3e}"
         for elec in self.elecs:
             e = str(elec).replace("\n", "\n  ")
             ret = f"{ret},\n {elec.name}:\n  {e}"
@@ -444,7 +444,7 @@ class DeviceGreen:
         cls,
         H: si.Hamiltonian,
         downfolds,
-        pivot,
+        permute,
         eta: float,
         bulk: bool | Mapping[str, bool],
         **kwargs,
@@ -454,7 +454,7 @@ class DeviceGreen:
         Parameters
         ----------
         downfolds :
-            for each electrode a tuple of ``(electrode, orbs_down, btd_down, orbs_elec)``,
+            for each electrode a tuple of ``(electrode, orbs_down, blocks_down, orbs_elec)``,
             see `DownfoldSelfEnergy`
         bulk :
             if a `bool`, it is the default for electrodes without ``info.bulk``
@@ -462,7 +462,7 @@ class DeviceGreen:
             Otherwise a mapping from the electrode names.
         """
         elecs = []
-        for elec, orbs_down, btd_down, orbs_elec in downfolds:
+        for elec, orbs_down, blocks_down, orbs_elec in downfolds:
             if isinstance(bulk, Mapping):
                 elec_bulk = bulk[elec.name]
             else:
@@ -472,12 +472,12 @@ class DeviceGreen:
                 H,
                 orbs_down,
                 orbs_elec,
-                btd_down,
+                blocks_down,
                 eta_device=eta,
                 bulk=elec_bulk,
             )
-            elecs.append((down, orbs_down[-btd_down[-1] :]))
-        return cls(H, elecs, pivot, eta=eta, **kwargs)
+            elecs.append((down, orbs_down[-blocks_down[-1] :]))
+        return cls(H, elecs, permute, eta=eta, **kwargs)
 
     @classmethod
     def from_tbt(
@@ -489,9 +489,9 @@ class DeviceGreen:
         bulk: bool | Mapping[str, bool] = True,
         **kwargs,
     ) -> Self:
-        """Return a new `DeviceGreen` using the regions and pivoting tables of a TBtrans calculation
+        """Return a new `DeviceGreen` using the regions and permutation tables of a TBtrans calculation
 
-        The device region, the downfolding regions and their pivoting tables are
+        The device region, the downfolding regions and their permutation tables are
         read from `tbt`. The electrode Hamiltonians are not stored in `tbt`, and
         must be passed in `elecs`.
 
@@ -566,17 +566,17 @@ class DeviceGreen:
             # The downfolding region, in the BTD order of TBtrans.
             # The last block is the electrode self-energy in the device region.
             orbs_down = tbt.pivot_down(name)
-            btd_down = tbt.btd(name)
-            if not np.array_equal(orbs_down[-btd_down[-1] :], tbt.pivot(name)):
+            blocks_down = tbt.btd(name)
+            if not np.array_equal(orbs_down[-blocks_down[-1] :], tbt.pivot(name)):
                 raise ValueError(
                     f"{clsname}(electrode={name}) found inconsistent "
                     f"down-folding and device orbitals in {tbt}."
                 )
             orbs_elec = H.a2o(tbt.a_elec(name), all=True)
-            downfolds.append((elec, orbs_down, btd_down, orbs_elec))
+            downfolds.append((elec, orbs_down, blocks_down, orbs_elec))
 
-        pivot = PermuteBTD(tbt.pivot(), tbt.btd())
-        return cls._from_downfold(H, downfolds, pivot, eta, bulk, **kwargs)
+        permute = PermuteBTD(tbt.pivot(), tbt.btd())
+        return cls._from_downfold(H, downfolds, permute, eta, bulk, **kwargs)
 
     @classmethod
     def from_fdf(
@@ -590,7 +590,7 @@ class DeviceGreen:
 
         The Hamiltonians (device and electrodes) are read from the files
         in the fdf file (relative to the fdf file).
-        The device region, the downfolding regions and their pivoting tables
+        The device region, the downfolding regions and their permutation tables
         are calculated, i.e. they need not be the same as the ones TBtrans uses.
 
         The following fdf flags are used (``TBT`` prefixed flags take precedence
@@ -598,6 +598,7 @@ class DeviceGreen:
 
         - ``TS.Elecs`` (block): the electrode names, each electrode is read by
           `BlochSelfEnergy.from_fdf`.
+          Defaults to ``Left`` and ``Right`` (as TranSiesta/TBtrans).
           The electrode atoms are determined by ``electrode-position``,
           either the first atom ``<int>``, or the last atom ``end <int>``
           (negative values counts from the end, ``-1`` is the last atom).
@@ -654,6 +655,9 @@ class DeviceGreen:
             line = line.split("#", 1)[0].strip()
             if line:
                 names.append(line)
+        if not names:
+            # same default as TranSiesta/TBtrans
+            names = ["Left", "Right"]
         elecs = [BlochSelfEnergy.from_fdf(fdf, name, prefix=prefix) for name in names]
 
         # default to the smallest electrode eta
@@ -703,17 +707,19 @@ class DeviceGreen:
                 [buffer_atoms] + [atoms for j, atoms in enumerate(elec_atoms) if j != i]
             )
             try:
-                orbs_down, btd_down = _downfold_pivot(
+                orbs_down, blocks_down = _downfold_permute(
                     graph, H.geometry, elec_atoms[i], device_atoms, exclude
                 )
             except ValueError as e:
                 raise ValueError(f"{clsname}(electrode={elec.name}): {e}") from None
             orbs_elec = H.a2o(elec_atoms[i], all=True)
-            downfolds.append((elec, orbs_down, btd_down, orbs_elec))
+            downfolds.append((elec, orbs_down, blocks_down, orbs_elec))
 
-        # Pivoting table of the device, the blocks are calculated in __init__
-        method = _fdf_pivot_method(fdf.get("TBT.BTD.Pivot.Device", "GPS"))
-        dense = [orbs_down[-btd_down[-1] :] for _, orbs_down, btd_down, _ in downfolds]
+        # Permutation table of the device, the blocks are calculated in __init__
+        method = _fdf_permute_method(fdf.get("TBT.BTD.Pivot.Device", "GPS"))
+        dense = [
+            orbs_down[-blocks_down[-1] :] for _, orbs_down, blocks_down, _ in downfolds
+        ]
         permute = _device_permute(graph, H.a2o(device_atoms, all=True), dense, method)
 
         return cls._from_downfold(H, downfolds, permute, eta_dev, True, **kwargs)
@@ -731,7 +737,7 @@ class DeviceGreen:
 
     def __len__(self) -> int:
         """Length of Green function matrix."""
-        return len(self.pvt)
+        return len(self.permute)
 
     def _elec(self, elec) -> int | Sequence[int]:
         """Convert a string electrode to the proper linear index"""
@@ -777,9 +783,9 @@ class DeviceGreen:
             return elec.name
         return self._elecs[elec].elec.name
 
-    def _pivot_matrix(self, M):
-        """Pivot's a (full) matrix, i.e. not one that is already reduced."""
-        return M[self.pvt, :][:, self.pvt]
+    def _permute_matrix(self, M):
+        """Permutes a (full) matrix, i.e. not one that is already reduced."""
+        return M[self.permute, :][:, self.permute]
 
     def _as_cutoff_func(self, cutoff):
         """Ensure the cutoff value is transformed into a cut-off function"""
@@ -924,28 +930,28 @@ class DeviceGreen:
 
         # Prepare the Green function calculation
         invG = self.H.Sk(k, dtype=dtype) * Ec - self.H.Hk(k, dtype=dtype, **kwargs)
-        invG = self._pivot_matrix(invG).tolil()
+        invG = self._permute_matrix(invG).tolil()
 
         # Create all self-energies (and store the Gamma's)
         if hasattr(data, "se"):
             for el, SE in zip(self._elecs, data.se):
-                pvt = el.pvt.reshape(-1, 1)
-                invG[pvt, pvt.T] -= SE
+                permute = el.permute.reshape(-1, 1)
+                invG[permute, permute.T] -= SE
         else:
             gamma = []
             for el in self._elecs:
-                pvt = el.pvt.reshape(-1, 1)
+                permute = el.permute.reshape(-1, 1)
                 sort = el.sort.reshape(-1, 1)
                 # Insert values
                 SE = el.elec.self_energy(E, k=k, dtype=dtype, **kwargs)[sort, sort.T]
-                invG[pvt, pvt.T] -= SE
+                invG[permute, permute.T] -= SE
                 gamma.append(el.elec.se2broadening(SE))
             del SE
             data.gamma = gamma
         # convert to csr format (that's how will mostly convert it)
         invG = invG.tocsr()
 
-        nb = len(self.btd)
+        nb = len(self.blocks)
         nbm1 = nb - 1
 
         # Now we have all needed to calculate the inverse parts of the Green function
@@ -954,10 +960,10 @@ class DeviceGreen:
         C = [0] * nb
 
         # Now we can calculate everything
-        cbtd = self.btd_cum0
+        cblocks = self.blocks_cum0
 
-        sl0 = slice(cbtd[0], cbtd[1])
-        slp = slice(cbtd[1], cbtd[2])
+        sl0 = slice(cblocks[0], cblocks[1])
+        slp = slice(cblocks[1], cblocks[2])
         # initial matrix A and C
         iG = invG[sl0, :].tocsc()
         A[0] = iG[:, sl0].toarray()
@@ -966,7 +972,7 @@ class DeviceGreen:
             # rotate slices
             sln = sl0
             sl0 = slp
-            slp = slice(cbtd[b + 1], cbtd[b + 2])
+            slp = slice(cblocks[b + 1], cblocks[b + 2])
             iG = invG[sl0, :].tocsc()
 
             B[b - 1] = iG[:, sln].toarray()
@@ -1014,9 +1020,9 @@ class DeviceGreen:
             the format of the blocks when `M` is a sparse matrix,
             any format ``X`` for which ``M.toX()`` exists.
         """
-        BM = BlockMatrix(self.btd)
+        BM = BlockMatrix(self.blocks)
         BI = BM.block_indexer
-        c = self.btd_cum0
+        c = self.blocks_cum0
         nb = len(BI)
 
         def cast(M):
@@ -1033,8 +1039,8 @@ class DeviceGreen:
 
         return BM
 
-    def _pivot_k(self, func: Callable, *args, **kwargs):
-        """Call ``func(*args, **kwargs)`` and pivot the result to the device region
+    def _permute_k(self, func: Callable, *args, **kwargs):
+        """Call ``func(*args, **kwargs)`` and permute the result to the device region
 
         ``format="btd"`` returns the matrix as a `BlockMatrix`, any other
         `format` is passed to `func`.
@@ -1045,18 +1051,18 @@ class DeviceGreen:
                 is_btd = True
                 del kwargs["format"]
 
-        M = self._pivot_matrix(func(*args, **kwargs))
+        M = self._permute_matrix(func(*args, **kwargs))
         if is_btd:
             return self._matrix_to_btd(M)
         return M
 
     def Sk(self, *args, **kwargs):
-        """Return the overlap matrix in the pivoted device region"""
-        return self._pivot_k(self.H.Sk, *args, **kwargs)
+        """Return the overlap matrix in the permuted device region"""
+        return self._permute_k(self.H.Sk, *args, **kwargs)
 
     def Hk(self, *args, **kwargs):
-        """Return the Hamiltonian matrix in the pivoted device region"""
-        return self._pivot_k(self.H.Hk, *args, **kwargs)
+        """Return the Hamiltonian matrix in the permuted device region"""
+        return self._permute_k(self.H.Hk, *args, **kwargs)
 
     def green(
         self,
@@ -1109,11 +1115,11 @@ class DeviceGreen:
 
     def _green_array(self) -> np.ndarray:
         """Calculate the Green function on a full np.array matrix"""
-        n = len(self.pvt)
+        n = len(self.permute)
         G = np.empty([n, n], dtype=self._data.A[0].dtype)
 
-        btd = self.btd
-        nb = len(btd)
+        blocks = self.blocks
+        nb = len(blocks)
         nbm1 = nb - 1
         sumbs = 0
         A = self._data.A
@@ -1121,7 +1127,7 @@ class DeviceGreen:
         C = self._data.C
         tX = self._data.tX
         tY = self._data.tY
-        for b, bs in enumerate(btd):
+        for b, bs in enumerate(blocks):
             sl0 = slice(sumbs, sumbs + bs)
 
             # Calculate diagonal part
@@ -1137,10 +1143,10 @@ class DeviceGreen:
             slp = sl0
             for a in range(b - 1, -1, -1):
                 # Calculate all parts above
-                sla = slice(next_sum - btd[a], next_sum)
+                sla = slice(next_sum - blocks[a], next_sum)
                 G[sla, sl0] = -tY[a + 1] @ G[slp, sl0]
                 slp = sla
-                next_sum -= btd[a]
+                next_sum -= blocks[a]
 
             sl0 = slice(sumbs, sumbs + bs)
 
@@ -1152,10 +1158,10 @@ class DeviceGreen:
             slp = sl0
             for a in range(b + 1, nb):
                 # Calculate all parts above
-                sla = slice(next_sum, next_sum + btd[a])
+                sla = slice(next_sum, next_sum + blocks[a])
                 G[sla, sl0] = -tX[a - 1] @ G[slp, sl0]
                 slp = sla
-                next_sum += btd[a]
+                next_sum += blocks[a]
 
         return G
 
@@ -1163,7 +1169,7 @@ class DeviceGreen:
         """Calculate the Green function only in the BTD matrix elements.
 
         Stored in a `BlockMatrix` class."""
-        G = BlockMatrix(self.btd)
+        G = BlockMatrix(self.blocks)
         BI = G.block_indexer
         nb = len(BI)
         nbm1 = nb - 1
@@ -1218,7 +1224,7 @@ class DeviceGreen:
         """Calculate the Green function only along the diagonal block matrices.
 
         Stored in a `BlockMatrix` class."""
-        G = BlockMatrix(self.btd)
+        G = BlockMatrix(self.blocks)
         BI = G.block_indexer
         nb = len(BI)
         nbm1 = nb - 1
@@ -1242,8 +1248,8 @@ class DeviceGreen:
         Stored in a `scipy.sparse.csr_matrix` class."""
         # create a sparse matrix
         G = self.H.Sk(format="csr", dtype=self._data.A[0].dtype)
-        # pivot the matrix
-        G = self._pivot_matrix(G)
+        # permute the matrix
+        G = self._permute_matrix(G)
 
         # Get row and column entries
         ncol = np.diff(G.indptr)
@@ -1260,8 +1266,8 @@ class DeviceGreen:
             idx = idx[col_b[0] <= col[idx]]
             return idx[col[idx] < col_b[1]]
 
-        btd = self.btd
-        nb = len(btd)
+        blocks = self.blocks
+        nb = len(blocks)
         nbm1 = nb - 1
         A = self._data.A
         B = self._data.B
@@ -1269,10 +1275,10 @@ class DeviceGreen:
         tX = self._data.tX
         tY = self._data.tY
         sumbsn, sumbs, sumbsp = 0, 0, 0
-        for b, bs in enumerate(btd):
+        for b, bs in enumerate(blocks):
             sumbsp = sumbs + bs
             if b < nbm1:
-                bsp = btd[b + 1]
+                bsp = blocks[b + 1]
 
             # Calculate diagonal part
             if b == 0:
@@ -1309,11 +1315,11 @@ class DeviceGreen:
 
         Stored in a `np.array` class."""
         ncols = len(cols)
-        nb = len(self.btd)
+        nb = len(self.blocks)
         nbm1 = nb - 1
 
         # Find parts we need to calculate
-        blocks = _blocks_in_range(self.btd_cum0, cols)
+        blocks = _blocks_in_range(self.blocks_cum0, cols)
         assert (
             len(blocks) <= 2
         ), f"{self.__class__.__name__} green(diagonal) requires maximally 2 blocks"
@@ -1322,11 +1328,11 @@ class DeviceGreen:
                 blocks[0] + 1 == blocks[1]
             ), f"{self.__class__.__name__} green(diagonal) requires spanning only 2 blocks"
 
-        n = self.btd[blocks].sum()
+        n = self.blocks[blocks].sum()
         G = np.empty([n, ncols], dtype=self._data.A[0].dtype)
 
-        btd = self.btd
-        c = self.btd_cum0
+        sizes = self.blocks
+        c = self.blocks_cum0
         A = self._data.A
         B = self._data.B
         C = self._data.C
@@ -1340,10 +1346,10 @@ class DeviceGreen:
             b_idx = indices_only(_a.arangei(c[b], c[b + 1]), i)
 
             if b == blocks[0]:
-                sl = slice(0, btd[b])
+                sl = slice(0, sizes[b])
                 c_idx = _a.arangei(len(b_idx))
             else:
-                sl = slice(btd[blocks[0]], btd[blocks[0]] + btd[b])
+                sl = slice(sizes[blocks[0]], sizes[blocks[0]] + sizes[b])
                 c_idx = _a.arangei(ncols - len(b_idx), ncols)
 
             if b == 0:
@@ -1361,11 +1367,11 @@ class DeviceGreen:
             # Now calculate the thing (below/above)
             if b == blocks[0]:
                 # Calculate below
-                slp = slice(btd[b], btd[b] + btd[blocks[1]])
+                slp = slice(sizes[b], sizes[b] + sizes[blocks[1]])
                 G[slp, c_idx] = -tX[b] @ G[sl, c_idx]
             else:
                 # Calculate above
-                slp = slice(0, btd[blocks[0]])
+                slp = slice(0, sizes[blocks[0]])
                 G[slp, c_idx] = -tY[b] @ G[sl, c_idx]
 
         return blocks, G
@@ -1378,11 +1384,11 @@ class DeviceGreen:
         # These indices should maximally be spanning 2 blocks
         cols = cols.ravel()
         ncols = len(cols)
-        nb = len(self.btd)
+        nb = len(self.blocks)
         nbm1 = nb - 1
 
         # Find parts we need to calculate
-        blocks = _blocks_in_range(self.btd_cum0, cols)
+        blocks = _blocks_in_range(self.blocks_cum0, cols)
         assert (
             len(blocks) <= 2
         ), f"{self.__class__.__name__}.green(column) requires maximally 2 blocks"
@@ -1394,7 +1400,7 @@ class DeviceGreen:
         n = len(self)
         G = np.empty([n, ncols], dtype=self._data.A[0].dtype)
 
-        c = self.btd_cum0
+        c = self.blocks_cum0
         A = self._data.A
         B = self._data.B
         C = self._data.C
@@ -1526,7 +1532,7 @@ class DeviceGreen:
 
     def _spectral_column_array(self, elec, herm: bool) -> np.ndarray:
         """Spectral function from a column array (`herm` not used)"""
-        G = self._green_column(self._elecs[elec].pvt)
+        G = self._green_column(self._elecs[elec].permute)
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ np.conj(G.T)
 
@@ -1542,16 +1548,16 @@ class DeviceGreen:
            the Hermitian part to the upper triangular part.
            Else, calculate the full matrix via MM.
         """
-        G = self._green_column(self._elecs[elec].pvt)
-        nb = len(self.btd)
+        G = self._green_column(self._elecs[elec].permute)
+        nb = len(self.blocks)
 
         Gam = self._data.gamma[elec]
 
         # Now calculate the full spectral function
-        btd = BlockMatrix(self.btd)
+        btd = BlockMatrix(self.blocks)
         BI = btd.block_indexer
 
-        c = self.btd_cum0
+        c = self.blocks_cum0
 
         if herm:
             # loop columns
@@ -1587,16 +1593,16 @@ class DeviceGreen:
            the Hermitian part to the upper triangular part.
            Else, calculate the full matrix via MM.
         """
-        G = self._green_column(self._elecs[elec].pvt)
-        nb = len(self.btd)
+        G = self._green_column(self._elecs[elec].permute)
+        nb = len(self.blocks)
 
         Gam = self._data.gamma[elec]
 
         # Now calculate the full spectral function
-        btd = BlockMatrix(self.btd)
+        btd = BlockMatrix(self.blocks)
         BI = btd.block_indexer
 
-        c = self.btd_cum0
+        c = self.blocks_cum0
         if herm:
             # loop columns
             for jb in range(nb):
@@ -1620,18 +1626,18 @@ class DeviceGreen:
         return btd
 
     def _spectral_propagate_array(self, elec, herm: bool) -> np.ndarray:
-        nb = len(self.btd)
+        nb = len(self.blocks)
         nbm1 = nb - 1
 
         # First we need to calculate diagonal blocks of the spectral matrix
-        blocks, A = self._green_diag_block(self._elecs[elec].pvt)
+        blocks, A = self._green_diag_block(self._elecs[elec].permute)
         nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ np.conj(A.T)
 
         # Allocate space for the full matrix
         S = np.empty([len(self), len(self)], dtype=A.dtype)
 
-        c = self.btd_cum0
+        c = self.blocks_cum0
         S[c[blocks[0]] : c[blocks[-1] + 1], c[blocks[0]] : c[blocks[-1] + 1]] = A
         del A
 
@@ -1715,23 +1721,23 @@ class DeviceGreen:
         return S
 
     def _spectral_propagate_bm(self, elec, herm: bool) -> BlockMatrix:
-        btd = self.btd
-        nb = len(btd)
+        sizes = self.blocks
+        nb = len(sizes)
         nbm1 = nb - 1
 
-        BM = BlockMatrix(self.btd)
+        BM = BlockMatrix(self.blocks)
         BI = BM.block_indexer
 
         # First we need to calculate diagonal blocks of the spectral matrix
-        blocks, A = self._green_diag_block(self._elecs[elec].pvt)
+        blocks, A = self._green_diag_block(self._elecs[elec].permute)
         nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ np.conj(A.T)
 
-        BI[blocks[0], blocks[0]] = A[: btd[blocks[0]], : btd[blocks[0]]]
+        BI[blocks[0], blocks[0]] = A[: sizes[blocks[0]], : sizes[blocks[0]]]
         if len(blocks) > 1:
-            BI[blocks[0], blocks[1]] = A[: btd[blocks[0]], btd[blocks[0]] :]
-            BI[blocks[1], blocks[0]] = A[btd[blocks[0]] :, : btd[blocks[0]]]
-            BI[blocks[1], blocks[1]] = A[btd[blocks[0]] :, btd[blocks[0]] :]
+            BI[blocks[0], blocks[1]] = A[: sizes[blocks[0]], sizes[blocks[0]] :]
+            BI[blocks[1], blocks[0]] = A[sizes[blocks[0]] :, : sizes[blocks[0]]]
+            BI[blocks[1], blocks[1]] = A[sizes[blocks[0]] :, sizes[blocks[0]] :]
 
         # now loop backwards
         tX = self._data.tX
@@ -1810,22 +1816,22 @@ class DeviceGreen:
         return BM
 
     def _spectral_propagate_btd(self, elec, herm: bool) -> BlockMatrix:
-        btd = self.btd
-        nb = len(btd)
+        sizes = self.blocks
+        nb = len(sizes)
         nbm1 = nb - 1
 
-        BM = BlockMatrix(self.btd)
+        BM = BlockMatrix(self.blocks)
         BI = BM.block_indexer
 
         # First we need to calculate diagonal blocks of the spectral matrix
-        blocks, A = self._green_diag_block(self._elecs[elec].pvt)
+        blocks, A = self._green_diag_block(self._elecs[elec].permute)
         A = A @ self._data.gamma[elec] @ np.conj(A.T)
 
-        BI[blocks[0], blocks[0]] = A[: btd[blocks[0]], : btd[blocks[0]]]
+        BI[blocks[0], blocks[0]] = A[: sizes[blocks[0]], : sizes[blocks[0]]]
         if len(blocks) > 1:
-            BI[blocks[0], blocks[1]] = A[: btd[blocks[0]], btd[blocks[0]] :]
-            BI[blocks[1], blocks[0]] = A[btd[blocks[0]] :, : btd[blocks[0]]]
-            BI[blocks[1], blocks[1]] = A[btd[blocks[0]] :, btd[blocks[0]] :]
+            BI[blocks[0], blocks[1]] = A[: sizes[blocks[0]], sizes[blocks[0]] :]
+            BI[blocks[1], blocks[0]] = A[sizes[blocks[0]] :, : sizes[blocks[0]]]
+            BI[blocks[1], blocks[1]] = A[sizes[blocks[0]] :, sizes[blocks[0]] :]
 
         # now loop backwards
         tX = self._data.tX
@@ -1998,7 +2004,7 @@ class DeviceGreen:
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def _scattering_state_svd_gamma(self, _method, elec, cutoff, **kwargs):
-        A = self._green_column(self._elecs[elec].pvt)
+        A = self._green_column(self._elecs[elec].permute)
         cutoff = self._as_cutoff_func(cutoff)
 
         # This calculation uses the cholesky decomposition of Gamma
@@ -2050,7 +2056,7 @@ class DeviceGreen:
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
         # But only in the 1/2 diagonal blocks of Gf
-        blocks, u = self._green_diag_block(self._elecs[elec].pvt)
+        blocks, u = self._green_diag_block(self._elecs[elec].permute)
         # Calculate the spectral function only for the blocks that host the
         # scattering matrix
         u = u @ self._data.gamma[elec] @ np.conj(u.T)
@@ -2079,31 +2085,31 @@ class DeviceGreen:
         # a sensible value, the 2*pi factor ensures the *original* scale.
         u *= signsqrt(DOS * 2 * np.pi)
 
-        nb = len(self.btd)
-        cbtd = self.btd_cum0
+        nb = len(self.blocks)
+        cblocks = self.blocks_cum0
 
         # Create full U
         A = np.empty([len(self), u.shape[1]], dtype=u.dtype)
 
-        sl = slice(cbtd[blocks[0]], cbtd[blocks[0] + 1])
-        A[sl, :] = u[: self.btd[blocks[0]], :]
+        sl = slice(cblocks[blocks[0]], cblocks[blocks[0] + 1])
+        A[sl, :] = u[: self.blocks[blocks[0]], :]
         if len(blocks) > 1:
-            sl = slice(cbtd[blocks[1]], cbtd[blocks[1] + 1])
-            A[sl, :] = u[self.btd[blocks[0]] :, :]
+            sl = slice(cblocks[blocks[1]], cblocks[blocks[1] + 1])
+            A[sl, :] = u[self.blocks[blocks[0]] :, :]
         del u
 
         # Propagate A in the full BTD matrix
         t = self._data.tY
-        sl = slice(cbtd[blocks[0]], cbtd[blocks[0] + 1])
+        sl = slice(cblocks[blocks[0]], cblocks[blocks[0] + 1])
         for b in range(blocks[0], 0, -1):
-            sln = slice(cbtd[b - 1], cbtd[b])
+            sln = slice(cblocks[b - 1], cblocks[b])
             A[sln] = -t[b] @ A[sl]
             sl = sln
 
         t = self._data.tX
-        sl = slice(cbtd[blocks[-1]], cbtd[blocks[-1] + 1])
+        sl = slice(cblocks[blocks[-1]], cblocks[blocks[-1] + 1])
         for b in range(blocks[-1], nb - 1):
-            slp = slice(cbtd[b + 1], cbtd[b + 2])
+            slp = slice(cblocks[b + 1], cblocks[b + 2])
             A[slp] = -t[b] @ A[sl]
             sl = slp
 
@@ -2168,15 +2174,15 @@ class DeviceGreen:
         self._prepare(E, k, dtype, **kwargs)
 
         # Get full G in column of 'from'
-        G = self._green_column(self._elecs[elec_from].pvt)
+        G = self._green_column(self._elecs[elec_from].permute)
 
         # The gamma matrices
         Gam = self._data.gamma
 
         # Now calculate the transmission
         def calc(Gam_from, elec_to, Gam_to, G):
-            pvt = self._elecs[elec_to].pvt
-            g = G[pvt, :]
+            permute = self._elecs[elec_to].permute
+            g = G[permute, :]
             A = g @ Gam_from @ dagger(g)
 
             # Return the trace of the final quadruple product
@@ -2267,7 +2273,7 @@ class DeviceGreen:
         self._prepare_tgamma(E, k, dtype, cutoff, **kwargs)
 
         # Get full G in column of 'from'
-        G = self._green_column(self._elecs[elec_from].pvt)
+        G = self._green_column(self._elecs[elec_from].permute)
 
         # the \tilde \Gamma functions
         tG = self._data.tgamma
@@ -2283,8 +2289,8 @@ class DeviceGreen:
 
         # Now calculate the S matrices
         def calc(elec_from, jtgam_from, elec_to, tgam_to, G):
-            pvt = self._elecs[elec_to].pvt
-            g = G[pvt, :]
+            permute = self._elecs[elec_to].permute
+            g = G[permute, :]
             ret = dagger(tgam_to) @ g @ jtgam_from
             if elec_from == elec_to:
                 idx = np.arange(min(ret.shape))
@@ -2410,7 +2416,7 @@ class DeviceGreen:
 
         # Create the first electrode
         el = elec_to[0]
-        idx = self._elecs[el].pvt
+        idx = self._elecs[el].permute
 
         u = A[idx]
         # the summed transmission matrix
@@ -2418,7 +2424,7 @@ class DeviceGreen:
 
         # same for other electrodes
         for el in elec_to[1:]:
-            idx = self._elecs[el].pvt
+            idx = self._elecs[el].permute
             u = A[idx]
             Ut += u.conj().T @ G[el] @ u
 

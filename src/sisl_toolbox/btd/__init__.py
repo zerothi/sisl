@@ -20,8 +20,8 @@ The toolbox contains:
 - `BlochSelfEnergy` and `DownfoldSelfEnergy`: electrode self-energies, either bulk
   or downfolded through a region of the Hamiltonian
 - `BlockMatrix`: container for block matrices
-- `btd_partition` and `PermuteBTD`: pivoting tables and block sizes for
-  BTD matrices, see also the `~sisl_toolbox.btd.pivot` module
+- `btd_partition` and `PermuteBTD`: permutation tables and block sizes for
+  BTD matrices, see also the `~sisl_toolbox.btd.permute` module
 """
 
 from __future__ import annotations

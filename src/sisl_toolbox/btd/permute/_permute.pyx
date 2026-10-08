@@ -246,7 +246,7 @@ def cuthill_mckee(const int[::1] ptr, const int[::1] col, bint reverse=False):
 
     Returns
     -------
-    perm : the pivoting table, ``perm[new] = old``
+    perm : the permutation table, ``perm[new] = old``
     """
     cdef int n = ptr.shape[0] - 1
     DEG = np.diff(ptr).astype(np.int32)
@@ -637,7 +637,7 @@ def gibbs_poole_stockmeyer(ptr, col):
 
     Returns
     -------
-    perm : the pivoting table, ``perm[new] = old``
+    perm : the permutation table, ``perm[new] = old``
 
     References
     ----------
@@ -675,7 +675,7 @@ def generalized_gibbs_poole_stockmeyer(ptr, col, max_roots=None):
 
     Returns
     -------
-    perm : the pivoting table, ``perm[new] = old``
+    perm : the permutation table, ``perm[new] = old``
 
     References
     ----------
@@ -712,7 +712,7 @@ def electrode_ordering(ptr, col, start, end=None):
 
     Returns
     -------
-    perm : the pivoting table, ``perm[new] = old``
+    perm : the permutation table, ``perm[new] = old``
     """
     n = len(ptr) - 1
 
@@ -835,7 +835,7 @@ cdef void _refine(const int[::1] ptr, const int[::1] col, int[::1] perm, int[::1
 
 
 def refine_bandwidth(const int[::1] ptr, const int[::1] col, perm, fixed=None, int max_sweeps=100):
-    """Local refinement of a pivoting table that never increases the bandwidth
+    """Local refinement of a permutation table that never increases the bandwidth
 
     Hill-climbing on the critical nodes, i.e. nodes with an edge of maximal length.
     A critical node ``v`` is swapped with the node ``u`` whose label is closest to
@@ -844,14 +844,14 @@ def refine_bandwidth(const int[::1] ptr, const int[::1] col, perm, fixed=None, i
     ``v`` are tried, and the first swap that reduces the bandwidth, or the number of edges
     with maximal length, is accepted.
 
-    Applicable to the pivoting table of any method.
+    Applicable to the permutation table of any method.
 
     Parameters
     ----------
     ptr, col :
         symmetric CSR graph without self-loops, see `symmetric_graph`
     perm :
-        the pivoting table to refine, ``perm[new] = old``
+        the permutation table to refine, ``perm[new] = old``
     fixed :
         nodes that keep their position, e.g. electrode orbitals from `electrode_ordering`
     max_sweeps :
@@ -859,7 +859,7 @@ def refine_bandwidth(const int[::1] ptr, const int[::1] col, perm, fixed=None, i
 
     Returns
     -------
-    perm : the refined pivoting table, ``perm[new] = old``
+    perm : the refined permutation table, ``perm[new] = old``
 
     References
     ----------
@@ -971,7 +971,7 @@ def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"
     ptr, col :
         symmetric CSR graph without self-loops, see `symmetric_graph`
     perm :
-        the pivoting table, ``perm[new] = old``
+        the permutation table, ``perm[new] = old``
     cost : {"speed", "memory", "speed-diagonal"}
         the cost model:
 

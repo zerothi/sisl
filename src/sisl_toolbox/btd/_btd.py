@@ -16,7 +16,7 @@ from sisl._array import array_arange
 from sisl._core.sparse_geometry import _SparseGeometry
 from sisl._internal import set_module
 
-from .pivot import _reduce_bandwidth, btd_blocks, csr_graph
+from .permute import _reduce_bandwidth, btd_blocks, csr_graph
 
 __all__ = ["BlockMatrixIndexer", "BlockMatrix", "PermuteBTD", "btd_partition"]
 
@@ -24,15 +24,15 @@ __all__ = ["BlockMatrixIndexer", "BlockMatrix", "PermuteBTD", "btd_partition"]
 @set_module("sisl_toolbox.btd")
 @dataclass
 class PermuteBTD:
-    """Pivoting table and block sizes of a block-tridiagonal matrix
+    """Permutation table and block sizes of a block-tridiagonal matrix
 
     Parameters
     ----------
     permute :
-        the pivoting table, ``permute[new] = old``.
-        If `blocks` is not passed, this should be a sequence of the pivoting
+        the permutation table, ``permute[new] = old``.
+        If `blocks` is not passed, this should be a sequence of the permutation
         indices for each block (e.g. ``np.split(permute, np.cumsum(blocks)[:-1])``),
-        the pivoting table is then their concatenation, and the block sizes
+        the permutation table is then their concatenation, and the block sizes
         are their lengths.
     blocks :
         the block sizes, ``blocks.sum() == len(permute)``
@@ -122,7 +122,7 @@ def _subgraph(graph: ssp.csr_matrix, idx: np.ndarray) -> ssp.csr_matrix:
 
 
 def _graph_ptr_col(graph: ssp.csr_matrix) -> tuple[np.ndarray, np.ndarray]:
-    """``(ptr, col)`` arrays of `graph` as required by the `pivot` routines"""
+    """``(ptr, col)`` arrays of `graph` as required by the `permute` routines"""
     ptr = np.ascontiguousarray(graph.indptr, dtype=np.int32)
     col = np.ascontiguousarray(graph.indices, dtype=np.int32)
     return ptr, col
@@ -137,12 +137,12 @@ def btd_partition(
     dense: Optional[Sequence[npt.ArrayLike]] = None,
     **kwargs,
 ) -> PermuteBTD:
-    """Pivoting table and block sizes of the block-tridiagonal matrix of minimal cost
+    """Permutation table and block sizes of the block-tridiagonal matrix of minimal cost
 
-    The pivoting table reduces the bandwidth of `csr` (see
-    `~sisl_toolbox.btd.pivot.reduce_bandwidth`), and the pivoted matrix is partitioned
+    The permutation table reduces the bandwidth of `csr` (see
+    `~sisl_toolbox.btd.permute.reduce_bandwidth`), and the permuted matrix is partitioned
     into the block-tridiagonal matrix that minimizes the `cost` model,
-    see `~sisl_toolbox.btd.pivot.btd_blocks`.
+    see `~sisl_toolbox.btd.permute.btd_blocks`.
     The indices within each block are sorted, which improves memory access
     when assembling and post-processing the blocks.
 
@@ -153,11 +153,11 @@ def btd_partition(
         For a sparse geometry object (e.g. `~sisl.Hamiltonian`) its sparse
         pattern is used.
     method :
-        the bandwidth reduction method, see `~sisl_toolbox.btd.pivot.reduce_bandwidth`
+        the bandwidth reduction method, see `~sisl_toolbox.btd.permute.reduce_bandwidth`
     cost : {"speed", "memory", "speed-diagonal"}
-        the cost model of the block-tridiagonal matrix, see `~sisl_toolbox.btd.pivot.btd_blocks`
+        the cost model of the block-tridiagonal matrix, see `~sisl_toolbox.btd.permute.btd_blocks`
     refine :
-        refine the pivoting table, see `~sisl_toolbox.btd.pivot.reduce_bandwidth`
+        refine the permutation table, see `~sisl_toolbox.btd.permute.reduce_bandwidth`
     dense :
         rows of `csr` that are fully coupled, one array per dense block.
         E.g. the orbitals of an electrode self-energy.
@@ -174,7 +174,7 @@ def btd_partition(
     perm = _reduce_bandwidth(ptr, col, method, refine, **kwargs)
     blocks = btd_blocks(ptr, col, perm, cost)
     # sorting within a block retains the block-tridiagonal structure
-    # but speeds up memory access by limiting pivoting.
+    # but speeds up memory access by limiting permutation.
     perm = perm[np.lexsort((perm, np.repeat(np.arange(len(blocks)), blocks)))]
     return PermuteBTD(perm, blocks)
 
@@ -187,7 +187,7 @@ def _btd_blocks_sub(
 ) -> np.ndarray:
     """Block sizes of the block-tridiagonal matrix of a sub-set of `csr` in the order of `permute`
 
-    Contrary to `~sisl_toolbox.btd.pivot.btd_blocks`, `permute` need not
+    Contrary to `~sisl_toolbox.btd.permute.btd_blocks`, `permute` need not
     contain all rows of `csr`, only the rows in `permute` are partitioned.
 
     Parameters
@@ -199,7 +199,7 @@ def _btd_blocks_sub(
     permute :
         the rows of `csr` in the order of the block-tridiagonal matrix
     cost : {"speed", "memory", "speed-diagonal"}
-        the cost model of the block-tridiagonal matrix, see `~sisl_toolbox.btd.pivot.btd_blocks`
+        the cost model of the block-tridiagonal matrix, see `~sisl_toolbox.btd.permute.btd_blocks`
     dense :
         rows of `csr` that are fully coupled, see `btd_partition`
 
@@ -220,7 +220,7 @@ def _device_permute(
     method: str = "gps",
     refine: bool = True,
 ) -> np.ndarray:
-    """Bandwidth reducing pivoting table of the sub-set `orbs` of `graph`
+    """Bandwidth reducing permutation table of the sub-set `orbs` of `graph`
 
     Parameters
     ----------
@@ -232,11 +232,11 @@ def _device_permute(
         orbitals (in `graph`) that are fully coupled, e.g. the electrode
         self-energies, all must be in `orbs`.
     method :
-        the bandwidth reduction method, see `~sisl_toolbox.btd.pivot.reduce_bandwidth`.
+        the bandwidth reduction method, see `~sisl_toolbox.btd.permute.reduce_bandwidth`.
         For ``"electrode"`` the (at most) 2 `dense` blocks are placed at
         the start and end.
     refine :
-        refine the pivoting table
+        refine the permutation table
 
     Returns
     -------
@@ -257,7 +257,7 @@ def _device_permute(
     return orbs[perm]
 
 
-def _downfold_pivot(
+def _downfold_permute(
     graph: ssp.csr_matrix,
     geometry,
     elec_atoms: np.ndarray,
@@ -266,7 +266,7 @@ def _downfold_pivot(
     cost: str = "speed",
     refine: bool = True,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Downfolding region of an electrode, its pivoting table and BTD blocks
+    """Downfolding region of an electrode, its permutation table and BTD blocks
 
     The downfolding region are the atoms connected to the electrode,
     which are not in the device region, nor `exclude_atoms`.
@@ -292,12 +292,12 @@ def _downfold_pivot(
     cost :
         the cost model of the block-tridiagonal matrix
     refine :
-        refine the pivoting table
+        refine the permutation table
 
     Returns
     -------
     orbs_down : the orbitals of the downfolding region (in BTD order)
-    btd_down : the BTD blocks of `orbs_down`, the last block are device orbitals
+    blocks_down : the BTD blocks of `orbs_down`, the last block are device orbitals
     """
     na = geometry.na
     elec_atoms = np.asarray(elec_atoms).ravel()

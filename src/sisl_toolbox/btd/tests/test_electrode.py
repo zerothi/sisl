@@ -110,13 +110,13 @@ def _electrodes(Hel, H, bulk, rng, last=None):
             blocks[-1] = blocks[-1][last]
         blocks = [rng.permutation(b) for b in blocks]
         orbs_down = np.concatenate(blocks)
-        btd_down = [len(b) for b in blocks]
+        blocks_down = [len(b) for b in blocks]
         down = DownfoldSelfEnergy(
             elec,
             H,
             orbs_down,
             _cell_orbs(H, cells[0]),
-            btd_down,
+            blocks_down,
             eta_device=ETA,
             bulk=bulk,
         )
@@ -208,13 +208,13 @@ def test_device_green(bulk, spin):
 
     # device region, shuffled within each block
     blocks = [rng.permutation(_cell_orbs(H, c)) for c in range(2, 6)]
-    pivot = PermuteBTD(np.concatenate(blocks), [len(b) for b in blocks])
-    G = DeviceGreen(H, elecs, pivot, eta=ETA)
+    permbtd = PermuteBTD(np.concatenate(blocks), [len(b) for b in blocks])
+    G = DeviceGreen(H, elecs, permbtd, eta=ETA)
 
     E = 0.3
     Gref = np.linalg.inv(_reference(Hel, H, E, K))
-    pvt = _expand(H, pivot.permute)
-    assert np.allclose(G.green(E, k=K), Gref[np.ix_(pvt, pvt)])
+    permute = _expand(H, permbtd.permute)
+    assert np.allclose(G.green(E, k=K), Gref[np.ix_(permute, permute)])
 
     # Caroli formula in the device region, with the downfolded broadening
     # matrices (equivalent to TBtrans)
@@ -241,9 +241,9 @@ def test_device_green_outside():
     rng = np.random.default_rng(42)
     elecs = _electrodes(Hel, H, True, rng)
     blocks = [_cell_orbs(H, c) for c in range(3, 6)]
-    pivot = PermuteBTD(np.concatenate(blocks), [len(b) for b in blocks])
+    permbtd = PermuteBTD(np.concatenate(blocks), [len(b) for b in blocks])
     with pytest.raises(ValueError, match="outside"):
-        DeviceGreen(H, elecs, pivot)
+        DeviceGreen(H, elecs, permbtd)
 
 
 @pytest.mark.parametrize("prefix", ["TBT", "TS"])
@@ -284,8 +284,8 @@ def test_device_green_unknown_electrode():
     rng = np.random.default_rng(42)
     elecs = _electrodes(Hel, H, True, rng)
     blocks = [_cell_orbs(H, c) for c in range(2, 6)]
-    pivot = PermuteBTD(np.concatenate(blocks), [len(b) for b in blocks])
-    G = DeviceGreen(H, elecs, pivot, eta=ETA)
+    permbtd = PermuteBTD(np.concatenate(blocks), [len(b) for b in blocks])
+    G = DeviceGreen(H, elecs, permbtd, eta=ETA)
     assert [e.name for e in G.elecs] == ["Left", "Right"]
     assert G._elec("Right") == 1
     with pytest.raises(KeyError, match="Middle"):

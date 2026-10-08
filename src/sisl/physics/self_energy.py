@@ -258,10 +258,11 @@ class SemiInfinite(SelfEnergy):
 
     def __str__(self) -> str:
         """String representation of SemiInfinite"""
-        return "{0}{{direction: {1}{2}}}".format(
+        return "{0}{{direction: {1}{2}, eta: {3:.3e}}}".format(
             self.__class__.__name__,
             {-1: "-", 1: "+"}.get(self.semi_inf_dir),
             {0: "A", 1: "B", 2: "C"}.get(self.semi_inf),
+            self.eta,
         )
 
 
@@ -279,10 +280,11 @@ class RecursiveSI(SemiInfinite):
         axis = {0: "A", 1: "B", 2: "C"}
         # TODO, fix the nonzero elements when writing
         # It should be sum of spgeom[01]
-        return "{0}{{direction: {1}{2},\n {3}\n}}".format(
+        return "{0}{{direction: {1}{2}, eta: {3:.3e},\n {4}\n}}".format(
             self.__class__.__name__,
             direction[self.semi_inf_dir],
             axis[self.semi_inf],
+            self.eta,
             str(self.spgeom1).replace("\n", "\n "),
         )
 
@@ -829,8 +831,9 @@ class RealSpaceSE(SelfEnergy):
         d["parent"] = str(self.parent).replace("\n", "\n ")
         d["bz"] = str(self._options["bz"]).replace("\n", "\n ")
         d["trs"] = str(self._options["trs"])
+        d["eta"] = f"{self._options['eta']:.3e}"
         return (
-            "{class}{{unfold: [{u0}, {u1}, {u2}],\n "
+            "{class}{{unfold: [{u0}, {u1}, {u2}], eta: {eta},\n "
             "semi-axis: {semi}, k-axes: {k}, trs: {trs},\n "
             "bz: {bz},\n "
             "{parent}\n}}"
@@ -959,6 +962,11 @@ class RealSpaceSE(SelfEnergy):
     def initialize(self) -> None:
         """See setup"""
         self.setup()
+
+    @property
+    def eta(self) -> float:
+        """The imaginary part of the self-energy calculation"""
+        return self._options["eta"]
 
     def setup(self, **options) -> None:
         r"""Setup the internal data-arrays used for efficient calculation of the real-space quantities
@@ -1535,8 +1543,9 @@ class RealSpaceSI(SelfEnergy):
         d["surface"] = str(self.surface).replace("\n", "\n  ")
         d["bz"] = str(self._options["bz"]).replace("\n", "\n ")
         d["trs"] = str(self._options["trs"])
+        d["eta"] = f"{self._options['eta']:.3e}"
         return (
-            "{class}{{unfold: [{u0}, {u1}, {u2}],\n "
+            "{class}{{unfold: [{u0}, {u1}, {u2}], eta: {eta},\n "
             "k-axes: {k}, trs: {trs},\n "
             "bz: {bz},\n "
             "semi-infinite:\n"

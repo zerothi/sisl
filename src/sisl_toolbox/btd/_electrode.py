@@ -4,7 +4,7 @@
 """Block-tri-diagonal electrode handling
 
 The electrode classes only calculate self-energies. They have no knowledge of
-the device region, nor its pivoting. The rows (and columns) of the returned
+the device region, nor its permutation. The rows (and columns) of the returned
 self-energies are in the orbital order the electrode was created with,
 `DeviceGreen` is responsible for placing them in the device region.
 """
@@ -27,7 +27,7 @@ from sisl.typing import KPoint
 from sisl.typing._core import SileLike
 from sisl.utils.misc import PropertyDict
 
-from ._help import expand_btd, expand_orbs, get_expand
+from ._help import expand_blocks, expand_orbs, get_expand
 
 __all__ = ["ElectrodeSelfEnergy", "BlochSelfEnergy", "DownfoldSelfEnergy"]
 
@@ -190,7 +190,10 @@ class BlochSelfEnergy(ElectrodeSelfEnergy):
            If TS, only these prefixes will be used.
         mu :
            chemical potential of the electrode [eV], if None it is read from the
-           ``%block TS.ChemPot.<chemical-potential>`` (and the bias)
+           ``%block TS.ChemPot.<chemical-potential>`` (and the bias).
+           As in TranSiesta, ``chemical-potential`` defaults to the only chemical
+           potential in ``TS.ChemPots``, or the one named as the electrode.
+           Without ``TS.ChemPots``, ``Left`` and ``Right`` are ``V/2`` and ``-V/2``.
         """
         if not isinstance(fdf, si.BaseSile):
             fdf = si.io.siesta.fdfSileSiesta(fdf)
@@ -278,17 +281,31 @@ class BlochSelfEnergy(ElectrodeSelfEnergy):
         for key in ("chemical-potential", "chem-pot", "mu"):
             info.chemical_potential = block_get(key, info.chemical_potential)
         if mu is None:
+            chem_pots = []
+            for line in fdf_get("ChemPots") or []:
+                line = line.split("#", 1)[0].strip()
+                if line:
+                    chem_pots.append(line)
+
+            # Same defaults as TranSiesta/TBtrans: the only chemical potential,
+            # or the one with the same name as the electrode
             cp = info.chemical_potential
             if cp is None:
-                raise ValueError(
-                    f"{clsname} could not find the chemical-potential in block: {block}"
-                )
+                cp = chem_pots[0] if len(chem_pots) == 1 else name
+
             cp_block = fdf_block(f"ChemPot.{cp}")
-            if fdf.type(cp_block) != "B":
-                raise ValueError(f"{clsname} could not find block: {cp_block}")
-            mu = fdf.block_get(cp_block, "mu", 0.0, unit="eV")
-            if is_tbtrans:
-                mu = fdf.block_get(cp_block, "tbt.mu", mu, unit="eV")
+            if fdf.type(cp_block) == "B":
+                mu = fdf.block_get(cp_block, "mu", 0.0, unit="eV")
+                if is_tbtrans:
+                    mu = fdf.block_get(cp_block, "tbt.mu", mu, unit="eV")
+            elif not chem_pots and cp.lower() in ("left", "right"):
+                # TranSiesta fakes the Left/Right chemical potentials
+                # when none are specified
+                mu = {"left": "V/2", "right": "-V/2"}[cp.lower()]
+            else:
+                raise ValueError(
+                    f"{clsname} could not find the chemical-potential block: {cp_block}"
+                )
             if isinstance(mu, str):
                 mu = _fdf_mu(mu, fdf_get("Voltage", 0.0, unit="eV"))
 
@@ -350,7 +367,7 @@ class DownfoldSelfEnergy(ElectrodeSelfEnergy):
     r"""Self-energy of an electrode downfolded through a region of `H`
 
     The downfolding region is described by the orbitals `orbs_down` of `H`, in
-    the block-tri-diagonal order given by `btd_down`.
+    the block-tri-diagonal order given by `blocks_down`.
     The electrode self-energy is placed on the orbitals `orbs_elec` of `H`
     (which must be part of `orbs_down`), and is then downfolded to the
     orbitals of the last block.
@@ -369,7 +386,7 @@ class DownfoldSelfEnergy(ElectrodeSelfEnergy):
         and the returned orbitals), in the order of the BTD blocks
     orbs_elec :
         orbitals of `H` corresponding to the rows of the electrode self-energy
-    btd_down :
+    blocks_down :
         BTD block sizes of `orbs_down`, the last block are the orbitals that the
         self-energy is downfolded to
     eta_device :
@@ -388,7 +405,7 @@ class DownfoldSelfEnergy(ElectrodeSelfEnergy):
         H: si.Hamiltonian,
         orbs_down: npt.ArrayLike,
         orbs_elec: npt.ArrayLike,
-        btd_down: npt.ArrayLike,
+        blocks_down: npt.ArrayLike,
         eta_device: float = 0.0,
         bulk: bool = True,
         name: Optional[str] = None,
@@ -401,18 +418,18 @@ class DownfoldSelfEnergy(ElectrodeSelfEnergy):
 
         orbs_down = np.asarray(orbs_down).ravel()
         orbs_elec = np.asarray(orbs_elec).ravel()
-        btd_down = np.asarray(btd_down).ravel()
+        blocks_down = np.asarray(blocks_down).ravel()
         cls = self.__class__.__name__
-        if btd_down.sum() != len(orbs_down):
+        if blocks_down.sum() != len(orbs_down):
             raise ValueError(
-                f"{cls} btd_down must sum to the length of orbs_down "
-                f"({btd_down.sum()} != {len(orbs_down)})"
+                f"{cls} blocks_down must sum to the length of orbs_down "
+                f"({blocks_down.sum()} != {len(orbs_down)})"
             )
         if len(np.unique(orbs_down)) != len(orbs_down):
             raise ValueError(f"{cls} orbs_down has duplicate orbitals")
-        if len(btd_down) < 2:
-            raise ValueError(f"{cls} btd_down must have at least 2 blocks")
-        if not np.isin(orbs_elec, orbs_down[: -btd_down[-1]]).all():
+        if len(blocks_down) < 2:
+            raise ValueError(f"{cls} blocks_down must have at least 2 blocks")
+        if not np.isin(orbs_elec, orbs_down[: -blocks_down[-1]]).all():
             raise ValueError(
                 f"{cls} orbs_elec must be a subset of orbs_down, excluding the last block"
             )
@@ -458,16 +475,16 @@ class DownfoldSelfEnergy(ElectrodeSelfEnergy):
         #  down: the downfolding orbitals, in the BTD order
         data.elec = expand_orbs(positions(orbs_elec), expand).reshape(-1, 1)
         data.down = expand_orbs(positions(orbs_down), expand).reshape(-1, 1)
-        self.btd = expand_btd(btd_down, expand)
-        data.btd_cum0 = np.append(0, np.cumsum(self.btd))
+        self.blocks = expand_blocks(blocks_down, expand)
+        data.blocks_cum0 = np.append(0, np.cumsum(self.blocks))
 
     def __len__(self) -> int:
         """Size of the self-energy matrix (including spin)"""
-        return self.btd[-1]
+        return self.blocks[-1]
 
     def __str__(self) -> str:
         se = str(self.electrode).replace("\n", "\n ")
-        return f"{self.__class__.__name__}{{name: {self.name}, no: {len(self)}, blocks: {len(self.btd)}, eta_device: {self._eta_device}, bulk: {self._data.bulk},\n {se}\n}}"
+        return f"{self.__class__.__name__}{{name: {self.name}, no: {len(self)}, blocks: {len(self.blocks)}, eta_device: {self._eta_device}, bulk: {self._data.bulk},\n {se}\n}}"
 
     def _check_Ek(self, E: complex, k: KPoint, dtype, **kwargs) -> bool:
         """Check whether we have already runned this exact energy point.
@@ -542,10 +559,10 @@ class DownfoldSelfEnergy(ElectrodeSelfEnergy):
             return M[idx1, :][:, idx2].toarray()
 
         Mr = 0
-        cbtd = data.btd_cum0
-        sli = slice(cbtd[0], cbtd[1])
-        for b in range(1, len(self.btd)):
-            sli1 = slice(cbtd[b], cbtd[b + 1])
+        cblocks = data.blocks_cum0
+        sli = slice(cblocks[0], cblocks[1])
+        for b in range(1, len(self.blocks)):
+            sli1 = slice(cblocks[b], cblocks[b + 1])
 
             # Do the downfolding of the self-energies
             Mr = gM(M, sli1, sli) @ solve(
