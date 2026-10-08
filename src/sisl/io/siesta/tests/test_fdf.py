@@ -218,6 +218,52 @@ def test_get_block(sisl_tmp):
     assert "block" in fdf.print("MyBlock", fdf.get("MyBlock"))
 
 
+def test_block_get(sisl_tmp):
+    f = sisl_tmp("file.fdf")
+    with open(f, "w") as fh:
+        fh.write("""
+%block TS.Elec.Left
+  semi-inf-direction -a3  # comment
+  Eta 2 meV
+  tbt.eta 3 meV
+  bulk false
+  used-atoms 4
+  bloch 2 1 1
+  flag
+%endblock
+NotBlock 1
+""")
+    fdf = fdfSileSiesta(f)
+    block = "TS.Elec.Left"
+    assert fdf.block_get(block, "semi-inf-direction") == "-a3"
+    # labels are case, -, _ and . insensitive
+    assert fdf.block_get(block, "SEMI_INF.direction") == "-a3"
+    assert fdf.block_get(block, "eta") == pytest.approx(0.002)
+    assert fdf.block_get(block, "eta", unit="meV") == pytest.approx(2.0)
+    assert fdf.block_get(block, "eta", with_unit=True) == (2.0, "meV")
+    assert fdf.block_get(block, "tbt.eta", unit="meV") == pytest.approx(3.0)
+    assert fdf.block_get(block, "bulk", True) is False
+    assert fdf.block_get(block, "used-atoms") == 4
+    assert fdf.block_get(block, "bloch") == "2 1 1"
+    assert fdf.block_get(block, "flag") == ""
+    assert fdf.block_get(block, "missing") is None
+    assert fdf.block_get(block, "missing", 1.0) == 1.0
+    assert fdf.block_get("Missing", "eta", 1.0) == 1.0
+    # not a block
+    assert fdf.block_get("NotBlock", "eta", 1.0) == 1.0
+
+
+def test_get_list(sisl_tmp):
+    f = sisl_tmp("file.fdf")
+    with open(f, "w") as fh:
+        fh.write("List1 [1 -- 3, 5]\nList2 [ -2 4 ]\nList3 []\n")
+    fdf = fdfSileSiesta(f)
+    assert fdf.type("List1") == "a"
+    assert np.array_equal(fdf.get("List1"), [1, 2, 3, 5])
+    assert np.array_equal(fdf.get("List2"), [-2, 4])
+    assert len(fdf.get("List3")) == 0
+
+
 def test_include(sisl_tmp):
     f = sisl_tmp("file.fdf")
     with open(f, "w") as fh:

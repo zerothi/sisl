@@ -74,6 +74,31 @@ _LOGICAL_TRUE = [".true.", "true", "yes", "y", "t"]
 _LOGICAL_FALSE = [".false.", "false", "no", "n", "f"]
 _LOGICAL = _LOGICAL_FALSE + _LOGICAL_TRUE
 
+
+def _tolabel(label: str) -> str:
+    """Normalize an fdf label, fdf labels are case, ``-``, ``_`` and ``.`` insensitive"""
+    return label.lower().replace("_", "").replace("-", "").replace(".", "")
+
+
+def _parse_list(value: str) -> np.ndarray:
+    """Convert an fdf list (``[1 -- 4, 6]``) to an integer array
+
+    Elements are separated by spaces or commas, and ``a -- b`` is the
+    (inclusive) range from ``a`` to ``b``.
+    """
+    tokens = value.strip()[1:-1].replace(",", " ").split()
+    lst = []
+    i = 0
+    while i < len(tokens):
+        if i + 2 < len(tokens) and tokens[i + 1] == "--":
+            lst.extend(range(int(tokens[i]), int(tokens[i + 2]) + 1))
+            i += 3
+        else:
+            lst.append(int(tokens[i]))
+            i += 1
+    return _a.arrayi(lst)
+
+
 Bohr2Ang = unit_convert("Bohr", "Ang")
 _log = logging.getLogger(__name__)
 
@@ -228,9 +253,7 @@ class fdfSileSiesta(SileSiesta):
         """
         self._seek()
 
-        def tolabel(label) -> str:
-            return label.lower().replace("_", "").replace("-", "").replace(".", "")
-
+        tolabel = _tolabel
         labell = tolabel(label)
 
         def valid_line(line) -> bool:
@@ -350,6 +373,11 @@ class fdfSileSiesta(SileSiesta):
             # A list, Label [...]
             return "a"
 
+        stripped = value.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            # A list, Label [...]
+            return "a"
+
         # Grab the entire line (beside the key)
         values = value.split()
         if len(values) == 1:
@@ -437,16 +465,85 @@ class fdfSileSiesta(SileSiesta):
         >>> fdf.get("LabeleV", with_unit=True) == (1., "eV")
         >>> fdf.get("Label", with_unit=True) == "name" # no unit present on line
         >>> fdf.get("Hello") == ["line 1", "line2"]
+        >>> fdf.get("List") # List [1 -- 3 5]
+        array([1, 2, 3, 5], dtype=int32)
         """
-        # Try and read a line
-        value = self._r_label(label)
+        return self._get_value(label, self._r_label(label), default, unit, with_unit)
 
+    @sile_fh_open()
+    def block_get(
+        self,
+        block: str,
+        label: str,
+        default: Optional[Any] = None,
+        unit: Optional[str] = None,
+        with_unit: bool = False,
+    ):
+        """Retrieve a keyword from the lines in a block of the fdf-file
+
+        Some blocks contain lines of key-value pairs, e.g.:
+
+        .. code::
+
+            %block TS.Elec.Left
+              semi-inf-direction -a3
+              eta 1 meV
+            %endblock
+
+        The first line with `label` as the first word is used, and its value
+        is converted in the same way as `get` (the label is also case, ``-``,
+        ``_`` and ``.`` insensitive).
+
+        Parameters
+        ----------
+        block : str
+            the fdf-label of the block
+        label : str
+            the label (first word of a line in the block) to search for
+        default : optional
+            if the block or label is not found, this will be the returned value
+        unit : str, optional
+            unit of the physical quantity to return
+        with_unit : bool, optional
+            whether the physical quantity gets returned with the found unit in the fdf file.
+
+        See Also
+        --------
+        get : for the conversion of the values
+
+        Examples
+        --------
+        >>> fdf.block_get("TS.Elec.Left", "semi-inf-direction") == "-a3"
+        >>> fdf.block_get("TS.Elec.Left", "eta", unit="eV") == 0.001
+        >>> fdf.block_get("TS.Elec.Left", "bulk", True) == True # not found
+        """
+        lines = self._r_label(block)
+        value = None
+        if isinstance(lines, list):
+            labell = _tolabel(label)
+            for line in lines:
+                ls = line.split("#", 1)[0].split(maxsplit=1)
+                if ls and _tolabel(ls[0]) == labell:
+                    value = ls[1].strip() if len(ls) > 1 else ""
+                    break
+        return self._get_value(label, value, default, unit, with_unit)
+
+    @classmethod
+    def _get_value(
+        cls,
+        label: str,
+        value,
+        default: Optional[Any] = None,
+        unit: Optional[str] = None,
+        with_unit: bool = False,
+    ):
+        """Convert a read `value` (of `label`) according to its fdf-type, see `get`"""
         # Simply return the default value if not found
         if value is None:
             return default
 
         # Figure out what it is
-        t = self._type(value)
+        t = cls._type(value)
 
         # We will only do something if it is a real, int, or physical.
         # Else we simply return, as-is
@@ -480,6 +577,9 @@ class fdfSileSiesta(SileSiesta):
 
         elif t == "b":
             return value.lower() in _LOGICAL_TRUE
+
+        elif t == "a" and isinstance(value, str):
+            return _parse_list(value)
 
         return value
 

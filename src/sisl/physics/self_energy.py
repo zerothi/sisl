@@ -126,10 +126,6 @@ class SelfEnergy:
         """
         return self.se2broadening(self.self_energy(*args, **kwargs))
 
-    def __getattr__(self, attr):
-        r"""Overload attributes from the hosting object"""
-        pass
-
 
 @set_module("sisl.physics")
 class WideBandSE(SelfEnergy):

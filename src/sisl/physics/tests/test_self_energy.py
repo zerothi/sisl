@@ -69,6 +69,15 @@ def test_objects(setup):
         assert D in str(SE)
 
 
+def test_missing_attribute(setup):
+    SE = WideBandSE(10, 1e-2)
+    with pytest.raises(AttributeError):
+        SE.non_existing_attribute
+    SE = RecursiveSI(setup.H, "-A")
+    with pytest.raises(AttributeError):
+        SE.non_existing_attribute
+
+
 def test_sancho_orthogonal(setup):
     SE = RecursiveSI(setup.H.copy(), "+A")
     assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))

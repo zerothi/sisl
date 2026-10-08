@@ -11,6 +11,7 @@ self-energies are in the orbital order the electrode was created with,
 
 from __future__ import annotations
 
+import re
 from typing import Literal, Optional, Self
 
 import numpy as np
@@ -54,6 +55,38 @@ __all__ = ["ElectrodeSelfEnergy", "BlochSelfEnergy", "DownfoldSelfEnergy"]
 # - downfolding in device: 4 (assuming only NN interactions)
 
 
+# [+-] [a [*]] V [/ b]
+_MU_V = re.compile(
+    r"^(?P<sign>[+-])?\s*(?:(?P<a>\d*\.?\d+(?:[eE][+-]?\d+)?)\s*\*?\s*)?V\s*(?:/\s*(?P<b>\d*\.?\d+(?:[eE][+-]?\d+)?))?$"
+)
+
+
+def _fdf_mu(value: str, V: float) -> float:
+    """Convert a chemical potential expression of the bias ``[+-][a[*]]V[/b]``
+
+    Parameters
+    ----------
+    value :
+        the expression, e.g. ``V/2`` or ``-V/2``
+    V :
+        the applied bias
+    """
+    m = _MU_V.match(value.strip())
+    if m is None:
+        raise ValueError(
+            f"could not parse chemical potential {value!r}, only "
+            "'<value> <unit>' and '[+-][a*]V[/b]' are allowed"
+        )
+    mu = V
+    if m["a"] is not None:
+        mu *= float(m["a"])
+    if m["b"] is not None:
+        mu /= float(m["b"])
+    if m["sign"] == "-":
+        mu = -mu
+    return mu
+
+
 @set_module("sisl_toolbox.btd")
 class ElectrodeSelfEnergy(si.physics.SelfEnergy):
     """Base class for electrode self-energies used in `DeviceGreen`
@@ -68,6 +101,8 @@ class ElectrodeSelfEnergy(si.physics.SelfEnergy):
 
     def __init__(self, name: str):
         self.name = name
+        # additional information, e.g. from `BlochSelfEnergy.from_fdf`
+        self.info = PropertyDict()
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}{{name: {self.name}, no: {len(self)}}}"
@@ -126,18 +161,21 @@ class BlochSelfEnergy(ElectrodeSelfEnergy):
         fdf: SileLike,
         name: str,
         prefix: Literal["TBT", "TS"] = "TBT",
-        mu: float = 0.0,
+        mu: Optional[float] = None,
     ) -> Self:
         """Create the electrode from the ``%block TS.Elec.<name>`` in an fdf file
 
         The returned electrode uses a `sisl.physics.RecursiveSI` self-energy.
-        The electrode Hamiltonian is shifted by ``delta-Ef`` and `mu`.
+        The electrode Hamiltonian is shifted by ``delta-Ef`` and the chemical potential.
+        File names are relative to the directory of the fdf file.
 
         Other options from the fdf file are stored in the ``info`` attribute:
 
         - ``bulk``: whether the electrode is bulk in the downfolding region
         - ``dEf``: the ``delta-Ef`` shift of the electrode Hamiltonian
-        - ``mu``: the chemical potential shift (`mu`)
+        - ``mu``: the chemical potential shift
+        - ``chemical_potential``: name of the chemical potential (or None)
+        - ``position``: the ``electrode-position`` value (or None)
         - ``V_fraction``: the fraction of the bias in the electrode couplings
 
         Parameters
@@ -151,74 +189,53 @@ class BlochSelfEnergy(ElectrodeSelfEnergy):
            to TS prefixes.
            If TS, only these prefixes will be used.
         mu :
-           chemical potential of the electrode, the electrode Hamiltonian is shifted
-           by this value [eV]
+           chemical potential of the electrode [eV], if None it is read from the
+           ``%block TS.ChemPot.<chemical-potential>`` (and the bias)
         """
-        from sisl.unit.siesta import unit_convert
-
         if not isinstance(fdf, si.BaseSile):
             fdf = si.io.siesta.fdfSileSiesta(fdf)
         is_tbtrans = prefix.upper() == "TBT"
         clsname = f"{cls.__name__}.from_fdf(electrode={name})"
 
-        def get_line(line):
-            """Parse lines in the %block constructs of fdf's"""
-            key, val = line.split(None, 1)
-            return key.lower().strip(), val.split("#", 1)[0].strip()
+        def fdf_get(key, default=None, **kwargs):
+            """Get TS.<key>, which is overwritten by TBT.<key>"""
+            ret = fdf.get(f"TS.{key}", default, **kwargs)
+            if is_tbtrans:
+                ret = fdf.get(f"TBT.{key}", ret, **kwargs)
+            return ret
 
-        def block_get(dic, key, default=None, unit=None):
-            # keys are stored in lower-case, see get_line
-            key = key.lower()
-            ret = dic.get(key, default)
+        def fdf_block(key) -> str:
+            """The label of the block TS.<key> or TBT.<key> (if present)"""
+            if is_tbtrans and fdf.type(f"TBT.{key}") == "B":
+                return f"TBT.{key}"
+            return f"TS.{key}"
+
+        block = fdf_block(f"Elec.{name}")
+        if fdf.type(block) != "B":
+            raise ValueError(f"{clsname} could not find block: {block}")
+
+        def block_get(key, default=None, **kwargs):
+            ret = fdf.block_get(block, key, default, **kwargs)
             if is_tbtrans:
                 # TBT prefixed keys take precedence
-                ret = dic.get(f"tbt.{key}", ret)
-            if unit is None or not isinstance(ret, str):
-                return ret
-            ret, un = ret.split()
-            return float(ret) * unit_convert(un, unit)
+                ret = fdf.block_get(block, f"tbt.{key}", ret, **kwargs)
+            return ret
 
-        tbt_prefix = f"TBT.Elec.{name}"
-        ts_prefix = f"TS.Elec.{name}"
-
-        block = fdf.get(f"{ts_prefix}")
-        Helec = fdf.get(f"{ts_prefix}.HS")
-        bulk = fdf.get("TS.Elecs.Bulk", True)
-        eta = fdf.get("TS.Elecs.Eta", 1e-3, unit="eV")
-        bloch = [1, 1, 1]
-        for i in range(3):
-            bloch[i] = fdf.get(f"{ts_prefix}.Bloch.A{i+1}", 1)
-        if is_tbtrans:
-            block = fdf.get(f"{tbt_prefix}", block)
-            Helec = fdf.get(f"{tbt_prefix}.HS", Helec)
-            bulk = fdf.get("TBT.Elecs.Bulk", bulk)
-            eta = fdf.get("TBT.Elecs.Eta", eta, unit="eV")
-            for i in range(3):
-                bloch[i] = fdf.get(f"{tbt_prefix}.Bloch.A{i+1}", bloch[i])
-        if block is None:
-            raise ValueError(f"{clsname} could not find block: {ts_prefix}")
-
-        # Convert to key value based function
-        dic = {key: val for key, val in map(get_line, block)}
-
-        # Retrieve data
+        Helec = fdf_get(f"Elec.{name}.HS")
         for key in ("hs", "hs-file", "tshs", "tshs-file"):
-            Helec = block_get(dic, key, Helec)
-        if Helec:
-            Helec = si.get_sile(Helec).read_hamiltonian()
-        else:
-            raise ValueError(
-                f"{clsname} could not find electrode HS in block: {ts_prefix}"
-            )
+            Helec = block_get(key, Helec)
+        if not Helec:
+            raise ValueError(f"{clsname} could not find electrode HS in block: {block}")
+        Helec = si.get_sile(fdf.dir_file(Helec)).read_hamiltonian()
 
         # Get semi-infinite direction
         semi_inf = None
         for suf in ("-direction", "-dir", ""):
-            semi_inf = block_get(dic, f"semi-inf{suf}", semi_inf)
+            semi_inf = block_get(f"semi-inf{suf}", semi_inf)
         if semi_inf is None:
             raise ValueError(
                 f"{clsname} could not find electrode semi-inf-direction "
-                f"in block: {ts_prefix}"
+                f"in block: {block}"
             )
         # convert to sisl infinite
         semi_inf = semi_inf.lower()
@@ -232,30 +249,58 @@ class BlochSelfEnergy(ElectrodeSelfEnergy):
                 "self energies than the recursive one."
             )
 
+        used_atoms = block_get("used-atoms")
+        if used_atoms is not None and int(used_atoms) != Helec.na:
+            raise NotImplementedError(
+                f"{clsname} does not implement used-atoms different "
+                "from the number of atoms in the electrode."
+            )
+
         info = PropertyDict()
-        info.bulk = bool(block_get(dic, "bulk", bulk))
-        # loop for 0
+        info.bulk = bool(block_get("bulk", fdf_get("Elecs.Bulk", True)))
+
+        bloch = [fdf_get(f"Elec.{name}.Bloch.A{i+1}", 1) for i in range(3)]
         for i, sufs in enumerate([("a", "a1"), ("b", "a2"), ("c", "a3")]):
             for suf in sufs:
-                bloch[i] = block_get(dic, f"bloch-{suf}", bloch[i])
+                bloch[i] = block_get(f"bloch-{suf}", bloch[i])
+        bloch = block_get("bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}")
+        bloch = [int(b) for b in bloch.split()]
 
-        bloch = [
-            int(b)
-            for b in block_get(
-                dic, "bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}"
-            ).split()
-        ]
+        eta = block_get("eta", fdf_get("Elecs.Eta", 1e-3, unit="eV"), unit="eV")
 
-        eta = block_get(dic, "eta", eta, unit="eV")
+        info.position = None
+        for key in ("electrode-position", "elec-pos"):
+            info.position = block_get(key, info.position)
+        if info.position is not None:
+            info.position = str(info.position)
+
+        info.chemical_potential = None
+        for key in ("chemical-potential", "chem-pot", "mu"):
+            info.chemical_potential = block_get(key, info.chemical_potential)
+        if mu is None:
+            cp = info.chemical_potential
+            if cp is None:
+                raise ValueError(
+                    f"{clsname} could not find the chemical-potential in block: {block}"
+                )
+            cp_block = fdf_block(f"ChemPot.{cp}")
+            if fdf.type(cp_block) != "B":
+                raise ValueError(f"{clsname} could not find block: {cp_block}")
+            mu = fdf.block_get(cp_block, "mu", 0.0, unit="eV")
+            if is_tbtrans:
+                mu = fdf.block_get(cp_block, "tbt.mu", mu, unit="eV")
+            if isinstance(mu, str):
+                mu = _fdf_mu(mu, fdf_get("Voltage", 0.0, unit="eV"))
+
         # manual shift of the fermi-level
-        info.dEf = block_get(dic, "delta-Ef", 0.0, unit="eV")
+        info.dEf = block_get("delta-Ef", 0.0, unit="eV")
         Helec.shift(info.dEf)
         # shift according to potential
         info.mu = mu
         Helec.shift(mu)
         # add a fraction of the bias in the coupling elements of the
         # E-C region, only meaningful for
-        info.V_fraction = block_get(dic, "V-fraction", 0.0)
+        info.V_fraction = float(block_get("V-fraction", 0.0))
         if info.V_fraction > 0.0:
             warn(
                 f"{clsname} found a non-zero V-fraction value. "
@@ -263,7 +308,7 @@ class BlochSelfEnergy(ElectrodeSelfEnergy):
             )
 
         elec = cls(name, si.RecursiveSI(Helec, semi_inf, eta=eta), bloch=bloch)
-        elec.info = info
+        elec.info.update(info)
         return elec
 
     @property
@@ -332,7 +377,7 @@ class DownfoldSelfEnergy(ElectrodeSelfEnergy):
     bulk :
         whether the electrode region of `H` is replaced by the
         (Bloch expanded) electrode Hamiltonian. Requires the `electrode` to
-        be a `BlochSelfEnergy` with a `sisl.physics.SemiInfinite` self-energy.
+        be a `BlochSelfEnergy` with a `sisl.physics.RecursiveSI` self-energy.
     name :
         name of the electrode, defaults to the `electrode` name
     """
@@ -380,11 +425,11 @@ class DownfoldSelfEnergy(ElectrodeSelfEnergy):
         if bulk:
             if not (
                 isinstance(electrode, BlochSelfEnergy)
-                and hasattr(electrode.se, "spgeom0")
+                and isinstance(electrode.se, si.physics.RecursiveSI)
             ):
                 raise ValueError(
                     f"{cls}(bulk=True) requires a BlochSelfEnergy with a "
-                    "SemiInfinite self-energy."
+                    "RecursiveSI self-energy."
                 )
 
         # The Hamiltonian of the atoms in the downfolding region.
