@@ -19,7 +19,7 @@ requires = [
     "setuptools_scm[toml]>=8",
     "scikit-build-core[pyproject]>=1",
     "Cython>=3.0.8",
-    "numpy>=2.0.0rc1"
+    "numpy>=2.0.0"
 ]
 build-backend = "scikit_build_core.build"
 
@@ -52,9 +52,8 @@ keywords = [
 # Now all dependencies that were released around the same time should be the
 # lower bound of dependencies.
 dependencies = [
-    # We need npt.NDArray
-    "numpy>=1.24",
-    "scipy>=1.9",
+    "numpy>=2.0.0",
+    "scipy>=1.10",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
     "xarray>=2022",
@@ -209,7 +208,7 @@ build = [
     "setuptools_scm[toml]>=8",
     "scikit-build-core[pyproject]>=1",
     "Cython>=3.0.8",
-    "numpy>=2.0.0rc1",
+    "numpy>=2.0.0",
 ]
 
 sphinx = [
@@ -322,7 +321,7 @@ disable = [
 legacy_tox_ini = """
 [tox]
 minversion = 3.3.0
-envlist = py39,py310,py311,py312
+envlist = py311,py312,py313,py314,py315
 isolated_build = True
 
 [testenv]
