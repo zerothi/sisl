@@ -274,10 +274,6 @@ collect_ignore_glob = []
 # We are ignoring stuff in sisl.viz if nodify cannot be imported
 # skip paths
 _skip_paths = []
-if not has_module("nodify"):
-    _skip_paths.append(os.path.join("sisl", "viz"))
-if not has_module("mpi4py"):
-    _skip_paths.append(os.path.join("sisl", "_core", "comm"))
 
 
 def pytest_ignore_collect(collection_path, config):
@@ -389,6 +385,7 @@ def pytest_configure(config):
         "data",
         "plots",
         "plotters",
+        "mpi",
     ]:
         config.addinivalue_line(
             "markers", f"{mark}: mark test to run only on named environment"
