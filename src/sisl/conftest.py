@@ -274,6 +274,9 @@ collect_ignore_glob = []
 # We are ignoring stuff in sisl.viz if nodify cannot be imported
 # skip paths
 _skip_paths = []
+# We have to manually skip this as it's trying to load it @ import time
+if not has_module("nodify"):
+    _skip_paths.append(os.path.join("sisl", "viz"))
 
 
 def pytest_ignore_collect(collection_path, config):
