@@ -324,3 +324,9 @@ def get_comm() -> BaseCommunicator:
     if _COMM is None:
         _COMM = _acquire()
     return _COMM
+
+
+# Distributions are agnostic of MPI being present, they only need a communicator.
+from ._distribute import *
+
+__all__ += _distribute.__all__

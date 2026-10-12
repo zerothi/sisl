@@ -10,16 +10,9 @@ That is general, working for any CSR, at the cost of ignoring spatial locality;
 a geometry-aware partition belongs one layer up, in `SparseOrbital`, where the
 `Geometry` can bound the halo by interaction range.
 
-`Partition` states how indices map to ranks and nothing more, so the same
-schemes serve rows, columns, k-points or energy points.  `BlockCyclicPartition`
-covers the useful range: one contiguous run per rank, which preserves whatever
-locality the sparsity pattern has and keeps extraction a slice; plain cyclic,
-which balances load when work varies along the axis but destroys that locality;
-and the block-cyclic layout in between that ScaLAPACK expects.
-
-Other schemes -- an explicit permutation, or a split balanced by nnz rather
-than by row count -- fit the same contract by implementing `range` and `owner`
-alone.
+The rows are divided by a `sisl.mpi.Distribution`, which is agnostic of what
+it distributes; ``dist(csr)`` forwards to ``csr.__sisl_distribute__(dist)``,
+which lands in `distribute` here.
 
 Coherence is deferred, not eager
 --------------------------------
@@ -36,8 +29,8 @@ mark a method -- which would corrupt results silently, the worst failure mode in
 a physics code -- can be caught mechanically; see
 ``tests/test_sparse_distribute.py``.
 
-Assembly is reached through ``__sisl_distribute__``, the protocol any object
-carrying a distribution implements, so a consumer can make what it was handed
+Assembly is reached through ``__sisl_distribute__``, the protocol any
+distributable object implements, so a consumer can make what it was handed
 coherent without knowing what it is.  `distribute` is `SparseCSR`'s
 implementation of that protocol; a distributed `Grid`, or a set of k-points,
 would supply its own.
@@ -45,17 +38,15 @@ would supply its own.
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from functools import wraps
+from typing import Optional
 
 import numpy as np
 
 from sisl._array import array_arange
-from sisl._core.sparse import SparseCSR
-from sisl._internal import set_module
 from sisl._ufuncs import register_sisl_dispatch
+from sisl.mpi._distribute import Distribution, DistributionState
 
-from .distribute import Partition
+from .sparse import SparseCSR
 
 __all__ = [
     "local_rows",
@@ -63,13 +54,15 @@ __all__ = [
 ]
 
 
-def local_rows(csr, partition: Partition, rank: int):
+def local_rows(csr, dist: Distribution, rank: Optional[int] = None):
     """Extract the rows of `csr` owned by `rank` as a new `SparseCSR`.
 
     Purely local: no communication.  Correct for an unfinalized matrix, where
     ``ptr`` is over-allocated and only ``ncol[r]`` entries per row are valid,
-    and for any `Partition` -- a contiguous split yields one run per rank, a
+    and for any `Distribution` -- a contiguous split yields one run per rank, a
     cyclic one several.
+
+    `rank` defaults to the rank of this process in ``dist.comm``.
 
     A rank owning no rows gets a matrix with zero rows, which is a perfectly
     good `SparseCSR` and still participates in collectives.
@@ -78,16 +71,12 @@ def local_rows(csr, partition: Partition, rank: int):
     matrix -- for `SparseOrbital` the supercell -- so renumbering them here
     would destroy the only information a later halo exchange has to work with.
     """
-    # Imported here: this module is imported from sparse.py, so the dependency
-    # can only run the other way at call time.
-    from ..sparse import SparseCSR
-
     # A single run keeps the common contiguous case a view rather than a gather.
-    ranges = partition.range(rank)
+    ranges = dist.range(rank)
     if len(ranges) == 1:
         selection = slice(*ranges[0])
     else:
-        selection = partition.indices(rank)
+        selection = dist.indices(rank)
 
     ncol = csr.ncol[selection]
     idx = array_arange(csr.ptr[selection], n=ncol)
@@ -95,7 +84,7 @@ def local_rows(csr, partition: Partition, rank: int):
     ptr = np.insert(np.cumsum(ncol), 0, 0).astype(np.int32)
     return SparseCSR(
         (csr._D[idx].copy(), csr.col[idx].copy(), ptr),
-        shape=(partition.count(rank), csr.shape[1]),
+        shape=(dist.count(rank), csr.shape[1]),
         dim=csr.shape[2],
         dtype=csr.dtype,
     )
@@ -204,28 +193,32 @@ def _rebuild(csr, rows, cols, data, op: str) -> None:
 
 
 @register_sisl_dispatch(SparseCSR, module="sisl")
-def distribute(csr: SparseCSR, op: str = "insert"):
-    """Make a distributed `SparseCSR` coherent, moving each element to its owner.
+def distribute(csr: SparseCSR, dist: Optional[Distribution] = None, op: str = "single"):
+    """Distribute the rows of `csr` according to `dist`, moving each element to its owner.
 
     `SparseCSR`'s implementation of the ``__sisl_distribute__`` protocol; call it
-    through ``csr.__sisl_distribute__()`` in code that should work for any
-    distributed object.
+    through ``dist(csr)`` in code that should work for any distributable object.
 
     This is the assembly step of the deferred scheme: structural changes only
     bump an epoch, and the communication happens here, once, at the point a
     consumer needs a coherent matrix.  Afterwards every rank holds exactly the
-    rows its partition assigns it, and nothing else.
+    rows `dist` assigns it, and nothing else.  The matrix keeps its full shape.
 
     Ranks may write to rows they do not own; those entries are shipped to the
+    owner.  The same holds when `dist` differs from the distribution the matrix
+    was previously assembled with: every stored element is shipped to its new
     owner.  All ranks must call this together -- it is collective.
 
     Parameters
     ----------
     csr :
-        a `SparseCSR` carrying a `Distribution` in ``_distribution``
+        the matrix to distribute, it is changed in place
+    dist :
+        the distribution of the rows.  Defaults to the distribution `csr` was
+        last distributed with.
     op :
         how to merge entries several ranks wrote to the same position.
-        ``"insert"`` keeps one of them, ``"add"`` sums them -- which is what
+        ``"single"`` keeps one of them, ``"sum"`` sums them -- which is what
         accumulating contributions into a matrix needs.
 
     Returns
@@ -236,34 +229,33 @@ def distribute(csr: SparseCSR, op: str = "insert"):
     if op not in ("sum", "single"):
         raise ValueError(f"distribute: op must be 'sum' or 'single', got {op!r}")
 
-    distribution = getattr(csr, "_distribution", None)
-    if distribution is None:
-        raise ValueError(
-            "distribute: this matrix carries no distribution; attach one to "
-            "`_distribution` before assembling"
-        )
+    state = getattr(csr, "_dist_state", None)
+    if dist is None:
+        if state is None:
+            raise ValueError(
+                "distribute: this matrix carries no distribution; pass one "
+                "through `dist`"
+            )
+        dist = state.distribution
 
-    partition = distribution.partition
-    if partition.n != csr.shape[0]:
+    if dist.n != csr.shape[0]:
         raise ValueError(
-            f"distribute: partition covers {partition.n} rows but the matrix "
+            f"distribute: distribution covers {dist.n} rows but the matrix "
             f"has {csr.shape[0]}"
         )
 
-    comm = distribution.comm
-    if partition.size != comm.size:
-        raise ValueError(
-            f"distribute: partition is for {partition.size} ranks but the "
-            f"communicator has {comm.size}"
-        )
-
-    if distribution.is_assembled:
+    if state is None or state.distribution != dist:
+        # A new layout invalidates whatever was assembled before.
+        state = DistributionState(dist)
+        csr._dist_state = state
+    elif state.is_assembled:
         return csr
 
+    comm = dist.comm
     rows, cols, data = _stored(csr)
     if comm.size > 1:
-        rows, cols, data = _exchange(comm, partition.owner(rows), rows, cols, data)
+        rows, cols, data = _exchange(comm, dist.owner(rows), rows, cols, data)
 
     _rebuild(csr, rows, cols, data, op)
-    distribution.mark_assembled()
+    state.mark_assembled()
     return csr
