@@ -18,7 +18,13 @@ from sisl._internal import set_module
 
 from .permute import _reduce_bandwidth, btd_blocks, csr_graph
 
-__all__ = ["BlockMatrixIndexer", "BlockMatrix", "PermuteBTD", "btd_partition"]
+__all__ = [
+    "BlockMatrixIndexer",
+    "BlockMatrix",
+    "PermuteBTD",
+    "btd_partition",
+    "downfold_partition",
+]
 
 
 @set_module("sisl_toolbox.btd")
@@ -152,6 +158,9 @@ def btd_partition(
         the sparse matrix, columns may extend into supercells.
         For a sparse geometry object (e.g. `~sisl.Hamiltonian`) its sparse
         pattern is used.
+        The rows are the nodes of the partitioning, i.e. use the atomic
+        sparse pattern (``H.toSparseAtom()``) to partition atoms, and ``H``
+        to partition orbitals.
     method :
         the bandwidth reduction method, see `~sisl_toolbox.btd.permute.reduce_bandwidth`
     cost : {"speed", "memory", "speed-diagonal"}
@@ -160,7 +169,7 @@ def btd_partition(
         refine the permutation table, see `~sisl_toolbox.btd.permute.reduce_bandwidth`
     dense :
         rows of `csr` that are fully coupled, one array per dense block.
-        E.g. the orbitals of an electrode self-energy.
+        E.g. the nodes (atoms or orbitals) of an electrode self-energy.
         The dense blocks are added to the graph, so each dense block is
         guaranteed to span at most 2 neighboring blocks.
     **kwargs :
@@ -171,7 +180,7 @@ def btd_partition(
     PermuteBTD : holding both the block-sizes and the permutation table.
     """
     ptr, col = _graph_ptr_col(_graph(csr, dense))
-    perm = _reduce_bandwidth(ptr, col, method, refine, **kwargs)
+    perm = _reduce_bandwidth(ptr, col, method, refine, False, **kwargs)
     blocks = btd_blocks(ptr, col, perm, cost)
     # sorting within a block retains the block-tridiagonal structure
     # but speeds up memory access by limiting permutation.
@@ -215,22 +224,24 @@ def _btd_blocks_sub(
 
 def _device_permute(
     graph: ssp.csr_matrix,
-    orbs: np.ndarray,
+    nodes: np.ndarray,
     dense: Sequence[np.ndarray],
     method: str = "gps",
     refine: bool = True,
 ) -> np.ndarray:
-    """Bandwidth reducing permutation table of the sub-set `orbs` of `graph`
+    """Bandwidth reducing permutation table of the sub-set `nodes` of `graph`
+
+    The nodes of `graph` may be atoms or orbitals, all indices are nodes.
 
     Parameters
     ----------
     graph :
-        the (symmetric) graph of all orbitals, see `_graph`
-    orbs :
-        the orbitals of the device region
+        the (symmetric) graph of all nodes, see `_graph`
+    nodes :
+        the nodes of the device region
     dense :
-        orbitals (in `graph`) that are fully coupled, e.g. the electrode
-        self-energies, all must be in `orbs`.
+        nodes that are fully coupled, e.g. the electrode
+        self-energies, all must be in `nodes`.
     method :
         the bandwidth reduction method, see `~sisl_toolbox.btd.permute.reduce_bandwidth`.
         For ``"electrode"`` the (at most) 2 `dense` blocks are placed at
@@ -240,54 +251,54 @@ def _device_permute(
 
     Returns
     -------
-    permute : orbitals in `graph` (``orbs[...]``)
+    permute : nodes in `graph` (``nodes[...]``)
     """
-    orbs = np.asarray(orbs).ravel()
+    nodes = np.asarray(nodes).ravel()
     local = np.full(graph.shape[0], -1, dtype=np.int64)
-    local[orbs] = np.arange(len(orbs))
+    local[nodes] = np.arange(len(nodes))
     dense = [local[d] for d in dense]
     assert all((d >= 0).all() for d in dense)
-    ptr, col = _graph_ptr_col(_add_dense(_subgraph(graph, orbs), dense))
+    ptr, col = _graph_ptr_col(_add_dense(_subgraph(graph, nodes), dense))
     kwargs = {}
     if method.lower() == "electrode":
         if len(dense) > 2:
             raise ValueError("method='electrode' requires at most 2 electrodes")
         kwargs = dict(zip(("start", "end"), dense))
-    perm = _reduce_bandwidth(ptr, col, method, refine, **kwargs)
-    return orbs[perm]
+    perm = _reduce_bandwidth(ptr, col, method, refine, False, **kwargs)
+    return nodes[perm]
 
 
 def _downfold_permute(
     graph: ssp.csr_matrix,
-    geometry,
-    elec_atoms: np.ndarray,
-    device_atoms: np.ndarray,
-    exclude_atoms: np.ndarray,
+    elec: np.ndarray,
+    device: np.ndarray,
+    exclude: np.ndarray,
     cost: str = "speed",
     refine: bool = True,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Downfolding region of an electrode, its permutation table and BTD blocks
 
-    The downfolding region are the atoms connected to the electrode,
-    which are not in the device region, nor `exclude_atoms`.
-    The last block are the orbitals of the device region that couples to
-    the downfolding region.
+    The downfolding region are the nodes (rows) connected to the electrode,
+    which are not in the device region, nor `exclude`.
+    The electrode may be partially in the device region, then only the
+    electrode nodes outside the device region are downfolded.
+    The last block are the nodes of the device region that couples to
+    the downfolding region (including the electrode nodes in the device region,
+    which couples densely through the electrode self-energy).
     The downfolding region is ordered by a bandwidth reduction starting
-    from the electrode, the device orbitals are placed last.
+    from the electrode, the device nodes are placed last.
 
     Parameters
     ----------
     graph :
-        the (symmetric) graph of all orbitals in `geometry`, see `_graph`
-    geometry :
-        the geometry of the full system
-    elec_atoms :
-        atoms of the electrode
-    device_atoms :
-        atoms of the device region
-    exclude_atoms :
-        atoms that are not part of the downfolding (e.g. buffer
-        atoms and other electrodes).
+        the (symmetric) graph of all nodes (atoms or orbitals), see `_graph`
+    elec :
+        nodes of the electrode, at least one must not be in the device region
+    device :
+        nodes of the device region
+    exclude :
+        nodes that are not part of the downfolding (e.g. buffer
+        and other electrodes).
         A downfolding region coupling to these raises an error.
     cost :
         the cost model of the block-tridiagonal matrix
@@ -296,79 +307,200 @@ def _downfold_permute(
 
     Returns
     -------
-    orbs_down : the orbitals of the downfolding region (in BTD order)
-    blocks_down : the BTD blocks of `orbs_down`, the last block are device orbitals
+    down : the nodes of the downfolding region (in BTD order)
+    blocks : the BTD blocks of `down`, the last block are device nodes
     """
-    na = geometry.na
-    elec_atoms = np.asarray(elec_atoms).ravel()
+    no = graph.shape[0]
+    node_elec = np.unique(np.asarray(elec).ravel())
 
-    # atomic graph
-    coo = graph.tocoo()
-    agraph = ssp.csr_matrix(
-        (
-            np.ones(coo.nnz, dtype=np.int8),
-            (geometry.o2a(coo.row), geometry.o2a(coo.col)),
-        ),
-        shape=(na, na),
-    )
+    is_device = np.zeros(no, dtype=bool)
+    is_device[device] = True
+    is_exclude = np.zeros(no, dtype=bool)
+    is_exclude[exclude] = True
+    if is_exclude[node_elec].any():
+        raise ValueError("electrode overlaps with the excluded indices")
+    # electrode nodes to be downfolded (not in the device region)
+    node_elec_r = node_elec[~is_device[node_elec]]
+    if len(node_elec_r) == 0:
+        raise ValueError("electrode is fully in the device region")
 
-    is_device = np.zeros(na, dtype=bool)
-    is_device[device_atoms] = True
-    is_exclude = np.zeros(na, dtype=bool)
-    is_exclude[exclude_atoms] = True
-    if (is_device[elec_atoms] | is_exclude[elec_atoms]).any():
-        raise ValueError("electrode atoms overlap with the device or excluded atoms")
-
-    # breadth first search through the atoms that are not device atoms
-    region = np.zeros(na, dtype=bool)
-    region[elec_atoms] = True
-    front = elec_atoms
+    # breadth first search through the nodes that are not device nodes
+    region = np.zeros(no, dtype=bool)
+    region[node_elec_r] = True
+    front = node_elec_r
     while len(front) > 0:
-        neighbors = np.unique(agraph[front].indices)
+        neighbors = np.unique(graph[front].indices)
         if is_exclude[neighbors].any():
             raise ValueError(
-                "downfolding region couples to excluded atoms "
-                f"{np.flatnonzero(is_exclude & np.isin(np.arange(na), neighbors)).tolist()}"
+                "downfolding region couples to excluded indices "
+                f"{neighbors[is_exclude[neighbors]].tolist()}"
             )
         front = neighbors[~(is_device[neighbors] | region[neighbors])]
         region[front] = True
+    node_region = np.flatnonzero(region)
 
-    orbs_region = geometry.a2o(np.flatnonzero(region), all=True)
-    orbs_elec = geometry.a2o(elec_atoms, all=True)
-
-    # device orbitals coupling to the downfolding region
-    is_device_orb = np.zeros(geometry.no, dtype=bool)
-    is_device_orb[geometry.a2o(device_atoms, all=True)] = True
-    orbs_dev = np.unique(graph[orbs_region].indices)
-    orbs_dev = orbs_dev[is_device_orb[orbs_dev]]
-    if len(orbs_dev) == 0:
+    # device nodes coupling to the downfolding region, and the electrode
+    # nodes in the device region (coupled through the self-energy)
+    node_dev = np.unique(graph[node_region].indices)
+    node_dev = np.union1d(
+        node_dev[is_device[node_dev]], node_elec[is_device[node_elec]]
+    )
+    if len(node_dev) == 0:
         raise ValueError("downfolding region does not couple to the device region")
 
-    # the local graph, the electrode and the device orbitals are dense
-    nr = len(orbs_region)
-    nodes = np.concatenate([orbs_region, orbs_dev])
-    elec_local = np.searchsorted(orbs_region, orbs_elec)
+    # the local graph, the electrode and the device nodes are dense
+    nr = len(node_region)
+    nodes = np.concatenate([node_region, node_dev])
+    elec_r_local = np.searchsorted(node_region, node_elec_r)
+    elec_d_local = nr + np.searchsorted(node_dev, node_elec[is_device[node_elec]])
+    elec_local = np.concatenate([elec_r_local, elec_d_local])
     dev_local = np.arange(nr, len(nodes))
     sub = _add_dense(_subgraph(graph, nodes), [elec_local, dev_local])
     ptr, col = _graph_ptr_col(sub)
     perm = _reduce_bandwidth(
-        ptr, col, "electrode", refine, start=elec_local, end=dev_local
+        ptr, col, "electrode", refine, False, start=elec_r_local, end=dev_local
     )
-    # ensure the device orbitals are last
+    # ensure the device nodes are last
     is_dev = perm >= nr
     perm = np.concatenate([perm[~is_dev], perm[is_dev]])
 
-    # blocks of the downfolding region (without the device orbitals)
+    # blocks of the downfolding region (without the device nodes)
     perm_r = perm[:nr]
     ptr, col = _graph_ptr_col(_subgraph(sub, perm_r))
     blocks = btd_blocks(ptr, col, np.arange(nr), cost)
 
-    # only the last block may couple to the device orbitals
+    # only the last block may couple to the device nodes.
+    # Electrode nodes in the device region couples densely to all electrode
+    # nodes, so the downfolded electrode nodes end up in the last block.
     couples = np.flatnonzero(np.diff(sub[perm_r][:, dev_local].tocsr().indptr))
     first = np.searchsorted(np.cumsum(blocks), couples[0], side="right")
-    blocks = np.concatenate([blocks[:first], [blocks[first:].sum()], [len(orbs_dev)]])
+    blocks = np.concatenate([blocks[:first], [blocks[first:].sum()], [len(node_dev)]])
 
     return nodes[perm], blocks
+
+
+@set_module("sisl_toolbox.btd")
+def downfold_partition(
+    csr: SparseCSR | _SparseGeometry,
+    elecs: Sequence[npt.ArrayLike],
+    device: Optional[npt.ArrayLike] = None,
+    buffer: Optional[npt.ArrayLike] = None,
+    cost: str = "speed",
+    refine: bool = True,
+) -> list[Optional[PermuteBTD]]:
+    """Downfolding regions of the electrodes, their permutation tables and BTD blocks
+
+    The downfolding region of an electrode is the connected sub-graph of `csr`
+    containing the electrode rows, which is disconnected from the device region
+    (it stops at the device rows).
+    The last block are the rows of the device region that couples to
+    the downfolding region, i.e. where the downfolded self-energy lives.
+    An electrode may be partially in the device region, then only its rows
+    outside the device region are downfolded, and its rows in the device
+    region are part of the last block.
+    The downfolding region is ordered by a bandwidth reduction starting
+    from the electrode, the device rows are placed last.
+
+    All indices are rows of `csr`, i.e. use the atomic sparse pattern
+    (``H.toSparseAtom()``) with atomic indices, or ``H`` with orbital indices.
+
+    Parameters
+    ----------
+    csr :
+        the sparse matrix of the full system, columns may extend into supercells.
+        For a sparse geometry object (e.g. `~sisl.Hamiltonian`) its sparse
+        pattern is used.
+    elecs :
+        rows of each electrode
+    device :
+        rows of the device region. Electrodes whose rows are all in the
+        device region are not downfolded, electrodes partially in the
+        device region are partially downfolded.
+        Defaults to all rows not in the electrodes nor in `buffer`.
+    buffer :
+        rows that are removed from the calculation
+    cost : {"speed", "memory", "speed-diagonal"}
+        the cost model of the block-tridiagonal matrix, see `~sisl_toolbox.btd.permute.btd_blocks`
+    refine :
+        refine the permutation tables, see `~sisl_toolbox.btd.permute.reduce_bandwidth`
+
+    Returns
+    -------
+    list :
+        for each electrode, a `PermuteBTD` with the rows of the
+        downfolding region (including the electrode and device rows),
+        or None for electrodes in the device region.
+
+    Raises
+    ------
+    ValueError
+        if a downfolding region couples to the buffer or other (downfolded)
+        electrode rows.
+    """
+    graph = _graph(csr)
+    n = graph.shape[0]
+    elecs = [np.asarray(idx).ravel() for idx in elecs]
+    if buffer is None:
+        buffer = np.array([], dtype=np.int64)
+    buffer = np.asarray(buffer).ravel()
+
+    if device is None:
+        is_device = np.ones(n, dtype=bool)
+        is_device[buffer] = False
+        for idx in elecs:
+            is_device[idx] = False
+    else:
+        is_device = np.zeros(n, dtype=bool)
+        is_device[np.asarray(device).ravel()] = True
+    device = np.flatnonzero(is_device)
+
+    # the electrode rows that are downfolded
+    elecs_r = [idx[~is_device[idx]] for idx in elecs]
+
+    ret = []
+    for i, idx in enumerate(elecs):
+        if len(elecs_r[i]) == 0:
+            # fully in the device region
+            ret.append(None)
+            continue
+        exclude = np.concatenate(
+            [buffer] + [e for j, e in enumerate(elecs_r) if j != i]
+        )
+        try:
+            down, blocks = _downfold_permute(graph, idx, device, exclude, cost, refine)
+        except ValueError as e:
+            raise ValueError(f"downfold_partition electrode {i}: {e}") from None
+        ret.append(PermuteBTD(down, blocks))
+    return ret
+
+
+def _split_pivot(value: str) -> tuple[str, str]:
+    """Split a pivoting method ``[atom+|orb+]<method>`` into the space and method
+
+    The space is ``"atoms"`` (default) or ``"orbitals"``, the method is lower-case.
+    """
+    method = value.strip().lower()
+    for prefix, space in (
+        ("atom+", "atoms"),
+        ("atoms+", "atoms"),
+        ("orb+", "orbitals"),
+        ("orbs+", "orbitals"),
+    ):
+        if method.startswith(prefix):
+            return space, method[len(prefix) :]
+    return "atoms", method
+
+
+def _permute_a2o(geometry, permute: PermuteBTD) -> PermuteBTD:
+    """Convert an atomic permutation table and BTD blocks to orbitals
+
+    Each atom is replaced by its orbitals (in order), and the block sizes
+    are the number of orbitals of the atoms in each block.
+    """
+    atoms = permute.permute
+    starts = np.append(0, np.cumsum(permute.blocks)[:-1])
+    blocks = np.add.reduceat(geometry.orbitals[atoms], starts)
+    return PermuteBTD(geometry.a2o(atoms, all=True), blocks)
 
 
 def _blocks_in_range(blocks_cum0: np.ndarray, indices: np.ndarray) -> np.ndarray:

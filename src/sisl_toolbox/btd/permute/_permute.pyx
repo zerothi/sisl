@@ -37,7 +37,7 @@ ctypedef fused key_st:
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 def symmetric_graph(const int[::1] ptr, const int[::1] ncol, const int[::1] col):
-    """Pattern of :math:`A + A^T` without the diagonal
+    r"""Pattern of :math:`A + A^T` without the diagonal
 
     Parameters
     ----------
@@ -232,7 +232,7 @@ cdef (int, int) _endpoints(const int[::1] ptr, const int[::1] col, const int[::1
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-def cuthill_mckee(const int[::1] ptr, const int[::1] col, bint reverse=False):
+def cuthill_mckee(const int[::1] ptr, const int[::1] col):
     """Cuthill-McKee ordering of a symmetric graph
 
     Each connected component is started at a pseudo-peripheral node.
@@ -241,8 +241,6 @@ def cuthill_mckee(const int[::1] ptr, const int[::1] col, bint reverse=False):
     ----------
     ptr, col :
         symmetric CSR graph without self-loops, see `symmetric_graph`
-    reverse :
-        return the reverse Cuthill-McKee ordering
 
     Returns
     -------
@@ -293,8 +291,6 @@ def cuthill_mckee(const int[::1] ptr, const int[::1] col, bint reverse=False):
                         nperm += 1
                 _sort_key(perm, start, nperm, deg)
 
-    if reverse:
-        return PERM[::-1].copy()
     return PERM
 
 
@@ -649,7 +645,7 @@ def gibbs_poole_stockmeyer(ptr, col):
 
 
 def generalized_gibbs_poole_stockmeyer(ptr, col, max_roots=None):
-    """Generalized Gibbs-Poole-Stockmeyer (GGPS) ordering of a symmetric graph
+    r"""Generalized Gibbs-Poole-Stockmeyer (GGPS) ordering of a symmetric graph
 
     Implements [GGPS2009]_ for each connected component, which generalizes
     `gibbs_poole_stockmeyer` by:
@@ -705,7 +701,7 @@ def electrode_ordering(ptr, col, start, end=None):
     ptr, col :
         symmetric CSR graph without self-loops, see `symmetric_graph`
     start :
-        nodes of the first electrode (e.g. all its orbitals), placed first
+        nodes of the first electrode (e.g. all its atoms or orbitals), placed first
     end :
         nodes of the last electrode, placed last in the connected part.
         Must be disjoint from, and connected to, `start`.
@@ -853,7 +849,7 @@ def refine_bandwidth(const int[::1] ptr, const int[::1] col, perm, fixed=None, i
     perm :
         the permutation table to refine, ``perm[new] = old``
     fixed :
-        nodes that keep their position, e.g. electrode orbitals from `electrode_ordering`
+        nodes that keep their position, e.g. electrode nodes from `electrode_ordering`
     max_sweeps :
         maximum number of sweeps over all nodes, a sweep without improvements stops
 
@@ -950,7 +946,7 @@ cdef void _block_bounds(const int[::1] ptr, const int[::1] col, const int[::1] p
 @cython.initializedcheck(False)
 @cython.cdivision(True)
 def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"):
-    """Block sizes of the block-tridiagonal partition of minimal cost
+    r"""Block sizes of the block-tridiagonal partition of minimal cost
 
     With the graph ordered by `perm`, the matrix is partitioned into contiguous
     blocks of sizes :math:`n_i` such that it is block-tridiagonal, while minimizing

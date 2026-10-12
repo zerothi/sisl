@@ -16,7 +16,6 @@ import sisl as si
 from sisl import _array as _a
 from sisl._indices import indices_only
 from sisl._internal import set_module
-from sisl.io.siesta.fdf import _parse_list
 from sisl.linalg import (
     cholesky,
     eigh,
@@ -37,11 +36,21 @@ from ._btd import (
     _blocks_in_range,
     _btd_blocks_sub,
     _device_permute,
-    _downfold_permute,
     _graph,
+    _permute_a2o,
+    _split_pivot,
 )
 from ._electrode import *
+from ._electrode import (
+    _check_placement,
+    _fdf_device,
+    _fdf_downfold,
+    _fdf_electrode,
+    _restrict_nsc_elecs,
+    _TransportFdf,
+)
 from ._help import *
+from ._help import _check_atoms, _split_space, _to_orbs
 
 __all__ = ["DeviceGreen"]
 
@@ -128,84 +137,27 @@ def _scat_state_svd(A, **kwargs):
     return DOS * DOS.conj() / (2 * np.pi), A
 
 
-def _fdf_atoms(value, na: int) -> np.ndarray:
-    """Convert a TranSiesta/TBtrans atom list to (sorted) 0-based atomic indices
-
-    The value is from `fdfSileSiesta.get`, either a list (``[1 -- 4]``),
-    or a block where each line may start with ``atom`` followed by a list or
-    integers.
-    Indices are 1-based, negative values counts from the end (``-1`` is the last atom).
-    """
-    if value is None:
-        return _a.arrayi([])
-    if isinstance(value, list):
-        lst = []
-        for line in value:
-            line = line.split("#", 1)[0].strip()
-            word, *rest = line.split(maxsplit=1)
-            if word.lower() in ("atom", "atoms"):
-                line = rest[0] if rest else ""
-            line = line.strip()
-            if not line:
-                continue
-            if not line.startswith("["):
-                line = f"[{line}]"
-            lst.append(_parse_list(line))
-        value = np.concatenate(lst) if lst else _a.arrayi([])
-    value = np.atleast_1d(np.asarray(value, dtype=np.int64))
-    value = np.where(value < 0, value + na + 1, value)
-    if ((value < 1) | (value > na)).any():
-        raise ValueError(f"atom indices are out of range [1, {na}]")
-    return np.unique(value - 1)
-
-
-def _fdf_electrode_atoms(elec: BlochSelfEnergy, na: int) -> np.ndarray:
-    """Atoms (0-based) of the electrode from its ``electrode-position``
-
-    ``<int>`` is the first atom, and ``end <int>`` is the last atom.
-    Negative values counts from the end (``-1`` is the last atom).
-    """
-    position = elec.info.position
-    if position is None:
-        raise ValueError(f"electrode {elec.name} has no electrode-position")
-    n = elec.se.spgeom0.na * len(elec.bloch)
-    tokens = position.split()
-    atom = int(tokens[-1])
-    is_end = tokens[0].lower() == "end"
-    if atom < 0:
-        atom += na + 1
-    if is_end:
-        atom -= n - 1
-    if atom < 1 or atom + n - 1 > na:
-        raise ValueError(
-            f"electrode {elec.name} with electrode-position {position!r} "
-            f"and {n} atoms is outside the {na} atoms"
-        )
-    return np.arange(atom - 1, atom - 1 + n)
-
-
-def _fdf_permute_method(value: str) -> str:
-    """Convert a TBtrans permutation method to a `reduce_bandwidth` method"""
-    method = value.lower()
-    for prefix in ("atom+", "orb+"):
-        if method.startswith(prefix):
-            method = method[len(prefix) :]
+def _fdf_permute_method(value: str) -> tuple[str, str]:
+    """Convert a TBtrans permutation method to the space and a `reduce_bandwidth` method"""
+    space, method = _split_pivot(value)
     method = {"rev-cm": "rcm"}.get(method, method)
     if method not in ("gps", "ggps", "cm", "rcm"):
         warn(f"permutation method {value!r} is not implemented, using GPS")
         method = "gps"
-    return method
+    return space, method
 
 
 class _DeviceElectrode(NamedTuple):
     """An electrode placed in the permuted device region of `DeviceGreen`"""
 
-    #: the electrode self-energy
-    elec: ElectrodeSelfEnergy
+    #: the electrode
+    elec: Electrode
     #: positions of the self-energy in the permuted device region (sorted)
     permute: np.ndarray
     #: permutes the self-energy rows and columns to match `permute`
     sort: np.ndarray
+    #: whether the electrode region is replaced by the bulk electrode matrix
+    bulk: bool
 
 
 @set_module("sisl_toolbox.btd")
@@ -222,6 +174,27 @@ class DeviceGreen:
 
     Both calculations are very efficient and uses very little memory
     compared to the full matrices normally used.
+
+    A device can be created from any Hamiltonian, here a 1D chain along
+    the first lattice vector, with the electrodes on the first and last atom:
+
+    .. code-block:: python
+
+       import sisl
+       from sisl_toolbox.btd import *
+
+       chain = sisl.Geometry(
+           [0, 0, 0], sisl.Atom(1, R=1.1), lattice=sisl.Lattice([1, 10, 10], nsc=[3, 1, 1])
+       )
+       H_elec = sisl.Hamiltonian(chain)
+       H_elec.construct([(0.1, 1.1), (0.0, -1.0)])
+       H = H_elec.tile(10, 0)
+
+       # the bulk electrodes extend along -a (left) and +a (right)
+       left = BlochElectrode("Left", sisl.RecursiveSI(H_elec, "-A"))
+       right = BlochElectrode("Right", sisl.RecursiveSI(H_elec, "+A"))
+       G = DeviceGreen(H, [(left, [0]), (right, [9])])
+       T = G.transmission(0.5, "Left", "Right")
 
     Consider a regular 2 electrode setup with transport direction
     along the 3rd lattice vector. Then the following example may
@@ -262,8 +235,8 @@ class DeviceGreen:
            },
        )
 
-    Both are short-hands for creating the electrodes (`BlochSelfEnergy`), downfolding
-    them into the device region (`DownfoldSelfEnergy`) and passing them, together with
+    Both are short-hands for creating the electrodes (`BlochElectrode`), downfolding
+    them into the device region (`DownfoldElectrode`) and passing them, together with
     the orbitals they are placed on, to `DeviceGreen`.
 
 
@@ -304,8 +277,14 @@ class DeviceGreen:
     def __init__(
         self,
         H: si.Hamiltonian,
-        elecs: Sequence[tuple[ElectrodeSelfEnergy, npt.ArrayLike]],
-        permute: PermuteBTD | npt.ArrayLike | str = "gps",
+        elecs: Sequence[
+            Electrode
+            | tuple[Electrode, npt.ArrayLike | Mapping[str, npt.ArrayLike]]
+            | tuple[Electrode, npt.ArrayLike | Mapping[str, npt.ArrayLike], bool]
+        ],
+        permute: (
+            PermuteBTD | npt.ArrayLike | str | Mapping[str, PermuteBTD | npt.ArrayLike]
+        ) = "gps",
         eta: float | None = None,
     ):
         r"""Create Green function with Hamiltonian and BTD matrix elements
@@ -313,44 +292,114 @@ class DeviceGreen:
         Parameters
         ----------
         H :
-            the Hamiltonian containing the device region
+            the Hamiltonian containing the device region.
+            Couplings along the semi-infinite directions of the electrodes are
+            removed (on a copy), the self-energies replace them.
         elecs :
-            the electrodes, each a tuple of the electrode self-energy and
-            the orbitals in `H` (not accounting for spin) which corresponds
-            to the rows of the self-energy matrix.
+            the electrodes, each a tuple of the electrode and
+            its indices in `H`, which corresponds to the rows of the self-energy matrix.
+            The indices are atoms, ``{"atoms": idx}`` (equivalent), or
+            ``{"orbitals": idx}`` (not accounting for spin).
+            Use orbitals when the self-energy is not on all orbitals of
+            its atoms, e.g. for a `DownfoldElectrode`.
+            An optional third element (``bulk``, defaults to false) replaces the
+            device Hamiltonian of the electrode orbitals by the electrode
+            Hamiltonian (`Electrode.bulk_matrix`), otherwise the self-energy
+            is put on the device Hamiltonian.
+            An electrode may also be given alone, when its orbitals (`Electrode.orbs`)
+            are set (e.g. from `Electrode.from_fdf`), ``bulk`` is then
+            ``info.bulk`` (if the electrode has a bulk matrix).
         permute :
-            the permutation table and BTD blocks of the device region.
-            The permutation table are orbitals in `H` (not accounting for spin).
-            If an array, it is the permutation table and the BTD blocks are
-            found with `~sisl_toolbox.btd.permute.btd_blocks`.
-            For an array and a `str` the electrode orbitals are dense blocks
-            in the partitioning, see `btd_partition`.
+            the permutation table and BTD blocks of the device region,
+            a `PermuteBTD` or an array (the permutation table only).
+            The indices are atoms, ``{"atoms": permute}`` (equivalent), or
+            ``{"orbitals": permute}`` (not accounting for spin).
+            Atoms are expanded to all their orbitals (in order), and the block
+            sizes to the number of orbitals in each block.
+            For an array, the BTD blocks are found with
+            `~sisl_toolbox.btd.permute.btd_blocks` (for atoms or orbitals).
             If a `str`, the full `H` is the device region and it is passed
-            as the ``method`` argument to `btd_partition`.
-            For ``"electrode"`` the (at most 2) electrode orbitals are placed
+            as the ``method`` argument to `btd_partition`, ``[atom+|orb+]<method>``
+            partitions the atoms (default) or orbitals, e.g. ``"orb+gps"``.
+            For ``"electrode"`` the (at most 2) electrodes are placed
             at the start and end of the BTD matrix.
+            For an array and a `str` the electrodes are dense blocks
+            in the partitioning, see `btd_partition`.
         eta :
             imaginary part of the device region (for real energies).
-            Defaults to the minimum :math:`\eta/10` for the smallest :math:`\eta`
-            value in the electrodes.
+            Defaults to :math:`\eta/10` for the smallest :math:`\eta`
+            of the electrodes (`Electrode.eta`).
+
+        Warns
+        -----
+        SislWarning
+            when an electrode does not seem to be placed correctly in `H`:
+            its orbitals have a different order (or relative positions) than the electrode,
+            or `H` couples it to device orbitals on its semi-infinite side
+            (wrong semi-infinite direction, or not placed at the edge of the device).
+            Electrodes downfolded with `DownfoldElectrode` are checked
+            when they are created.
         """
+
+        def as_tuple(elec):
+            """Convert an electrode to the tuple form ``(elec, orbitals, *bulk)``"""
+            if not isinstance(elec, Electrode):
+                elec, idx, *bulk = elec
+                return (elec, _to_orbs(H, idx, "electrode indices"), *bulk)
+            if elec.orbs is None:
+                raise ValueError(
+                    f"{self.__class__.__name__} electrode {elec.name} has no orbitals, "
+                    "pass it as (electrode, atoms)."
+                )
+            bulk = elec.has_bulk and bool(elec.info.get("bulk", False))
+            return (elec, elec.orbs, bulk)
+
+        elecs = [as_tuple(elec) for elec in elecs]
+
+        # The electrode self-energies replace the couplings along the
+        # semi-infinite directions
+        H_in = H
+        H = _restrict_nsc_elecs(H, [elec[0] for elec in elecs])
+        if H is not H_in:
+            info(
+                f"{self.__class__.__name__} removes the couplings of H along the "
+                f"semi-infinite directions of the electrodes, nsc={H_in.nsc} -> {H.nsc}."
+            )
         self.H = H
 
-        # The electrode self-energies are dense blocks in the device region
-        dense = [np.asarray(orbs).ravel() for _, orbs in elecs]
+        # The partitioning is done for atoms or orbitals (space)
+        if isinstance(permute, str):
+            space, permute = _split_pivot(permute)
+        else:
+            space, permute = _split_space(permute, "permute")
+            if space == "atoms":
+                idx = permute.permute if isinstance(permute, PermuteBTD) else permute
+                _check_atoms(H, np.asarray(idx).ravel(), "permute indices")
+
+        if not isinstance(permute, PermuteBTD):
+            # The electrode self-energies are dense blocks in the device region
+            dense = [np.asarray(elec[1]).ravel() for elec in elecs]
+            if space == "atoms":
+                csr = H.toSparseAtom()
+                dense = [np.unique(H.o2a(d)) for d in dense]
+            else:
+                csr = H
+
         if isinstance(permute, str):
             kwargs = {}
-            if permute.lower() == "electrode":
+            if permute == "electrode":
                 # the electrodes are placed at the ends of the BTD matrix
                 if len(elecs) > 2:
                     raise ValueError(
                         f"{self.__class__.__name__}(permute='electrode') requires at most 2 electrodes"
                     )
                 kwargs = dict(zip(("start", "end"), dense))
-            permute = btd_partition(H, method=permute, dense=dense, **kwargs)
+            permute = btd_partition(csr, method=permute, dense=dense, **kwargs)
         elif not isinstance(permute, PermuteBTD):
             permute = np.asarray(permute).ravel()
-            permute = PermuteBTD(permute, _btd_blocks_sub(H, permute, dense=dense))
+            permute = PermuteBTD(permute, _btd_blocks_sub(csr, permute, dense=dense))
+        if space == "atoms":
+            permute = _permute_a2o(H.geometry, permute)
 
         # Retrieve the (spin) expansion of the blocks/orbitals.
         # The permutation tables are orbital indices, without spin.
@@ -375,7 +424,13 @@ class DeviceGreen:
         # and the self-energies are permuted accordingly, see `_DeviceElectrode`.
         # There may be no electrodes
         self._elecs = []
-        for elec, orbs in elecs:
+        for elec, orbs, *bulk in elecs:
+            bulk = bool(bulk[0]) if bulk else False
+            if bulk and not elec.has_bulk:
+                raise ValueError(
+                    f"{self.__class__.__name__} electrode {elec.name} is bulk, "
+                    f"but {elec.__class__.__name__} has no bulk matrix."
+                )
             permute = inv_permute[expand_orbs(np.asarray(orbs).ravel(), expand)]
             if np.any(permute < 0):
                 raise ValueError(
@@ -388,7 +443,37 @@ class DeviceGreen:
                     f"but its orbitals gives {len(permute)}"
                 )
             sort = np.argsort(permute)
-            self._elecs.append(_DeviceElectrode(elec, permute[sort], sort))
+            self._elecs.append(_DeviceElectrode(elec, permute[sort], sort, bulk))
+            if not isinstance(elec, DownfoldElectrode):
+                _check_placement(
+                    H,
+                    elec,
+                    orbs,
+                    self.permute[::expand] // expand,
+                    self.__class__.__name__,
+                )
+
+        # The downfolded orbitals are removed from the calculation, they
+        # must not be part of the device region, nor other downfolding regions
+        is_device = np.zeros(H.no, dtype=bool)
+        is_device[self.permute // expand] = True
+        count = np.zeros(H.no, dtype=np.int32)
+        downs = [
+            el.elec for el in self._elecs if isinstance(el.elec, DownfoldElectrode)
+        ]
+        for elec in downs:
+            if is_device[elec.orbs_down].any():
+                raise ValueError(
+                    f"{self.__class__.__name__} electrode {elec.name} has a "
+                    "downfolding region overlapping the device region."
+                )
+            count[elec.orbs_down] += 1
+        if (count > 1).any():
+            names = [elec.name for elec in downs if (count[elec.orbs_down] > 1).any()]
+            raise ValueError(
+                f"{self.__class__.__name__} electrodes {names} have overlapping "
+                "downfolding regions."
+            )
 
         # Each electrode is a dense block, which must maximally span
         # 2 (neighboring) blocks.
@@ -403,6 +488,14 @@ class DeviceGreen:
                 )
 
         # global device eta
+        if eta is None:
+            etas = [elec.eta for elec in self.elecs if elec.eta is not None]
+            if not etas:
+                raise ValueError(
+                    f"{self.__class__.__name__} could not determine eta from "
+                    "the electrodes, please pass eta explicitly."
+                )
+            eta = min(etas) / 10
         self.eta = eta
 
         # Create BTD indices
@@ -412,8 +505,8 @@ class DeviceGreen:
         self.clear()
 
     @property
-    def elecs(self) -> list[ElectrodeSelfEnergy]:
-        """The electrode self-energies"""
+    def elecs(self) -> list[Electrode]:
+        """The electrodes"""
         return [el.elec for el in self._elecs]
 
     def __str__(self) -> str:
@@ -422,22 +515,6 @@ class DeviceGreen:
             e = str(elec).replace("\n", "\n  ")
             ret = f"{ret},\n {elec.name}:\n  {e}"
         return f"{ret}\n}}"
-
-    @staticmethod
-    def _restrict_nsc(H: si.Hamiltonian, elecs) -> si.Hamiltonian:
-        """Remove couplings of `H` along the semi-infinite directions of `elecs`
-
-        A copy is returned if `H` needs to be changed.
-        """
-        nsc = {}
-        for elec in elecs:
-            semi_inf = getattr(getattr(elec, "se", None), "semi_inf", None)
-            if semi_inf is not None and H.nsc[semi_inf] > 1:
-                nsc["abc"[semi_inf]] = 1
-        if nsc:
-            H = H.copy()
-            H.set_nsc(**nsc)
-        return H
 
     @classmethod
     def _from_downfold(
@@ -455,10 +532,14 @@ class DeviceGreen:
         ----------
         downfolds :
             for each electrode a tuple of ``(electrode, orbs_down, blocks_down, orbs_elec)``,
-            see `DownfoldSelfEnergy`
+            see `DownfoldElectrode`.
+            If ``orbs_down`` is None, the electrode is not downfolded, and placed
+            directly on ``orbs_elec`` (in the device region).
         bulk :
-            if a `bool`, it is the default for electrodes without ``info.bulk``
-            (from `BlochSelfEnergy.from_fdf`).
+            whether the electrode Hamiltonian is used in the electrode region
+            (in the downfolding or device region).
+            If a `bool`, it is the default for electrodes without ``info.bulk``
+            (from `Electrode.from_fdf`).
             Otherwise a mapping from the electrode names.
         """
         elecs = []
@@ -467,16 +548,18 @@ class DeviceGreen:
                 elec_bulk = bulk[elec.name]
             else:
                 elec_bulk = elec.info.get("bulk", bulk)
-            down = DownfoldSelfEnergy(
+            if orbs_down is None:
+                elecs.append((elec, {"orbitals": orbs_elec}, elec_bulk))
+                continue
+            down = DownfoldElectrode(
                 elec,
                 H,
-                orbs_down,
-                orbs_elec,
-                blocks_down,
+                {"orbitals": orbs_elec},
+                {"orbitals": PermuteBTD(orbs_down, blocks_down)},
                 eta_device=eta,
                 bulk=elec_bulk,
             )
-            elecs.append((down, orbs_down[-blocks_down[-1] :]))
+            elecs.append((down, {"orbitals": down.orbs}))
         return cls(H, elecs, permute, eta=eta, **kwargs)
 
     @classmethod
@@ -484,7 +567,7 @@ class DeviceGreen:
         cls,
         tbt: SileLike,
         H: si.Hamiltonian,
-        elecs: Mapping[str, BlochSelfEnergy | tuple[si.Hamiltonian, str]],
+        elecs: Mapping[str, Electrode | tuple[si.Hamiltonian, str]],
         eta: Optional[float] = None,
         bulk: bool | Mapping[str, bool] = True,
         **kwargs,
@@ -506,7 +589,7 @@ class DeviceGreen:
         elecs :
            all electrodes in `tbt`, by their names. Either
 
-           - a `BlochSelfEnergy`, used as-is
+           - an `Electrode`, used as-is
            - a tuple of the electrode Hamiltonian and its semi-infinite direction
              (e.g. ``(H_left, "-C")``). The chemical potential, imaginary part
              and Bloch expansion are read from `tbt` (the Hamiltonian is copied).
@@ -534,8 +617,10 @@ class DeviceGreen:
         bloch_elecs = []
         for name in tbt.elecs:
             elec = elecs[name]
-            if isinstance(elec, ElectrodeSelfEnergy):
-                if not np.allclose(tbt.bloch(name), elec.bloch.bloch):
+            if isinstance(elec, Electrode):
+                if isinstance(elec, BlochElectrode) and not np.allclose(
+                    tbt.bloch(name), elec.bloch.bloch
+                ):
                     warn(
                         f"{clsname}(electrode={name}) has inconsistent Bloch "
                         f"expansions, {tbt} = {tbt.bloch(name)}, "
@@ -550,14 +635,14 @@ class DeviceGreen:
                 Helec, semi_inf = elec
                 Helec = Helec.copy()
                 Helec.shift(tbt.mu(name))
-                elec = BlochSelfEnergy(
+                elec = BlochElectrode(
                     name,
                     si.RecursiveSI(Helec, semi_inf, eta=tbt.eta(name)),
                     bloch=tbt.bloch(name),
                 )
             bloch_elecs.append(elec)
 
-        H = cls._restrict_nsc(H, bloch_elecs)
+        H = _restrict_nsc_elecs(H, bloch_elecs)
         if eta is None:
             eta = tbt.eta()
 
@@ -575,7 +660,7 @@ class DeviceGreen:
             orbs_elec = H.a2o(tbt.a_elec(name), all=True)
             downfolds.append((elec, orbs_down, blocks_down, orbs_elec))
 
-        permute = PermuteBTD(tbt.pivot(), tbt.btd())
+        permute = {"orbitals": PermuteBTD(tbt.pivot(), tbt.btd())}
         return cls._from_downfold(H, downfolds, permute, eta, bulk, **kwargs)
 
     @classmethod
@@ -584,6 +669,7 @@ class DeviceGreen:
         fdf: SileLike,
         prefix: Literal["TBT", "TS"] = "TBT",
         eta: Optional[float] = None,
+        use_gf: bool = False,
         **kwargs,
     ) -> Self:
         """Return a new `DeviceGreen` using only the information in the fdf file
@@ -596,20 +682,30 @@ class DeviceGreen:
         The following fdf flags are used (``TBT`` prefixed flags take precedence
         over ``TS`` prefixed flags, when `prefix` is ``TBT``):
 
-        - ``TS.Elecs`` (block): the electrode names, each electrode is read by
-          `BlochSelfEnergy.from_fdf`.
+        - ``TS.Elecs`` (block): the electrode names, each electrode is read as in
+          `Electrode.from_fdf`, and downfolded through the regions found by
+          `downfold_partition`.
           Defaults to ``Left`` and ``Right`` (as TranSiesta/TBtrans).
           The electrode atoms are determined by ``electrode-position``,
           either the first atom ``<int>``, or the last atom ``end <int>``
           (negative values counts from the end, ``-1`` is the last atom).
         - ``TS.Atoms.Buffer``: atoms removed from the calculation
         - ``TBT.Atoms.Device``: atoms of the device region, defaults to all atoms
-          not in the electrodes or buffer atoms.
+          not in the buffer atoms, nor in the electrodes.
+          The device region may contain electrode atoms (not buffer atoms).
+          Electrodes fully in the device region are not downfolded,
+          electrodes partially in the device region are partially downfolded
+          (only their atoms outside the device region are downfolded).
         - ``TBT.HS``: the device Hamiltonian, defaults to ``<SystemLabel>.TSHS``
         - ``TBT.Contours.Eta`` (or ``TS.Contours.nEq.Eta``): imaginary part of the
           device region, defaults to the smallest electrode imaginary part divided by 10.
-        - ``TBT.BTD.Pivot.Device``: the bandwidth reduction method of the device,
-          one of ``[atom+|orb+](GPS|GGPS|CM|rev-CM)``, defaults to ``GPS``.
+        - ``TBT.BTD.Pivot.Device`` (or ``TBT.BTD.Pivot``, ``TS.BTD.Pivot``): the bandwidth
+          reduction method of the device, one of ``[atom+|orb+](GPS|GGPS|CM|rev-CM)``,
+          defaults to ``atom+GPS``. ``atom+`` (default) partitions the atoms, ``orb+``
+          the orbitals.
+        - ``TBT.BTD.Pivot.Elec.<name>`` (or ``TBT.BTD.Pivot.Elecs``): only the
+          ``atom+``/``orb+`` prefix is used, whether the downfolding region is
+          found for atoms (default) or orbitals, see `downfold_partition`.
 
         Parameters
         ----------
@@ -621,106 +717,53 @@ class DeviceGreen:
            If TS, only these prefixes will be used.
         eta :
             force a specific eta value
+        use_gf :
+            whether the electrode self-energies are read from their ``GF`` files,
+            see `Electrode.from_fdf`. Required for real-space electrodes.
         kwargs :
             passed to the class instantiating.
         """
-        if not isinstance(fdf, si.BaseSile):
-            fdf = si.io.siesta.fdfSileSiesta(fdf)
-        is_tbtrans = prefix.upper() == "TBT"
+        tfdf = _TransportFdf(fdf, prefix)
         clsname = f"{cls.__name__}.from_fdf"
 
-        def fdf_get(key, default=None, **kwargs):
-            """Get TS.<key>, which is overwritten by TBT.<key>"""
-            ret = fdf.get(f"TS.{key}", default, **kwargs)
-            if is_tbtrans:
-                ret = fdf.get(f"TBT.{key}", ret, **kwargs)
-            return ret
-
-        # Read the device H
-        slabel = fdf.get("SystemLabel", "siesta")
-        for hs_ext in ("TS.HSX", "TSHS", "HSX", "nc"):
-            if fdf.dir_file(f"{slabel}.{hs_ext}").is_file():
-                # choose a sane default (if it exists!)
-                hs_default = f"{slabel}.{hs_ext}"
-                break
-        else:
-            hs_default = f"{slabel}.TSHS"
-        if is_tbtrans:
-            hs_default = fdf.get("TBT.HS", hs_default)
-        H = si.get_sile(fdf.dir_file(hs_default)).read_hamiltonian()
-
-        # Read the electrodes
-        names = []
-        for line in fdf_get("Elecs") or []:
-            line = line.split("#", 1)[0].strip()
-            if line:
-                names.append(line)
-        if not names:
-            # same default as TranSiesta/TBtrans
-            names = ["Left", "Right"]
-        elecs = [BlochSelfEnergy.from_fdf(fdf, name, prefix=prefix) for name in names]
-
-        # default to the smallest electrode eta
-        # Correct by a factor 1/10 to minimize smearing for device states.
-        # We want the electrode to smear.
-        eta_dev = min((elec.eta for elec in elecs), default=0.0) / 10
-        if is_tbtrans:
-            eta_dev = fdf.get("TBT.Contours.Eta", eta_dev, unit="eV")
-        else:
-            eta_dev = fdf.get("TS.Contours.nEq.Eta", eta_dev, unit="eV")
-        if eta is not None:
-            # use passed option
-            eta_dev = eta
-
-        # Limit connections of the device along the semi-inf directions
-        H = cls._restrict_nsc(H, elecs)
-        na = H.na
-
-        # Regions
-        elec_atoms = [_fdf_electrode_atoms(elec, na) for elec in elecs]
-        buffer_atoms = _fdf_atoms(fdf_get("Atoms.Buffer"), na)
-        if is_tbtrans and (device := fdf.get("TBT.Atoms.Device")) is not None:
-            device_atoms = _fdf_atoms(device, na)
-        else:
-            is_device = np.ones(na, dtype=bool)
-            is_device[buffer_atoms] = False
-            for atoms in elec_atoms:
-                is_device[atoms] = False
-            device_atoms = np.flatnonzero(is_device)
-
-        regions = [("buffer", buffer_atoms), ("device", device_atoms)]
-        regions.extend(zip(names, elec_atoms))
-        count = np.zeros(na, dtype=np.int32)
-        for _, atoms in regions:
-            count[atoms] += 1
-        if (count > 1).any():
-            raise ValueError(
-                f"{clsname} found overlapping regions for atoms "
-                f"{(np.flatnonzero(count > 1) + 1).tolist()} (1-based)"
+        setup = _fdf_device(tfdf, clsname)
+        H = setup.H
+        elecs = [
+            _fdf_electrode(
+                tfdf, opts, None, use_gf, f"{clsname}(electrode={opts.name})"
             )
+            for opts in setup.opts
+        ]
+        eta_dev = setup.eta if eta is None else eta
 
-        # Calculate the downfolding regions
-        graph = _graph(H)
+        # Calculate the downfolding regions (in orbitals)
+        parts = _fdf_downfold(tfdf, setup)
         downfolds = []
-        for i, elec in enumerate(elecs):
-            exclude = np.concatenate(
-                [buffer_atoms] + [atoms for j, atoms in enumerate(elec_atoms) if j != i]
-            )
-            try:
-                orbs_down, blocks_down = _downfold_permute(
-                    graph, H.geometry, elec_atoms[i], device_atoms, exclude
-                )
-            except ValueError as e:
-                raise ValueError(f"{clsname}(electrode={elec.name}): {e}") from None
-            orbs_elec = H.a2o(elec_atoms[i], all=True)
-            downfolds.append((elec, orbs_down, blocks_down, orbs_elec))
+        for elec, orbs_elec, part in zip(elecs, setup.elec_orbs, parts):
+            if part is None:
+                # in the device region
+                downfolds.append((elec, None, None, orbs_elec))
+            else:
+                downfolds.append((elec, part.permute, part.blocks, orbs_elec))
 
         # Permutation table of the device, the blocks are calculated in __init__
-        method = _fdf_permute_method(fdf.get("TBT.BTD.Pivot.Device", "GPS"))
+        pivot = tfdf.fdf.get("TS.BTD.Pivot", "atom+GPS")
+        if tfdf.is_tbtrans:
+            pivot = tfdf.fdf.get("TBT.BTD.Pivot", pivot)
+            pivot = tfdf.fdf.get("TBT.BTD.Pivot.Device", pivot)
+        space, method = _fdf_permute_method(pivot)
         dense = [
-            orbs_down[-blocks_down[-1] :] for _, orbs_down, blocks_down, _ in downfolds
+            orbs_elec if orbs_down is None else orbs_down[-blocks_down[-1] :]
+            for _, orbs_down, blocks_down, orbs_elec in downfolds
         ]
-        permute = _device_permute(graph, H.a2o(device_atoms, all=True), dense, method)
+        if space == "atoms":
+            csr = H.toSparseAtom()
+            device = setup.device_atoms
+            dense = [np.unique(H.o2a(d)) for d in dense]
+        else:
+            csr = H
+            device = setup.device_orbs
+        permute = {space: _device_permute(_graph(csr), device, dense, method)}
 
         return cls._from_downfold(H, downfolds, permute, eta_dev, True, **kwargs)
 
@@ -750,7 +793,7 @@ class DeviceGreen:
                 f"{self.__class__.__name__} has no electrode {elec!r}, "
                 f"available electrodes: {names}"
             )
-        elif isinstance(elec, ElectrodeSelfEnergy):
+        elif isinstance(elec, Electrode):
             return self._elec(elec.name)
         elif isinstance(elec, (tuple, list)):
             return [self._elec(e) for e in elec]
@@ -779,7 +822,7 @@ class DeviceGreen:
         """Convert an electrode index or str to the name of the electrode"""
         if isinstance(elec, str):
             return elec
-        elif isinstance(elec, ElectrodeSelfEnergy):
+        elif isinstance(elec, Electrode):
             return elec.name
         return self._elecs[elec].elec.name
 
@@ -931,6 +974,15 @@ class DeviceGreen:
         # Prepare the Green function calculation
         invG = self.H.Sk(k, dtype=dtype) * Ec - self.H.Hk(k, dtype=dtype, **kwargs)
         invG = self._permute_matrix(invG).tolil()
+
+        # Replace the electrode regions by the bulk electrode matrices
+        for el in self._elecs:
+            if el.bulk:
+                permute = el.permute.reshape(-1, 1)
+                sort = el.sort.reshape(-1, 1)
+                invG[permute, permute.T] = el.elec.bulk_matrix(
+                    E, k, dtype=dtype, **kwargs
+                )[sort, sort.T]
 
         # Create all self-energies (and store the Gamma's)
         if hasattr(data, "se"):

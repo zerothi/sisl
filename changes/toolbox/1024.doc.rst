@@ -1,0 +1,4 @@
+Added a pure-Python quick start for ``sisl_toolbox.btd``
+
+Covers electrodes, semi-infinite directions, electrode placement, Bloch
+expansions, k-point integration and downfolding, without TBtrans.

@@ -1,0 +1,12 @@
+Easier and safer use of ``sisl_toolbox.btd`` directly from Python
+
+``DeviceGreen(..., eta=None)`` crashed on the first calculation, ``eta`` now
+defaults to the smallest electrode ``eta`` divided by 10, as documented.
+``DeviceGreen`` and ``DownfoldElectrode`` remove the couplings of ``H`` along
+the semi-infinite directions of the electrodes (on a copy), previously such
+couplings silently gave wrong results.
+``DeviceGreen`` and ``DownfoldElectrode`` warn when an electrode does not seem
+to be placed correctly: a wrong semi-infinite direction, an electrode not at the
+edge of the region, or orbitals ordered differently than the electrode.
+``DownfoldElectrode`` no longer emits ``SparseEfficiencyWarning``, and exposes
+the ``eta`` of its electrode.

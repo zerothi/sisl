@@ -268,6 +268,15 @@ def sisl_system():
     return d
 
 
+@pytest.fixture(scope="function")
+def sisl_importskip():
+    def importorskip(*modules):
+        for module in modules:
+            pytest.importorskip(f"{module}")
+
+    return importorskip
+
+
 collect_ignore = []
 collect_ignore_glob = []
 

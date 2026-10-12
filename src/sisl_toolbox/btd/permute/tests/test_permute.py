@@ -80,12 +80,6 @@ def test_disconnected_and_isolated(func):
     assert bandwidth(ptr, col, perm) == 1
 
 
-def test_reverse_cuthill_mckee():
-    ptr, col = _graph(sps.random(60, 60, density=0.05, random_state=2))
-    perm = cuthill_mckee(ptr, col)
-    assert np.array_equal(cuthill_mckee(ptr, col, reverse=True), perm[::-1])
-
-
 def test_empty():
     ptr = np.zeros(1, dtype=np.int32)
     col = np.zeros(0, dtype=np.int32)

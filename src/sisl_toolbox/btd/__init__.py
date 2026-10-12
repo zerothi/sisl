@@ -17,8 +17,9 @@ The toolbox contains:
 
 - `DeviceGreen`: the BTD Green function calculator of the device region,
   typically created from TBtrans input/output via `DeviceGreen.from_fdf`
-- `BlochSelfEnergy` and `DownfoldSelfEnergy`: electrode self-energies, either bulk
-  or downfolded through a region of the Hamiltonian
+- `Electrode`: abstract electrode, use `Electrode.from_fdf` to read an electrode
+  from an fdf file. `BlochElectrode` and `DownfoldElectrode` are the bulk
+  electrodes, and electrodes downfolded through a region of the Hamiltonian
 - `BlockMatrix`: container for block matrices
 - `btd_partition` and `PermuteBTD`: permutation tables and block sizes for
   BTD matrices, see also the `~sisl_toolbox.btd.permute` module

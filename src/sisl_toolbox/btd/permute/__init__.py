@@ -61,7 +61,11 @@ def csr_graph(csr: SparseCSR) -> tuple[np.ndarray, np.ndarray]:
 
 
 def reduce_bandwidth(
-    csr: SparseCSR, method: str = "gps", refine: bool = True, **kwargs
+    csr: SparseCSR,
+    method: str = "gps",
+    refine: bool = True,
+    reverse: bool = False,
+    **kwargs,
 ) -> np.ndarray:
     """Permutation table that reduces the bandwidth of `csr`
 
@@ -71,16 +75,19 @@ def reduce_bandwidth(
     ----------
     csr :
         the sparse matrix, columns may extend into supercells
-    method : {"rcm", "cm", "gps", "ggps", "electrode"}
-        - rcm: reverse Cuthill-McKee
+    method : {"cm", "gps", "ggps", "electrode"}
         - cm: Cuthill-McKee
         - gps: Gibbs-Poole-Stockmeyer
         - ggps: generalized Gibbs-Poole-Stockmeyer
         - electrode: level structures rooted at electrodes, requires the
-          ``start`` (and optionally ``end``) orbital indices
+          ``start`` (and optionally ``end``) node indices
+
+        One may prefix with `rev-` for forcing ``reverse=True``.
     refine :
         apply `refine_bandwidth` to the permutation table of `method`,
-        for ``method="electrode"`` the electrode orbitals keep their positions
+        for ``method="electrode"`` the electrode nodes keep their positions
+    reverse :
+        reverse the permutation table, which may improve the layout.
     **kwargs :
         passed to the routine of `method`
 
@@ -88,14 +95,23 @@ def reduce_bandwidth(
     -------
     perm : the permutation table, ``perm[new] = old``
     """
-    return _reduce_bandwidth(*csr_graph(csr), method, refine, **kwargs)
+    return _reduce_bandwidth(*csr_graph(csr), method, refine, reverse, **kwargs)
 
 
-def _reduce_bandwidth(ptr, col, method: str, refine: bool, **kwargs) -> np.ndarray:
+def _reduce_bandwidth(
+    ptr, col, method: str, refine: bool, reverse: bool, **kwargs
+) -> np.ndarray:
     """`reduce_bandwidth` for the graph ``(ptr, col)``"""
     method = method.lower()
-    if method in ("cm", "rcm"):
-        perm = cuthill_mckee(ptr, col, reverse=method == "rcm", **kwargs)
+    if method.startswith(("rev-", "r-")):
+        reverse = True
+        method = method.split("-", maxsplit=1)[-1]
+    if method == "cm":
+        perm = cuthill_mckee(ptr, col, **kwargs)
+    elif method == "rcm":
+        perm = cuthill_mckee(ptr, col, **kwargs)
+        # force reverse
+        reverse = True
     elif method == "gps":
         perm = gibbs_poole_stockmeyer(ptr, col, **kwargs)
     elif method == "ggps":
@@ -105,8 +121,11 @@ def _reduce_bandwidth(ptr, col, method: str, refine: bool, **kwargs) -> np.ndarr
     else:
         raise ValueError(
             f"{reduce_bandwidth.__name__} got unknown method={method!r}, "
-            "must be one of [rcm, cm, gps, ggps, electrode]"
+            "must be one of [rev-]?[rcm, cm, gps, ggps, electrode]"
         )
+    if reverse:
+        perm = perm[::-1]
+
     if refine:
         fixed = None
         if method == "electrode":

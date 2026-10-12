@@ -7,7 +7,7 @@ import warnings
 from typing import Literal, Optional, Tuple, Union
 
 import numpy as np
-from scipy.sparse import SparseEfficiencyWarning, coo_matrix, csr_matrix
+from scipy.sparse import SparseEfficiencyWarning, coo_matrix, csr_matrix, eye
 from scipy.sparse import hstack as ss_hstack
 
 import sisl._array as _a
@@ -671,9 +671,9 @@ class SparseOrbitalBZ(SparseOrbital):
             S = np.zeros([nr, nc], dtype=dtype)
             np.fill_diagonal(S, 1.0)
             return S
-        S = csr_matrix((nr, nc), dtype=dtype)
-        S.setdiag(1.0)
-        return S.asformat(format)
+        # create the diagonal directly, setting the diagonal of an empty
+        # csr_matrix changes its sparsity structure (SparseEfficiencyWarning)
+        return eye(nr, nc, dtype=dtype, format="csr").asformat(format)
 
     def _Sk(
         self,

@@ -1,0 +1,3 @@
+`~sisl.physics.SelfEnergy` now raises an `AttributeError` for missing attributes
+
+Previously any missing attribute silently returned ``None``.
