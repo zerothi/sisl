@@ -1,26 +1,28 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-"""Eigenchannel calculator for any number of electrodes
+"""Block-tri-diagonal Green function calculations for any number of electrodes
 
 Developer: Nick Papior
 Contact: nickpapior <at> gmail.com
 sisl-version: >=0.11.0
 tbtrans-version: >=siesta-4.1.5
 
-This eigenchannel calculater uses TBtrans output to calculate the eigenchannels
-for N-terminal systems. In the future this will get transferred to the TBtrans code
-but for now this may be used for arbitrary geometries.
+Calculates Green function quantities of N-terminal devices using the
+block-tri-diagonal (BTD) structure of the device matrices.
+This gives access to quantities not currently available in TBtrans, e.g.
+spectral functions, scattering states, scattering matrices and eigenchannels.
 
-It requires two inputs and has several optional flags.
+The toolbox contains:
 
-- The siesta.TBT.nc file which contains the geometry that is to be calculated for
-  The reason for using the siesta.TBT.nc file is the ease of use:
-
-    The siesta.TBT.nc contains electrode atoms and device atoms. Hence it
-    becomes easy to read in the electrode atomic positions.
-    Note that since you'll always do a 0 V calculation this isn't making
-    any implications for the requirement of the TBT.nc file.
+- `DeviceGreen`: the BTD Green function calculator of the device region,
+  typically created from TBtrans input/output via `DeviceGreen.from_fdf`
+- `Electrode`: abstract electrode, use `Electrode.from_fdf` to read an electrode
+  from an fdf file. `BlochElectrode` and `DownfoldElectrode` are the bulk
+  electrodes, and electrodes downfolded through a region of the Hamiltonian
+- `BlockMatrix`: container for block matrices
+- `btd_partition` and `PermuteBTD`: permutation tables and block sizes for
+  BTD matrices, see also the `~sisl_toolbox.btd.permute` module
 """
 
 from __future__ import annotations

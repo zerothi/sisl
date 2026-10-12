@@ -248,6 +248,7 @@ testpaths = [
 ]
 markers = [
     "slow: mark a test as slow",
+    "btd: mark a test of the sisl_toolbox.btd toolbox",
 ]
 
 addopts = "-rXs --durations=20"

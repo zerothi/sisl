@@ -2178,6 +2178,21 @@ class TestHamiltonian:
         assert len(H2.geometry.o2a(edge, unique=True)) == 4
 
 
+@pytest.mark.parametrize("format", ["csr", "csc", "sc:csr", "array"])
+def test_Sk_orthogonal_no_sparsity_warning(format):
+    from sisl.geom import graphene
+
+    H = Hamiltonian(graphene())
+    H.construct([(0.1, 1.44), (0, -2.7)])
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", SparseEfficiencyWarning)
+        S = H.Sk(format=format)
+    if issparse(S):
+        S = S.toarray()
+    assert np.allclose(S[:, : H.no], np.eye(H.no))
+    assert np.allclose(S[:, H.no :], 0)
+
+
 def test_wavefunction1():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
