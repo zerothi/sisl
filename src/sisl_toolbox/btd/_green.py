@@ -1061,7 +1061,7 @@ class DeviceGreen:
         data.tX = tX
         data.tY = tY
 
-    def _matrix_to_btd(self, M, format: str = "array") -> BlockMatrix:
+    def _matrix_to_btd(self, M, format: str = "array") -> BlockArray:
         """Convert a matrix `M` into a BTD matrix.
 
         Parameters
@@ -1072,7 +1072,7 @@ class DeviceGreen:
             the format of the blocks when `M` is a sparse matrix,
             any format ``X`` for which ``M.toX()`` exists.
         """
-        BM = BlockMatrix(self.blocks)
+        BM = BlockArray((self.blocks, self.blocks), dtype=M.dtype)
         BI = BM.block_indexer
         c = self.blocks_cum0
         nb = len(BI)
@@ -1094,7 +1094,7 @@ class DeviceGreen:
     def _permute_k(self, func: Callable, *args, **kwargs):
         """Call ``func(*args, **kwargs)`` and permute the result to the device region
 
-        ``format="btd"`` returns the matrix as a `BlockMatrix`, any other
+        ``format="btd"`` returns the matrix as a `BlockArray`, any other
         `format` is passed to `func`.
         """
         is_btd = False
@@ -1123,7 +1123,7 @@ class DeviceGreen:
         format="array",
         dtype=np.complex128,
         **kwargs,
-    ) -> np.ndarray | BlockMatrix:
+    ) -> np.ndarray | BlockArray:
         r"""Calculate the Green function for a given `E` and `k` point
 
         The Green function is calculated as:
@@ -1142,16 +1142,16 @@ class DeviceGreen:
             return the matrix in a specific format
 
             - array: a regular numpy array (full matrix)
-            - btd: a block-matrix object with only the diagonals and first off-diagonals
-            - bm: a block-matrix object with diagonals and all off-diagonals
-            - bd: a block-matrix object with only diagonals (no off-diagonals)
+            - btd: a block-array object with only the diagonals and first off-diagonals
+            - bm: a block-array object with diagonals and all off-diagonals
+            - bd: a block-array object with only diagonals (no off-diagonals)
             - sparse: a sparse-csr matrix for the sparse elements as found in the Hamiltonian
         dtype :
             the data-type of the array.
 
         Returns
         -------
-        np.ndarray or BlockMatrix
+        np.ndarray or BlockArray
             the Green function matrix, the format depends on `format`.
         """
         self._prepare(E, k, dtype, **kwargs)
@@ -1217,11 +1217,11 @@ class DeviceGreen:
 
         return G
 
-    def _green_btd(self) -> BlockMatrix:
+    def _green_btd(self) -> BlockArray:
         """Calculate the Green function only in the BTD matrix elements.
 
-        Stored in a `BlockMatrix` class."""
-        G = BlockMatrix(self.blocks)
+        Stored in a `BlockArray` class."""
+        G = BlockArray((self.blocks, self.blocks), dtype=self._data.A[0].dtype)
         BI = G.block_indexer
         nb = len(BI)
         nbm1 = nb - 1
@@ -1249,10 +1249,10 @@ class DeviceGreen:
 
         return G
 
-    def _green_bm(self) -> BlockMatrix:
+    def _green_bm(self) -> BlockArray:
         """Calculate the full Green function.
 
-        Stored in a `BlockMatrix` class."""
+        Stored in a `BlockArray` class."""
         G = self._green_btd()
         BI = G.block_indexer
         nb = len(BI)
@@ -1272,11 +1272,11 @@ class DeviceGreen:
 
         return G
 
-    def _green_bd(self) -> BlockMatrix:
+    def _green_bd(self) -> BlockArray:
         """Calculate the Green function only along the diagonal block matrices.
 
-        Stored in a `BlockMatrix` class."""
-        G = BlockMatrix(self.blocks)
+        Stored in a `BlockArray` class."""
+        G = BlockArray((self.blocks, self.blocks), dtype=self._data.A[0].dtype)
         BI = G.block_indexer
         nb = len(BI)
         nbm1 = nb - 1
@@ -1523,7 +1523,7 @@ class DeviceGreen:
         herm: bool = True,
         dtype=np.complex128,
         **kwargs,
-    ) -> np.ndarray | BlockMatrix:
+    ) -> np.ndarray | BlockArray:
         r"""Calculate the spectral function for a given `E` and `k` point from a given electrode
 
         The spectral function is calculated as:
@@ -1545,7 +1545,7 @@ class DeviceGreen:
 
            - array: a regular numpy array (full matrix)
            - bm: in block-matrix form (full matrix)
-           - btd: a block-matrix object with only the diagonals and first off-diagonals
+           - btd: a block-array object with only the diagonals and first off-diagonals
            - bd: same as btd, since the off-diagonals are already calculated
         method :
            which method to use for calculating the spectral function.
@@ -1560,7 +1560,7 @@ class DeviceGreen:
 
         Returns
         -------
-        np.ndarray or BlockMatrix
+        np.ndarray or BlockArray
             the spectral function for a given electrode in the format
             as specified by `format`. Note that some formats does not calculate
             the entire spectral function matrix.
@@ -1588,10 +1588,10 @@ class DeviceGreen:
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ np.conj(G.T)
 
-    def _spectral_column_bm(self, elec, herm: bool) -> BlockMatrix:
+    def _spectral_column_bm(self, elec, herm: bool) -> BlockArray:
         """Spectral function from a column array
 
-        Returns a `BlockMatrix` class with all elements calculated.
+        Returns a `BlockArray` class with all elements calculated.
 
         Parameters
         ----------
@@ -1606,7 +1606,7 @@ class DeviceGreen:
         Gam = self._data.gamma[elec]
 
         # Now calculate the full spectral function
-        btd = BlockMatrix(self.blocks)
+        btd = BlockArray((self.blocks, self.blocks), dtype=np.result_type(G, Gam))
         BI = btd.block_indexer
 
         c = self.blocks_cum0
@@ -1633,10 +1633,10 @@ class DeviceGreen:
 
         return btd
 
-    def _spectral_column_btd(self, elec, herm: bool) -> BlockMatrix:
+    def _spectral_column_btd(self, elec, herm: bool) -> BlockArray:
         """Spectral function from a column array
 
-        Returns a `BlockMatrix` class with only BTD blocks calculated.
+        Returns a `BlockArray` class with only BTD blocks calculated.
 
         Parameters
         ----------
@@ -1651,7 +1651,7 @@ class DeviceGreen:
         Gam = self._data.gamma[elec]
 
         # Now calculate the full spectral function
-        btd = BlockMatrix(self.blocks)
+        btd = BlockArray((self.blocks, self.blocks), dtype=np.result_type(G, Gam))
         BI = btd.block_indexer
 
         c = self.blocks_cum0
@@ -1772,18 +1772,18 @@ class DeviceGreen:
 
         return S
 
-    def _spectral_propagate_bm(self, elec, herm: bool) -> BlockMatrix:
+    def _spectral_propagate_bm(self, elec, herm: bool) -> BlockArray:
         sizes = self.blocks
         nb = len(sizes)
         nbm1 = nb - 1
-
-        BM = BlockMatrix(self.blocks)
-        BI = BM.block_indexer
 
         # First we need to calculate diagonal blocks of the spectral matrix
         blocks, A = self._green_diag_block(self._elecs[elec].permute)
         nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ np.conj(A.T)
+
+        BM = BlockArray((self.blocks, self.blocks), dtype=A.dtype)
+        BI = BM.block_indexer
 
         BI[blocks[0], blocks[0]] = A[: sizes[blocks[0]], : sizes[blocks[0]]]
         if len(blocks) > 1:
@@ -1867,17 +1867,17 @@ class DeviceGreen:
 
         return BM
 
-    def _spectral_propagate_btd(self, elec, herm: bool) -> BlockMatrix:
+    def _spectral_propagate_btd(self, elec, herm: bool) -> BlockArray:
         sizes = self.blocks
         nb = len(sizes)
         nbm1 = nb - 1
 
-        BM = BlockMatrix(self.blocks)
-        BI = BM.block_indexer
-
         # First we need to calculate diagonal blocks of the spectral matrix
         blocks, A = self._green_diag_block(self._elecs[elec].permute)
         A = A @ self._data.gamma[elec] @ np.conj(A.T)
+
+        BM = BlockArray((self.blocks, self.blocks), dtype=A.dtype)
+        BI = BM.block_indexer
 
         BI[blocks[0], blocks[0]] = A[: sizes[blocks[0]], : sizes[blocks[0]]]
         if len(blocks) > 1:

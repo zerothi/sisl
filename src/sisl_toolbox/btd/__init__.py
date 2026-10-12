@@ -20,7 +20,7 @@ The toolbox contains:
 - `Electrode`: abstract electrode, use `Electrode.from_fdf` to read an electrode
   from an fdf file. `BlochElectrode` and `DownfoldElectrode` are the bulk
   electrodes, and electrodes downfolded through a region of the Hamiltonian
-- `BlockMatrix`: container for block matrices
+- `BlockArray`: N-dimensional arrays of (sparse) blocks, e.g. BTD matrices
 - `btd_partition` and `PermuteBTD`: permutation tables and block sizes for
   BTD matrices, see also the `~sisl_toolbox.btd.permute` module
 """

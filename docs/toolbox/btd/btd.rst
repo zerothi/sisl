@@ -153,8 +153,8 @@ Reference
 .. autosummary::
    :toctree: generated/
 
-   BlockMatrix
-   BlockMatrixIndexer
+   BlockArray
+   BlockArrayIndexer
    Electrode
    BlochElectrode
    DownfoldElectrode
