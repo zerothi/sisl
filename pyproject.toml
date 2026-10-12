@@ -212,7 +212,7 @@ build = [
 ]
 
 sphinx = [
-    "sphinx<8",
+    "sphinx",
     "nbsphinx",
     "sphinx-rtd-theme",
     "sphinx-design",
