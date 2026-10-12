@@ -766,3 +766,40 @@ def test_placement_skewed_lattice():
     assert np.isclose(G.transmission(E, "Left", "Right", k=k), T)
     with pytest.warns(SislWarning, match="semi-infinite side"):
         DeviceGreen(H, elecs("+A"))
+
+
+@pytest.mark.parametrize("herm", [True, False])
+@pytest.mark.parametrize("method", ["column", "propagate"])
+def test_block_matrix_formats(method, herm):
+    Hel, H = _system(HOP)
+    rng = np.random.default_rng(42)
+    elecs = _electrodes(Hel, H, True, rng)
+    blocks = [rng.permutation(_cell_orbs(H, c)) for c in range(2, 6)]
+    permbtd = PermuteBTD(np.concatenate(blocks), [len(b) for b in blocks])
+    G = DeviceGreen(H, elecs, {"orbitals": permbtd}, eta=ETA)
+    nb = len(G.blocks)
+    c = G.blocks_cum0
+
+    def btd_mask(width):
+        mask = np.zeros((len(G), len(G)), dtype=bool)
+        for i in range(nb):
+            for j in range(max(0, i - width), min(nb, i + width + 1)):
+                mask[c[i] : c[i + 1], c[j] : c[j + 1]] = True
+        return mask
+
+    E = 0.3
+    Gd = G.green(E, k=K)
+    assert np.allclose(G.green(E, k=K, format="bm").toarray(), Gd)
+    for fmt, width in (("btd", 1), ("bd", 0)):
+        mask = btd_mask(width)
+        Gb = G.green(E, k=K, format=fmt).toarray()
+        assert np.allclose(Gb[mask], Gd[mask])
+        assert np.allclose(Gb[~mask], 0)
+
+    for elec in ("Left", "Right"):
+        kw = dict(k=K, method=method, herm=herm)
+        Ad = G.spectral(E, elec, **kw)
+        assert np.allclose(G.spectral(E, elec, format="bm", **kw).toarray(), Ad)
+        mask = btd_mask(1)
+        Ab = G.spectral(E, elec, format="btd", **kw).toarray()
+        assert np.allclose(Ab[mask], Ad[mask])
