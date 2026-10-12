@@ -713,6 +713,8 @@ class RealSpaceSE(SelfEnergy):
 
     The method actually used is relying on `RecursiveSI` and `~sisl.physics.Bloch` objects.
 
+    The algorithm is explicitly described in [RealSpaceSE]_.
+
     Parameters
     ----------
     parent :
@@ -760,6 +762,10 @@ class RealSpaceSE(SelfEnergy):
     >>> rse.green(0.1 + 1j * 1e-4) # eta = 1e-4
 
     Manually specify Brillouin zone integration and default :math:`\eta` value.
+
+    References
+    ----------
+    .. [RealSpaceSE] https://doi.org/10.1103/PhysRevB.100.195417
     """
 
     def __init__(
@@ -1352,6 +1358,8 @@ class RealSpaceSI(SelfEnergy):
 
     The method actually used is relying on `RecursiveSI` and `~sisl.physics.Bloch` objects.
 
+    The algorithm was use in [RealSpaceSI]_ and is an extension to [RealSpaceSE]_.
+
     Parameters
     ----------
     semi :
@@ -1408,6 +1416,11 @@ class RealSpaceSI(SelfEnergy):
     >>> rsi.green(0.1 + 1j * 1e-4) # eta = 1e-4
 
     Manually specify Brillouin zone integration and default :math:`\eta` value.
+
+    References
+    ----------
+    .. [RealSpaceSE] https://doi.org/10.1103/PhysRevB.100.195417
+    .. [RealSpaceSI] https://doi.org/10.1103/PhysRevB.100.035415
     """
 
     def __init__(

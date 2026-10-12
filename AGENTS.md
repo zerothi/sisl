@@ -4,6 +4,7 @@
 - **Name**: sisl
 - **Tech Stack**: Python, numpy, Cython, Fortran
 - **Team Size**: 5 developers
+- **Audience**: Researchers in condensed matter physics
 
 
 ## What this is
@@ -19,8 +20,9 @@ sisl tries to use classes for implementing contained functionality, but should t
 avoid too many sub-classes as it obfuscates understanding.
 
 It's usage is guided by ease of use for beginners in programming, but capable of doing
-advanced computations by experienced users. It should strive to be easy to understand the
-basics of, but as easily extendable for expert users.
+advanced computations by experienced users. It should strive to be easy to understand,
+but easily extendable for expert users.
+
 
 ## Build & install
 
@@ -39,6 +41,7 @@ Useful CMake toggles passed via `SKBUILD_CMAKE_ARGS`:
 - `-DWITH_FORTRAN=OFF` (skip Fortran)
 - `-DWITH_COVERAGE`
 - `-DWITH_ANNOTATE` (Cython HTML annotations).
+There are other toggles but they are mainly for development purposes.
 
 ## Tests
 
@@ -56,7 +59,7 @@ pytest -m "not slow"                      # skip slow-marked tests
 
 ## Lint / formatting
 
-Style is enforced by **pre-commit**. Set it up once with `pre-commit install`. Don't hand-format — let pre-commit fix style on commit.
+Style is enforced by **pre-commit**. Set it up once with `pre-commit install`. Never hand-format — let pre-commit fix style on commit.
 
 ## Changelog (required for user-facing PRs)
 
@@ -107,4 +110,4 @@ ensures it's a classname that has `siesta` in it.
   ```
   git commit ... --trailer ai="<agent-name>:<model>[:<effort>]" where effort is optional.
   ```
-  For Claude code Opus 5.5 it would read `--trailer ai=claude-code:claude-opus-5-5`
+  Example: Claude code Opus 5.5 would read `--trailer ai=claude-code:claude-opus-5-5`

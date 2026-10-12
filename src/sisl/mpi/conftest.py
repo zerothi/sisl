@@ -7,7 +7,6 @@ from __future__ import annotations
 import pytest
 
 
-@pytest.fixture(scope="module", params=["mpi4py"])
-def backend(request):
-    pytest.importorskip(request.param)
-    return request.param
+@pytest.fixture(scope="module", autouse=True)
+def ensure_mpi4py():
+    pytest.importorskip("mpi4py")

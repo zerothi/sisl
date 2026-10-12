@@ -230,7 +230,17 @@ class SparseCSR(NDArrayOperatorsMixin):
 
     # We don't really need slots, but it is useful
     # to keep a good overview of which variables are present
-    __slots__ = ("_shape", "_ns", "_finalized", "_nnz", "ptr", "ncol", "col", "_D")
+    __slots__ = (
+        "_shape",
+        "_ns",
+        "_finalized",
+        "_nnz",
+        "ptr",
+        "ncol",
+        "col",
+        "_D",
+        "_distribution",
+    )
 
     def __init__(self, arg1, dim=1, dtype=None, nnzpr: int = 20, nnz=None, **kwargs):
         """Initialize a new sparse CSR matrix"""
