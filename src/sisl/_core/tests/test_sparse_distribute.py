@@ -15,17 +15,9 @@ import textwrap
 import numpy as np
 import pytest
 
-from sisl._core.mpi.distribute import (
-    BlockCyclicPartition,
-    Distribution,
-    Partition,
-    distribute_changes,
-)
-from sisl._core.mpi.sparse_distribute import (
-    distribute,
-    local_rows,
-)
+from sisl._core._sparse_distribute import distribute, local_rows
 from sisl._core.sparse import SparseCSR
+from sisl.mpi import BlockCyclicDistribution, DistributionState, distribute_changes
 
 pytestmark = [pytest.mark.sparse, pytest.mark.mpi]
 
@@ -41,202 +33,33 @@ def build(nr=10, nc=14, dim=2, seed=3, finalize=False):
     return csr
 
 
-# --- partition: the contract every scheme must satisfy --------------------
+class FakeComm:
+    """Stand-in communicator: a distribution only needs ``rank`` and ``size``."""
+
+    def __init__(self, size=1, rank=0):
+        self.size = size
+        self.rank = rank
 
 
 def _contiguous(n, size):
     """blocksize 0: one unbroken run per rank."""
-    return BlockCyclicPartition(n, size, 0)
+    return BlockCyclicDistribution(n, 0, comm=FakeComm(size))
 
 
 def _cyclic(n, size):
-    return BlockCyclicPartition(n, size)
+    return BlockCyclicDistribution(n, comm=FakeComm(size))
 
 
 def _cyclic2(n, size):
-    return BlockCyclicPartition(n, size, 2)
+    return BlockCyclicDistribution(n, 2, comm=FakeComm(size))
 
 
 def _cyclic3(n, size):
-    return BlockCyclicPartition(n, size, 3)
+    return BlockCyclicDistribution(n, 3, comm=FakeComm(size))
 
 
-#: Every scheme, for the invariants that hold universally.
+#: Every scheme.
 SCHEMES = [_contiguous, _cyclic, _cyclic2, _cyclic3]
-
-#: Schemes that promise even load. A blocksize above 1 deliberately does not:
-#: the block structure is the point, and evening out the tail would break it.
-BALANCED = [_contiguous, _cyclic]
-
-
-@pytest.mark.parametrize("make", SCHEMES)
-@pytest.mark.parametrize("n,size", [(9, 3), (10, 3), (97, 7), (2, 5), (0, 3), (5, 1)])
-def test_partition_covers_every_index_exactly_once(make, n, size):
-    p = make(n, size)
-    covered = np.concatenate([p.indices(r) for r in range(len(p))])
-    assert np.array_equal(np.sort(covered), np.arange(n))
-
-
-@pytest.mark.parametrize("make", SCHEMES)
-@pytest.mark.parametrize("n,size", [(9, 3), (10, 3), (97, 7), (2, 5)])
-def test_partition_owner_agrees_with_indices(make, n, size):
-    p = make(n, size)
-    owners = p.owner(np.arange(n))
-    for rank in range(size):
-        assert np.all(owners[p.indices(rank)] == rank)
-
-
-@pytest.mark.parametrize("make", SCHEMES)
-@pytest.mark.parametrize("n,size", [(9, 3), (10, 3), (97, 7), (2, 5)])
-def test_partition_counts_sum_to_n(make, n, size):
-    assert make(n, size).counts.sum() == n
-
-
-@pytest.mark.parametrize("make", BALANCED)
-@pytest.mark.parametrize("n,size", [(9, 3), (10, 3), (97, 7), (2, 5)])
-def test_partition_is_balanced(make, n, size):
-    """No rank may carry more than one extra index over the lightest."""
-    counts = make(n, size).counts
-    assert counts.max() - counts.min() <= 1
-
-
-@pytest.mark.parametrize("make", SCHEMES)
-@pytest.mark.parametrize("n,size", [(23, 4), (10, 3), (2, 5), (0, 3)])
-def test_partition_ranges_are_ascending_disjoint_and_complete(make, n, size):
-    """Runs must be usable as slices: ordered, non-overlapping, and exhaustive."""
-    p = make(n, size)
-    for rank in range(size):
-        ranges = p.range(rank)
-        for start, stop in ranges:
-            assert 0 <= start < stop <= n, (start, stop)
-        for (_, prev_stop), (next_start, _) in zip(ranges, ranges[1:]):
-            assert prev_stop < next_start, "runs must be ascending and disjoint"
-        flat = np.concatenate([np.arange(a, b) for a, b in ranges]) if ranges else []
-        assert np.array_equal(flat, p.indices(rank))
-
-
-@pytest.mark.parametrize("make", SCHEMES)
-def test_partition_count_matches_indices(make):
-    p = make(23, 4)
-    for rank in range(4):
-        assert p.count(rank) == len(p.indices(rank))
-
-
-def test_partition_rejects_nonsense():
-    with pytest.raises(ValueError):
-        BlockCyclicPartition(10, 0)
-    with pytest.raises(ValueError):
-        BlockCyclicPartition(-1, 2)
-    with pytest.raises(IndexError):
-        BlockCyclicPartition(10, 3).indices(3)
-    with pytest.raises(IndexError):
-        BlockCyclicPartition(10, 3).owner([10])
-
-
-def test_partition_equality_ignores_identity():
-    assert BlockCyclicPartition(10, 3) == BlockCyclicPartition(10, 3)
-    assert BlockCyclicPartition(10, 3) != BlockCyclicPartition(10, 4)
-    assert BlockCyclicPartition(10, 3) != BlockCyclicPartition(11, 3)
-
-
-def test_partition_is_abstract():
-    with pytest.raises(TypeError):
-        Partition(10, 3)
-
-
-# --- partition: scheme-specific behaviour ---------------------------------
-
-
-def test_blocksize_zero_gives_one_balanced_run_per_rank():
-    p = BlockCyclicPartition(10, 3, 0)
-    # not [3, 3, 4] -- the largest run exceeds the smallest by at most one
-    assert p.counts.tolist() == [4, 3, 3]
-    assert p.range(1) == ((4, 7),)
-    assert p.indices(1).tolist() == [4, 5, 6]
-    assert p.contiguous
-    assert BlockCyclicPartition(11, 3, 0).counts.tolist() == [4, 4, 3]
-
-
-def test_blocksize_zero_is_not_a_large_uniform_blocksize():
-    """Why contiguous is its own mode rather than blocksize=ceil(n/size).
-
-    A uniform block can leave a rank idle while a balanced split does not.
-    """
-    assert BlockCyclicPartition(5, 4, 0).counts.tolist() == [2, 1, 1, 1]
-    assert BlockCyclicPartition(5, 4, 2).counts.tolist() == [2, 2, 1, 0]
-
-    assert BlockCyclicPartition(10, 3, 0).counts.tolist() == [4, 3, 3]
-    assert BlockCyclicPartition(10, 3, 4).counts.tolist() == [4, 4, 2]
-
-
-def test_blocksize_zero_handles_more_ranks_than_indices():
-    p = BlockCyclicPartition(2, 5, 0)
-    assert p.counts.tolist() == [1, 1, 0, 0, 0]
-    assert p.range(4) == ()
-    assert p.indices(4).tolist() == []
-
-
-def test_contiguous_reports_whether_runs_are_unbroken():
-    assert BlockCyclicPartition(10, 3, 0).contiguous
-    assert not BlockCyclicPartition(10, 3, 1).contiguous
-    assert not BlockCyclicPartition(10, 3, 2).contiguous
-    # a block large enough that nobody comes round twice
-    assert BlockCyclicPartition(10, 3, 4).contiguous
-
-
-def test_cyclic_defaults_to_plain_round_robin():
-    """blocksize 1 is the default, so the plain reading of the name holds."""
-    p = BlockCyclicPartition(10, 3)
-    assert p.blocksize == 1
-    assert p.indices(1).tolist() == [1, 4, 7]
-    assert p.owner(np.arange(10)).tolist() == [0, 1, 2, 0, 1, 2, 0, 1, 2, 0]
-
-
-def test_cyclic_handles_more_ranks_than_indices():
-    p = BlockCyclicPartition(2, 5)
-    assert p.counts.tolist() == [1, 1, 0, 0, 0]
-    assert p.range(4) == ()
-    assert p.indices(4).tolist() == []
-
-
-def test_cyclic_returns_one_run_per_visit():
-    """A rank gets a block, then later another; range must show both."""
-    p = BlockCyclicPartition(10, 3, 2)
-    assert p.range(0) == ((0, 2), (6, 8))
-    assert p.range(1) == ((2, 4), (8, 10))
-    assert p.range(2) == ((4, 6),)
-    assert p.owner(np.arange(10)).tolist() == [0, 0, 1, 1, 2, 2, 0, 0, 1, 1]
-
-
-def test_cyclic_with_one_block_per_rank_is_contiguous():
-    """The scheme spans from cyclic to contiguous as blocksize grows."""
-    p = BlockCyclicPartition(9, 3, 3)
-    for rank in range(3):
-        assert len(p.range(rank)) == 1
-        # n divides evenly here, so it coincides with the contiguous split
-        assert np.array_equal(
-            p.indices(rank), BlockCyclicPartition(9, 3, 0).indices(rank)
-        )
-
-
-def test_cyclic_short_final_block():
-    """n not a multiple of the cycle leaves the last run short."""
-    p = BlockCyclicPartition(7, 2, 3)
-    assert p.period == 6
-    assert p.range(0) == ((0, 3), (6, 7))
-    assert p.range(1) == ((3, 6),)
-    assert p.counts.sum() == 7
-
-
-def test_cyclic_blocksize_is_part_of_identity():
-    assert BlockCyclicPartition(10, 3, 2) != BlockCyclicPartition(10, 3, 4)
-    assert BlockCyclicPartition(10, 3, 2) == BlockCyclicPartition(10, 3, 2)
-    assert BlockCyclicPartition(10, 3) == BlockCyclicPartition(10, 3, 1)
-
-
-def test_cyclic_rejects_bad_blocksize():
-    with pytest.raises(ValueError):
-        BlockCyclicPartition(10, 3, -1)
 
 
 # --- row extraction -------------------------------------------------------
@@ -276,7 +99,7 @@ def test_local_rows_keep_the_full_column_extent(make, finalize):
 
 def test_local_rows_is_a_copy_not_a_view():
     csr = build()
-    block = local_rows(csr, BlockCyclicPartition(csr.shape[0], 2, 0), 0)
+    block = local_rows(csr, _contiguous(csr.shape[0], 2), 0)
     before = csr.todense().copy()
     block._D[:] = -99.0
     assert np.allclose(csr.todense(), before)
@@ -295,60 +118,36 @@ def test_local_rows_gives_an_empty_block_to_a_rank_owning_nothing(make):
 # --- deferred coherence ---------------------------------------------------
 
 
-class _FakeComm:
-    size = 1
-    rank = 0
-
-
-def test_distribution_starts_unassembled():
-    """It has never communicated, so it cannot claim to be coherent."""
-    d = Distribution(_FakeComm(), BlockCyclicPartition(10, 1, 0))
-    assert not d.is_assembled
-    assert d.epoch == 0
-
-
-def test_touch_invalidates_and_assembly_restores():
-    d = Distribution(_FakeComm(), BlockCyclicPartition(10, 1, 0))
-    d.touch()
-    assert not d.is_assembled
-    d.mark_assembled()
-    assert d.is_assembled
-
-
 def test_structural_change_bumps_the_epoch():
     """A marked method must invalidate; assembly is deferred to the consumer."""
     csr = build()
-    csr._distribution = Distribution(
-        _FakeComm(), BlockCyclicPartition(csr.shape[0], 1, 0)
-    )
-    csr._distribution.mark_assembled()
+    csr._dist_state = DistributionState(_contiguous(csr.shape[0], 1))
+    csr._dist_state.mark_assembled()
 
     csr.finalize()
-    assert not csr._distribution.is_assembled
+    assert not csr._dist_state.is_assembled
 
 
 def test_many_mutations_cost_one_assembly():
     """The point of deferring: batching mutations must not batch redistributions."""
     csr = build()
-    csr._distribution = Distribution(
-        _FakeComm(), BlockCyclicPartition(csr.shape[0], 1, 0)
-    )
-    csr._distribution.mark_assembled()
+    csr._dist_state = DistributionState(_contiguous(csr.shape[0], 1))
+    csr._dist_state.mark_assembled()
 
     for c in range(5):
         csr[0, c] = 1.0
     csr.translate_columns(np.arange(csr.shape[1]), np.arange(csr.shape[1]))
     csr.finalize()
 
-    assert not csr._distribution.is_assembled
-    csr._distribution.mark_assembled()
-    assert csr._distribution.is_assembled
+    assert not csr._dist_state.is_assembled
+    csr._dist_state.mark_assembled()
+    assert csr._dist_state.is_assembled
 
 
 def test_undistributed_matrices_are_unaffected():
     """Every matrix today is undistributed; marking must be invisible to them."""
     csr = build()
-    assert not hasattr(csr, "_distribution")
+    assert not hasattr(csr, "_dist_state")
     csr.finalize()
     csr[0, 0] = 1.0
     assert csr.nnz > 0
@@ -432,11 +231,9 @@ def test_the_guard_would_actually_catch_an_omission():
 # --- assembly: serial -----------------------------------------------------
 
 
-def _distributed(csr, size=1, blocksize=0, comm=None):
-    csr._distribution = Distribution(
-        comm or _FakeComm(), BlockCyclicPartition(csr.shape[0], size, blocksize)
-    )
-    return csr
+def _distributed(csr, size=1, blocksize=0):
+    dist = BlockCyclicDistribution(csr.shape[0], blocksize, comm=FakeComm(size))
+    return dist(csr)
 
 
 def test_assembly_preserves_data_on_one_rank():
@@ -449,7 +246,7 @@ def test_assembly_preserves_data_on_one_rank():
 
     assert np.allclose(csr.todense(), ref)
     assert csr.nnz == int((np.abs(ref).sum(-1) > 0).sum())
-    assert csr._distribution.is_assembled
+    assert csr._dist_state.is_assembled
 
 
 def test_assembly_leaves_the_matrix_finalized():
@@ -464,11 +261,11 @@ def test_assembly_is_idempotent_while_nothing_changes():
     csr = _distributed(build())
     csr.__sisl_distribute__()
     ref = csr.todense().copy()
-    epoch = csr._distribution.epoch
+    epoch = csr._dist_state.epoch
 
     csr.__sisl_distribute__()
 
-    assert csr._distribution.epoch == epoch
+    assert csr._dist_state.epoch == epoch
     assert np.allclose(csr.todense(), ref)
 
 
@@ -476,9 +273,9 @@ def test_mutating_after_assembly_requires_another():
     csr = _distributed(build())
     csr.__sisl_distribute__()
     csr[0, 1] = 3.0
-    assert not csr._distribution.is_assembled
+    assert not csr._dist_state.is_assembled
     csr.__sisl_distribute__()
-    assert csr._distribution.is_assembled
+    assert csr._dist_state.is_assembled
     assert np.allclose(csr.todense()[0, 1], 3.0)
 
 
@@ -486,7 +283,7 @@ def test_assembly_handles_an_empty_matrix():
     csr = _distributed(SparseCSR((6, 8, 1), dtype=np.float64))
     csr.__sisl_distribute__()
     assert csr.nnz == 0
-    assert csr._distribution.is_assembled
+    assert csr._dist_state.is_assembled
 
 
 def test_assembly_refuses_an_undistributed_matrix():
@@ -499,21 +296,46 @@ def test_assembly_refuses_an_unknown_op():
         _distributed(build()).__sisl_distribute__(op="multiply")
 
 
-def test_assembly_refuses_a_partition_of_the_wrong_length():
+def test_assembly_refuses_a_distribution_of_the_wrong_length():
     csr = build()
-    csr._distribution = Distribution(_FakeComm(), BlockCyclicPartition(999, 1, 0))
-    with pytest.raises(ValueError, match="partition covers"):
-        csr.__sisl_distribute__()
+    with pytest.raises(ValueError, match="distribution covers"):
+        _contiguous(999, 1)(csr)
 
 
-def test_assembly_refuses_a_partition_for_other_ranks():
-    """A partition for 4 ranks on a communicator of 1 would silently drop rows."""
+def test_calling_the_distribution_distributes_in_place():
     csr = build()
-    csr._distribution = Distribution(
-        _FakeComm(), BlockCyclicPartition(csr.shape[0], 4, 0)
-    )
-    with pytest.raises(ValueError, match="partition is for"):
-        csr.__sisl_distribute__()
+    dist = _contiguous(csr.shape[0], 1)
+    assert dist(csr) is csr
+    assert csr._dist_state.distribution is dist
+    assert csr._dist_state.is_assembled
+
+
+def test_one_distribution_serves_several_matrices():
+    """The distribution holds no per-object state, so it can be shared."""
+    dist = _cyclic(10, 1)
+    a, b = dist(build(seed=1)), dist(build(seed=2))
+    assert a._dist_state is not b._dist_state
+    a[0, 0] = 1.0
+    assert not a._dist_state.is_assembled
+    assert b._dist_state.is_assembled
+
+
+def test_a_new_distribution_forces_reassembly():
+    csr = build()
+    _contiguous(csr.shape[0], 1)(csr)
+    state = csr._dist_state
+
+    new = _cyclic(csr.shape[0], 1)
+    new(csr)
+    assert csr._dist_state is not state
+    assert csr._dist_state.distribution is new
+    assert csr._dist_state.is_assembled
+
+    # an equal distribution keeps the state, and nothing is redone
+    epoch = csr._dist_state.epoch
+    BlockCyclicDistribution(csr.shape[0], comm=new.comm)(csr)
+    assert csr._dist_state.distribution is new
+    assert csr._dist_state.epoch == epoch
 
 
 # --- assembly: genuinely parallel -----------------------------------------
@@ -530,20 +352,17 @@ _PARALLEL = """
     from mpi4py import MPI
 
     from sisl._core.sparse import SparseCSR
-    from sisl._core.mpi import BlockCyclicPartition, Distribution
+    from sisl.mpi import BlockCyclicDistribution
     import sisl.mpi as smpi
 
     comm = smpi.get_comm()
     N, NC, DIM = 12, 20, 2
     BLOCKSIZE = {blocksize}
-    part = BlockCyclicPartition(N, comm.size, BLOCKSIZE)
-    own = part.indices(comm.rank)
+    dist = BlockCyclicDistribution(N, BLOCKSIZE)
+    assert dist.comm is comm
+    own = dist.indices()
     other = np.ones(N, bool)
     other[own] = False
-
-    def attach(c):
-        c._distribution = Distribution(None, part)
-        return c
 
     def build_replicated():
         rng = np.random.default_rng(42)          # identical on every rank
@@ -554,8 +373,7 @@ _PARALLEL = """
         return c
 
     ref = build_replicated().todense()
-    csr = attach(build_replicated())
-    csr.__sisl_distribute__()
+    csr = dist(build_replicated())
     dense = csr.todense()
     assert np.allclose(dense[own], ref[own]), "owned rows were not preserved"
     assert np.allclose(dense[other], 0.0), "rows owned elsewhere were not dropped"
@@ -564,11 +382,21 @@ _PARALLEL = """
     comm.Allreduce(MPI.IN_PLACE, nnz)
     assert nnz[0] == int((np.abs(ref).sum(-1) > 0).sum()), "nnz not conserved"
 
+    # another layout ships every element from its old owner to its new one
+    new = BlockCyclicDistribution(N, 0 if BLOCKSIZE else 1, comm=comm)
+    new(csr)
+    own_new = new.indices()
+    other_new = np.ones(N, bool)
+    other_new[own_new] = False
+    dense = csr.todense()
+    assert np.allclose(dense[own_new], ref[own_new]), "redistribution lost rows"
+    assert np.allclose(dense[other_new], 0.0), "redistribution kept foreign rows"
+
     # every rank writes every row, including rows it does not own
-    csr = attach(SparseCSR((N, NC, DIM), dtype=np.float64))
+    csr = SparseCSR((N, NC, DIM), dtype=np.float64)
     for r in range(N):
         csr[r, comm.rank] = float(comm.rank + 1)
-    csr.__sisl_distribute__()
+    dist(csr)
     expect = np.zeros((N, NC, DIM))
     for r in own:
         for k in range(comm.size):
@@ -576,10 +404,10 @@ _PARALLEL = """
     assert np.allclose(csr.todense(), expect), "off-rank writes did not reach the owner"
 
     # every rank writes the SAME position; 'sum' must sum them
-    csr = attach(SparseCSR((N, NC, DIM), dtype=np.float64))
+    csr = SparseCSR((N, NC, DIM), dtype=np.float64)
     for r in range(N):
         csr[r, 0] = 1.0
-    csr.__sisl_distribute__(op="sum")
+    dist(csr, op="sum")
     dense = csr.todense()
     assert np.allclose(dense[own, 0], float(comm.size)), "sum did not sum duplicates"
     assert np.allclose(dense[other], 0.0)

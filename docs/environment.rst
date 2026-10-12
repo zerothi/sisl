@@ -37,6 +37,11 @@ Here we list the different options:
       # If your CPU has hyper-threads, then you have to divide by 2:
       nprocs = nprocs // 2
 
+``SISL_MPI = true``
+   Whether `sisl` may use MPI (through `mpi4py`). Set to ``0`` to force
+   serial behaviour, even when running under ``mpirun``.
+   See :ref:`distribution`.
+
 ``SISL_PAR_CHUNKSIZE = 0.2``
    Default size of chunk for each processor when running parallel things.
 

@@ -18,7 +18,6 @@ from .geometry import *
 from .grid import *
 from .sparse import *
 from .sparse_geometry import *
-from .mpi import *
 
 # isort: on
 

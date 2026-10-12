@@ -89,6 +89,7 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs.
 
    api/index
    environment
+   distribution
    toolbox/index
 
 .. toctree::

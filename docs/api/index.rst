@@ -42,4 +42,5 @@ All methods and submodules are listed  :ref:`here <genindex>` and
 
    core
    io/index
+   mpi
    typing

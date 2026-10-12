@@ -50,11 +50,11 @@ from sisl._help import array_fill_repeat, isiterable
 from sisl._indices import indices, indices_only
 from sisl._internal import set_module
 from sisl.messages import SislError, warn
+from sisl.mpi._distribute import distribute_changes
 from sisl.typing import OrSequence, SeqOrScalarFloat, SeqOrScalarInt, SparseMatrix
 from sisl.utils.mathematics import intersect_and_diff_sets
 
 from ._sparse import sparse_dense
-from .mpi.distribute import distribute_changes
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
@@ -239,7 +239,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         "ncol",
         "col",
         "_D",
-        "_distribution",
+        "_dist_state",
     )
 
     def __init__(self, arg1, dim=1, dtype=None, nnzpr: int = 20, nnz=None, **kwargs):
@@ -674,13 +674,12 @@ column indices of the sparse elements
         idx = idx.indices(self.shape[axis])
         return _a.arangei(*idx)
 
-    def __sisl_distribute__(self, op: str = "single"):
-        """Make this matrix coherent with the distribution attached to it.
+    def __sisl_distribute__(self, dist=None, op: str = "single"):
+        """Distribute the rows of this matrix according to `dist`, in place.
 
         ``__sisl_distribute__`` is the protocol every distributable object
-        implements, so a consumer can make whatever it was handed coherent
-        without knowing what it is.  `distribute` is this class's
-        implementation of it.
+        implements; ``dist(csr, op=...)`` forwards here.  `distribute` is this
+        class's implementation of it.
 
         Structural changes only mark the matrix stale; the communication happens
         here, once, when a consumer needs a coherent matrix.  Collective: every
@@ -688,6 +687,8 @@ column indices of the sparse elements
 
         Parameters
         ----------
+        dist : sisl.mpi.Distribution, optional
+            the distribution of the rows. Defaults to the one already attached.
         op :
             how to merge entries several ranks wrote to the same position;
             ``"single"`` keeps one, ``"sum"`` sums them.
@@ -696,9 +697,9 @@ column indices of the sparse elements
         --------
         distribute : the implementation, and the details
         """
-        from .mpi.sparse_distribute import distribute
+        from ._sparse_distribute import distribute
 
-        return distribute(self, op)
+        return distribute(self, dist, op)
 
     def edges(self, rows: SeqOrScalarInt, exclude: Optional[SeqOrScalarInt] = None):
         """Retrieve edges (connections) of given `rows`
