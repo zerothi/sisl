@@ -53,7 +53,7 @@ keywords = [
 # lower bound of dependencies.
 dependencies = [
     "numpy>=2.0.0",
-    "scipy>=1.10",
+    "scipy>=1.13",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
     "xarray>=2022",
