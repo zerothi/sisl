@@ -1875,6 +1875,7 @@ column indices of the sparse elements
 
         # Pre-allocate by finding sparsity pattern union
         out = cls.sparsity_union(spmats, dim=dim, dtype=dtype)
+        idtype = out._idtype
 
         # For all non-sisl objects, finalize it by sorting
         # indices, that should be really fast!
@@ -1912,6 +1913,8 @@ column indices of the sparse elements
                     mcol = m.indices[msl]
                     D = m.data.reshape(-1, 1)
 
+                # to ensure it works on different dtypes
+                mcol = mcol.astype(idtype, copy=False)
                 out_idx = indices(ocol, mcol, osl.start, both_sorted=sorted)
 
                 if len(out_idx) > 0:
