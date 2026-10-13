@@ -19,7 +19,7 @@ requires = [
     "setuptools_scm[toml]>=8",
     "scikit-build-core[pyproject]>=1",
     "Cython>=3.0.8",
-    "numpy>=2.0.0"
+    "numpy>=2.1.0"
 ]
 build-backend = "scikit_build_core.build"
 
@@ -208,7 +208,7 @@ build = [
     "setuptools_scm[toml]>=8",
     "scikit-build-core[pyproject]>=1",
     "Cython>=3.0.8",
-    "numpy>=2.0.0",
+    "numpy>=2.1.0",
 ]
 
 sphinx = [
