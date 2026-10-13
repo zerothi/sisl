@@ -60,3 +60,8 @@ electrode block options were never read from the fdf file, and a ``bulk false``
 electrode block option was read as true. Self-energies from GF files were
 returned as the bulk self-energy (:math:`E\mathbf S - \mathbf H - \boldsymbol\Sigma`)
 instead of :math:`\boldsymbol\Sigma`.
+The electrode ``name`` is an optional keyword-only argument, e.g.
+``BlochElectrode(se, bloch, name="Left")``. Unnamed electrodes are referenced
+in ``DeviceGreen`` by their index (or the electrode object), names are matched
+case-insensitively and must be unique. ``DeviceGreen(..., permute="electrode=<name|index>")``
+starts the BTD partitioning from that electrode (defaults to the first).

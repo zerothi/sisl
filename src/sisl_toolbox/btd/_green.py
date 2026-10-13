@@ -35,6 +35,7 @@ from ._btd import *
 from ._btd import (
     _blocks_in_range,
     _btd_blocks_sub,
+    _btd_memory,
     _device_permute,
     _graph,
     _permute_a2o,
@@ -160,6 +161,32 @@ class _DeviceElectrode(NamedTuple):
     bulk: bool
 
 
+def _elec_index(elecs: Sequence[Electrode], elec, clsname: str) -> int:
+    """Index of `elec` in `elecs`
+
+    `elec` is an index, a name (case-insensitive), or an electrode object
+    (also the electrode of a `DownfoldElectrode` in `elecs`).
+    """
+    if isinstance(elec, Electrode):
+        for ielec, el in enumerate(elecs):
+            while el is not None:
+                if el is elec:
+                    return ielec
+                el = getattr(el, "electrode", None)
+        if elec.name is None:
+            raise KeyError(f"{clsname} does not contain the (unnamed) electrode {elec}")
+        elec = elec.name
+    if isinstance(elec, str):
+        for ielec, el in enumerate(elecs):
+            if el.name is not None and el.name.lower() == elec.lower():
+                return ielec
+        names = [el.name for el in elecs]
+        raise KeyError(
+            f"{clsname} has no electrode {elec!r}, available electrodes: {names}"
+        )
+    return elec
+
+
 @set_module("sisl_toolbox.btd")
 class DeviceGreen:
     r"""Block-tri-diagonal Green function calculator
@@ -191,8 +218,8 @@ class DeviceGreen:
        H = H_elec.tile(10, 0)
 
        # the bulk electrodes extend along -a (left) and +a (right)
-       left = BlochElectrode("Left", sisl.RecursiveSI(H_elec, "-A"))
-       right = BlochElectrode("Right", sisl.RecursiveSI(H_elec, "+A"))
+       left = BlochElectrode(sisl.RecursiveSI(H_elec, "-A"), name="Left")
+       right = BlochElectrode(sisl.RecursiveSI(H_elec, "+A"), name="Right")
        G = DeviceGreen(H, [(left, [0]), (right, [9])])
        T = G.transmission(0.5, "Left", "Right")
 
@@ -355,6 +382,12 @@ class DeviceGreen:
             return (elec, elec.orbs, bulk)
 
         elecs = [as_tuple(elec) for elec in elecs]
+        names = [elec[0].name.lower() for elec in elecs if elec[0].name is not None]
+        if len(set(names)) != len(names):
+            raise ValueError(
+                f"{self.__class__.__name__} got electrodes with the same name "
+                f"(case-insensitive): {names}"
+            )
 
         # The electrode self-energies replace the couplings along the
         # semi-infinite directions
@@ -378,22 +411,29 @@ class DeviceGreen:
 
         if not isinstance(permute, PermuteBTD):
             # The electrode self-energies are dense blocks in the device region
-            dense = [np.asarray(elec[1]).ravel() for elec in elecs]
+            if space == "atoms":
+                fix = lambda atoms: np.unique(H.o2a(atoms))
+            else:
+                fix = lambda atoms: np.asarray(atoms).ravel()
+            dense = [fix(elec[1]) for elec in elecs]
             if space == "atoms":
                 csr = H.toSparseAtom()
-                dense = [np.unique(H.o2a(d)) for d in dense]
             else:
                 csr = H
 
         if isinstance(permute, str):
             kwargs = {}
-            if permute == "electrode":
-                # the electrodes are placed at the ends of the BTD matrix
-                if len(elecs) > 2:
-                    raise ValueError(
-                        f"{self.__class__.__name__}(permute='electrode') requires at most 2 electrodes"
-                    )
-                kwargs = dict(zip(("start", "end"), dense))
+            if permute.startswith("electrode"):
+                # Only fix the start electrode (name or index), defaults
+                # to the first electrode. The user can swap them.
+                permute, _, start = permute.partition("=")
+                if start.isdigit():
+                    start = int(start)
+                ielec = _elec_index(
+                    [elec[0] for elec in elecs], start or 0, self.__class__.__name__
+                )
+                kwargs = {"start": dense[ielec]}
+
             permute = btd_partition(csr, method=permute, dense=dense, **kwargs)
         elif not isinstance(permute, PermuteBTD):
             permute = np.asarray(permute).ravel()
@@ -510,10 +550,16 @@ class DeviceGreen:
         return [el.elec for el in self._elecs]
 
     def __str__(self) -> str:
-        ret = f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.blocks)}, eta: {self.eta:.3e}"
-        for elec in self.elecs:
+        MB = _btd_memory(self.blocks, np.complex128)
+        suffix = "MB"
+        if MB > 1024:
+            MB /= 1024
+            suffix = "GB"
+
+        ret = f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.blocks)}, btd_mem: {MB:.1f}{suffix}, eta: {self.eta:.3e}"
+        for ielec, elec in enumerate(self.elecs):
             e = str(elec).replace("\n", "\n  ")
-            ret = f"{ret},\n {elec.name}:\n  {e}"
+            ret = f"{ret},\n {self._elec_name(ielec)}:\n  {e}"
         return f"{ret}\n}}"
 
     @classmethod
@@ -636,9 +682,9 @@ class DeviceGreen:
                 Helec = Helec.copy()
                 Helec.shift(tbt.mu(name))
                 elec = BlochElectrode(
-                    name,
                     si.RecursiveSI(Helec, semi_inf, eta=tbt.eta(name)),
                     bloch=tbt.bloch(name),
+                    name=name,
                 )
             bloch_elecs.append(elec)
 
@@ -783,21 +829,10 @@ class DeviceGreen:
         return len(self.permute)
 
     def _elec(self, elec) -> int | Sequence[int]:
-        """Convert a string electrode to the proper linear index"""
-        if isinstance(elec, str):
-            for iel, el in enumerate(self._elecs):
-                if el.elec.name == elec:
-                    return iel
-            names = [el.elec.name for el in self._elecs]
-            raise KeyError(
-                f"{self.__class__.__name__} has no electrode {elec!r}, "
-                f"available electrodes: {names}"
-            )
-        elif isinstance(elec, Electrode):
-            return self._elec(elec.name)
-        elif isinstance(elec, (tuple, list)):
+        """Convert an electrode (name, index or object) to the proper linear index"""
+        if isinstance(elec, (tuple, list)):
             return [self._elec(e) for e in elec]
-        return elec
+        return _elec_index(self.elecs, elec, self.__class__.__name__)
 
     def _serialize_elecs(self, elecs, omit_elecs=None):
         """Convert a list/str/int of elecs into a list of ints"""
@@ -818,13 +853,11 @@ class DeviceGreen:
 
         return is_single, elecs
 
-    def _elec_name(self, elec) -> str:
-        """Convert an electrode index or str to the name of the electrode"""
-        if isinstance(elec, str):
-            return elec
-        elif isinstance(elec, Electrode):
-            return elec.name
-        return self._elecs[elec].elec.name
+    def _elec_name(self, elec) -> str | int:
+        """Name of the electrode (name, index or object), its index if it has no name"""
+        ielec = self._elec(elec)
+        name = self._elecs[ielec].elec.name
+        return ielec if name is None else name
 
     def _permute_matrix(self, M):
         """Permutes a (full) matrix, i.e. not one that is already reduced."""

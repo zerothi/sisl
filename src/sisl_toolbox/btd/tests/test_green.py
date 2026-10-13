@@ -80,7 +80,17 @@ def test_permute_array(space):
 
 
 @pytest.mark.parametrize(
-    "method", ["gps", "electrode", "atom+gps", "orb+gps", "orb+electrode"]
+    "method",
+    [
+        "gps",
+        "electrode",
+        "electrode=right",
+        "electrode=1",
+        "atom+gps",
+        "orb+gps",
+        "orb+electrode",
+        "orb+electrode=Right",
+    ],
 )
 def test_permute_str_bulk_electrodes(method):
     # The full H is the device, the electrodes are placed directly
@@ -91,7 +101,7 @@ def test_permute_str_bulk_electrodes(method):
         se = si.RecursiveSI(Hel, semi_inf, eta=ETA)
         # atom indices (default)
         atoms = np.unique(H.o2a(_cell_orbs(H, cell)))
-        elecs.append((BlochElectrode(name, se, bloch=(2, 1, 1)), atoms))
+        elecs.append((BlochElectrode(se, bloch=(2, 1, 1), name=name), atoms))
     G = DeviceGreen(H, elecs, method, eta=ETA)
     if not method.startswith("orb+"):
         # atoms are partitioned, an atom is never split between blocks
@@ -115,6 +125,45 @@ def test_permute_str_bulk_electrodes(method):
 
     T = _caroli(Gref, gamma("-C", 0), gamma("+C", NCELL - 1))
     assert np.isclose(G.transmission(E, "Left", "Right", k=K), T)
+
+
+def test_unnamed_electrodes():
+    Hel, H = _system(HOP)
+    elecs = []
+    for semi_inf, cell in (("-C", 0), ("+C", NCELL - 1)):
+        se = si.RecursiveSI(Hel, semi_inf, eta=ETA)
+        elecs.append((BlochElectrode(se, bloch=(2, 1, 1)), _cell_orbs(H, cell)))
+    left, right = (elec for elec, _ in elecs)
+    assert left.name is None
+    G = DeviceGreen(H, [(e, {"orbitals": o}) for e, o in elecs], "electrode", eta=ETA)
+
+    # referenced by index or by the electrode object
+    E = 0.3
+    T = G.transmission(E, 0, 1, k=K)
+    assert np.isclose(G.transmission(E, left, right, k=K), T)
+    assert G._elec_name(left) == 0
+    with pytest.raises(KeyError):
+        G.transmission(E, "Left", "Right", k=K)
+
+    # same result as named electrodes
+    named = [
+        (BlochElectrode(e.se, bloch=e.bloch, name=name), {"orbitals": o})
+        for (e, o), name in zip(elecs, ("Left", "Right"))
+    ]
+    Gn = DeviceGreen(H, named, "electrode", eta=ETA)
+    assert np.isclose(Gn.transmission(E, "left", "Right", k=K), T)
+    assert Gn._elec_name(0) == "Left"
+
+
+def test_electrode_duplicate_names():
+    Hel, H = _system(HOP)
+    elecs = []
+    for name, semi_inf, cell in (("Left", "-C", 0), ("left", "+C", NCELL - 1)):
+        se = si.RecursiveSI(Hel, semi_inf, eta=ETA)
+        elec = BlochElectrode(se, bloch=(2, 1, 1), name=name)
+        elecs.append((elec, {"orbitals": _cell_orbs(H, cell)}))
+    with pytest.raises(ValueError, match="same name"):
+        DeviceGreen(H, elecs, "gps", eta=ETA)
 
 
 def test_spin_cache():
@@ -269,7 +318,7 @@ def test_from_tbt(as_bloch):
             He = Hel.copy()
             He.shift(MU[name])
             se = si.RecursiveSI(He, semi_inf, eta=ETA)
-            elecs[name] = BlochElectrode(name, se, bloch=(2, 1, 1))
+            elecs[name] = BlochElectrode(se, bloch=(2, 1, 1), name=name)
     else:
         elecs = {"Left": (Hel, "-C"), "Right": (Hel, "+C")}
     G = DeviceGreen.from_tbt(tbt, H, elecs)
@@ -427,7 +476,7 @@ def test_in_device_transmission():
         He = Hel.copy()
         He.shift(MU[name])
         se = si.RecursiveSI(He, semi_inf, eta=ETA)
-        elec = BlochElectrode(name, se, bloch=(2, 1, 1))
+        elec = BlochElectrode(se, bloch=(2, 1, 1), name=name)
         elecs.append((elec, {"atoms": np.unique(H.o2a(_cell_orbs(H, cell)))}, True))
     G = DeviceGreen(H, elecs, "gps", eta=ETA)
 
@@ -553,7 +602,9 @@ def test_electrode_from_fdf_downfold(tmp_path, extra, in_device):
 
 def test_device_green_no_orbs():
     Hel, H = _system(HOP)
-    elec = BlochElectrode("Left", si.RecursiveSI(Hel, "-C", eta=ETA), bloch=(2, 1, 1))
+    elec = BlochElectrode(
+        si.RecursiveSI(Hel, "-C", eta=ETA), bloch=(2, 1, 1), name="Left"
+    )
     with pytest.raises(ValueError, match="no orbitals"):
         DeviceGreen(H, [elec])
     with pytest.raises(ValueError, match="'atoms' or 'orbitals'"):
@@ -604,7 +655,7 @@ def _bulk_elecs(Hel, H, semi_infs=("-C", "+C"), cells=(0, NCELL - 1), eta=ETA):
     elecs = []
     for name, semi_inf, cell in zip(("Left", "Right"), semi_infs, cells):
         se = si.RecursiveSI(Hel, semi_inf, eta=eta)
-        elec = BlochElectrode(name, se, bloch=(2, 1, 1))
+        elec = BlochElectrode(se, bloch=(2, 1, 1), name=name)
         elecs.append((elec, {"orbitals": _cell_orbs(H, cell)}))
     return elecs
 
@@ -615,7 +666,7 @@ def test_eta_default():
     elecs = _bulk_elecs(Hel, H)
     elecs[1] = (
         BlochElectrode(
-            "Right", si.RecursiveSI(Hel, "+C", eta=ETA / 2), bloch=(2, 1, 1)
+            si.RecursiveSI(Hel, "+C", eta=ETA / 2), bloch=(2, 1, 1), name="Right"
         ),
         elecs[1][1],
     )
@@ -648,8 +699,8 @@ def test_eta_default_unknown():
     H = si.Hamiltonian(g)
     H.construct([(0.1, 1.1), (0, -1)])
     with pytest.raises(ValueError, match="eta"):
-        DeviceGreen(H, [(NoEta("E"), [0])])
-    assert DeviceGreen(H, [(NoEta("E"), [0])], eta=0.1).eta == 0.1
+        DeviceGreen(H, [(NoEta(), [0])])
+    assert DeviceGreen(H, [(NoEta(), [0])], eta=0.1).eta == 0.1
 
 
 @pytest.mark.parametrize("downfold", [True, False])
@@ -718,7 +769,9 @@ def test_placement_warning_order():
 
 def test_placement_downfold_warning():
     Hel, H = _system(HOP)
-    elec = BlochElectrode("Left", si.RecursiveSI(Hel, "+C", eta=ETA), bloch=(2, 1, 1))
+    elec = BlochElectrode(
+        si.RecursiveSI(Hel, "+C", eta=ETA), bloch=(2, 1, 1), name="Left"
+    )
     with pytest.warns(SislWarning, match="semi-infinite side"):
         DownfoldElectrode(
             elec,
@@ -738,9 +791,9 @@ def test_placement_skewed_lattice():
 
     def elecs(left):
         return [
-            (BlochElectrode("Left", si.RecursiveSI(Hel, left)), np.arange(no)),
+            (BlochElectrode(si.RecursiveSI(Hel, left), name="Left"), np.arange(no)),
             (
-                BlochElectrode("Right", si.RecursiveSI(Hel, "+A")),
+                BlochElectrode(si.RecursiveSI(Hel, "+A"), name="Right"),
                 np.arange(no) + 5 * no,
             ),
         ]

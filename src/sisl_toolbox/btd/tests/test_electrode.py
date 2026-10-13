@@ -108,7 +108,7 @@ def _electrodes(Hel, H, bulk, rng, last=None):
         ("Right", "+C", (7, 6, 5)),
     ):
         se = si.RecursiveSI(Hel, semi_inf, eta=ETA)
-        elec = BlochElectrode(name, se, bloch=(2, 1, 1))
+        elec = BlochElectrode(se, bloch=(2, 1, 1), name=name)
         blocks = [_cell_orbs(H, c) for c in cells]
         if last is not None:
             blocks[-1] = blocks[-1][last]
@@ -141,7 +141,9 @@ def _reference(Hel, H, E, k, **kwargs):
 def test_bloch_self_energy(spin):
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel = _electrode(hop, spin)
-    elec = BlochElectrode("Left", si.RecursiveSI(Hel, "-C", eta=ETA), bloch=(2, 1, 1))
+    elec = BlochElectrode(
+        si.RecursiveSI(Hel, "-C", eta=ETA), bloch=(2, 1, 1), name="Left"
+    )
     ref = si.RecursiveSI(Hel.tile(2, 0), "-C", eta=ETA)
     assert len(elec) == len(ref)
     assert np.allclose(elec.self_energy(0.3, k=K), ref.self_energy(0.3, k=K))
@@ -161,7 +163,7 @@ def test_electrode_abstract():
 
 def test_real_space_unknown_se():
     with pytest.raises(ValueError):
-        RealSpaceElectrode("Left", None)
+        RealSpaceElectrode(None, name="Left")
 
 
 def _write_gf(path, H, se, E, k=(0, 0, 0), **kwargs):
@@ -188,7 +190,7 @@ def _real_space_se():
 
 def test_real_space_self_energy():
     se = _real_space_se()
-    elec = RealSpaceElectrode("Left", se)
+    elec = RealSpaceElectrode(se, name="Left")
     Hc = se.real_space_coupling()
     assert len(elec) == len(Hc)
     assert elec.has_bulk
@@ -206,8 +208,8 @@ def test_real_space_gf(tmp_path):
     Hc = se.real_space_coupling()
     E = np.linspace(-1, 1, 3)
     gf = _write_gf(tmp_path / "rs.TBTGF", Hc, se, E + 1j * ETA, coupling=True)
-    ref = RealSpaceElectrode("Left", se)
-    elec = RealSpaceElectrode("Left", gf)
+    ref = RealSpaceElectrode(se, name="Left")
+    elec = RealSpaceElectrode(gf, name="Left")
     assert len(elec) == len(ref)
     assert elec.has_bulk
     assert np.isclose(elec.eta, ETA)
@@ -224,10 +226,10 @@ def test_bloch_gf(tmp_path):
     se = si.RecursiveSI(Hel, "-C", eta=ETA)
     E = np.linspace(-1, 1, 3)
     gf = _write_gf(tmp_path / "elec.TBTGF", se.spgeom0, se, E + 1j * ETA)
-    ref = BlochElectrode("Left", se)
-    elec = BlochElectrode("Left", gf)
+    ref = BlochElectrode(se, name="Left")
+    elec = BlochElectrode(gf, name="Left")
     with pytest.raises(ValueError):
-        BlochElectrode("Left", gf, bloch=(2, 1, 1))
+        BlochElectrode(gf, bloch=(2, 1, 1), name="Left")
     assert len(elec) == len(ref)
     assert elec.has_bulk
     for e in E:
@@ -241,7 +243,7 @@ def test_downfold_atoms_auto(bulk):
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel, H = _system(hop)
     se = si.RecursiveSI(Hel, "-C", eta=ETA)
-    elec = BlochElectrode("Left", se, bloch=(2, 1, 1))
+    elec = BlochElectrode(se, bloch=(2, 1, 1), name="Left")
     cells = [_cell_orbs(H, c) for c in range(3)]
     atoms = [np.unique(H.o2a(c)) for c in cells]
     kwargs = dict(eta_device=ETA, bulk=bulk)
@@ -298,7 +300,7 @@ def test_downfold_nested():
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel, H = _system(hop)
     se = si.RecursiveSI(Hel, "-C", eta=ETA)
-    elec = BlochElectrode("Left", se, bloch=(2, 1, 1))
+    elec = BlochElectrode(se, bloch=(2, 1, 1), name="Left")
     cells = [_cell_orbs(H, c) for c in range(4)]
     kwargs = dict(eta_device=ETA, bulk=True)
     ref = DownfoldElectrode(
@@ -379,7 +381,9 @@ def test_downfold_partial_electrode(bulk, spin, explicit, in_device):
     Hel, H = _system(np.array([[-1.0, -0.2], [-0.2, -0.7]]), spin)
     E = 0.3
     M = _reference(Hel, H, E, K)
-    elec = BlochElectrode("Left", si.RecursiveSI(Hel, "-C", eta=ETA), bloch=(2, 1, 1))
+    elec = BlochElectrode(
+        si.RecursiveSI(Hel, "-C", eta=ETA), bloch=(2, 1, 1), name="Left"
+    )
     outer = H.a2o([0, 2], all=True)
     inner = H.a2o([1, 3], all=True)
     if in_device == "inner":
@@ -430,7 +434,9 @@ def test_downfold_partial_electrode(bulk, spin, explicit, in_device):
 
 def test_downfold_partial_electrode_errors():
     Hel, H = _system(np.array([[-1.0, -0.2], [-0.2, -0.7]]))
-    elec = BlochElectrode("Left", si.RecursiveSI(Hel, "-C", eta=ETA), bloch=(2, 1, 1))
+    elec = BlochElectrode(
+        si.RecursiveSI(Hel, "-C", eta=ETA), bloch=(2, 1, 1), name="Left"
+    )
     orbs = _cell_orbs(H, 0)
     orbs_x = H.a2o([0, 2], all=True)
     orbs_d = H.a2o([1, 3], all=True)
@@ -515,7 +521,7 @@ def test_device_green_downfold_overlap():
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel, H = _system(hop)
     se = si.RecursiveSI(Hel, "-C", eta=ETA)
-    elec = BlochElectrode("Left", se, bloch=(2, 1, 1))
+    elec = BlochElectrode(se, bloch=(2, 1, 1), name="Left")
     cells = [_cell_orbs(H, c) for c in range(4)]
     down = DownfoldElectrode(
         elec, H, {"orbitals": cells[0]}, {"orbitals": PermuteBTD(cells[:3])}
@@ -702,7 +708,7 @@ def test_se2broadening_delegation():
     # electrodes must use the self-energy object to convert to broadening matrices
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel, H = _system(hop)
-    elec = BlochElectrode("Left", _ScaledSE(Hel, "-C", eta=ETA), bloch=(2, 1, 1))
+    elec = BlochElectrode(_ScaledSE(Hel, "-C", eta=ETA), bloch=(2, 1, 1), name="Left")
     cells = [_cell_orbs(H, c) for c in range(3)]
     down = DownfoldElectrode(
         elec, H, {"orbitals": cells[0]}, {"orbitals": PermuteBTD(cells)}, eta_device=ETA
@@ -722,7 +728,7 @@ def test_bulk_matrix_format(format, spin, orthogonal):
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel = _electrode(hop, spin, orthogonal)
     se = si.RecursiveSI(Hel, "-C", eta=ETA)
-    elec = BlochElectrode("Left", se, bloch=(2, 1, 1))
+    elec = BlochElectrode(se, bloch=(2, 1, 1), name="Left")
     kwargs = {"spin": 1} if spin == "polarized" else {}
 
     E = 0.3 + 1j * ETA

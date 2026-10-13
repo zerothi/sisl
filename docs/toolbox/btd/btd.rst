@@ -40,8 +40,8 @@ A one-dimensional chain with an impurity, coupled to two semi-infinite chains:
    H[5, 5] = 0.5
 
    # the bulk electrodes extend along -a (left) and +a (right)
-   left = BlochElectrode("Left", sisl.RecursiveSI(H_elec, "-A"))
-   right = BlochElectrode("Right", sisl.RecursiveSI(H_elec, "+A"))
+   left = BlochElectrode(sisl.RecursiveSI(H_elec, "-A"), name="Left")
+   right = BlochElectrode(sisl.RecursiveSI(H_elec, "+A"), name="Right")
 
    # place the electrodes on the first and last atom of the device
    G = DeviceGreen(H, [(left, [0]), (right, [9])])
@@ -134,8 +134,8 @@ be Bloch expanded to fit the device cell:
    # device: 2 cells along b (Bloch expanded electrode) and 6 along a
    H = H_elec.tile(2, 1).tile(6, 0)
    no = H_elec.no * 2  # orbitals per electrode layer
-   left = BlochElectrode("Left", sisl.RecursiveSI(H_elec, "-A"), bloch=(1, 2, 1))
-   right = BlochElectrode("Right", sisl.RecursiveSI(H_elec, "+A"), bloch=(1, 2, 1))
+   left = BlochElectrode(sisl.RecursiveSI(H_elec, "-A"), bloch=(1, 2, 1), name="Left")
+   right = BlochElectrode(sisl.RecursiveSI(H_elec, "+A"), bloch=(1, 2, 1), name="Right")
    G = DeviceGreen(
        H,
        [

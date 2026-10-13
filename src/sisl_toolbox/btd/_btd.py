@@ -135,6 +135,20 @@ def _graph_ptr_col(graph: ssp.csr_array) -> tuple[np.ndarray, np.ndarray]:
     return graph.indptr, graph.indices
 
 
+def _btd_memory(blocks: npt.ArrayLike, dtype: npt.DTypeLike) -> float:
+    """Return memory utilization in MB for the BTD matrix"""
+
+    bprev = 0
+    els = 0
+    for b in blocks:
+        els += bprev * b * 2 + b**2
+
+    # Extend to bytes
+    el2MB = np.dtype(dtype).itemsize / 1024**2
+
+    return els * el2MB
+
+
 @set_module("sisl_toolbox.btd")
 def btd_partition(
     csr: SparseCSR | _SparseGeometry,

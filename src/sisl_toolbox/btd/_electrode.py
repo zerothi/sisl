@@ -255,6 +255,21 @@ class _TransportFdf:
         self.fdf = fdf
         self.is_tbtrans = prefix.upper() == "TBT"
 
+    def read_device_hamiltonian(self):
+        """Returns the device Hamiltonian (without stripping device atoms)"""
+        fdf = self.fdf
+        slabel = self.fdf.get("SystemLabel", "siesta")
+        for hs_ext in ("TS.HSX", "TSHS", "HSX", "nc"):
+            if fdf.dir_file(f"{slabel}.{hs_ext}").is_file():
+                # choose a sane default (if it exists!)
+                hs_default = f"{slabel}.{hs_ext}"
+                break
+        else:
+            hs_default = f"{slabel}.TS.HSX"
+        if self.is_tbtrans:
+            hs_default = fdf.get("TBT.HS", hs_default)
+        return si.get_sile(fdf.dir_file(hs_default)).read_hamiltonian()
+
     def get(self, key: str, default=None, **kwargs):
         """Get TS.<key>, which is overwritten by TBT.<key>"""
         ret = self.fdf.get(f"TS.{key}", default, **kwargs)
@@ -535,11 +550,6 @@ def _fdf_electrode_options(
             bloch[i] = block_get(f"bloch-{suf}", bloch[i])
     bloch = block_get("bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}")
     bloch = [int(b) for b in bloch.split()]
-    if len(semi_inf) > 1 and np.prod(bloch) > 1:
-        raise ValueError(
-            f"{clsname} found a Bloch expansion for a real-space electrode, "
-            "this is not allowed."
-        )
 
     opts.H = Helec
     opts.bloch = bloch
@@ -635,18 +645,28 @@ def _fdf_electrode(
     if use_gf:
         gf = si.get_sile(tfdf.fdf.dir_file(info.gf))
         if is_real_space:
-            elec = RealSpaceElectrode(name, gf)
+            elec = RealSpaceElectrode(gf, name=name)
         else:
             # GF files are already Bloch expanded
-            elec = BlochElectrode(name, gf)
+            elec = BlochElectrode(gf, name=name)
     else:
         Helec = opts.H.copy()
         Helec.shift(info.dEf)
         # shift according to potential
         Helec.shift(mu)
-        elec = BlochElectrode(
-            name, si.RecursiveSI(Helec, semi_inf[0], eta=opts.eta), bloch=opts.bloch
-        )
+
+        if is_real_space:
+            raise ValueError(
+                f"{clsname} currently does not implement "
+                "real-space electrodes directly reading the fdf"
+            )
+        else:
+            elec = BlochElectrode(
+                si.RecursiveSI(Helec, semi_inf[0], eta=opts.eta),
+                bloch=opts.bloch,
+                name=name,
+            )
+
     if len(elec) != len(opts.H) * int(np.prod(opts.bloch)):
         raise ValueError(
             f"{clsname} found an inconsistent size of the GF file "
@@ -673,22 +693,15 @@ def _fdf_device(tfdf: _TransportFdf, clsname: str) -> PropertyDict:
     fdf = tfdf.fdf
 
     # Read the device H
-    slabel = fdf.get("SystemLabel", "siesta")
-    for hs_ext in ("TS.HSX", "TSHS", "HSX", "nc"):
-        if fdf.dir_file(f"{slabel}.{hs_ext}").is_file():
-            # choose a sane default (if it exists!)
-            hs_default = f"{slabel}.{hs_ext}"
-            break
-    else:
-        hs_default = f"{slabel}.TSHS"
-    if tfdf.is_tbtrans:
-        hs_default = fdf.get("TBT.HS", hs_default)
-    H = si.get_sile(fdf.dir_file(hs_default)).read_hamiltonian()
+    H = tfdf.read_device_hamiltonian()
 
     # Read the electrodes
     # same default as TranSiesta/TBtrans
     names = tfdf.names("Elecs") or ["Left", "Right"]
     opts = [_fdf_electrode_options(tfdf, name, clsname) for name in names]
+    # Append H_device
+    for opt in opts:
+        opt.H_device = H
 
     # default to the smallest electrode eta
     # Correct by a factor 1/10 to minimize smearing for device states.
@@ -802,10 +815,12 @@ class Electrode(ABC):
     Parameters
     ----------
     name :
-        name of the electrode
+        name of the electrode, used to reference it in `DeviceGreen`.
+        Without a name the electrode can only be referenced by its index
+        (or the electrode object itself).
     """
 
-    def __init__(self, name: str):
+    def __init__(self, *, name: Optional[str] = None):
         self.name = name
         #: orbitals of the device Hamiltonian where the self-energy is placed
         #: (without spin), None if unknown.
@@ -1002,23 +1017,24 @@ class BlochElectrode(Electrode):
 
     Parameters
     ----------
-    name :
-        name of the electrode
     se :
         the self-energy calculator, a `sisl.physics.SelfEnergy` or a
         Siesta GF file (`~sisl.io.siesta.gfSileSiesta`).
         A GF file is already Bloch expanded.
     bloch :
         Bloch expansion of the self-energy
+    name :
+        name of the electrode, see `Electrode`
     """
 
     def __init__(
         self,
-        name: str,
         se,
         bloch: si.Bloch | tuple[int, int, int] | None = None,
+        *,
+        name: Optional[str] = None,
     ):
-        super().__init__(name)
+        super().__init__(name=name)
 
         if bloch is None:
             bloch = (1, 1, 1)
@@ -1134,22 +1150,23 @@ class RealSpaceElectrode(Electrode):
 
     Parameters
     ----------
-    name :
-        name of the electrode
     se :
         the real-space self-energy calculator (`sisl.physics.RealSpaceSE` or
         `sisl.physics.RealSpaceSI`), or a Siesta/TBtrans GF file
         (`~sisl.io.tbtrans.tbtgfSileTBtrans`) containing the real-space
         self-energies (see the `bulk` and `coupling` arguments of
         `sisl.physics.RealSpaceSE.self_energy`).
+    name :
+        name of the electrode, see `Electrode`
     """
 
     def __init__(
         self,
-        name: str,
         se: si.physics.RealSpaceSE | si.physics.RealSpaceSI,
+        *,
+        name: Optional[str] = None,
     ):
-        super().__init__(name)
+        super().__init__(name=name)
         if _is_gf(se):
             se = _GFSelfEnergy(se)
             self._H = None
@@ -1305,7 +1322,7 @@ class DownfoldElectrode(Electrode):
         Couplings to the rest of `H` (including the electrode indices
         in the last block) are taken from `H`. Requires ``electrode.has_bulk``.
     name :
-        name of the electrode, defaults to the `electrode` name
+        name of the electrode, defaults to the `electrode` name (see `Electrode`)
     """
 
     def __init__(
@@ -1316,11 +1333,12 @@ class DownfoldElectrode(Electrode):
         down: PermuteBTD | npt.ArrayLike | Mapping[str, PermuteBTD | npt.ArrayLike],
         eta_device: float = 0.0,
         bulk: bool = True,
+        *,
         name: Optional[str] = None,
     ):
         if name is None:
             name = electrode.name
-        super().__init__(name)
+        super().__init__(name=name)
         self.electrode = electrode
         self._eta_device = eta_device
         cls = self.__class__.__name__
