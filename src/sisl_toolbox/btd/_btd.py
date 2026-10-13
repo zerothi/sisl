@@ -81,7 +81,7 @@ class PermuteBTD:
 
 
 def _graph(
-    csr: SparseCSR | _SparseGeometry,
+    csr: SparseCSR | _SparseGeometry | ssp.sparray,
     dense: Optional[Sequence[npt.ArrayLike]] = None,
 ) -> ssp.csr_array:
     """Symmetric graph of `csr` (without the diagonal), with `dense` blocks added
@@ -132,9 +132,7 @@ def _subgraph(graph: ssp.csr_array, idx: np.ndarray) -> ssp.csr_array:
 
 def _graph_ptr_col(graph: ssp.csr_array) -> tuple[np.ndarray, np.ndarray]:
     """``(ptr, col)`` arrays of `graph` as required by the `permute` routines"""
-    ptr = np.ascontiguousarray(graph.indptr, dtype=np.int32)
-    col = np.ascontiguousarray(graph.indices, dtype=np.int32)
-    return ptr, col
+    return graph.indptr, graph.indices
 
 
 @set_module("sisl_toolbox.btd")

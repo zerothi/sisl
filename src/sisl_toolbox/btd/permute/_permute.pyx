@@ -5,6 +5,8 @@
 
 All routines operate on a symmetric CSR graph ``(ptr, col)`` without
 self-loops, as returned by `symmetric_graph`.
+``ptr`` and ``col`` must share the integer data-type (``int32`` or ``int64``),
+which is also the data-type of the returned arrays.
 
 Common to all routines is the ``level`` work-array, which signals which nodes
 are eligible for a breadth-first search: a node is only visited when
@@ -17,6 +19,8 @@ from libc.math cimport INFINITY
 from libc.stdlib cimport free, malloc, realloc
 
 import numpy as np
+
+from sisl._core._dtypes cimport int_sp_st, type2dtype
 
 __all__ = [
     "symmetric_graph",
@@ -36,38 +40,36 @@ ctypedef fused key_st:
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-def symmetric_graph(const int[::1] ptr, const int[::1] ncol, const int[::1] col):
+def symmetric_graph(const int_sp_st[::1] ptr, const int_sp_st[::1] col):
     r"""Pattern of :math:`A + A^T` without the diagonal
 
     Parameters
     ----------
-    ptr, ncol, col :
-        CSR pattern of a square matrix (``ptr`` need not be contiguous)
+    ptr, col :
+        CSR pattern of a square matrix, columns may contain duplicates
 
     Returns
     -------
     gptr, gcol :
         contiguous CSR pattern of the symmetric graph (columns are unique, but unsorted)
     """
-    cdef int n = ncol.shape[0]
-    cdef int i, j, ind
-    cdef Py_ssize_t nnz = 0
-
-    for i in range(n):
-        nnz += ncol[i]
+    cdef object dtype = type2dtype[int_sp_st](1)
+    cdef int_sp_st n = ptr.shape[0] - 1
+    cdef int_sp_st i, j, ind
+    cdef int_sp_st nnz = ptr[n]
 
     # Transposed pattern
-    TPTR = np.zeros(n + 1, dtype=np.int32)
-    TCOL = np.empty(nnz, dtype=np.int32)
-    cdef int[::1] tptr = TPTR
-    cdef int[::1] tcol = TCOL
+    TPTR = np.zeros(n + 1, dtype=dtype)
+    TCOL = np.empty(nnz, dtype=dtype)
+    cdef int_sp_st[::1] tptr = TPTR
+    cdef int_sp_st[::1] tcol = TCOL
     for i in range(n):
-        for ind in range(ptr[i], ptr[i] + ncol[i]):
+        for ind in range(ptr[i], ptr[i + 1]):
             tptr[col[ind] + 1] += 1
     for i in range(n):
         tptr[i + 1] += tptr[i]
     for i in range(n):
-        for ind in range(ptr[i], ptr[i] + ncol[i]):
+        for ind in range(ptr[i], ptr[i + 1]):
             j = col[ind]
             tcol[tptr[j]] = i
             tptr[j] += 1
@@ -77,18 +79,18 @@ def symmetric_graph(const int[::1] ptr, const int[::1] ncol, const int[::1] col)
     tptr[0] = 0
 
     # Merge rows of A and A^T, `mark` removes duplicates
-    GPTR = np.empty(n + 1, dtype=np.int32)
-    GCOL = np.empty(2 * nnz, dtype=np.int32)
-    MARK = np.full(n, -1, dtype=np.int32)
-    cdef int[::1] gptr = GPTR
-    cdef int[::1] gcol = GCOL
-    cdef int[::1] mark = MARK
-    cdef int ng = 0
+    GPTR = np.empty(n + 1, dtype=dtype)
+    GCOL = np.empty(2 * nnz, dtype=dtype)
+    MARK = np.full(n, -1, dtype=dtype)
+    cdef int_sp_st[::1] gptr = GPTR
+    cdef int_sp_st[::1] gcol = GCOL
+    cdef int_sp_st[::1] mark = MARK
+    cdef int_sp_st ng = 0
 
     gptr[0] = 0
     for i in range(n):
         mark[i] = i
-        for ind in range(ptr[i], ptr[i] + ncol[i]):
+        for ind in range(ptr[i], ptr[i + 1]):
             j = col[ind]
             if mark[j] != i:
                 mark[j] = i
@@ -108,9 +110,10 @@ def symmetric_graph(const int[::1] ptr, const int[::1] ncol, const int[::1] col)
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void _sort_key(int[::1] a, const int lo, const int hi, const key_st[::1] key) noexcept nogil:
+cdef void _sort_key(int_sp_st[::1] a, const int_sp_st lo, const int_sp_st hi,
+                    const key_st[::1] key) noexcept nogil:
     """Insertion sort of ``a[lo:hi]`` by increasing ``key[a]`` (stable)"""
-    cdef int i, j, x
+    cdef int_sp_st i, j, x
     for i in range(lo + 1, hi):
         x = a[i]
         j = i - 1
@@ -123,8 +126,9 @@ cdef void _sort_key(int[::1] a, const int lo, const int hi, const key_st[::1] ke
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef int _levels(const int[::1] ptr, const int[::1] col,
-                 int[::1] level, int[::1] order, const int off, int tail, int[::1] lptr) noexcept nogil:
+cdef int_sp_st _levels(const int_sp_st[::1] ptr, const int_sp_st[::1] col,
+                       int_sp_st[::1] level, int_sp_st[::1] order, const int_sp_st off,
+                       int_sp_st tail, int_sp_st[::1] lptr) noexcept nogil:
     """Level structure of all eligible nodes (``level == -1``) connected to the seeds ``order[off:tail]``
 
     The seeds must have ``level == 0``. The visited nodes are stored in ``order[off:lptr[nl]]``
@@ -134,9 +138,9 @@ cdef int _levels(const int[::1] ptr, const int[::1] col,
     -------
     nl : number of levels
     """
-    cdef int nl = 0
-    cdef int head = off
-    cdef int i, j, ind, end
+    cdef int_sp_st nl = 0
+    cdef int_sp_st head = off
+    cdef int_sp_st i, j, ind, end
 
     lptr[0] = off
     while head < tail:
@@ -158,8 +162,9 @@ cdef int _levels(const int[::1] ptr, const int[::1] col,
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int _bfs(const int[::1] ptr, const int[::1] col, const int root,
-                     int[::1] level, int[::1] order, const int off, int[::1] lptr) noexcept nogil:
+cdef inline int_sp_st _bfs(const int_sp_st[::1] ptr, const int_sp_st[::1] col, const int_sp_st root,
+                           int_sp_st[::1] level, int_sp_st[::1] order, const int_sp_st off,
+                           int_sp_st[::1] lptr) noexcept nogil:
     """Rooted level structure of `root`, see `_levels`"""
     order[off] = root
     level[root] = 0
@@ -169,8 +174,8 @@ cdef inline int _bfs(const int[::1] ptr, const int[::1] col, const int root,
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int _width(const int[::1] lptr, const int nl) noexcept nogil:
-    cdef int l, w = 0
+cdef inline int_sp_st _width(const int_sp_st[::1] lptr, const int_sp_st nl) noexcept nogil:
+    cdef int_sp_st l, w = 0
     for l in range(nl):
         if lptr[l + 1] - lptr[l] > w:
             w = lptr[l + 1] - lptr[l]
@@ -180,8 +185,9 @@ cdef inline int _width(const int[::1] lptr, const int nl) noexcept nogil:
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline void _reset(int[::1] level, const int[::1] order, const int lo, const int hi) noexcept nogil:
-    cdef int i
+cdef inline void _reset(int_sp_st[::1] level, const int_sp_st[::1] order,
+                        const int_sp_st lo, const int_sp_st hi) noexcept nogil:
+    cdef int_sp_st i
     for i in range(lo, hi):
         level[order[i]] = -1
 
@@ -189,16 +195,19 @@ cdef inline void _reset(int[::1] level, const int[::1] order, const int lo, cons
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef (int, int) _endpoints(const int[::1] ptr, const int[::1] col, const int[::1] deg, int v,
-                           int[::1] level, int[::1] order, int[::1] lptr,
-                           int[::1] order2, int[::1] lptr2) noexcept nogil:
+cdef int_sp_st _endpoints(const int_sp_st[::1] ptr, const int_sp_st[::1] col,
+                          const int_sp_st[::1] deg, int_sp_st v,
+                          int_sp_st[::1] level, int_sp_st[::1] order, int_sp_st[::1] lptr,
+                          int_sp_st[::1] order2, int_sp_st[::1] lptr2, int_sp_st *u_out) noexcept nogil:
     """Pseudo-diameter end-points ``(v, u)`` of the component containing `v`
 
     Gibbs-Poole-Stockmeyer algorithm I, with the candidate shrinking of
     Lewis (one candidate per degree in the last level).
     `level` must be -1 for the component, and is -1 on return.
+
+    Returns ``v``, and ``u`` is stored in `u_out`.
     """
-    cdef int nl, nl2, c, w, u, wmin, prev, k
+    cdef int_sp_st nl, nl2, c, w, u, wmin, prev, k
     cdef bint deeper = True
 
     nl = _bfs(ptr, col, v, level, order, 0, lptr)
@@ -226,13 +235,14 @@ cdef (int, int) _endpoints(const int[::1] ptr, const int[::1] col, const int[::1
             if w < wmin:
                 wmin = w
                 u = c
-    return v, u
+    u_out[0] = u
+    return v
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-def cuthill_mckee(const int[::1] ptr, const int[::1] col):
+def cuthill_mckee(const int_sp_st[::1] ptr, const int_sp_st[::1] col):
     """Cuthill-McKee ordering of a symmetric graph
 
     Each connected component is started at a pseudo-peripheral node.
@@ -246,33 +256,34 @@ def cuthill_mckee(const int[::1] ptr, const int[::1] col):
     -------
     perm : the permutation table, ``perm[new] = old``
     """
-    cdef int n = ptr.shape[0] - 1
-    DEG = np.diff(ptr).astype(np.int32)
+    cdef object dtype = type2dtype[int_sp_st](1)
+    cdef int_sp_st n = ptr.shape[0] - 1
+    DEG = np.diff(ptr).astype(dtype)
     # seeds by increasing degree, each component starts at its minimum degree node
-    SEEDS = np.argsort(DEG, kind="stable").astype(np.int32)
-    PERM = np.empty(n, dtype=np.int32)
-    LEVEL = np.full(n, -1, dtype=np.int32)
-    ORDER = np.empty(n, dtype=np.int32)
-    ORDER2 = np.empty(n, dtype=np.int32)
-    LPTR = np.empty(n + 1, dtype=np.int32)
-    LPTR2 = np.empty(n + 1, dtype=np.int32)
-    cdef int[::1] deg = DEG
-    cdef int[::1] seeds = SEEDS
-    cdef int[::1] perm = PERM
-    cdef int[::1] level = LEVEL
-    cdef int[::1] order = ORDER
-    cdef int[::1] order2 = ORDER2
-    cdef int[::1] lptr = LPTR
-    cdef int[::1] lptr2 = LPTR2
-    cdef int s, v, u, i, x, j, ind, head, start
-    cdef int nperm = 0
+    SEEDS = np.argsort(DEG, kind="stable").astype(dtype)
+    PERM = np.empty(n, dtype=dtype)
+    LEVEL = np.full(n, -1, dtype=dtype)
+    ORDER = np.empty(n, dtype=dtype)
+    ORDER2 = np.empty(n, dtype=dtype)
+    LPTR = np.empty(n + 1, dtype=dtype)
+    LPTR2 = np.empty(n + 1, dtype=dtype)
+    cdef int_sp_st[::1] deg = DEG
+    cdef int_sp_st[::1] seeds = SEEDS
+    cdef int_sp_st[::1] perm = PERM
+    cdef int_sp_st[::1] level = LEVEL
+    cdef int_sp_st[::1] order = ORDER
+    cdef int_sp_st[::1] order2 = ORDER2
+    cdef int_sp_st[::1] lptr = LPTR
+    cdef int_sp_st[::1] lptr2 = LPTR2
+    cdef int_sp_st s, v, u, i, x, j, ind, head, start
+    cdef int_sp_st nperm = 0
 
     with nogil:
         for i in range(n):
             s = seeds[i]
             if level[s] != -1:
                 continue
-            v, u = _endpoints(ptr, col, deg, s, level, order, lptr, order2, lptr2)
+            v = _endpoints(ptr, col, deg, s, level, order, lptr, order2, lptr2, &u)
 
             # breadth-first numbering, neighbors by increasing degree
             perm[nperm] = v
@@ -297,9 +308,10 @@ def cuthill_mckee(const int[::1] ptr, const int[::1] col):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef int _number(const int[::1] ptr, const int[::1] col, const long long[::1] key,
-                 const int[::1] lvl, const int nl, const int[::1] order, const int[::1] lptr,
-                 int[::1] level, int[::1] perm, int lstart, int nperm) noexcept nogil:
+cdef int_sp_st _number(const int_sp_st[::1] ptr, const int_sp_st[::1] col, const long long[::1] key,
+                       const int_sp_st[::1] lvl, const int_sp_st nl, const int_sp_st[::1] order,
+                       const int_sp_st[::1] lptr, int_sp_st[::1] level, int_sp_st[::1] perm,
+                       int_sp_st lstart, int_sp_st nperm) noexcept nogil:
     """Level-by-level numbering of a level structure (GPS algorithm III)
 
     ``order[lptr[l]:lptr[l+1]]`` are the nodes of level ``l`` by increasing `key`,
@@ -311,7 +323,7 @@ cdef int _number(const int[::1] ptr, const int[::1] col, const long long[::1] ke
     -------
     nperm : the updated number of numbered nodes
     """
-    cdef int i, j, x, ind, start, cur, lend
+    cdef int_sp_st i, j, x, ind, start, cur, lend
 
     for j in range(nl):
         cur = lptr[j]
@@ -357,7 +369,8 @@ cdef int _number(const int[::1] ptr, const int[::1] col, const long long[::1] ke
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-def _gps(const int[::1] ptr, const int[::1] col, bint generalized, max_roots, vset=None, uset=None):
+def _gps(const int_sp_st[::1] ptr, const int_sp_st[::1] col, bint generalized, max_roots,
+         vset=None, uset=None):
     """Shared implementation of `gibbs_poole_stockmeyer`, `generalized_gibbs_poole_stockmeyer`
     and `electrode_ordering`
 
@@ -366,37 +379,38 @@ def _gps(const int[::1] ptr, const int[::1] col, bint generalized, max_roots, vs
     The electrode ordering roots the level structures at the sets `vset` and `uset`
     (unique nodes) for the component they belong to, the remaining components use GPS.
     """
-    cdef int n = ptr.shape[0] - 1
-    DEG = np.diff(ptr).astype(np.int32)
+    cdef object dtype = type2dtype[int_sp_st](1)
+    cdef int_sp_st n = ptr.shape[0] - 1
+    DEG = np.diff(ptr).astype(dtype)
     # seeds by increasing degree, each component starts at its minimum degree node
-    SEEDS = np.argsort(DEG, kind="stable").astype(np.int32)
+    SEEDS = np.argsort(DEG, kind="stable").astype(dtype)
     KEY = DEG.astype(np.int64)
-    PERM = np.empty(n, dtype=np.int32)
-    LEVEL = np.full(n, -1, dtype=np.int32)
-    LVL = np.empty(n, dtype=np.int32)
-    LOC = np.empty(n, dtype=np.int32)
-    ORDER = np.empty(n, dtype=np.int32)
-    ORDER2 = np.empty(n, dtype=np.int32)
-    LPTR = np.empty(n + 1, dtype=np.int32)
-    LPTR2 = np.empty(n + 1, dtype=np.int32)
-    CNT = np.zeros(n + 1, dtype=np.int32)
-    HCNT = np.zeros(n + 1, dtype=np.int32)
-    cdef int[::1] deg = DEG
+    PERM = np.empty(n, dtype=dtype)
+    LEVEL = np.full(n, -1, dtype=dtype)
+    LVL = np.empty(n, dtype=dtype)
+    LOC = np.empty(n, dtype=dtype)
+    ORDER = np.empty(n, dtype=dtype)
+    ORDER2 = np.empty(n, dtype=dtype)
+    LPTR = np.empty(n + 1, dtype=dtype)
+    LPTR2 = np.empty(n + 1, dtype=dtype)
+    CNT = np.zeros(n + 1, dtype=dtype)
+    HCNT = np.zeros(n + 1, dtype=dtype)
+    cdef int_sp_st[::1] deg = DEG
     cdef long long[::1] key = KEY
-    cdef int[::1] perm = PERM
-    cdef int[::1] level = LEVEL
-    cdef int[::1] lvl = LVL
-    cdef int[::1] loc = LOC
-    cdef int[::1] order = ORDER
-    cdef int[::1] order2 = ORDER2
-    cdef int[::1] lptr = LPTR
-    cdef int[::1] lptr2 = LPTR2
-    cdef int[::1] cnt = CNT
-    cdef int[::1] hcnt = HCNT
-    cdef int[:, ::1] A
-    cdef int s, v, u, i, t, x, a, ind, k, nl, nc, m, h, hmin, best, j1, lo, hi, start, s0
-    cdef int nperm = 0
-    cdef int p = 0
+    cdef int_sp_st[::1] perm = PERM
+    cdef int_sp_st[::1] level = LEVEL
+    cdef int_sp_st[::1] lvl = LVL
+    cdef int_sp_st[::1] loc = LOC
+    cdef int_sp_st[::1] order = ORDER
+    cdef int_sp_st[::1] order2 = ORDER2
+    cdef int_sp_st[::1] lptr = LPTR
+    cdef int_sp_st[::1] lptr2 = LPTR2
+    cdef int_sp_st[::1] cnt = CNT
+    cdef int_sp_st[::1] hcnt = HCNT
+    cdef int_sp_st[:, ::1] A
+    cdef int_sp_st s, v, u, i, t, x, a, ind, k, nl, nc, m, h, hmin, best, j1, lo, hi, start, s0
+    cdef int_sp_st nperm = 0
+    cdef int_sp_st p = 0
     cdef bint swapped
     # Legend of the variables, see [GPS1976]_ and [GGPS2009]_:
     #   s      : seed of the component (-1 for the component of the electrodes)
@@ -444,7 +458,7 @@ def _gps(const int[::1] ptr, const int[::1] col, bint generalized, max_roots, vs
         # Phase I: pseudo-peripheral nodes, the roots at the "v" and "u" ends
         v = s
         while root_sets is None:
-            v, u = _endpoints(ptr, col, deg, v, level, order, lptr, order2, lptr2)
+            v = _endpoints(ptr, col, deg, v, level, order, lptr, order2, lptr2, &u)
             nl = _bfs(ptr, col, v, level, order, 0, lptr)
             nc = lptr[nl]
             _reset(level, order, 0, nc)
@@ -482,7 +496,7 @@ def _gps(const int[::1] ptr, const int[::1] col, bint generalized, max_roots, vs
         if root_sets is None:
             roots = vroots + uroots
             p = len(vroots)
-            root_sets = [np.array([x], dtype=np.int32) for x in roots]
+            root_sets = [np.array([x], dtype=dtype) for x in roots]
         m = len(root_sets)
 
         # the component is the nodes connected to the first root set
@@ -498,10 +512,10 @@ def _gps(const int[::1] ptr, const int[::1] col, bint generalized, max_roots, vs
 
         # associated level sets, A[t, i] is the level of order[i] in the t'th
         # rooted structure, the "u" end structures are reversed
-        LOC[ORDER[:nc]] = np.arange(nc, dtype=np.int32)
-        AA = np.empty([m, nc], dtype=np.int32)
-        width = np.empty(m, dtype=np.int32)
-        depth = np.empty(m, dtype=np.int32)
+        LOC[ORDER[:nc]] = np.arange(nc, dtype=dtype)
+        AA = np.empty([m, nc], dtype=dtype)
+        width = np.empty(m, dtype=dtype)
+        depth = np.empty(m, dtype=dtype)
         for t in range(m):
             R = root_sets[t]
             ORDER2[:len(R)] = R
@@ -711,9 +725,10 @@ def electrode_ordering(ptr, col, start, end=None):
     perm : the permutation table, ``perm[new] = old``
     """
     n = len(ptr) - 1
+    dtype = np.asarray(ptr).dtype
 
     def nodes(x, name):
-        x = np.unique(np.asarray(x, dtype=np.int32).ravel())
+        x = np.unique(np.asarray(x, dtype=dtype).ravel())
         if len(x) == 0 or x[0] < 0 or x[-1] >= n:
             raise ValueError(f"electrode_ordering: {name} must be non-empty nodes in [0, {n})")
         return x
@@ -729,13 +744,14 @@ def electrode_ordering(ptr, col, start, end=None):
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef int _shift(const int[::1] ptr, const int[::1] col, const int[::1] lab, int[::1] hist,
-                const int v, const int u, const int dh) noexcept nogil:
+cdef int_sp_st _shift(const int_sp_st[::1] ptr, const int_sp_st[::1] col, const int_sp_st[::1] lab,
+                      int_sp_st[::1] hist, const int_sp_st v, const int_sp_st u,
+                      const int_sp_st dh) noexcept nogil:
     """Add `dh` to the edge length histogram for all edges incident to `v` or `u`
 
     Returns the largest edge length of those edges.
     """
-    cdef int ind, j, d, dmax = 0
+    cdef int_sp_st ind, j, d, dmax = 0
     for ind in range(ptr[v], ptr[v + 1]):
         d = abs(lab[v] - lab[col[ind]])
         hist[d] += dh
@@ -752,8 +768,9 @@ cdef int _shift(const int[::1] ptr, const int[::1] col, const int[::1] lab, int[
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline void _swap(int[::1] lab, int[::1] perm, const int v, const int u) noexcept nogil:
-    cdef int l = lab[v]
+cdef inline void _swap(int_sp_st[::1] lab, int_sp_st[::1] perm,
+                       const int_sp_st v, const int_sp_st u) noexcept nogil:
+    cdef int_sp_st l = lab[v]
     lab[v] = lab[u]
     lab[u] = l
     perm[lab[v]] = v
@@ -763,11 +780,13 @@ cdef inline void _swap(int[::1] lab, int[::1] perm, const int v, const int u) no
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void _refine(const int[::1] ptr, const int[::1] col, int[::1] perm, int[::1] lab,
-                  int[::1] hist, const unsigned char[::1] fixed, const int max_sweeps) noexcept:
+cdef void _refine(const int_sp_st[::1] ptr, const int_sp_st[::1] col, int_sp_st[::1] perm,
+                  int_sp_st[::1] lab, int_sp_st[::1] hist, const unsigned char[::1] fixed,
+                  const int max_sweeps) noexcept:
     """Hill-climbing of `refine_bandwidth`, `perm` and `lab` are updated in-place"""
-    cdef int n = ptr.shape[0] - 1
-    cdef int sweep, v, u, i, ind, l, lo, hi, mid, dist, dlt, side, B, B_new, C
+    cdef int_sp_st n = ptr.shape[0] - 1
+    cdef int sweep, side
+    cdef int_sp_st v, u, i, ind, l, lo, hi, mid, dist, dlt, B, B_new, C
     cdef bint improved, critical
 
     with nogil:
@@ -830,7 +849,8 @@ cdef void _refine(const int[::1] ptr, const int[::1] col, int[::1] perm, int[::1
                 break
 
 
-def refine_bandwidth(const int[::1] ptr, const int[::1] col, perm, fixed=None, int max_sweeps=100):
+def refine_bandwidth(const int_sp_st[::1] ptr, const int_sp_st[::1] col, perm, fixed=None,
+                     int max_sweeps=100):
     """Local refinement of a permutation table that never increases the bandwidth
 
     Hill-climbing on the critical nodes, i.e. nodes with an edge of maximal length.
@@ -863,17 +883,22 @@ def refine_bandwidth(const int[::1] ptr, const int[::1] col, perm, fixed=None, i
        "Reducing the bandwidth of a sparse matrix with tabu search",
        Eur. J. Oper. Res. 135, 450 (2001)
     """
-    cdef int n = ptr.shape[0] - 1
-    PERM = np.array(perm, dtype=np.int32)
+    cdef object dtype = type2dtype[int_sp_st](1)
+    cdef int_sp_st n = ptr.shape[0] - 1
+    PERM = np.array(perm, dtype=dtype)
     if PERM.shape != (n,) or not np.array_equal(np.sort(PERM), np.arange(n)):
         raise ValueError("refine_bandwidth: perm must be a permutation of the graph nodes")
-    LAB = np.empty(n, dtype=np.int32)
-    LAB[PERM] = np.arange(n, dtype=np.int32)
-    HIST = np.zeros(n + 1, dtype=np.int32)
+    LAB = np.empty(n, dtype=dtype)
+    LAB[PERM] = np.arange(n, dtype=dtype)
+    HIST = np.zeros(n + 1, dtype=dtype)
     FIXED = np.zeros(n, dtype=np.uint8)
     if fixed is not None:
-        FIXED[np.asarray(fixed, dtype=np.int32)] = 1
-    _refine(ptr, col, PERM, LAB, HIST, FIXED, max_sweeps)
+        FIXED[np.asarray(fixed, dtype=dtype)] = 1
+    cdef int_sp_st[::1] perm_ = PERM
+    cdef int_sp_st[::1] lab = LAB
+    cdef int_sp_st[::1] hist = HIST
+    cdef const unsigned char[::1] fixed_ = FIXED
+    _refine(ptr, col, perm_, lab, hist, fixed_, max_sweeps)
     return PERM
 
 
@@ -910,9 +935,9 @@ cdef inline double _pair(const BTDCost model, const double a, const double b) no
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef int _grow(int** st, double** val, const int cap) noexcept nogil:
+cdef Py_ssize_t _grow(int_sp_st** st, double** val, const Py_ssize_t cap) noexcept nogil:
     """Double the capacity of the state arrays (4 ints per state)"""
-    st[0] = <int*> realloc(st[0], 8 * cap * sizeof(int))
+    st[0] = <int_sp_st*> realloc(st[0], 8 * cap * sizeof(int_sp_st))
     val[0] = <double*> realloc(val[0], 2 * cap * sizeof(double))
     return 2 * cap
 
@@ -920,16 +945,16 @@ cdef int _grow(int** st, double** val, const int cap) noexcept nogil:
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void _block_bounds(const int[::1] ptr, const int[::1] col, const int[::1] perm,
-                        const int[::1] lab, int[::1] g, int[::1] m) noexcept nogil:
+cdef void _block_bounds(const int_sp_st[::1] ptr, const int_sp_st[::1] col, const int_sp_st[::1] perm,
+                        const int_sp_st[::1] lab, int_sp_st[::1] g, int_sp_st[::1] m) noexcept nogil:
     """Bounds of the allowed blocks of the graph ordered by `perm`
 
     ``g[c]``: a block starting at ``c`` must end at ``>= g[c]`` (non-decreasing),
     ``m[c]``: the minimal size of a block starting at ``c``.
     """
-    cdef int n = ptr.shape[0] - 1
-    cdef int r, i, ind, c
-    cdef int f = 0
+    cdef int_sp_st n = ptr.shape[0] - 1
+    cdef int_sp_st r, i, ind, c
+    cdef int_sp_st f = 0
     g[0] = 1
     for r in range(n):
         i = perm[r]
@@ -945,7 +970,7 @@ cdef void _block_bounds(const int[::1] ptr, const int[::1] col, const int[::1] p
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"):
+def btd_blocks(const int_sp_st[::1] ptr, const int_sp_st[::1] col, perm, cost: str = "speed"):
     r"""Block sizes of the block-tridiagonal partition of minimal cost
 
     With the graph ordered by `perm`, the matrix is partitioned into contiguous
@@ -983,33 +1008,37 @@ def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"
     if cost not in _BTD_COSTS:
         raise ValueError(f"btd_blocks: cost must be one of {list(_BTD_COSTS)}, got {cost!r}")
     cdef BTDCost model = _BTD_COSTS[cost]
-    cdef int n = ptr.shape[0] - 1
-    PERM = np.asarray(perm, dtype=np.int32)
+    cdef object dtype = type2dtype[int_sp_st](1)
+    cdef int_sp_st n = ptr.shape[0] - 1
+    PERM = np.asarray(perm, dtype=dtype)
     if PERM.shape != (n,) or not np.array_equal(np.sort(PERM), np.arange(n)):
         raise ValueError("btd_blocks: perm must be a permutation of the graph nodes")
     if n == 0:
         return np.zeros(0, dtype=np.int64)
-    LAB = np.empty(n, dtype=np.int32)
-    LAB[PERM] = np.arange(n, dtype=np.int32)
-    G = np.empty(n + 1, dtype=np.int32)
-    M = np.zeros(n + 1, dtype=np.int32)
+    LAB = np.empty(n, dtype=dtype)
+    LAB[PERM] = np.arange(n, dtype=dtype)
+    G = np.empty(n + 1, dtype=dtype)
+    M = np.zeros(n + 1, dtype=dtype)
     BEST = np.empty(n + 1, dtype=np.float64)
     LOW = np.empty(n + 1, dtype=np.float64)
-    PREV = np.empty(n + 1, dtype=np.int32)
-    HEAD = np.full(n + 1, -1, dtype=np.int32)
-    cdef int[::1] g = G
-    cdef int[::1] m = M
+    PREV = np.empty(n + 1, dtype=dtype)
+    HEAD = np.full(n + 1, -1, dtype=dtype)
+    cdef int_sp_st[::1] perm_ = PERM
+    cdef int_sp_st[::1] lab = LAB
+    cdef int_sp_st[::1] g = G
+    cdef int_sp_st[::1] m = M
     cdef double[::1] best = BEST
     cdef double[::1] low = LOW
-    cdef int[::1] prev = PREV
-    cdef int[::1] head = HEAD
-    cdef int c, cp, c2, h, d, s, t, nst, cap, last
+    cdef int_sp_st[::1] prev = PREV
+    cdef int_sp_st[::1] head = HEAD
+    cdef int_sp_st c, cp, c2, h, d, s, t, nst, last
+    cdef Py_ssize_t cap
     cdef double cost_, upper, v
     # branch and bound states: (c, d, back, next) and value
-    cdef int* st = NULL
+    cdef int_sp_st* st = NULL
     cdef double* val = NULL
 
-    _block_bounds(ptr, col, PERM, LAB, g, m)
+    _block_bounds(ptr, col, perm_, lab, g, m)
 
     with nogil:
         # optimal partition of the diagonal terms
@@ -1055,7 +1084,7 @@ def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"
 
         # branch and bound, states are the blocks [c - d, c) in bucket c
         cap = 1024
-        st = <int*> malloc(4 * cap * sizeof(int))
+        st = <int_sp_st*> malloc(4 * cap * sizeof(int_sp_st))
         val = <double*> malloc(cap * sizeof(double))
         # root state: no block before 0
         st[0] = 0; st[1] = 0; st[2] = -1; st[3] = -1
@@ -1114,7 +1143,7 @@ def btd_blocks(const int[::1] ptr, const int[::1] col, perm, cost: str = "speed"
         free(val)
 
 
-def _btd_backtrack(const int[::1] prev, int c):
+def _btd_backtrack(const int_sp_st[::1] prev, Py_ssize_t c):
     """Block sizes from the boundaries ``prev[c] -> c``"""
     blocks = []
     while c > 0:

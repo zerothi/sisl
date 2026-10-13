@@ -3,9 +3,11 @@ Added ``sisl_toolbox.btd.permute`` for bandwidth reducing permutation tables
 The Cython routines implement (reverse) Cuthill-McKee, Gibbs-Poole-Stockmeyer,
 generalized Gibbs-Poole-Stockmeyer and electrode rooted orderings on symmetric
 graphs, as well as a local refinement that applies to all of them.
-``reduce_bandwidth`` takes a `~sisl.SparseCSR`, folds the supercell
-columns into the unit cell, symmetrizes the pattern, and returns the
-permutation table ``perm[new] = old`` for the requested method.
+``reduce_bandwidth`` takes a `~sisl.SparseCSR` or a scipy sparse
+matrix/array, folds the supercell columns into the unit cell, symmetrizes
+the pattern, and returns the permutation table ``perm[new] = old`` for the
+requested method. All routines work with ``int32`` and ``int64`` indices,
+and return arrays with the index data-type of the input.
 
 ``sisl_toolbox.btd.btd_partition`` partitions the permuted matrix into the
 block-tridiagonal matrix of minimal cost (``speed``, ``memory`` or

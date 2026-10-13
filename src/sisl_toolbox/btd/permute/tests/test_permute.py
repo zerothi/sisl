@@ -28,21 +28,21 @@ pytestmark = [pytest.mark.btd]
 methods = ["cm", "rcm", "gps", "ggps"]
 
 
-def _graph(A):
+def _graph(A, dtype=np.int32):
     A = sps.csr_array(A)
-    ptr = A.indptr.astype(np.int32)
-    return symmetric_graph(
-        ptr, np.diff(ptr).astype(np.int32), A.indices.astype(np.int32)
-    )
+    return symmetric_graph(A.indptr.astype(dtype), A.indices.astype(dtype))
 
 
 def _is_perm(perm, n):
     return np.array_equal(np.sort(perm), np.arange(n))
 
 
-def test_symmetric_graph():
+@pytest.mark.parametrize("dtype", [np.int32, np.int64])
+def test_symmetric_graph(dtype):
     A = sps.random(50, 50, density=0.1, random_state=1, format="csr") + sps.eye(50)
-    ptr, col = _graph(A)
+    ptr, col = _graph(A, dtype)
+    assert ptr.dtype == dtype
+    assert col.dtype == dtype
     G = sps.csr_array((np.ones(len(col)), col, ptr), shape=A.shape)
     S = (A + A.T).astype(bool).astype(float)
     S.setdiag(0)
@@ -123,6 +123,86 @@ def test_reduce_bandwidth_supercell(method, refine):
     A = sps.csr_array((A.data, A.indices % g.no, A.indptr), shape=(g.no, g.no))
     ptr, col = _graph(A)
     assert bandwidth(ptr, col, perm) < bandwidth(ptr, col) // 2
+
+
+def _supercell_hamiltonian():
+    g = sisl.geom.graphene().tile(6, 0).tile(5, 1)
+    g = g.sub(np.random.default_rng(0).permutation(g.na))
+    H = sisl.Hamiltonian(g)
+    H.construct([(0.1, 1.44), (0, -2.7)])
+    return H
+
+
+@pytest.mark.parametrize(
+    "convert",
+    [sps.csr_array, sps.coo_array, sps.csc_array, sps.csr_matrix],
+    ids=["csr_array", "coo_array", "csc_array", "csr_matrix"],
+)
+@pytest.mark.parametrize("method", methods)
+def test_reduce_bandwidth_scipy(method, convert):
+    H = _supercell_hamiltonian()
+    A = H.tocsr()
+    # columns extend into the supercell
+    assert A.shape[1] > A.shape[0]
+    perm = reduce_bandwidth(convert(A), method)
+    assert np.array_equal(perm, reduce_bandwidth(H._csr, method))
+
+
+def _csr_index_dtype(A, dtype):
+    # scipy down-casts the indices on construction, so assign them afterwards
+    A = sps.csr_array(A)
+    A.indices = A.indices.astype(dtype)
+    A.indptr = A.indptr.astype(dtype)
+    return A
+
+
+@pytest.mark.parametrize("dtype", [np.int32, np.int64])
+@pytest.mark.parametrize("method", methods)
+def test_reduce_bandwidth_dtype(method, dtype):
+    H = _supercell_hamiltonian()
+    A = _csr_index_dtype(H.tocsr(), dtype)
+    assert A.indices.dtype == dtype
+    perm = reduce_bandwidth(A, method)
+    assert perm.dtype == dtype
+    assert np.array_equal(perm, reduce_bandwidth(H._csr, method))
+
+
+@pytest.mark.parametrize("dtype", [np.int32, np.int64])
+def test_reduce_bandwidth_electrode_dtype(dtype):
+    H = _supercell_hamiltonian()
+    A = _csr_index_dtype(H.tocsr(), dtype)
+    x = H.geometry.xyz[:, 0]
+    L = np.flatnonzero(x < x.min() + 1)
+    R = np.flatnonzero(x > x.max() - 1)
+    perm = reduce_bandwidth(A, "electrode", start=L, end=R)
+    assert perm.dtype == dtype
+    assert np.array_equal(perm, reduce_bandwidth(H._csr, "electrode", start=L, end=R))
+
+
+@pytest.mark.parametrize("func", [cuthill_mckee, gibbs_poole_stockmeyer])
+def test_permute_int64_identical(func):
+    A = sps.random(150, 150, density=0.02, random_state=3)
+    ptr32, col32 = _graph(A, np.int32)
+    ptr64, col64 = _graph(A, np.int64)
+    perm32 = func(ptr32, col32)
+    perm64 = func(ptr64, col64)
+    assert perm64.dtype == np.int64
+    assert np.array_equal(perm32, perm64)
+    ref32 = refine_bandwidth(ptr32, col32, perm32)
+    ref64 = refine_bandwidth(ptr64, col64, perm64)
+    assert ref64.dtype == np.int64
+    assert np.array_equal(ref32, ref64)
+    for cost in ["speed", "memory", "speed-diagonal"]:
+        assert np.array_equal(
+            btd_blocks(ptr32, col32, ref32, cost), btd_blocks(ptr64, col64, ref64, cost)
+        )
+
+
+def test_reduce_bandwidth_errors():
+    with pytest.raises(TypeError):
+        reduce_bandwidth(np.eye(4))
+    with pytest.raises(ValueError):
+        reduce_bandwidth(sps.csr_array((4, 6)))
 
 
 def test_reduce_bandwidth_method_error():
