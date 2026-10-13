@@ -1,7 +1,7 @@
 set_property(DIRECTORY
   APPEND
   PROPERTY INCLUDE_DIRECTORIES
-  "${PROJECT_SOURCE_DIR}/src/sisl/_core"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../../../sisl/_core"
   )
 
 foreach(library _permute)
