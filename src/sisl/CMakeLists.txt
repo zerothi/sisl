@@ -1,14 +1,10 @@
-set_property(DIRECTORY
-  APPEND
-  PROPERTY INCLUDE_DIRECTORIES
-  "${CMAKE_CURRENT_SOURCE_DIR}/_core"
-  )
-
 foreach(library _indices _math_small)
   add_cython_library(
     SOURCE ${library}.pyx
     LIBRARY ${library}
     OUTPUT ${library}_C
+    INCLUDE_DIRS
+      "${CMAKE_CURRENT_SOURCE_DIR}/_core"
     )
   install(TARGETS ${library}
     DESTINATION "${SKBUILD_PROJECT_NAME}")
@@ -22,6 +18,8 @@ foreach(library _sparse_grid_ops)
       SOURCE ${library}.py
       LIBRARY ${library}
       OUTPUT ${library}_C
+      INCLUDE_DIRS
+        "${CMAKE_CURRENT_SOURCE_DIR}/_core"
       )
     install(TARGETS ${library}
       DESTINATION "${SKBUILD_PROJECT_NAME}")

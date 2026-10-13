@@ -466,7 +466,7 @@ function(add_cython_library)
   # Add include directories
   foreach(dir IN LISTS _c_INCLUDE_DIRS)
     if(IS_DIRECTORY "${dir}")
-      list(APPEND _c_CYTHON_FLAGS "-I ${dir}")
+      list(APPEND _c_CYTHON_FLAGS "-I" "${dir}")
     else()
       message(WARNING "Trying to add include dir: ${dir} but the folder does not exist?")
     endif()
