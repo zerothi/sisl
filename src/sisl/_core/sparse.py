@@ -1840,7 +1840,7 @@ column indices of the sparse elements
             passed sparse matrices
         """
         if issparse(sparse_matrices) or isinstance(sparse_matrices, SparseCSR):
-            sparse_matrices = list(sparse_matrices)
+            sparse_matrices = [sparse_matrices]
 
         # short-hand
         spmats = sparse_matrices
