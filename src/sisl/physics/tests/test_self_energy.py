@@ -493,3 +493,70 @@ def test_real_space_SI_spin_orbit():
     RS = RealSpaceSI(semi, surf, 0, (2, 1, 1), dk=1.5)
     RS.self_energy(0.1)
     RS.self_energy(0.1, coupling=True)
+
+
+def _coupling_full(RS, E, bulk):
+    """Coupling self-energy calculated from the full real-space Green function"""
+    G = RS.green(E)
+    orbs = RS._calc["orbs"]
+    iorbs = np.delete(np.arange(len(G)), orbs).reshape(-1, 1)
+    SeH = RS._calc["S0"]() * E - RS._calc["P0"]()
+    SE = np.linalg.solve(
+        G[orbs, orbs.T],
+        np.eye(orbs.size) - G[orbs, iorbs.T] @ SeH[iorbs, orbs.T].toarray(),
+    )
+    if bulk:
+        return SE
+    return SeH[orbs, orbs.T].toarray() - SE
+
+
+@pytest.mark.parametrize("HS", [True, False])
+@pytest.mark.parametrize("trs", [True, False])
+@pytest.mark.parametrize("bulk", [True, False])
+@pytest.mark.parametrize("unfold", [(1, 4, 1), (3, 5, 1), (4, 1, 1)])
+def test_real_space_SE_coupling_full(setup, HS, trs, bulk, unfold):
+    """The coupling self-energy only calculates the necessary Green function elements"""
+    H = setup.HS if HS else setup.H
+    RSE = RealSpaceSE(H, 0, 1, unfold, dk=30, trs=trs)
+    E = 0.3 + 1e-3j
+    SE = RSE.self_energy(E, coupling=True, bulk=bulk)
+    assert np.allclose(SE, _coupling_full(RSE, E, bulk), atol=1e-10)
+
+
+@pytest.mark.parametrize("semi_dir", ["-B", "+B"])
+@pytest.mark.parametrize("trs", [True, False])
+@pytest.mark.parametrize("bulk", [True, False])
+@pytest.mark.parametrize("unfold", [1, 4])
+def test_real_space_SI_coupling_full(setup, semi_dir, trs, bulk, unfold):
+    semi = RecursiveSI(setup.H, semi_dir)
+    surf = setup.H.tile(4, 1)
+    surf.set_nsc(b=1)
+    RSI = RealSpaceSI(semi, surf, 0, (unfold, 1, 1), dk=30, trs=trs)
+    E = 0.3 + 1e-3j
+    SE = RSI.self_energy(E, coupling=True, bulk=bulk)
+    assert np.allclose(SE, _coupling_full(RSI, E, bulk), atol=1e-10)
+
+
+@pytest.mark.parametrize("unfold", [(1, 1, 1), (1, 4, 1), (2, 3, 1)])
+def test_real_space_SE_green_indices(setup, unfold):
+    RSE = RealSpaceSE(setup.H, 0, 1, unfold, dk=30)
+    E = 0.3 + 1e-3j
+    G = RSE.green(E)
+    indices = np.array([len(G) - 1, 0, len(G) // 2, -2])
+    assert np.allclose(
+        RSE.green(E, indices=indices), G[np.ix_(indices, indices)], atol=1e-12
+    )
+
+
+@pytest.mark.parametrize("unfold", [1, 3])
+def test_real_space_SI_green_indices(setup, unfold):
+    semi = RecursiveSI(setup.H, "-B")
+    surf = setup.H.tile(4, 1)
+    surf.set_nsc(b=1)
+    RSI = RealSpaceSI(semi, surf, 0, (unfold, 1, 1), dk=30)
+    E = 0.3 + 1e-3j
+    G = RSI.green(E)
+    indices = np.array([len(G) - 1, 0, len(G) // 2, -2])
+    assert np.allclose(
+        RSI.green(E, indices=indices), G[np.ix_(indices, indices)], atol=1e-12
+    )

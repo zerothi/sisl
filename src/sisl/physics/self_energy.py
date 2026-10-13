@@ -6,17 +6,9 @@ from __future__ import annotations
 from typing import Literal, Optional, Sequence, Tuple, Union
 
 import numpy as np
+import numpy.typing as npt
 from numpy import abs as _abs
-from numpy import (
-    conjugate,
-    delete,
-    empty,
-    empty_like,
-    eye,
-    matmul,
-    subtract,
-    zeros_like,
-)
+from numpy import conjugate, empty, empty_like, eye, matmul, subtract, zeros_like
 
 import sisl._array as _a
 from sisl._core.sparse_geometry import _SparseGeometry
@@ -46,6 +38,97 @@ def _orbs2spinor_dimension(orbs, spin: "Spin"):
         for off in range(1, reps):
             orbs[off::reps] += off
     return orbs
+
+
+def _real_space_coupling_orbitals(P0, atoms) -> dict:
+    """Orbitals required for the coupling self-energy
+
+    The coupling self-energy (on the orbitals of `atoms`) only requires the Green
+    function elements between the coupling orbitals, and the orbitals coupling
+    *to* them (through the matrix elements in `P0`).
+
+    Parameters
+    ----------
+    P0 :
+        the real-space parent, its orbitals are ordered as the real-space Green function
+    atoms :
+        atoms (in `P0`) on which the coupling self-energy lives
+
+    Returns
+    -------
+    dict
+        ``orbs`` the coupling orbitals (column vector),
+        ``corbs`` the other orbitals coupling to ``orbs`` (column vector),
+        ``G_indices`` the sorted union of ``orbs`` and ``corbs``, i.e. the
+        Green function elements required,
+        ``G_iorbs``/``G_icorbs`` the indices of ``orbs``/``corbs`` in ``G_indices`` (column vectors)
+    """
+    # 1. orbitals where the self-energy lives
+    orbs = P0.a2o(atoms, all=True)
+
+    # 2. orbitals coupling to the coupling orbitals, i.e. the rows with
+    #    non-zero elements in the columns of `orbs` (folded to the unit-cell)
+    csr = P0._csr
+    no = P0.no
+    rows = np.repeat(_a.arangei(no), csr.ncol)
+    cols = csr.col[_a.array_arange(csr.ptr[:-1], n=csr.ncol)] % no
+    corbs = np.setdiff1d(rows[np.isin(cols, orbs)], orbs)
+
+    try:
+        orbs = _orbs2spinor_dimension(orbs, P0.spin)
+        corbs = _orbs2spinor_dimension(corbs, P0.spin)
+    except AttributeError:
+        pass
+
+    # 3. the Green function elements required
+    G_indices = np.union1d(orbs, corbs)
+    return {
+        "orbs": orbs.reshape(-1, 1),
+        "corbs": corbs.reshape(-1, 1),
+        "G_indices": G_indices,
+        "G_iorbs": np.searchsorted(G_indices, orbs).reshape(-1, 1),
+        "G_icorbs": np.searchsorted(G_indices, corbs).reshape(-1, 1),
+    }
+
+
+def _coupling_self_energy(G, SeH, calc: dict, bulk: bool, dtype):
+    r"""Calculate the coupling self-energy from the real-space Green function
+
+    .. math::
+        \mathbf S E - \mathbf H - \boldsymbol\Sigma = \mathbf G_{oo}^{-1}
+            \big[\mathbf I - \mathbf G_{oc} (\mathbf S E - \mathbf H)_{co}\big]
+
+    where :math:`o` are the coupling orbitals and :math:`c` the orbitals coupling
+    to them (all other matrix elements :math:`(\mathbf S E - \mathbf H)_{co}` are zero).
+    `G` only contains the elements ``calc["G_indices"]`` (see `_real_space_coupling_orbitals`).
+    """
+    orbs = calc["orbs"]
+    corbs = calc["corbs"]
+    io = calc["G_iorbs"]
+    ic = calc["G_icorbs"]
+    SeH_bulk = solve(
+        G[io, io.T],
+        eye(orbs.size, dtype=dtype) - matmul(G[io, ic.T], SeH[corbs, orbs.T].toarray()),
+        True,
+        True,
+    )
+    if bulk:
+        return SeH_bulk
+    return SeH[orbs, orbs.T].toarray() - SeH_bulk
+
+    # Another way to do the coupling calculation would be the *full* thing
+    # which should always be slower.
+    # However, I am not sure which is the most numerically accurate
+    # since comparing the two yields numerical differences on the order 1e-8 eV depending
+    # on the size of the full matrix G.
+
+    # iorbs = _a.arangei(orbs.size).reshape(1, -1)
+    # I = zeros([G.shape[0], orbs.size], dtype)
+    ### Set diagonal
+    # I[orbs.ravel(), iorbs.ravel()] = 1.
+    # if bulk:
+    #    return solve(G, I, True, True)[orbs, iorbs]
+    # return SeH[orbs, orbs.T].toarray() - solve(G, I, True, True)[orbs, iorbs]
 
 
 @set_module("sisl.physics")
@@ -988,11 +1071,6 @@ class RealSpaceSE(SelfEnergy):
         P0 = self.real_space_parent()
 
         V_atoms = self.real_space_coupling(True)[1]
-        orbs = P0.a2o(V_atoms, all=True)
-        try:
-            orbs = _orbs2spinor_dimension(orbs, P0.spin)
-        except AttributeError:
-            pass
 
         self._calc = {
             # The below algorithm requires the direction to be negative
@@ -1001,8 +1079,9 @@ class RealSpaceSE(SelfEnergy):
             # Used to calculate the real-space self-energy
             "P0": P0.Pk,
             "S0": P0.Sk,
-            # Orbitals in the coupling atoms
-            "orbs": orbs.reshape(-1, 1),
+            # Orbitals in the coupling atoms (orbs), the orbitals coupling
+            # to them (corbs) and the Green function elements required
+            **_real_space_coupling_orbitals(P0, V_atoms),
         }
 
         # Update the BrillouinZone integration grid in case it isn't specified
@@ -1053,46 +1132,15 @@ class RealSpaceSE(SelfEnergy):
         if E.imag == 0:
             E = E.real + 1j * self._options["eta"]
 
+        if coupling:
+            calc = self._calc
+            # Only calculate the necessary elements of the real-space Green function
+            G = self.green(E, k, dtype=dtype, indices=calc["G_indices"])
+            SeH = calc["S0"](k, dtype=dtype) * E - calc["P0"](k, dtype=dtype, **kwargs)
+            return _coupling_self_energy(G, SeH, calc, bulk, dtype)
+
         # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
-
-        if coupling:
-            orbs = self._calc["orbs"]
-            iorbs = delete(_a.arangei(len(G)), orbs).reshape(-1, 1)
-            SeH = self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](
-                k, dtype=dtype, **kwargs
-            )
-            if bulk:
-                return solve(
-                    G[orbs, orbs.T],
-                    eye(orbs.size, dtype=dtype)
-                    - matmul(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()),
-                    True,
-                    True,
-                )
-            return SeH[orbs, orbs.T].toarray() - solve(
-                G[orbs, orbs.T],
-                eye(orbs.size, dtype=dtype)
-                - matmul(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()),
-                True,
-                True,
-            )
-
-            # Another way to do the coupling calculation would be the *full* thing
-            # which should always be slower.
-            # However, I am not sure which is the most numerically accurate
-            # since comparing the two yields numerical differences on the order 1e-8 eV depending
-            # on the size of the full matrix G.
-
-            # orbs = self._calc["orbs"]
-            # iorbs = _a.arangei(orbs.size).reshape(1, -1)
-            # I = zeros([G.shape[0], orbs.size], dtype)
-            ### Set diagonal
-            # I[orbs.ravel(), iorbs.ravel()] = 1.
-            # if bulk:
-            #    return solve(G, I, True, True)[orbs, iorbs]
-            # return (self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
-            #    - solve(G, I, True, True)[orbs, iorbs]
 
         if bulk:
             return inv(G, True)
@@ -1108,6 +1156,7 @@ class RealSpaceSE(SelfEnergy):
         dtype: np.dtype = np.complex128,
         *,
         apply_kwargs=None,
+        indices: Optional[npt.ArrayLike] = None,
         **kwargs,
     ) -> np.ndarray:
         r"""Calculate the real-space Green function
@@ -1128,6 +1177,10 @@ class RealSpaceSE(SelfEnergy):
           the resulting data type.
         apply_kwargs : dict, optional
            keyword arguments passed directly to ``bz.apply.renew(**apply_kwargs)``.
+        indices :
+           only calculate the Green function sub-matrix ``G[np.ix_(indices, indices)]``,
+           the returned matrix has shape ``(len(indices), len(indices))``.
+           This greatly reduces the memory for large Bloch expansions.
         **kwargs : dict, optional
            arguments passed directly to the ``self.parent.Pk`` method (not ``self.parent.Sk``), for instance ``spin``
         """
@@ -1316,7 +1369,21 @@ class RealSpaceSE(SelfEnergy):
         if len(bloch) > 1:
 
             def _func_bloch(k, dtype, no, tile, idx0):
-                return bloch(_calc_green, k, dtype=dtype, no=no, tile=tile, idx0=idx0)
+                return bloch(
+                    _calc_green,
+                    k,
+                    dtype=dtype,
+                    no=no,
+                    tile=tile,
+                    idx0=idx0,
+                    indices=indices,
+                )
+
+        elif indices is not None:
+            indices_ix = np.ix_(indices, indices)
+
+            def _func_bloch(k, dtype, no, tile, idx0):
+                return _calc_green(k, dtype, no, tile, idx0)[indices_ix]
 
         else:
             _func_bloch = _calc_green
@@ -1329,7 +1396,7 @@ class RealSpaceSE(SelfEnergy):
         G = bz.apply.renew(**apply_kwargs).average(_func_bloch)(
             dtype=dtype, no=no, tile=tile, idx0=idx0
         )
-        if not bloch.finalize:
+        if not bloch.finalize and indices is None:
             bloch.unfold_finalize(G)
 
         if is_k:
@@ -1737,18 +1804,14 @@ class RealSpaceSI(SelfEnergy):
         P0 = self.real_space_parent()
 
         V_atoms = self.real_space_coupling(True)[1]
-        orbs = P0.a2o(V_atoms, all=True)
-        try:
-            orbs = _orbs2spinor_dimension(orbs, P0.spin)
-        except AttributeError:
-            pass
 
         self._calc = {
             # Used to calculate the real-space self-energy
             "P0": P0.Pk,
             "S0": P0.Sk,
-            # Orbitals in the coupling atoms
-            "orbs": orbs.reshape(-1, 1),
+            # Orbitals in the coupling atoms (orbs), the orbitals coupling
+            # to them (corbs) and the Green function elements required
+            **_real_space_coupling_orbitals(P0, V_atoms),
         }
 
         # Update the BrillouinZone integration grid in case it isn't specified
@@ -1799,46 +1862,15 @@ class RealSpaceSI(SelfEnergy):
         if E.imag == 0:
             E = E.real + 1j * self._options["eta"]
 
+        if coupling:
+            calc = self._calc
+            # Only calculate the necessary elements of the real-space Green function
+            G = self.green(E, k, dtype=dtype, indices=calc["G_indices"])
+            SeH = calc["S0"](k, dtype=dtype) * E - calc["P0"](k, dtype=dtype, **kwargs)
+            return _coupling_self_energy(G, SeH, calc, bulk, dtype)
+
         # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
-
-        if coupling:
-            orbs = self._calc["orbs"]
-            iorbs = delete(_a.arangei(len(G)), orbs).reshape(-1, 1)
-            SeH = self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](
-                k, dtype=dtype, **kwargs
-            )
-            if bulk:
-                return solve(
-                    G[orbs, orbs.T],
-                    eye(orbs.size, dtype=dtype)
-                    - matmul(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()),
-                    True,
-                    True,
-                )
-            return SeH[orbs, orbs.T].toarray() - solve(
-                G[orbs, orbs.T],
-                eye(orbs.size, dtype=dtype)
-                - matmul(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()),
-                True,
-                True,
-            )
-
-            # Another way to do the coupling calculation would be the *full* thing
-            # which should always be slower.
-            # However, I am not sure which is the most numerically accurate
-            # since comparing the two yields numerical differences on the order 1e-8 eV depending
-            # on the size of the full matrix G.
-
-            # orbs = self._calc["orbs"]
-            # iorbs = _a.arangei(orbs.size).reshape(1, -1)
-            # I = zeros([G.shape[0], orbs.size], dtype)
-            # Set diagonal
-            # I[orbs.ravel(), iorbs.ravel()] = 1.
-            # if bulk:
-            #    return solve(G, I, True, True)[orbs, iorbs]
-            # return (self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
-            #    - solve(G, I, True, True)[orbs, iorbs]
 
         if bulk:
             return inv(G, True)
@@ -1848,7 +1880,13 @@ class RealSpaceSI(SelfEnergy):
         ).toarray() - inv(G, True)
 
     def green(
-        self, E: complex, k: KPoint = (0, 0, 0), dtype=np.complex128, **kwargs
+        self,
+        E: complex,
+        k: KPoint = (0, 0, 0),
+        dtype=np.complex128,
+        *,
+        indices: Optional[npt.ArrayLike] = None,
+        **kwargs,
     ) -> np.ndarray:
         r"""Calculate the real-space Green function
 
@@ -1866,6 +1904,10 @@ class RealSpaceSI(SelfEnergy):
            I.e. this would correspond to a circular real-space Green function
         dtype :
           the resulting data type.
+        indices :
+           only calculate the Green function sub-matrix ``G[np.ix_(indices, indices)]``,
+           the returned matrix has shape ``(len(indices), len(indices))``.
+           This greatly reduces the memory for large Bloch expansions.
         **kwargs : dict, optional
            arguments passed directly to the ``self.surface.Pk`` method (not ``self.surface.Sk``), for instance ``spin``
         """
@@ -1974,7 +2016,14 @@ class RealSpaceSI(SelfEnergy):
                     dtype=dtype,
                     surf_orbs=surf_orbs,
                     semi_bulk=semi_bulk,
+                    indices=indices,
                 )
+
+        elif indices is not None:
+            indices_ix = np.ix_(indices, indices)
+
+            def _func_bloch(k, dtype, surf_orbs, semi_bulk):
+                return _calc_green(k, dtype, surf_orbs, semi_bulk)[indices_ix]
 
         else:
             _func_bloch = _calc_green
@@ -1984,7 +2033,7 @@ class RealSpaceSI(SelfEnergy):
             dtype=dtype, surf_orbs=self._surface_orbs, semi_bulk=opt["semi_bulk"]
         )
 
-        if not bloch.finalize:
+        if not bloch.finalize and indices is None:
             bloch.unfold_finalize(G)
 
         if is_k:
