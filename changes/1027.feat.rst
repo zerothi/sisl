@@ -1,0 +1,12 @@
+Added ``indices`` to `~sisl.physics.Bloch` to only calculate a sub-matrix of the unfolded matrix
+
+``indices`` is either an array (``M[np.ix_(indices, indices)]``) or a tuple
+``(rows, cols)`` (``M[np.ix_(rows, cols)]``) of indices in the unfolded matrix.
+Only the requested elements are calculated and stored, e.g. the edges of a large
+Bloch expansion.
+
+`~sisl.physics.RealSpaceSE.self_energy` and `~sisl.physics.RealSpaceSI.self_energy`
+with ``coupling=True`` now only calculate the required Green function elements,
+which greatly reduces the memory requirements for large Bloch expansions
+(e.g. graphene expanded 100x100 peaks at 0.4 GB instead of more than 25.6 GB).
+The ``green`` methods gained the ``indices`` argument.
