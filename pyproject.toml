@@ -52,11 +52,11 @@ keywords = [
 # Now all dependencies that were released around the same time should be the
 # lower bound of dependencies.
 dependencies = [
-    "numpy>=2.0.0",
-    "scipy>=1.13",
+    "numpy>=2.1.0",
+    "scipy>=1.14",
     # I can't get it to work on py311 with older versions
     "pyparsing>=2.2.1",
-    "xarray>=2022",
+    "xarray>=2024.3",
 ]
 
 authors = [
