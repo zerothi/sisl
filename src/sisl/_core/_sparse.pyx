@@ -36,11 +36,11 @@ cdef void ncol2ptr(const int_sp_st nr, const int_sp_st[::1] ncol, int_sp_st[::1]
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def fold_csr_matrix(int_sp_st[::1] ptr,
-                    int_sp_st[::1] ncol,
-                    int_sp_st[::1] col,
-                    int_sp_st per_row = 1,
-                    ):
+def fold_csr_array(int_sp_st[::1] ptr,
+                   int_sp_st[::1] ncol,
+                   int_sp_st[::1] col,
+                   int_sp_st per_row = 1,
+                   ):
     """ Fold all columns into a square matrix """
 
     # Number of rows
@@ -125,7 +125,7 @@ def fold_csr_matrix(int_sp_st[::1] ptr,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 @cython.cdivision(True)
-def fold_csr_matrix_diag(int_sp_st[::1] ptr,
+def fold_csr_array_diag(int_sp_st[::1] ptr,
                          int_sp_st[::1] ncol,
                          int_sp_st[::1] col,
                          int_sp_st per_row,

@@ -414,7 +414,7 @@ class TestGrid:
 
         g.pyamg_fix(A, b, index, 1)
         assert int(b.sum()) == len(index)
-        assert A.getnnz() == len(index)
+        assert A.nnz == len(index)
 
     def test_pyamg2(self, setup):
         # Currently this simply runs the stuff.

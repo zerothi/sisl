@@ -158,7 +158,7 @@ def test_sparse_orbital_bz_hermitian(sisl_allclose, n0, n1, n2):
                     allclose = sisl_allclose[dtype]
 
                     Pk = s.Pk(k=k, format="csr", dtype=dtype)
-                    assert allclose(Pk.toarray(), Pk.getH().toarray())
+                    assert allclose(Pk.toarray(), Pk.conj().T.toarray())
 
                     Pk = s.Pk(k=k, format="array", dtype=dtype)
                     assert allclose(Pk, Pk.T.conj())

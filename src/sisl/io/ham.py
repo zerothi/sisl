@@ -352,7 +352,7 @@ class hamiltonianSile(Sile):
             if is_primary:
                 Hsub.setdiag(Hsub.diagonal())
 
-            if Hsub.getnnz() == 0:
+            if Hsub.nnz == 0:
                 # Skip writing this isc
                 continue
 

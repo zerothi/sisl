@@ -1335,7 +1335,7 @@ class TestHamiltonian:
             # deal with that.
             DOS = es.PDOS(E, "lorentzian")[0]
             COOP2DOS = np.array([C.sum(1) for C in COOP]).T
-            assert DOS.shape == COOP2DOS.shape[1:]
+            assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
 
     def test_coop_against_pdos_ortho(self, setup):

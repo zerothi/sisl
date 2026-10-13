@@ -1591,7 +1591,7 @@ def test_fromsp_csr_large():
     if len(indices) == 0:
         indices = np.arange(3)
     csr2[9948, (indices + 1) % 10] = 1.0
-    assert csr1.getnnz() != csr2.getnnz()
+    assert csr1.nnz != csr2.nnz
 
     t0 = time()
     csr = SparseCSR.fromsp([csr1, csr2])
