@@ -8,7 +8,7 @@ import numpy as np
 
 cimport numpy as cnp
 
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 from sisl._core._dtypes cimport (
     cast_assign,
@@ -121,7 +121,7 @@ def phase_sc_csr(int_sp_st[::1] ptr,
 
     v_ptr[nr] = cind
 
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nc))
+    return csr_array((V, V_COL, V_PTR), shape=(nr, nc))
 
 
 def phase_sc_array(int_sp_st[::1] ptr,
@@ -264,7 +264,7 @@ def phase_sc_csr_nc(int_sp_st[::1] ptr,
 
                     cind = cind + 2
 
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nc * 2))
+    return csr_array((V, V_COL, V_PTR), shape=(nr * 2, nc * 2))
 
 
 def phase_sc_array_nc(int_sp_st[::1] ptr,
@@ -411,7 +411,7 @@ def phase_sc_csr_diag(int_sp_st[::1] ptr,
 
                     cind = cind + 1
 
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr * per_row, nc * per_row))
+    return csr_array((V, V_COL, V_PTR), shape=(nr * per_row, nc * per_row))
 
 
 def phase_sc_array_diag(int_sp_st[::1] ptr,
@@ -565,7 +565,7 @@ def phase_sc_csr_so(int_sp_st[::1] ptr,
 
                     cind = cind + 2
 
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nc * 2))
+    return csr_array((V, V_COL, V_PTR), shape=(nr * 2, nc * 2))
 
 
 def phase_sc_array_so(int_sp_st[::1] ptr,
@@ -743,7 +743,7 @@ def phase_sc_csr_nambu(int_sp_st[::1] ptr,
 
                     cind = cind + 4
 
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr * 4, nc * 4))
+    return csr_array((V, V_COL, V_PTR), shape=(nr * 4, nc * 4))
 
 
 def phase_sc_array_nambu(int_sp_st[::1] ptr,

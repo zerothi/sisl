@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import operator
+import pickle
 import sys
 
 import numpy as np
@@ -79,18 +80,122 @@ def test_init_csr_inputs():
     SparseCSR((data, indices, indptr))
 
 
-def test_csr_matrix_int64_fail():
+def test_csr_array_int64():
     # fixes #901
-    s = sc.sparse.csr_matrix((2, 2))
+    s = sc.sparse.csr_array((2, 2))
     s[0, 0] = 1
     s[1, 1] = 1
     # this will also break scipy, but here for testing purposes:
     s.indices = s.indices.astype(np.int64)
     s.indptr = s.indptr.astype(np.int64)
     sp = SparseCSR.fromsp(s)
+    # It chooses int32 because it's a very small sparse matrix
     assert sp.col.dtype == np.int32
     assert sp.ncol.dtype == np.int32
     assert sp.ptr.dtype == np.int32
+
+
+def _assert_idtype(csr, idtype):
+    assert csr._idtype == idtype
+    assert csr.ptr.dtype == idtype
+    assert csr.ncol.dtype == idtype
+    assert csr.col.dtype == idtype
+
+
+def test_idtype_heuristic():
+    _assert_idtype(SparseCSR((10, 10)), np.int32)
+    # too many columns for int32
+    _assert_idtype(SparseCSR((2, 2**31 + 10), nnz=2), np.int64)
+    # explicit request
+    _assert_idtype(SparseCSR((10, 10), idtype=np.int64), np.int64)
+    with pytest.raises(ValueError):
+        SparseCSR((10, 10), idtype=np.int16)
+
+
+def test_idtype_setter_consistent():
+    csr = SparseCSR((10, 10), nnzpr=1)
+    csr[0, 1] = 1
+    # assigning another integer type casts to the shared index type
+    csr.ncol = csr.ncol.astype(np.int64)
+    csr.col = csr.col.astype(np.uint16)
+    _assert_idtype(csr, np.int32)
+    with pytest.raises(TypeError):
+        csr.col = csr.col.astype(np.float64)
+
+
+def test_idtype_setter_promotes():
+    csr = SparseCSR((10, 10), nnzpr=1)
+    csr[0, 1] = 1
+    ptr = csr.ptr.astype(np.int64)
+    ptr[-1] = 2**31 + 1
+    csr.ptr = ptr
+    # all index arrays are promoted, not only the assigned one
+    _assert_idtype(csr, np.int64)
+    assert csr.ptr[-1] == 2**31 + 1
+
+
+def test_idtype_reserve_promotes():
+    csr = SparseCSR((10, 10), nnzpr=1)
+    csr._reserve_index(2**31)
+    _assert_idtype(csr, np.int64)
+
+
+def test_idtype_retained():
+    csr = SparseCSR((10, 10), nnzpr=1, idtype=np.int64)
+    csr[0, 1] = 1
+    csr[2, [1, 2, 3]] = 1
+    _assert_idtype(csr, np.int64)
+    _assert_idtype(csr.copy(), np.int64)
+    _assert_idtype(csr.transpose(), np.int64)
+    _assert_idtype(pickle.loads(pickle.dumps(csr)), np.int64)
+    csr.finalize()
+    _assert_idtype(csr, np.int64)
+
+
+def test_idtype_translate_columns_promotes():
+    csr = SparseCSR((10, 10), nnzpr=1)
+    csr[0, 1] = 1
+    csr.translate_columns([1], [2**31 + 1], clean=False)
+    _assert_idtype(csr, np.int64)
+    assert csr.col[csr.ptr[0]] == 2**31 + 1
+
+
+@pytest.mark.parametrize("idtype", [np.int32, np.int64])
+def test_idtype_operations(idtype):
+    rng = np.random.default_rng(42)
+    csr = SparseCSR((20, 20), nnzpr=2, idtype=idtype)
+    for r in range(20):
+        csr[r, rng.choice(20, 5, replace=False)] = rng.random(5)
+    ref = csr.tocsr(0).toarray()
+
+    def check(out, ref):
+        _assert_idtype(out, idtype)
+        assert np.allclose(out.tocsr(0).toarray(), ref)
+
+    check(csr.copy(), ref)
+    check(csr.transpose(), ref.T)
+    idx = [1, 3, 4, 10, 15]
+    check(csr.sub(idx), ref[np.ix_(idx, idx)])
+    keep = np.delete(np.arange(20), idx)
+    check(csr.remove(idx), ref[np.ix_(keep, keep)])
+
+    d = csr.copy()
+    d.delete_columns([0, 5])
+    check(d, np.delete(ref, [0, 5], axis=1))
+
+    d = csr.copy()
+    d.translate_columns([0, 1], [1, 0])
+    check(d, ref[:, [1, 0] + list(range(2, 20))])
+
+    d = csr.copy()
+    del d[2, :]
+    r = ref.copy()
+    r[2, :] = 0
+    check(d, r)
+
+    d = csr.copy()
+    d.eliminate_zeros()
+    check(d, ref)
 
 
 def test_fail_align1():
@@ -138,7 +243,7 @@ def test_init2():
 
 
 def test_init3():
-    lil = sc.sparse.lil_matrix((10, 10), dtype=np.int32)
+    lil = sc.sparse.lil_array((10, 10), dtype=np.int32)
     lil[0, 1] = 1
     lil[0, 2] = 2
     sp = SparseCSR(lil)
@@ -156,7 +261,7 @@ def test_init3():
 
 
 def test_init4():
-    lil = sc.sparse.lil_matrix((10, 10), dtype=np.int32)
+    lil = sc.sparse.lil_array((10, 10), dtype=np.int32)
     lil[0, 1] = 1
     lil[0, 2] = 2
     csr = lil.tocsr()
@@ -989,7 +1094,7 @@ def test_op2(s1):
 
 
 def test_op_csr(s1):
-    csr = sc.sparse.csr_matrix((10, 100), dtype=np.int32)
+    csr = sc.sparse.csr_array((10, 100), dtype=np.int32)
     for i in range(10):
         j = range(i + 2)
         s1[0, j] = i
@@ -1202,10 +1307,10 @@ def matrix_sisl_csr():
 
 
 @pytest.fixture(scope="module")
-def matrix_csr_matrix():
+def matrix_csr_array():
     matrix = []
 
-    csr_matrix = sc.sparse.csr_matrix
+    csr_array = sc.sparse.csr_array
 
     def add3(m):
         matrix.append(m)
@@ -1214,14 +1319,14 @@ def matrix_csr_matrix():
         matrix.append(m)
 
     # diagonal
-    m = csr_matrix((10, 80), dtype=np.int32)
+    m = csr_array((10, 80), dtype=np.int32)
     for i in range(10):
         m[i, i] = 1
     add3(m)
 
     # not completely full (some empty ncol)
 
-    m = csr_matrix((10, 80), dtype=np.int32)
+    m = csr_array((10, 80), dtype=np.int32)
     m[0, [1, 0]] = [11, 3]
     m[2, 2] = 10
     m[4, [4, 0]] = [22, 40]
@@ -1229,7 +1334,7 @@ def matrix_csr_matrix():
     add3(m)
 
     # all more than 1 coupling, and not sorted
-    m = csr_matrix((10, 80), dtype=np.int32)
+    m = csr_array((10, 80), dtype=np.int32)
     m[0, [1, 0]] = [12, 4]
     m[1, [10, 50, 20]] = [11, 20, 401]
     m[2, [4, 7, 3, 1]] = [2, 5, 4, 10]
@@ -1245,7 +1350,7 @@ def matrix_csr_matrix():
 
 
 @pytest.mark.parametrize("op", binary())
-def test_op_binary(matrix_sisl_csr, matrix_csr_matrix, op):
+def test_op_binary(matrix_sisl_csr, matrix_csr_array, op):
     for m in matrix_sisl_csr:
         mD = m.toarray()[..., 0]
         if op not in (operator.add, operator.sub):
@@ -1258,7 +1363,7 @@ def test_op_binary(matrix_sisl_csr, matrix_csr_matrix, op):
                 v = op(m, m2)
                 assert np.allclose(op(mD, m2D), v.toarray()[..., 0])
 
-            for m2 in matrix_csr_matrix:
+            for m2 in matrix_csr_array:
                 m2D = m2.toarray()
                 v = op(m, m2)
                 assert np.allclose(op(mD, m2D), v.toarray()[..., 0])
@@ -1591,7 +1696,7 @@ def test_fromsp_csr_large():
     if len(indices) == 0:
         indices = np.arange(3)
     csr2[9948, (indices + 1) % 10] = 1.0
-    assert csr1.getnnz() != csr2.getnnz()
+    assert csr1.nnz != csr2.nnz
 
     t0 = time()
     csr = SparseCSR.fromsp([csr1, csr2])

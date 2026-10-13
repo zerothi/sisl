@@ -8,11 +8,11 @@ import numpy as np
 
 cimport numpy as cnp
 
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 from sisl._indices cimport _index_sorted
 
-from sisl._core._sparse import fold_csr_matrix, fold_csr_matrix_diag
+from sisl._core._sparse import fold_csr_array, fold_csr_array_diag
 
 from sisl._core._dtypes cimport (
     cast_add,
@@ -87,7 +87,7 @@ def phase_csr(const int_sp_st[::1] ptr,
               const int_sp_st p_opt):
 
     # Now create the folded sparse elements
-    V_PTR, V_NCOL, V_COL = fold_csr_matrix(ptr, ncol, col)
+    V_PTR, V_NCOL, V_COL = fold_csr_array(ptr, ncol, col)
     cdef int_sp_st[::1] v_ptr = V_PTR
     cdef int_sp_st[::1] v_ncol = V_NCOL
     cdef int_sp_st[::1] v_col = V_COL
@@ -130,7 +130,7 @@ def phase_csr(const int_sp_st[::1] ptr,
                     s_idx = _index_sorted(tmp, c)
                     cast_add(&v[v_ptr[r] + s_idx], D[ind, idx] * phases[s])
 
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
+    return csr_array((V, V_COL, V_PTR), shape=(nr, nr))
 
 
 def phase_array(const int_sp_st[::1] ptr,
@@ -184,7 +184,7 @@ def phase_csr_diag(const int_sp_st[::1] ptr,
                    const int_sp_st per_row):
 
     # Now create the folded sparse elements
-    V_PTR, V_NCOL, V_COL = fold_csr_matrix_diag(ptr, ncol, col, per_row)
+    V_PTR, V_NCOL, V_COL = fold_csr_array_diag(ptr, ncol, col, per_row)
     cdef int_sp_st[::1] v_ptr = V_PTR
     cdef int_sp_st[::1] v_ncol = V_NCOL
     cdef int_sp_st[::1] v_col = V_COL
@@ -242,7 +242,7 @@ def phase_csr_diag(const int_sp_st[::1] ptr,
                         cast_add(&v[v_ptr[rr+ic] + s_idx], d)
 
     nr = nr * per_row
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
+    return csr_array((V, V_COL, V_PTR), shape=(nr, nr))
 
 
 def phase_array_diag(const int_sp_st[::1] ptr,
@@ -306,7 +306,7 @@ def phase_csr_nc(const int_sp_st[::1] ptr,
                  const int_sp_st p_opt):
 
     # Now create the folded sparse elements
-    V_PTR, V_NCOL, V_COL = fold_csr_matrix(ptr, ncol, col, 2)
+    V_PTR, V_NCOL, V_COL = fold_csr_array(ptr, ncol, col, 2)
     cdef int_sp_st[::1] v_ptr = V_PTR
     cdef int_sp_st[::1] v_ncol = V_NCOL
     cdef int_sp_st[::1] v_col = V_COL
@@ -375,7 +375,7 @@ def phase_csr_nc(const int_sp_st[::1] ptr,
                     matrix_add_csr_nc(v_ptr, rr, s_idx, v, M)
 
     nr = nr * 2
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
+    return csr_array((V, V_COL, V_PTR), shape=(nr, nr))
 
 
 def phase_array_nc(const int_sp_st[::1] ptr,
@@ -451,7 +451,7 @@ def phase_csr_so(const int_sp_st[::1] ptr,
                  const int_sp_st p_opt):
 
     # Now create the folded sparse elements
-    V_PTR, V_NCOL, V_COL = fold_csr_matrix(ptr, ncol, col, 2)
+    V_PTR, V_NCOL, V_COL = fold_csr_array(ptr, ncol, col, 2)
     cdef int_sp_st[::1] v_ptr = V_PTR
     cdef int_sp_st[::1] v_ncol = V_NCOL
     cdef int_sp_st[::1] v_col = V_COL
@@ -520,7 +520,7 @@ def phase_csr_so(const int_sp_st[::1] ptr,
                     matrix_add_csr_nc(v_ptr, rr, s_idx, v, M)
 
     nr = nr * 2
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
+    return csr_array((V, V_COL, V_PTR), shape=(nr, nr))
 
 
 def phase_array_so(const int_sp_st[::1] ptr,
@@ -595,7 +595,7 @@ def phase_csr_nambu(const int_sp_st[::1] ptr,
                     const int_sp_st p_opt):
 
     # Now create the folded sparse elements
-    V_PTR, V_NCOL, V_COL = fold_csr_matrix(ptr, ncol, col, 4)
+    V_PTR, V_NCOL, V_COL = fold_csr_array(ptr, ncol, col, 4)
     cdef int_sp_st[::1] v_ptr = V_PTR
     cdef int_sp_st[::1] v_ncol = V_NCOL
     cdef int_sp_st[::1] v_col = V_COL
@@ -664,7 +664,7 @@ def phase_csr_nambu(const int_sp_st[::1] ptr,
                     matrix_add_csr_nambu(v_ptr, rr, s_idx, v, M)
 
     nr = nr * 4
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
+    return csr_array((V, V_COL, V_PTR), shape=(nr, nr))
 
 
 def phase_array_nambu(const int_sp_st[::1] ptr,

@@ -1334,7 +1334,7 @@ class TestHamiltonian:
             # This one returns sparse matrices, so we have to
             # deal with that.
             DOS = es.PDOS(E, "lorentzian")[0]
-            COOP2DOS = np.array([C.sum(1).A1 for C in COOP]).T
+            COOP2DOS = np.array([C.sum(1) for C in COOP]).T
             assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
 
@@ -1352,7 +1352,7 @@ class TestHamiltonian:
             assert np.allclose(DOS, COOP2DOS)
 
             DOS = es.PDOS(E, "lorentzian")
-            COOP2DOS = np.array([C.sum(1).A1 for C in COOP]).T
+            COOP2DOS = np.array([C.sum(1) for C in COOP]).T
             assert DOS.shape[1:] == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
 

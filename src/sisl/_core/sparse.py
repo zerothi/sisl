@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from functools import reduce, singledispatchmethod
+from functools import reduce
 from numbers import Integral
 
 import numpy as np
@@ -20,14 +20,12 @@ from numpy import (
     bool_,
     broadcast,
     concatenate,
-    copyto,
     count_nonzero,
     delete,
     diff,
     empty,
     full,
     insert,
-    int32,
     intersect1d,
     isin,
     isnan,
@@ -42,11 +40,11 @@ from numpy import (
     zeros,
 )
 from numpy.lib.mixins import NDArrayOperatorsMixin
-from scipy.sparse import csr_matrix, issparse
+from scipy.sparse import csr_array, issparse
 
 from sisl import _array as _a
 from sisl._array import array_arange
-from sisl._help import array_fill_repeat, isiterable
+from sisl._help import array_fill_repeat
 from sisl._indices import indices, indices_only
 from sisl._internal import set_module
 from sisl.messages import SislError, warn
@@ -56,7 +54,7 @@ from sisl.utils.mathematics import intersect_and_diff_sets
 
 from ._sparse import sparse_dense
 
-# Although this re-implements the CSR in scipy.sparse.csr_matrix
+# Although this re-implements the CSR in scipy.sparse.csr_array
 # we use it slightly differently and thus require this new sparse pattern.
 
 __all__ = ["SparseCSR", "ispmatrix", "ispmatrixd"]
@@ -93,11 +91,11 @@ def _to_cd(csr, data: bool = True, rows=None):
             D = D.copy()
     else:
         if rows is None:
-            idx = array_arange(ptr[:-1], n=ncol, dtype=int32)
+            idx = array_arange(ptr[:-1], n=ncol)
         else:
             rows = csr._sanitize(rows).ravel()
             ncol = ncol[rows]
-            idx = array_arange(ptr[rows], n=ncol, dtype=int32)
+            idx = array_arange(ptr[rows], n=ncol)
         if data:
             D = D[idx]
         cols = col[idx]
@@ -137,16 +135,16 @@ def _to_coo(csr, data: bool = True, rows=None):
             D = D.copy()
     else:
         if rows is None:
-            idx = array_arange(ptr[:-1], n=ncol, dtype=int32)
+            idx = array_arange(ptr[:-1], n=ncol)
         else:
             rows = csr._sanitize(rows).ravel()
             ncol = ncol[rows]
-            idx = array_arange(ptr[rows], n=ncol, dtype=int32)
+            idx = array_arange(ptr[rows], n=ncol)
         if data:
             D = D[idx]
         cols = col[idx]
     idx = (ncol > 0).nonzero()[0]
-    rows = repeat(idx.astype(int32, copy=False), ncol[idx])
+    rows = repeat(idx, ncol[idx])
 
     if data:
         return rows, cols, D
@@ -154,11 +152,27 @@ def _to_coo(csr, data: bool = True, rows=None):
 
 
 def _ncol_to_indptr(ncol):
-    """Convert the ncol array into a pointer array"""
-    ptr = _a.emptyi(ncol.size + 1)
+    """Convert the ncol array into a pointer array
+
+    The pointer array has the same data-type as `ncol`, unless the total
+    number of elements does not fit, in which case it is promoted.
+    """
+    ptr = _a.empty(ncol.size + 1, dtype=ncol.dtype)
     ptr[0] = 0
-    _a.cumsumi(ncol, out=ptr[1:])
+    _a.cumsum(ncol, out=ptr[1:])
     return ptr
+
+
+# Allowed index data-types and their limits (np.iinfo is slow to create)
+_IINFO = {np.dtype(dt): np.iinfo(dt) for dt in (np.int32, np.int64)}
+_INT32_MAX = _IINFO[np.dtype(np.int32)].max
+
+
+def _index_dtype(maxval: int) -> np.dtype:
+    """Smallest index data-type (``int32`` or ``int64``) that can hold `maxval`"""
+    if maxval <= _INT32_MAX:
+        return np.dtype(np.int32)
+    return np.dtype(np.int64)
 
 
 def valid_index(idx, shape: int):
@@ -174,20 +188,20 @@ def invalid_index(idx, shape: int):
 @set_module("sisl")
 class SparseCSR(NDArrayOperatorsMixin):
     """
-    A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_matrix`.
+    A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_array`.
 
     This class holds all required information regarding the CSR matrix format.
 
-    Note that this sparse matrix of data does not retain the number of columns
+    Note that this sparse array of data does not retain the number of columns
     in the matrix, i.e. it has no way of determining whether the input is
     correct.
 
 
-    This sparse matrix class tries to resemble the
-    :class:`~scipy.sparse.csr_matrix` as much as possible with
+    This sparse array class tries to resemble the
+    :class:`~scipy.sparse.csr_array` as much as possible with
     the difference of this class being multi-dimensional.
 
-    Creating a new sparse matrix is much similar to the
+    Creating a new sparse array is much similar to the
     `scipy` equivalent.
 
     `nnz` is only used if ``nnz > nr * nnzpr``.
@@ -197,20 +211,20 @@ class SparseCSR(NDArrayOperatorsMixin):
     - ``SparseCSR(S)``
       where ``S`` is a `scipy.sparse` matrix
     - ``SparseCSR((M,N)[, dtype])``
-      the shape of the sparse matrix (equivalent
+      the shape of the sparse array (equivalent
       to ``SparseCSR((M,N,1)[, dtype])``.
     - ``SparseCSR((M,N), dim=K, [, dtype])``
-      the shape of the sparse matrix (equivalent
+      the shape of the sparse array (equivalent
       to ``SparseCSR((M,N,K)[, dtype])``.
     - ``SparseCSR((M,N,K)[, dtype])``
-      creating a sparse matrix with ``M`` rows, ``N`` columns
+      creating a sparse array with ``M`` rows, ``N`` columns
       and ``K`` elements per sparse element.
     - ``SparseCSR((data, ptr, indices), [shape, dtype])``
-      creating a sparse matrix with specific data as would
-      be used when creating `scipy.sparse.csr_matrix`.
+      creating a sparse array with specific data as would
+      be used when creating `scipy.sparse.csr_array`.
 
     Additionally these parameters control the
-    creation of the sparse matrix.
+    creation of the sparse array.
 
     Parameters
     ----------
@@ -235,14 +249,17 @@ class SparseCSR(NDArrayOperatorsMixin):
         "_ns",
         "_finalized",
         "_nnz",
-        "ptr",
-        "ncol",
-        "col",
+        "_idtype",
+        "_ptr",
+        "_ncol",
+        "_col",
         "_D",
         "_dist_state",
     )
 
-    def __init__(self, arg1, dim=1, dtype=None, nnzpr: int = 20, nnz=None, **kwargs):
+    def __init__(
+        self, arg1, dim=1, dtype=None, nnzpr: int = 20, nnz=None, idtype=None, **kwargs
+    ):
         """Initialize a new sparse CSR matrix"""
 
         # step size in sparse elements
@@ -253,20 +270,30 @@ class SparseCSR(NDArrayOperatorsMixin):
         self._finalized = False
 
         if issparse(arg1):
-            # This is a sparse matrix
+            # This is a sparse array
             # The data-type is infered from the
-            # input sparse matrix.
+            # input sparse array.
             arg1 = arg1.tocsr()
             # Default shape to the CSR matrix
             kwargs["shape"] = kwargs.get("shape", arg1.shape)
             self.__init__(
-                (arg1.data, arg1.indices, arg1.indptr), dim=dim, dtype=dtype, **kwargs
+                (arg1.data, arg1.indices, arg1.indptr),
+                dim=dim,
+                dtype=dtype,
+                idtype=idtype,
+                **kwargs,
             )
 
         elif isinstance(arg1, (tuple, list)):
             if isinstance(arg1[0], Integral):
                 self.__init_shape(
-                    arg1, dim=dim, dtype=dtype, nnzpr=nnzpr, nnz=nnz, **kwargs
+                    arg1,
+                    dim=dim,
+                    dtype=dtype,
+                    nnzpr=nnzpr,
+                    nnz=nnz,
+                    idtype=idtype,
+                    **kwargs,
                 )
 
             elif len(arg1) != 3:
@@ -292,10 +319,12 @@ class SparseCSR(NDArrayOperatorsMixin):
                     N = ((np.amax(arg1[1]) // M) + 1) * M
                     shape = (M, N)
 
-                self.__init_shape(shape, dim=dim, dtype=dtype, nnz=1, **kwargs)
+                self.__init_shape(
+                    shape, dim=dim, dtype=dtype, nnz=1, idtype=idtype, **kwargs
+                )
 
                 # Copy data to the arrays
-                self.ptr = arg1[2].astype(int32, copy=False)
+                self.ptr = arg1[2].copy()
                 """ int-array, ``self.shape[0]+1``
 pointer index in the 1D column indices of the corresponding row
                 """
@@ -303,7 +332,7 @@ pointer index in the 1D column indices of the corresponding row
                 """ int-array, ``self.shape[0]``
 number of entries per row
                 """
-                self.col = arg1[1].astype(int32, copy=False)
+                self.col = arg1[1].copy()
                 """ int-array
 column indices of the sparse elements
                 """
@@ -316,7 +345,9 @@ column indices of the sparse elements
                 if np.all(self.ncol <= 1):
                     self._finalized = True
 
-    def __init_shape(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None, **kwargs):
+    def __init_shape(
+        self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None, idtype=None, **kwargs
+    ):
         # The shape of the data...
         if len(arg1) == 2:
             # extend to extra dimension
@@ -349,7 +380,7 @@ column indices of the sparse elements
         # Store shape
         self._shape = (M, N, K)
 
-        # Check default construction of sparse matrix
+        # Check default construction of sparse array
         nnzpr = max(nnzpr, 1)
 
         # Re-create options
@@ -367,13 +398,27 @@ column indices of the sparse elements
         nnzpr = max(nnzpr, 1)
         nnz = max(nnz, nnzpr * M)
 
+        # Index data-type shared by ptr, ncol and col.
+        # The largest values stored are: rows < M, columns < N and ptr <= nnz.
+        # If the allocated nnz grows beyond the range, the index arrays
+        # gets promoted (see `_reserve_index`).
+        if idtype is None:
+            idtype = _index_dtype(max(M, N, nnz))
+        self._idtype = np.dtype(idtype)
+        if self._idtype not in _IINFO:
+            raise ValueError(
+                f"{self.__class__.__name__} index data-type must be int32 or int64, got {self._idtype}"
+            )
+        self._reserve_index(nnz)
+        idtype = self._idtype
+
         # Store number of columns currently hold
         # in the sparsity pattern
-        self.ncol = _a.zerosi([M])
+        self.ncol = _a.zeros([M], dtype=idtype)
         # Create pointer array
-        self.ptr = _a.cumsumi(_a.fulli(M + 1, nnzpr)) - nnzpr
+        self.ptr = _a.cumsum(_a.full(M + 1, nnzpr, dtype=idtype)) - nnzpr
         # Create column array
-        self.col = _a.fulli(nnz, -1)
+        self.col = _a.full(nnz, -1, dtype=idtype)
         # Store current number of non-zero elements
         self._nnz = 0
 
@@ -402,7 +447,7 @@ column indices of the sparse elements
             Output dtype. If not given, use the result dtype of the spmats.
         dim :
             If given, the returned SparseCSR will have this as dim.
-            By default the first sparse matrix in `sparse_matrices` determines
+            By default the first sparse array in `sparse_matrices` determines
             the resulting 3rd dimension.
         value :
             The used fill value.
@@ -416,7 +461,7 @@ column indices of the sparse elements
         shape2 = spmats[0].shape[:2]
         if not all(shape2 == m.shape[:2] for m in spmats):
             raise ValueError(
-                f"Cannot find sparsity union of differently shaped sparse matrices: "
+                f"Cannot find sparsity union of differently shaped sparse arrays: "
                 " & ".join(str(m.shape) for m in spmats)
             )
 
@@ -424,7 +469,7 @@ column indices of the sparse elements
             shape = shape2 + (dim,)
         elif len(spmats[0].shape) == 3:
             shape = shape2 + (spmats[0].shape[2],)
-        else:  # csr_matrix
+        else:  # csr_array
             shape = shape2 + (1,)
 
         if dtype is None:
@@ -447,12 +492,77 @@ column indices of the sparse elements
                     row_cols.append(mat.indices[mat.indptr[row] : mat.indptr[row + 1]])
             out_col.append(np.unique(concatenate(row_cols)))
         # Put into the output
-        out.ncol = _a.arrayi([len(cols) for cols in out_col])
+        out.ncol = _a.array([len(cols) for cols in out_col], dtype=out._idtype)
         out.ptr = _ncol_to_indptr(out.ncol)
-        out.col = concatenate(out_col).astype(np.int32, copy=False)
+        out.col = concatenate(out_col)
         out._nnz = len(out.col)
         out._D = full([out._nnz, out.dim], value, dtype=dtype)
         return out
+
+    @property
+    def ptr(self) -> Optional[ndarray]:
+        """int-array, ``self.shape[0]+1`` pointer index in the 1D column indices of the corresponding row"""
+        return self._ptr
+
+    @ptr.setter
+    def ptr(self, ptr) -> None:
+        self._ptr = self._as_index(ptr)
+
+    @property
+    def ncol(self) -> Optional[ndarray]:
+        """int-array, ``self.shape[0]`` number of entries per row"""
+        return self._ncol
+
+    @ncol.setter
+    def ncol(self, ncol) -> None:
+        self._ncol = self._as_index(ncol)
+
+    @property
+    def col(self) -> Optional[ndarray]:
+        """int-array, column indices of the sparse elements"""
+        return self._col
+
+    @col.setter
+    def col(self, col) -> None:
+        self._col = self._as_index(col)
+
+    def _as_index(self, idx) -> Optional[ndarray]:
+        """Convert `idx` to an index array with data-type ``self._idtype``
+
+        If the values of `idx` does not fit in ``self._idtype``, all index arrays
+        will be promoted. This ensures `ptr`, `ncol` and `col` always share data-type.
+        """
+        if idx is None:
+            return None
+        idx = asarray(idx)
+        if idx.dtype == self._idtype:
+            return idx
+        if idx.dtype.kind not in "iu":
+            raise TypeError(
+                f"{self.__class__.__name__} index arrays must be integers, got {idx.dtype}"
+            )
+        if idx.size > 0 and not np.can_cast(idx.dtype, self._idtype):
+            # Only check values when they *could* overflow
+            info = _IINFO[self._idtype]
+            if idx.min() < info.min or info.max < idx.max():
+                self._promote_index(np.int64)
+        return idx.astype(self._idtype, copy=False)
+
+    def _promote_index(self, idtype) -> None:
+        """Change the index data-type of `ptr`, `ncol` and `col` (in-place) to `idtype`"""
+        idtype = np.dtype(idtype)
+        if idtype == self._idtype:
+            return
+        self._idtype = idtype
+        for attr in ("_ptr", "_ncol", "_col"):
+            idx = getattr(self, attr, None)
+            if idx is not None:
+                setattr(self, attr, idx.astype(idtype))
+
+    def _reserve_index(self, maxval: int) -> None:
+        """Ensure the index data-type can hold `maxval` (e.g. a new nnz or column index), promote otherwise"""
+        if maxval > _IINFO[self._idtype].max:
+            self._promote_index(_index_dtype(maxval))
 
     def diagonal(self) -> np.ndarray:
         r"""Return the diagonal elements from the matrix"""
@@ -462,7 +572,7 @@ column indices of the sparse elements
         rows, cols = _to_coo(self, data=False)
 
         # Now retrieve rows and cols
-        idx = array_arange(self.ptr[:-1], n=self.ncol, dtype=int32)
+        idx = array_arange(self.ptr[:-1], n=self.ncol)
         # figure out the indices where we have a diagonal index
         diag_idx = np.equal(rows, cols)
         idx = idx[diag_idx]
@@ -489,28 +599,29 @@ column indices of the sparse elements
         """
         if dim is None:
             dim = self.shape[2]
+        idtype = self._idtype
         diagonals = np.asarray(diagonals)
         if dtype is None:
             dtype = np.result_type(self.dtype, diagonals.dtype)
 
-        # Now create the sparse matrix
+        # Now create the sparse array
         shape = list(self.shape)
         shape[2] = dim
         shape = tuple(shape)
 
-        offsets = array_fill_repeat(offsets, shape[0], cls=np.int32)
+        offsets = array_fill_repeat(offsets, shape[0], cls=idtype)
 
         # Create the index-pointer, data and values
         data = array_fill_repeat(diagonals, shape[0], axis=0, cls=dtype)
-        indices = _a.arangei(shape[0]) + offsets
+        indices = _a.arange(shape[0], dtype=idtype) + offsets
 
         # create the pointer.
         idx_ok = valid_index(indices, shape[1])
         data = data[idx_ok]
-        ptr1 = _a.onesi(shape[0])
+        ptr1 = _a.ones(shape[0], dtype=idtype)
         ptr1[~idx_ok] = 0
         indices = indices[idx_ok]
-        ptr = _a.emptyi(shape[0] + 1)
+        ptr = _a.empty(shape[0] + 1, dtype=idtype)
         ptr[0] = 0
         ptr[1:] = np.cumsum(ptr1)
 
@@ -530,8 +641,8 @@ column indices of the sparse elements
         keep_nnz :
            if ``True`` keeps the sparse elements *as is*.
            I.e. it will merely set the stored sparse elements to zero.
-           This may be advantagegous when re-constructing a new sparse
-           matrix from an old sparse matrix
+           This may be advantageous when re-constructing a new sparse
+           matrix from an old sparse array
         """
         self._D[:, :] = 0.0
 
@@ -546,36 +657,36 @@ column indices of the sparse elements
 
     @property
     def shape(self) -> tuple[int, int, int]:
-        """The shape of the sparse matrix"""
+        """The shape of the sparse array"""
         return self._shape
 
     @property
     def dim(self) -> int:
-        """The extra dimensionality of the sparse matrix (elements per matrix element)"""
+        """The extra dimensionality of the sparse array (elements per matrix element)"""
         return self.shape[2]
 
     @property
     def data(self) -> np.ndarray:
-        """Data contained in the sparse matrix (numpy array of elements)"""
+        """Data contained in the sparse array (numpy array of elements)"""
         return self._D
 
     @property
     def dtype(self):
-        """The data-type in the sparse matrix"""
+        """The data-type in the sparse array"""
         return self._D.dtype
 
     @property
     def dkind(self):
-        """The data-type in the sparse matrix (in str)"""
+        """The data-type in the sparse array (in str)"""
         return np.dtype(self._D.dtype).kind
 
     @property
     def nnz(self) -> int:
-        """Number of non-zero elements in the sparse matrix"""
+        """Number of non-zero elements in the sparse array"""
         return self._nnz
 
     def __len__(self) -> int:
-        """Number of rows in the sparse matrix"""
+        """Number of rows in the sparse array"""
         return self.shape[0]
 
     @property
@@ -585,12 +696,12 @@ column indices of the sparse elements
 
     @distribute_changes
     def finalize(self, sort: bool = True) -> None:
-        """Finalizes the sparse matrix by removing all non-set elements
+        """Finalizes the sparse array by removing all non-set elements
 
-        One may still interact with the sparse matrix as one would previously.
+        One may still interact with the sparse array as one would previously.
 
         NOTE: This is mainly an internal used routine to ensure data structure
-        when converting to :class:`~scipy.sparse.csr_matrix`
+        when converting to :class:`~scipy.sparse.csr_array`
 
         Parameters
         ----------
@@ -636,43 +747,38 @@ column indices of the sparse elements
 
         if len(col) != self.nnz:
             raise SislError(
-                "Final size in the sparse matrix finalization went wrong."
+                "Final size in the sparse array finalization went wrong."
             )  # pragma: no cover
 
         # Check that all column indices are within the expected shape
         if invalid_index(self.col, self.shape[1]).any():
             warn(
-                "Sparse matrix contains column indices outside the shape "
+                "sparse array contains column indices outside the shape "
                 "of the matrix. Data may not represent what is expected!"
             )
 
         # Signal that we indeed have finalized the data
         self._finalized = sort
 
-    @singledispatchmethod
     def _sanitize(self, idx, axis: int = 0) -> ndarray:
         """Sanitize the input indices to a conforming numpy array"""
+        # NOTE: this is not a singledispatchmethod since its overhead
+        # is significant for this hot path.
+        idtype = self._idtype
+        if isinstance(idx, ndarray):
+            if idx.dtype == bool_:
+                return np.flatnonzero(idx).astype(idtype, copy=False)
+            return idx.astype(idtype, copy=False)
+        if isinstance(idx, slice):
+            return _a.arange(*idx.indices(self.shape[axis]), dtype=idtype)
         if idx is None:
             if axis < 0:
-                return _a.arangei(np.max(self.shape))
-            return _a.arangei(self.shape[axis])
-        idx = _a.asarrayi(idx)
+                return _a.arange(np.max(self.shape), dtype=idtype)
+            return _a.arange(self.shape[axis], dtype=idtype)
+        idx = _a.asarray(idx, dtype=idtype)
         if idx.size == 0:
-            return _a.asarrayi([])
-        if idx.dtype == bool_:
-            return idx.nonzero()[0].astype(np.int32, copy=False)
+            return _a.asarray([], dtype=idtype)
         return idx
-
-    @_sanitize.register
-    def _(self, idx: ndarray, axis: int = 0) -> ndarray:
-        if idx.dtype == bool_:
-            return np.flatnonzero(idx).astype(np.int32)
-        return idx.astype(np.int32, copy=False)
-
-    @_sanitize.register
-    def _(self, idx: slice, axis: int = 0) -> ndarray:
-        idx = idx.indices(self.shape[axis])
-        return _a.arangei(*idx)
 
     def __sisl_distribute__(self, dist=None, op: str = "single"):
         """Distribute the rows of this matrix according to `dist`, in place.
@@ -759,7 +865,11 @@ column indices of the sparse elements
         ncol = self.ncol
 
         # Number of deleted elements per row
-        ndel = _a.fromiteri(map(count_nonzero, split(mask, _a.cumsumi(ncol[:-1]))))
+        idtype = self._idtype
+        ndel = _a.fromiter(
+            map(count_nonzero, split(mask, _a.cumsum(ncol[:-1], dtype=idtype))),
+            dtype=idtype,
+        )
         # Backconvert the mask to the deleted indices in col/_D
         idx = idx[mask]
 
@@ -769,7 +879,7 @@ column indices of the sparse elements
 
         # Correct number of elements per row, the pointers and the nnz count
         ncol[:] -= ndel
-        ptr[1:] -= _a.cumsumi(ndel)
+        ptr[1:] -= _a.cumsum(ndel, dtype=idtype)
         self._nnz = int(ncol.sum())
 
         return len(idx)
@@ -828,9 +938,9 @@ column indices of the sparse elements
             col = self.col
 
             # Create a count array to subtract
-            count = _a.zerosi(self.shape[1])
+            count = _a.zeros(self.shape[1], dtype=self._idtype)
             count[cols] = 1
-            count = _a.cumsumi(count)
+            count = _a.cumsum(count, dtype=self._idtype)
 
             # Recreate pointers due to deleted indices
             idx = array_arange(ptr[:-1], n=ncol)
@@ -843,7 +953,7 @@ column indices of the sparse elements
             self._shape = tuple(shape)
 
     def _clean_columns(self):
-        """Remove all intrinsic columns that are not defined in the sparse matrix
+        """Remove all intrinsic columns that are not defined in the sparse array
         (below 0 or above nc)"""
         # Grab pointers
         ptr = self.ptr
@@ -885,6 +995,11 @@ column indices of the sparse elements
         clean :
            whether the new translated columns, outside the shape, should be deleted or not (default delete)
         """
+        # The new columns may be beyond the current shape (clean=False),
+        # ensure they fit before casting to the index data-type
+        new = asarray(new)
+        if new.size > 0:
+            self._reserve_index(new.max() + 1)
         old = self._sanitize(old, axis=1)
         new = self._sanitize(new, axis=1)
 
@@ -904,7 +1019,7 @@ column indices of the sparse elements
             )
 
         # Now do the translation
-        pvt = _a.arangei(self.shape[1])
+        pvt = _a.arange(self.shape[1], dtype=self._idtype)
         pvt[old] = new
 
         # Get indices of valid column entries
@@ -1007,7 +1122,7 @@ column indices of the sparse elements
         return True
 
     def align(self, other):
-        """Aligns this sparse matrix with the sparse elements of the other sparse matrix
+        """Aligns this sparse array with the sparse elements of the other sparse array
 
         Routine for ensuring that all non-zero elements in `other` are also in this
         object.
@@ -1019,7 +1134,7 @@ column indices of the sparse elements
         Parameters
         ----------
         other : SparseCSR
-           the other sparse matrix to align.
+           the other sparse array to align.
         """
 
         if self.shape[:2] != other.shape[:2]:
@@ -1058,7 +1173,7 @@ column indices of the sparse elements
 
         >>> self[r, c]
 
-        returns the non-zero element of the sparse matrix.
+        returns the non-zero element of the sparse array.
 
         Parameters
         ----------
@@ -1105,114 +1220,97 @@ column indices of the sparse elements
         IndexError
             for indices out of bounds
         """
-        i = self._sanitize(i)
-        if i.size == 0:
-            return _a.arrayi([])
-        if i.size > 1:
-            raise ValueError(
-                "extending the sparse matrix is only allowed for single rows at a time"
-            )
-        if invalid_index(i, self.shape[0]):
+        if not isinstance(i, Integral):
+            i = self._sanitize(i)
+            if i.size == 0:
+                return _a.array([], dtype=self._idtype)
+            if i.size > 1:
+                raise ValueError(
+                    "extending the sparse array is only allowed for single rows at a time"
+                )
+        i = int(i)
+        if not 0 <= i < self.shape[0]:
             raise IndexError(f"row index is out-of-bounds {i} : {self.shape[0]}")
         i1 = i + 1
 
-        # We skip this check and let sisl die if wrong input is given...
-        # if not isinstance(i, Integral):
-        #    raise ValueError("Retrieving/Setting elements in a sparse matrix"
-        #                     " must only be performed at one row-element at a time.\n"
-        #                     "However, multiple columns at a time are allowed.")
         # Ensure flattened array...
         j = self._sanitize(j, axis=1).ravel()
         if len(j) == 0:
-            return _a.arrayi([])
-        if invalid_index(j, self.shape[1]).any():
+            return _a.array([], dtype=self._idtype)
+        if j.min() < 0 or j.max() >= self.shape[1]:
             raise IndexError(f"column index is out-of-bounds {j} : {self.shape[1]}")
 
         # fast reference
         ptr = self.ptr
         col = self.col
 
-        # Get index pointer
+        # Get index pointer, and the pointer to the first free element
         ptr_i = int(ptr[i])
-        ncol_i = int(self.ncol[i])
+        ncol_ptr_i = ptr_i + int(self.ncol[i])
 
-        # To create the indices for the sparse elements
-        # we first find which values are _not_ in the sparse
-        # matrix
-        if ncol_i > 0:
-            # Checks whether any non-zero elements are
-            # already in the sparse pattern
-            # If so we remove those from the j
-            new_j = j[
-                isin(j, col[ptr_i : ptr_i + ncol_i], invert=True, assume_unique=True)
-            ]
-        else:
-            new_j = j
-
-        # Get list of new elements to be added
-        # astype(...) is necessary since len(...) returns a long
-        # and adding long and 32 is horribly slow in Python!
+        # Indices of the elements already in the sparse pattern,
+        # new elements are marked with -1
+        index = indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
+        is_new = index < 0
+        new_j = j[is_new]
         new_n = len(new_j)
 
-        ncol_ptr_i = ptr_i + ncol_i
-
-        # Check how many elements cannot fit in the currently
-        # allocated sparse matrix...
-        new_nnz = new_n - int(ptr[i1]) + ncol_ptr_i
-
-        if new_nnz > 0:
-            # Ensure that it is not-set as finalized
-            # There is no need to set it all the time.
-            # Simply because the first call to finalize
-            # will reduce the sparsity pattern, which
-            # on first expansion calls this part.
-            self._finalized = False
-
-            # Get how much larger we wish to create the sparse matrix...
-            ns = max(self._ns, new_nnz)
-
-            # ...expand size of the sparsity pattern...
-
-            # Insert new empty elements in the column index
-            # after the column
-            self.col = insert(self.col, ncol_ptr_i, full(ns, -1, col.dtype))
-
-            # update reference
-            col = self.col
-
-            # Insert zero data in the data array
-            # We use `zeros` as then one may set each dimension
-            # individually...
-            self._D = insert(
-                self._D, ptr[i1], zeros([ns, self.shape[2]], self._D.dtype), axis=0
-            )
-
-            # Lastly, shift all pointers above this row to account for the
-            # new non-zero elements
-            ptr[i1:] += int32(ns)
-
         if new_n > 0:
-            # Ensure that we write the new elements to the matrix...
+            # Check how many elements cannot fit in the currently
+            # allocated sparse array...
+            new_nnz = new_n - int(ptr[i1]) + ncol_ptr_i
+
+            if new_nnz > 0:
+                # Ensure that it is not-set as finalized
+                # There is no need to set it all the time.
+                # Simply because the first call to finalize
+                # will reduce the sparsity pattern, which
+                # on first expansion calls this part.
+                self._finalized = False
+
+                # Get how much larger we wish to create the sparse array...
+                ns = max(self._ns, new_nnz)
+
+                # Promote index arrays if the new size cannot be addressed
+                self._reserve_index(len(col) + ns)
+
+                # Insert new empty elements in the column index
+                # after the column
+                self.col = insert(self.col, ncol_ptr_i, full(ns, -1, self._idtype))
+
+                # update references (promotion may have replaced the arrays)
+                ptr = self.ptr
+                col = self.col
+
+                # Insert zero data in the data array
+                # We use `zeros` as then one may set each dimension
+                # individually...
+                self._D = insert(
+                    self._D, ptr[i1], zeros([ns, self.shape[2]], self._D.dtype), axis=0
+                )
+
+                # Lastly, shift all pointers above this row to account for the
+                # new non-zero elements
+                ptr[i1:] += ns
 
             # assign the column indices for the new entries
-            # NOTE that this may not assign them in the order
-            # of entry as new_j is sorted and thus new_j != j
+            # (in the order they appear in `j`)
             col[ncol_ptr_i : ncol_ptr_i + new_n] = new_j
 
             # Step the size of the stored non-zero elements
-            self.ncol[i] += int32(new_n)
-
-            ncol_ptr_i += new_n
+            self.ncol[i] += new_n
 
             # Step the number of non-zero elements
             self._nnz += new_n
 
-        # Now we have extended the sparse matrix to hold all
-        # information that is required...
+            # The new elements are placed directly after the existing ones
+            if ret_indices:
+                index[is_new] = _a.arange(
+                    ncol_ptr_i, ncol_ptr_i + new_n, dtype=self._idtype
+                )
 
-        # ... retrieve the indices and return
         if ret_indices:
-            return indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
+            return index
 
     @distribute_changes
     def _extend_empty(self, i, n):
@@ -1243,10 +1341,13 @@ column indices of the sparse elements
         # on first expansion calls this part.
         self._finalized = False
 
+        # Promote index arrays if the new size cannot be addressed
+        self._reserve_index(len(self.col) + n)
+
         # Insert new empty elements in the column index
         # after the column
         self.col = insert(
-            self.col, self.ptr[i] + self.ncol[i], full(n, -1, self.col.dtype)
+            self.col, self.ptr[i] + self.ncol[i], full(n, -1, self._idtype)
         )
 
         # Insert zero data in the data array
@@ -1258,7 +1359,7 @@ column indices of the sparse elements
 
         # Lastly, shift all pointers above this row to account for the
         # new non-zero elements
-        self.ptr[i1:] += int32(n)
+        self.ptr[i1:] += n
 
     def _get(self, i, j):
         """Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``
@@ -1345,11 +1446,11 @@ column indices of the sparse elements
 
         # Now create the compressed data...
         index -= ptr[i]
-        keep = isin(_a.arangei(ncol[i]), index, invert=True)
+        keep = isin(_a.arange(ncol[i], dtype=self._idtype), index, invert=True)
 
         # Update new count of the number of
         # non-zero elements
-        n_index = int32(len(index))
+        n_index = len(index)
         ncol[i] -= n_index
 
         # Now update the column indices and the data
@@ -1361,7 +1462,7 @@ column indices of the sparse elements
         self._nnz -= n_index
 
     def __getitem__(self, key):
-        """Intrinsic sparse matrix retrieval of a non-zero element"""
+        """Intrinsic sparse array retrieval of a non-zero element"""
 
         # Get indices of sparse data (-1 if non-existing)
         get_idx = self._get(key[0], key[1])
@@ -1401,7 +1502,7 @@ column indices of the sparse elements
         return r
 
     def __setitem__(self, key, data):
-        """Intrinsic sparse matrix assignment of the item.
+        """Intrinsic sparse array assignment of the item.
 
         It will only allow to set the data in the sparse
         matrix if the dimensions match.
@@ -1544,7 +1645,7 @@ column indices of the sparse elements
         return _to_coo(self, data=False, rows=rows)
 
     def eliminate_zeros(self, atol: float = 0.0) -> None:
-        """Remove all zero elememts from the sparse matrix
+        """Remove all zero elememts from the sparse array
 
         This is an *in-place* operation
 
@@ -1576,7 +1677,7 @@ column indices of the sparse elements
         # the element deletions are direct, and no re-ordering is done.
 
     def copy(self, dims: Optional[SeqOrScalarInt] = None, dtype=None):
-        """A deepcopy of the sparse matrix
+        """A deepcopy of the sparse array
 
         Parameters
         ----------
@@ -1586,7 +1687,7 @@ column indices of the sparse elements
            this defaults to the dtype of the object,
            but one may change it if supplied.
         """
-        # Create sparse matrix (with only one entry per
+        # Create sparse array (with only one entry per
         # row, we overwrite it immediately afterward)
         if dims is None:
             dims = range(self.dim)
@@ -1601,12 +1702,12 @@ column indices of the sparse elements
         shape = list(self.shape[:])
         shape[2] = dim
 
-        new = self.__class__(shape, dtype=dtype, nnz=1)
+        new = self.__class__(shape, dtype=dtype, nnz=1, idtype=self._idtype)
 
         # The default sizes are not passed
         # Hence we *must* copy the arrays directly
-        new.ptr[:] = self.ptr[:]
-        new.ncol[:] = self.ncol[:]
+        new.ptr = self.ptr.copy()
+        new.ncol = self.ncol.copy()
         new.col = self.col.copy()
         new._nnz = self.nnz
 
@@ -1619,24 +1720,24 @@ column indices of the sparse elements
 
         return new
 
-    def tocsr(self, dim: int = 0, **kwargs) -> csr_matrix:
-        """Convert dimension `dim` into a :class:`~scipy.sparse.csr_matrix` format
+    def tocsr(self, dim: int = 0, **kwargs) -> csr_array:
+        """Convert dimension `dim` into a :class:`~scipy.sparse.csr_array` format
 
         Parameters
         ----------
         dim :
-           dimension of the data returned in a scipy sparse matrix format
+           dimension of the data returned in a scipy sparse array format
         **kwargs:
-           arguments passed to the :class:`~scipy.sparse.csr_matrix` routine
+           arguments passed to the :class:`~scipy.sparse.csr_array` routine
         """
         shape = self.shape[:2]
         if self.finalized:
             # Easy case...
-            return csr_matrix(
+            return csr_array(
                 (
                     self._D[:, dim].copy(),
-                    self.col.astype(int32, copy=True),
-                    self.ptr.astype(int32, copy=True),
+                    self.col.copy(),
+                    self.ptr.copy(),
                 ),
                 shape=shape,
                 **kwargs,
@@ -1647,14 +1748,14 @@ column indices of the sparse elements
         # create new pointer
         ptr = _ncol_to_indptr(self.ncol)
 
-        return csr_matrix(
-            (self._D[idx, dim].copy(), self.col[idx], ptr.astype(int32, copy=False)),
+        return csr_array(
+            (self._D[idx, dim].copy(), self.col[idx], ptr),
             shape=shape,
             **kwargs,
         )
 
     def transform(self, matrix, dtype=None):
-        r"""Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix
+        r"""Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse array
 
         Notes
         -----
@@ -1684,15 +1785,15 @@ column indices of the sparse elements
                 f"matrix.shape={matrix.shape} and self.spin={self.shape[2]} ; out.spin={matrix.shape[0]}"
             )
 
-        # set dimension of new sparse matrix
+        # set dimension of new sparse array
         new_dim = matrix.shape[0]
         shape = list(self.shape[:])
         shape[2] = new_dim
 
-        new = self.__class__(shape, dtype=dtype, nnz=1)
+        new = self.__class__(shape, dtype=dtype, nnz=1, idtype=self._idtype)
 
-        copyto(new.ptr, self.ptr, casting="no")
-        copyto(new.ncol, self.ncol, casting="no")
+        new.ptr = self.ptr.copy()
+        new.ncol = self.ncol.copy()
         new.col = self.col.copy()
         new._nnz = self.nnz
 
@@ -1708,7 +1809,7 @@ column indices of the sparse elements
         Parameters
         ----------
         dtype :
-            the new dtype for the sparse matrix
+            the new dtype for the sparse array
         copy :
             copy when needed, or do not copy when not needed.
         """
@@ -1733,13 +1834,13 @@ column indices of the sparse elements
         Parameters
         ----------
         sparse_matrices :
-            any sparse matrix which can convert to a `scipy.sparse.csr_matrix` matrix
+            any sparse array which can convert to a `scipy.sparse.csr_array` matrix
         dtype : numpy.dtype, optional
             data-type to store in the matrix, default to largest ``dtype`` for the
             passed sparse matrices
         """
         if issparse(sparse_matrices) or isinstance(sparse_matrices, SparseCSR):
-            sparse_matrices = list(sparse_matrices)
+            sparse_matrices = [sparse_matrices]
 
         # short-hand
         spmats = sparse_matrices
@@ -1761,12 +1862,12 @@ column indices of the sparse elements
                 return spmat.copy(dtype=dtype)
 
             # We are dealing with something different from a SparseCSR
-            # Likely some scipy.sparse matrix.
+            # Likely some scipy.sparse array.
             # Use that one.
             m = spmat.tocsr()
             out = cls(m.shape + (1,), nnzpr=1, nnz=1, dtype=dtype)
-            out.col = m.indices.astype(np.int32, copy=True)
-            out.ptr = m.indptr.astype(np.int32, copy=True)
+            out.col = m.indices.copy()
+            out.ptr = m.indptr.copy()
             out.ncol = np.diff(out.ptr)
             out._nnz = len(out.col)
             out._D = m.data.reshape(-1, 1).astype(dtype, copy=True)
@@ -1774,6 +1875,7 @@ column indices of the sparse elements
 
         # Pre-allocate by finding sparsity pattern union
         out = cls.sparsity_union(spmats, dim=dim, dtype=dtype)
+        idtype = out._idtype
 
         # For all non-sisl objects, finalize it by sorting
         # indices, that should be really fast!
@@ -1789,7 +1891,7 @@ column indices of the sparse elements
 
         # Now transfer the data
         for r in range(out.shape[0]):
-            # loop across all rows of the sparse matrix
+            # loop across all rows of the sparse array
             osl = slice(out.ptr[r], out.ptr[r] + out.ncol[r])
             ocol = out.col[osl]
             if len(ocol) == 0:
@@ -1811,6 +1913,8 @@ column indices of the sparse elements
                     mcol = m.indices[msl]
                     D = m.data.reshape(-1, 1)
 
+                # to ensure it works on different dtypes
+                mcol = mcol.astype(idtype, copy=False)
                 out_idx = indices(ocol, mcol, osl.start, both_sorted=sorted)
 
                 if len(out_idx) > 0:
@@ -1833,10 +1937,10 @@ column indices of the sparse elements
 
         # Check if we have a square matrix or a rectangular one
         if self.shape[0] >= self.shape[1]:
-            rindices = delete(_a.arangei(self.shape[0]), indices)
+            rindices = delete(_a.arange(self.shape[0], dtype=self._idtype), indices)
 
         else:
-            rindices = delete(_a.arangei(self.shape[1]), indices)
+            rindices = delete(_a.arange(self.shape[1], dtype=self._idtype), indices)
 
         return self.sub(rindices)
 
@@ -1867,12 +1971,16 @@ column indices of the sparse elements
         nc = count_nonzero(indices < self.shape[1])
 
         # Fix the pivoting indices with the new indices
-        pvt = _a.fulli([max(self.shape[0], self.shape[1])], -1)
-        pvt[indices] = _a.arangei(len(indices))
+        idtype = self._idtype
+        pvt = _a.full([max(self.shape[0], self.shape[1])], -1, dtype=idtype)
+        pvt[indices] = _a.arange(len(indices), dtype=idtype)
 
         # Create the new SparseCSR
         # We use nnzpr = 1 because we will overwrite all quantities afterwards.
-        csr = self.__class__((nr, nc, self.shape[2]), dtype=self.dtype, nnz=1)
+        # The pointers temporarily hold the pointers of `self`, hence same idtype.
+        csr = self.__class__(
+            (nr, nc, self.shape[2]), dtype=self.dtype, nnz=1, idtype=idtype
+        )
         # Limit memory
         csr._D = empty([1])
 
@@ -1890,7 +1998,7 @@ column indices of the sparse elements
         #   [1, :] the new column data
         # We do this because we can then use take on this array
         # and not two arrays.
-        col_data = _a.emptyi([2, ncol1.sum()])
+        col_data = _a.empty([2, ncol1.sum()], dtype=idtype)
 
         # Create a list of ndarrays with indices of elements per row
         # and transfer to a linear index
@@ -1904,11 +2012,13 @@ column indices of the sparse elements
         # First recreate the new (temporary) pointer
         ptr1[0] = 0
         # Place it directly where it should be
-        _a.cumsumi(ncol1, out=ptr1[1:])
+        _a.cumsum(ncol1, dtype=idtype, out=ptr1[1:])
 
         # Count number of entries
         idx_take = col_data[1, :] >= 0
-        ncol1[:] = _a.fromiteri(map(count_nonzero, split(idx_take, ptr1[1:-1]))).ravel()
+        ncol1[:] = _a.fromiter(
+            map(count_nonzero, split(idx_take, ptr1[1:-1])), dtype=idtype
+        ).ravel()
 
         # Convert to indices
         idx_take = idx_take.nonzero()[0]
@@ -1922,13 +2032,13 @@ column indices of the sparse elements
 
         # Set the data for the new sparse csr
         csr.ptr[0] = 0
-        _a.cumsumi(ncol1, out=csr.ptr[1:])
+        _a.cumsum(ncol1, dtype=idtype, out=csr.ptr[1:])
         csr._nnz = len(csr.col)
 
         return csr
 
     def transpose(self, sort: bool = True):
-        """Create the transposed sparse matrix
+        """Create the transposed sparse array
 
         Parameters
         ----------
@@ -1943,7 +2053,7 @@ column indices of the sparse elements
         Returns
         -------
         object
-            an equivalent sparse matrix with transposed matrix elements
+            an equivalent sparse array with transposed matrix elements
         """
         # Create a temporary copy to put data into
         T = self.copy()
@@ -1959,10 +2069,10 @@ column indices of the sparse elements
         # First extract the actual data in COO format
         row, col, D = _to_coo(self)
 
-        # Now we can re-create the sparse matrix
+        # Now we can re-create the sparse array
         # All we need is to count the number of non-zeros per column.
         rows, nrow = unique(col, return_counts=True)
-        T.ncol = _a.zerosi(T.shape[0])
+        T.ncol = _a.zeros(T.shape[0], dtype=T._idtype)
         T.ncol[rows] = nrow
         del rows
 
@@ -1988,7 +2098,7 @@ column indices of the sparse elements
         return T
 
     def __str__(self) -> str:
-        """Representation of the sparse matrix model"""
+        """Representation of the sparse array model"""
         ints = self.shape[:] + (self.nnz,)
         return (
             self.__class__.__name__
@@ -2043,9 +2153,9 @@ column indices of the sparse elements
                     "doesn't match the broadcast shape {result.shape}"
                 )
             out._finalized = result._finalized
-            out.ncol[:] = result.ncol[:]
-            out.ptr[:] = result.ptr[:]
-            # this will copy
+            out._promote_index(np.promote_types(out._idtype, result._idtype))
+            out.ncol = result.ncol.copy()
+            out.ptr = result.ptr.copy()
             out.col = result.col.copy()
             out._D = result._D.astype(out.dtype)
             out._nnz = result.nnz
@@ -2070,6 +2180,10 @@ column indices of the sparse elements
     def __setstate__(self, state):
         """Reset state of the object"""
         self._shape = tuple(state["shape"][:])
+        self._idtype = _index_dtype(
+            max(self._shape[0], self._shape[1], len(state["col"]))
+        )
+        self._idtype = np.promote_types(self._idtype, state["col"].dtype)
         self.ncol = state["ncol"]
         self.col = state["col"]
         self._D = state["D"]
@@ -2180,7 +2294,7 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
                 issorted = False
         else:
             # makes this work for all matrices
-            # and csr_matrix.tocsr is a no-op
+            # and csr_array.tocsr is a no-op
             mat = mat.tocsr()
             mat.sort_indices()
 
@@ -2355,8 +2469,8 @@ def ispmatrix(matrix, map_row=None, map_col=None):
 
     Parameters
     ----------
-    matrix : scipy.sparse.sp_matrix
-      the sparse matrix to iterate non-zero elements
+    matrix : scipy.sparse.sparray
+      the sparse array to iterate non-zero elements
     map_row : func, optional
       map each row entry through the function `map_row`, defaults to ``None`` which is
       equivalent to no mapping.
@@ -2382,8 +2496,8 @@ def ispmatrix(matrix, map_row=None, map_col=None):
     map_row = np.vectorize(map_row)
     map_col = np.vectorize(map_col)
 
-    nrow = len(unique(map_row(arange(matrix.shape[0], dtype=int32))))
-    ncol = len(unique(map_col(arange(matrix.shape[1], dtype=int32))))
+    nrow = len(unique(map_row(arange(matrix.shape[0]))))
+    ncol = len(unique(map_col(arange(matrix.shape[1]))))
     rows = zeros(nrow, dtype=np.bool_)
     cols = zeros(ncol, dtype=np.bool_)
 
@@ -2452,7 +2566,7 @@ def ispmatrix(matrix, map_row=None, map_col=None):
 
     else:
         raise NotImplementedError(
-            "The iterator for this sparse matrix has not been implemented"
+            "The iterator for this sparse array has not been implemented"
         )
 
 
@@ -2462,7 +2576,7 @@ def _ispmatrix_all(matrix):
     Parameters
     ----------
     matrix : ``scipy.sparse.*_matrix``
-      the sparse matrix to iterate non-zero elements
+      the sparse array to iterate non-zero elements
 
     Yields
     ------
@@ -2496,7 +2610,7 @@ def _ispmatrix_all(matrix):
 
     else:
         raise NotImplementedError(
-            "The iterator for this sparse matrix has not been implemented"
+            "The iterator for this sparse array has not been implemented"
         )
 
 
@@ -2507,7 +2621,7 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
     Parameters
     ----------
     matrix : scipy.sparse.sp_matrix
-      the sparse matrix to iterate non-zero elements
+      the sparse array to iterate non-zero elements
     map_row : func, optional
       map each row entry through the function `map_row`, defaults to ``None`` which is
       equivalent to no mapping.
@@ -2563,5 +2677,5 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
 
     else:
         raise NotImplementedError(
-            "The iterator for this sparse matrix has not been implemented"
+            "The iterator for this sparse array has not been implemented"
         )

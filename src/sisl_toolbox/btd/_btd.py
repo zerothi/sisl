@@ -83,7 +83,7 @@ class PermuteBTD:
 def _graph(
     csr: SparseCSR | _SparseGeometry,
     dense: Optional[Sequence[npt.ArrayLike]] = None,
-) -> ssp.csr_matrix:
+) -> ssp.csr_array:
     """Symmetric graph of `csr` (without the diagonal), with `dense` blocks added
 
     Each array in `dense` are rows that are fully coupled (a clique).
@@ -92,13 +92,13 @@ def _graph(
         csr = csr._csr
     ptr, col = csr_graph(csr)
     n = len(ptr) - 1
-    graph = ssp.csr_matrix((np.ones(len(col), dtype=np.int8), col, ptr), shape=(n, n))
+    graph = ssp.csr_array((np.ones(len(col), dtype=np.int8), col, ptr), shape=(n, n))
     return _add_dense(graph, dense)
 
 
 def _add_dense(
-    graph: ssp.csr_matrix, dense: Optional[Sequence[npt.ArrayLike]] = None
-) -> ssp.csr_matrix:
+    graph: ssp.csr_array, dense: Optional[Sequence[npt.ArrayLike]] = None
+) -> ssp.csr_array:
     """Add the fully coupled rows (cliques) in `dense` to `graph` (without the diagonal)"""
     if dense:
         n = graph.shape[0]
@@ -113,7 +113,7 @@ def _add_dense(
         # remove the diagonal
         off = rows != cols
         rows, cols = rows[off], cols[off]
-        graph = graph + ssp.csr_matrix(
+        graph = graph + ssp.csr_array(
             (np.ones(len(rows), dtype=np.int8), (rows, cols)), shape=(n, n)
         )
         # only the pattern is used
@@ -123,14 +123,14 @@ def _add_dense(
     return graph
 
 
-def _subgraph(graph: ssp.csr_matrix, idx: np.ndarray) -> ssp.csr_matrix:
+def _subgraph(graph: ssp.csr_array, idx: np.ndarray) -> ssp.csr_array:
     """The graph of the nodes `idx` (in that order)"""
     graph = graph[idx][:, idx].tocsr()
     graph.sort_indices()
     return graph
 
 
-def _graph_ptr_col(graph: ssp.csr_matrix) -> tuple[np.ndarray, np.ndarray]:
+def _graph_ptr_col(graph: ssp.csr_array) -> tuple[np.ndarray, np.ndarray]:
     """``(ptr, col)`` arrays of `graph` as required by the `permute` routines"""
     ptr = np.ascontiguousarray(graph.indptr, dtype=np.int32)
     col = np.ascontiguousarray(graph.indices, dtype=np.int32)
@@ -226,7 +226,7 @@ def _btd_blocks_sub(
 
 
 def _device_permute(
-    graph: ssp.csr_matrix,
+    graph: ssp.csr_array,
     nodes: np.ndarray,
     dense: Sequence[np.ndarray],
     method: str = "gps",
@@ -272,7 +272,7 @@ def _device_permute(
 
 
 def _downfold_permute(
-    graph: ssp.csr_matrix,
+    graph: ssp.csr_array,
     elec: np.ndarray,
     device: np.ndarray,
     exclude: np.ndarray,

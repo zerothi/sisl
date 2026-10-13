@@ -234,7 +234,7 @@ class _GFSelfEnergy:
         M = self._SeH(*self._index(E, k), spin).astype(dtype, copy=False)
         if format in ("array", "dense"):
             return M
-        return ssp.csr_matrix(M).asformat(format)
+        return ssp.csr_array(M).asformat(format)
 
     @staticmethod
     def se2broadening(SE: np.ndarray) -> np.ndarray:
@@ -1489,7 +1489,7 @@ class DownfoldElectrode(Electrode):
         # the sparsity structure, so it is subtracted as a sparse matrix
         elec = data.elec.ravel()
         n = len(elec)
-        M = data.SeH - ssp.csr_matrix(
+        M = data.SeH - ssp.csr_array(
             (np.ravel(se), (np.repeat(elec, n), np.tile(elec, n))),
             shape=data.SeH.shape,
         )

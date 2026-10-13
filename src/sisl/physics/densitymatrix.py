@@ -8,7 +8,7 @@ from typing import Literal, Optional
 
 import numpy as np
 from numpy import add, dot, logical_and, repeat, subtract, unique
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 from scipy.sparse import hstack as ss_hstack
 from scipy.sparse import tril, triu
 
@@ -237,8 +237,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
             # Perform dot-product with spinor, and take out the diagonal real part
             DM = dot(DM, spinor.T)[:, [0, 1], [0, 1]].sum(1).real
 
-            # Create the DM csr matrix.
-            csrDM = csr_matrix(
+            # Create the DM csr array.
+            csrDM = csr_array(
                 (DM, csr.col[idx], _ncol_to_indptr(csr.ncol)),
                 shape=(uc_dm.shape[:2]),
                 dtype=DM.dtype,
@@ -974,7 +974,7 @@ class DensityMatrix(_densitymatrix):
            the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
            Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
@@ -1039,7 +1039,7 @@ class DensityMatrix(_densitymatrix):
            the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional
@@ -1102,7 +1102,7 @@ class DensityMatrix(_densitymatrix):
            the chosen gauge, ``lattice`` for cell vector gauge, and ``atomic`` for atomic distance
            gauge.
         format : {'csr', 'array', 'dense', 'coo', ...}
-           the returned format of the matrix, defaulting to the `scipy.sparse.csr_matrix`,
+           the returned format of the matrix, defaulting to the `scipy.sparse.csr_array`,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
         spin : int, optional

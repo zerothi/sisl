@@ -54,9 +54,11 @@ ctypedef fused ints_st:
     long long
 
 
-# Index type of the scipy sparse matrices (int32 everywhere)
+# Index type of the scipy sparse matrices
+# Since sparse array entered, they can be anything.
 ctypedef fused int_sp_st:
     int
+    long long
 
 
 ctypedef fused floats_st:

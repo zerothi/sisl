@@ -12,7 +12,7 @@ from __future__ import annotations
 import numpy as np
 
 from sisl import SparseCSR
-from sisl._core._sparse import fold_csr_matrix
+from sisl._core._sparse import fold_csr_array
 from sisl_toolbox.btd.permute._permute import (
     btd_blocks,
     cuthill_mckee,
@@ -56,7 +56,7 @@ def csr_graph(csr: SparseCSR) -> tuple[np.ndarray, np.ndarray]:
     (``col % csr.shape[0]``), and the pattern is symmetrized (:math:`A + A^T`)
     without the diagonal, see `symmetric_graph`.
     """
-    ptr, ncol, col = fold_csr_matrix(csr.ptr, csr.ncol, csr.col)
+    ptr, ncol, col = fold_csr_array(csr.ptr, csr.ncol, csr.col)
     return symmetric_graph(ptr, ncol, col)
 
 

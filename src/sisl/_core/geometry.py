@@ -31,7 +31,7 @@ from numpy import (
     tile,
     unique,
 )
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 import sisl._array as _a
 from sisl._category import Category, GenericCategory
@@ -312,12 +312,12 @@ class Geometry(
         return self.no * self.n_s
 
     @property
-    def firsto(self) -> npt.NDArray[np.int32]:
+    def firsto(self) -> npt.NDArray:
         """The first orbital on the corresponding atom"""
         return self.atoms.firsto
 
     @property
-    def lasto(self) -> npt.NDArray[np.int32]:
+    def lasto(self) -> npt.NDArray:
         """The last orbital on the corresponding atom"""
         return self.atoms.lasto
 
@@ -4103,7 +4103,7 @@ class Geometry(
         grid_indices = grid_indices[:i_value]
         orbital_indices = orbital_indices[:i_value]
 
-        psi_values = csr_matrix(
+        psi_values = csr_array(
             (grid_values, (grid_indices, orbital_indices)),
             shape=(np.prod(grid.shape), sp_grid_geom.no_s),
         )
