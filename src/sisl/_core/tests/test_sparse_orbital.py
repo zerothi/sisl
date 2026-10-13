@@ -482,3 +482,35 @@ def test_translate_sparse_orbitals():
     assert transl_both[1, 1] == 2
     assert transl_both[0, 1] == 3
     assert transl_both[0, 6 + 4] == 4
+
+
+@pytest.mark.parametrize("idtype", [np.int32, np.int64])
+def test_sparse_orbital_idtype_operations(idtype):
+    g = graphene().tile(2, 0)
+    s = SparseOrbital(g, nnzpr=1)
+    s.construct([[0.1, 1.44], [1.0, 2.0]])
+    s._csr._promote_index(idtype)
+    s32 = s.copy()
+    s32._csr._promote_index(np.int32)
+
+    def check(a, b):
+        csr = a._csr
+        assert csr.ptr.dtype == csr.ncol.dtype == csr.col.dtype == csr._idtype
+        assert np.allclose(a.tocsr().toarray(), b.tocsr().toarray())
+
+    check(s.transpose(), s32.transpose())
+    check(s.append(s, 1), s32.append(s32, 1))
+    check(s.tile(2, 1), s32.tile(2, 1))
+    check(s.sub([0, 2]), s32.sub([0, 2]))
+    check(s.toSparseAtom(), s32.toSparseAtom())
+    a, b = s.copy(), s32.copy()
+    a.set_nsc([5, 5, 1])
+    b.set_nsc([5, 5, 1])
+    check(a, b)
+    # replace a unit-cell in a 4x4 supercell (must equal the original)
+    u = SparseOrbital(graphene())
+    u.construct([[0.1, 1.44], [1.0, 2.0]])
+    u44 = u.tile(4, 0).tile(4, 1)
+    u44._csr._promote_index(idtype)
+    new = u44.replace([4, 5], u)
+    check(new, u44)

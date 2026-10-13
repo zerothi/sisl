@@ -1398,10 +1398,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         for ia in self.a_dev:
             # Get csr slice
-            Dia = Dab[ia]
+            Dia = Dab[[ia], :]
 
             # Set diagonal to zero
-            Dia[ia] = 0.0
+            Dia[0, ia] = 0.0
             # Remove the diagonal (prohibits the calculation of the
             # norm of the zero vector, hence required)
             Dia.eliminate_zeros()

@@ -81,7 +81,7 @@ def local_rows(csr, dist: Distribution, rank: Optional[int] = None):
     ncol = csr.ncol[selection]
     idx = array_arange(csr.ptr[selection], n=ncol)
 
-    ptr = np.insert(np.cumsum(ncol), 0, 0).astype(np.int32)
+    ptr = np.insert(np.cumsum(ncol), 0, 0)
     return SparseCSR(
         (csr._D[idx].copy(), csr.col[idx].copy(), ptr),
         shape=(dist.count(rank), csr.shape[1]),
@@ -96,10 +96,10 @@ def _stored(csr):
     Correct for an unfinalized matrix: only ``ncol[r]`` entries per row are
     valid, whatever ``ptr`` has over-allocated.
     """
-    idx = array_arange(csr.ptr[:-1], n=csr.ncol, dtype=np.int32)
+    idx = array_arange(csr.ptr[:-1], n=csr.ncol)
     # array_arange concatenates the rows in order, so repeating each row index
     # ncol times lines up element for element
-    rows = np.repeat(np.arange(csr.shape[0], dtype=np.int32), csr.ncol)
+    rows = np.repeat(np.arange(csr.shape[0], dtype=idx.dtype), csr.ncol)
     return rows, csr.col[idx], csr._D[idx]
 
 
@@ -180,12 +180,12 @@ def _rebuild(csr, rows, cols, data, op: str) -> None:
         rows, cols = rows[starts], cols[starts]
     else:
         data = np.zeros((0, dim), dtype=csr.dtype)
-        cols = np.zeros(0, dtype=np.int32)
+        cols = np.zeros(0, dtype=cols.dtype)
 
-    ncol = np.bincount(rows, minlength=nr).astype(np.int32)
+    ncol = np.bincount(rows, minlength=nr).astype(rows.dtype, copy=False)
     csr.ncol = ncol
-    csr.ptr = np.insert(np.cumsum(ncol), 0, 0).astype(np.int32)
-    csr.col = np.ascontiguousarray(cols, dtype=np.int32)
+    csr.ptr = np.insert(np.cumsum(ncol), 0, 0)
+    csr.col = np.ascontiguousarray(cols)
     csr._D = np.ascontiguousarray(data, dtype=csr.dtype)
     csr._nnz = int(ncol.sum())
     # rows are contiguous and columns ascending within each row

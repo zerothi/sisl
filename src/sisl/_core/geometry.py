@@ -312,12 +312,12 @@ class Geometry(
         return self.no * self.n_s
 
     @property
-    def firsto(self) -> npt.NDArray[np.int32]:
+    def firsto(self) -> npt.NDArray:
         """The first orbital on the corresponding atom"""
         return self.atoms.firsto
 
     @property
-    def lasto(self) -> npt.NDArray[np.int32]:
+    def lasto(self) -> npt.NDArray:
         """The last orbital on the corresponding atom"""
         return self.atoms.lasto
 

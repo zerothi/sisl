@@ -348,8 +348,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
            integer list of supercell indices (all smaller than `n_s`) that the current blocks of matrices
            are being transferred to. Must have same length as `old`.
         """
-        old = _a.asarrayi(old).ravel()
-        new = _a.asarrayi(new).ravel()
+        old = _a.asarrayl(old).ravel()
+        new = _a.asarrayl(new).ravel()
 
         if len(old) != len(new):
             raise ValueError(
@@ -360,8 +360,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         no = self.no
         # Number of elements per matrix
-        n = _a.emptyi(len(old))
-        n.fill(no)
+        n = _a.fulll(len(old), no)
         old = array_arange(old * no, n=n)
         new = array_arange(new * no, n=n)
         self._csr.translate_columns(old, new)
@@ -462,8 +461,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         if len(old) not in (self.n_s, lattice.n_s):
             raise SislError("Not all supercells are accounted for")
 
-        old = _a.arrayi(old)
-        new = _a.arrayi(new)
+        old = _a.arrayl(old)
+        new = _a.arrayl(new)
 
         # Assert that there are only unique values
         if len(unique(old)) != len(old):
@@ -493,7 +492,11 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         else:
             max_n = 0
         # Make sure we delete all column values where we have put fake values
-        delete = _a.arangei(lattice.n_s * base_size, max(max_n, self.shape[1]))
+        delete = _a.arange(
+            lattice.n_s * base_size,
+            max(max_n, self.shape[1]),
+            dtype=self._csr._idtype,
+        )
         if len(delete) > 0:
             self._csr.delete_columns(delete, keep_shape=True)
 
@@ -565,7 +568,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # Now we can re-create the sparse matrix
         # All we need is to count the number of non-zeros per column.
         rows, nrow = unique(col, return_counts=True)
-        T._csr.ncol = _a.zerosi(size)
+        T._csr.ncol = _a.zeros(size, dtype=T._csr._idtype)
         T._csr.ncol[rows] = nrow
         del rows
 
@@ -1875,6 +1878,8 @@ class SparseOrbital(_SparseGeometry):
         # class
         # New indices and data (the constructor for SparseCSR copies)
         full = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        full._csr._reserve_index(int(self._csr.ptr[-1]) + int(other._csr.ptr[-1]))
+        idtype = full._csr._idtype
         full._csr.ptr = concatenate((self._csr.ptr[:-1], other._csr.ptr))
         full._csr.ptr[self.no :] += self._csr.ptr[-1]
         full._csr.ncol = concatenate((self._csr.ncol, other._csr.ncol))
@@ -1889,9 +1894,14 @@ class SparseOrbital(_SparseGeometry):
         # Now we have to transfer the indices to the new sparse pattern
 
         # First create a local copy of the columns, then we transfer, and then we collect.
-        s_col = self._csr.col.copy()
-        transfer_idx = _a.arangei(self.geometry.no_s).reshape(-1, self.geometry.no)
-        transfer_idx += _a.arangei(self.geometry.n_s).reshape(-1, 1) * other.geometry.no
+        s_col = self._csr.col.astype(idtype)
+        transfer_idx = _a.arange(self.geometry.no_s, dtype=idtype).reshape(
+            -1, self.geometry.no
+        )
+        transfer_idx += (
+            _a.arange(self.geometry.n_s, dtype=idtype).reshape(-1, 1)
+            * other.geometry.no
+        )
         # Remove couplings along axis
         if axis is not None:
             idx = (self.geometry.lattice.sc_off[:, axis] != 0).nonzero()[0]
@@ -1902,8 +1912,10 @@ class SparseOrbital(_SparseGeometry):
 
         # Same for the other, but correct for deleted supercells and supercells along
         # disconnected auxiliary cells.
-        o_col = other._csr.col.copy()
-        transfer_idx = _a.arangei(other.geometry.no_s).reshape(-1, other.geometry.no)
+        o_col = other._csr.col.astype(idtype)
+        transfer_idx = _a.arange(other.geometry.no_s, dtype=idtype).reshape(
+            -1, other.geometry.no
+        )
 
         # Transfer the correct supercells
         o_idx = []
@@ -1917,7 +1929,7 @@ class SparseOrbital(_SparseGeometry):
                 idx_delete.append(isc)
         # o_idx are transferred to s_idx
         transfer_idx[o_idx, :] += (
-            _a.arangei(1, other.geometry.n_s + 1)[s_idx].reshape(-1, 1)
+            _a.arange(1, other.geometry.n_s + 1, dtype=idtype)[s_idx].reshape(-1, 1)
             * self.geometry.no
         )
         # Remove some columns
@@ -2113,6 +2125,8 @@ class SparseOrbital(_SparseGeometry):
 
         # New indices and data (the constructor for SparseCSR copies)
         full = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        full._csr._reserve_index(int(self._csr.ptr[-1]) + int(other._csr.ptr[-1]))
+        idtype = full._csr._idtype
         full._csr.ptr = concatenate((self._csr.ptr[:-1], other._csr.ptr))
         full._csr.ptr[self.no :] += self._csr.ptr[-1]
         full._csr.ncol = concatenate((self._csr.ncol, other._csr.ncol))
@@ -2121,18 +2135,26 @@ class SparseOrbital(_SparseGeometry):
         full._csr._finalized = False
 
         # First create a local copy of the columns, then we transfer, and then we collect.
-        s_col = self._csr.col.copy()
+        s_col = self._csr.col.astype(idtype)
         # transfer
-        transfer_idx = _a.arangei(self.geometry.no_s).reshape(-1, self.geometry.no)
-        transfer_idx += _a.arangei(self.geometry.n_s).reshape(-1, 1) * other.geometry.no
+        transfer_idx = _a.arange(self.geometry.no_s, dtype=idtype).reshape(
+            -1, self.geometry.no
+        )
+        transfer_idx += (
+            _a.arange(self.geometry.n_s, dtype=idtype).reshape(-1, 1)
+            * other.geometry.no
+        )
         idx = array_arange(self._csr.ptr[:-1], n=self._csr.ncol)
         s_col[idx] = transfer_idx.ravel()[s_col[idx]]
 
-        o_col = other._csr.col.copy()
+        o_col = other._csr.col.astype(idtype)
         # transfer
-        transfer_idx = _a.arangei(other.geometry.no_s).reshape(-1, other.geometry.no)
+        transfer_idx = _a.arange(other.geometry.no_s, dtype=idtype).reshape(
+            -1, other.geometry.no
+        )
         transfer_idx += (
-            _a.arangei(1, other.geometry.n_s + 1).reshape(-1, 1) * self.geometry.no
+            _a.arange(1, other.geometry.n_s + 1, dtype=idtype).reshape(-1, 1)
+            * self.geometry.no
         )
         idx = array_arange(other._csr.ptr[:-1], n=other._csr.ncol)
         o_col[idx] = transfer_idx.ravel()[o_col[idx]]
@@ -2950,17 +2972,19 @@ depending on your use case. Note indices in the following are supercell indices.
 
         geom = self.geometry
 
-        # Create a conversion vector
-        orb2atom = tile(geom.o2a(_a.arangei(geom.no)), geom.n_s)
-        orb2atom = orb2atom.reshape(-1, geom.no)
-        orb2atom += _a.arangei(geom.n_s).reshape(-1, 1) * geom.na
-        orb2atom = orb2atom.ravel()
-
         # First convert all rows to the same
         csr = self._csr
+        # The atomic indices are always smaller than the orbital ones
+        idtype = csr._idtype
+
+        # Create a conversion vector
+        orb2atom = tile(geom.o2a(_a.arange(geom.no)), geom.n_s).astype(idtype)
+        orb2atom = orb2atom.reshape(-1, geom.no)
+        orb2atom += _a.arange(geom.n_s, dtype=idtype).reshape(-1, 1) * geom.na
+        orb2atom = orb2atom.ravel()
 
         # Now build the new sparse pattern
-        ptr = _a.emptyi(geom.na + 1)
+        ptr = _a.empty(geom.na + 1, dtype=idtype)
         ptr[0] = 0
         col = [None] * geom.na
         for ia in range(geom.na):
@@ -2977,10 +3001,10 @@ depending on your use case. Note indices in the following are supercell indices.
             ptr[ia + 1] = ptr[ia] + len(acol)
 
         # Now we can create the sparse atomic
-        col = concatenate(col, axis=0).astype(int32, copy=False)
+        col = concatenate(col, axis=0)
         spAtom = SparseAtom(geom, dim=dim, dtype=dtype, nnzpr=0)
-        spAtom._csr.ptr[:] = ptr[:]
-        spAtom._csr.ncol[:] = diff(ptr)
+        spAtom._csr.ptr = ptr
+        spAtom._csr.ncol = diff(ptr)
         spAtom._csr.col = col
         spAtom._csr._D = np.zeros([len(col), dim], dtype=dtype)
         spAtom._csr._nnz = len(col)
