@@ -1394,15 +1394,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Loop atoms in the device region
         # These are the only atoms which may have vector contributions
         # So no need to loop over any other atoms
-        getrow = Dab.getrow
         Rij = geom.Rij
 
         for ia in self.a_dev:
-            # Get csr matrix
-            Dia = getrow(ia)
+            # Get csr slice
+            Dia = Dab[ia]
 
             # Set diagonal to zero
-            Dia[0, ia] = 0.0
+            Dia[ia] = 0.0
             # Remove the diagonal (prohibits the calculation of the
             # norm of the zero vector, hence required)
             Dia.eliminate_zeros()
