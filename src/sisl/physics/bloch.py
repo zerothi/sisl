@@ -10,14 +10,19 @@ Bloch's theorem is a very powerful proceduce that enables one to utilize
 the periodicity of a given direction to describe the complete system.
 """
 from collections.abc import Sequence
+from typing import TYPE_CHECKING, Optional, Union
 
 import numpy as np
+import numpy.typing as npt
 from numpy import empty
 
 import sisl._array as _a
 from sisl._help import dtype_float_to_complex
 from sisl._internal import set_module
 from sisl.typing import KPoint
+
+if TYPE_CHECKING:
+    from sisl_toolbox.btd import BlockArray
 
 from ._bloch import bloch_unfold, bloch_unfold_finalize
 
@@ -62,6 +67,11 @@ class Bloch:
     ``finalize=False`` and then call a subsequent ``bloch.unfold_finalize(M)``.
 
 
+    Only parts of the unfolded matrix may be calculated, see the ``parts``
+    argument of `unfold` and `__call__`.
+    The unfolded matrix is then returned as a `~sisl_toolbox.btd.BlockArray`
+    containing only the blocks coupling the requested unit-cells.
+
     Parameters
     ----------
     bloch : (3,) int
@@ -89,6 +99,13 @@ class Bloch:
     >>> M = bloch.unfold(M, k_unfold)
     >>> if not bloch.finalize:
     ...    bloch.unfold_finalize(M)
+
+    Only calculate the blocks coupling the unit-cells ``[0, 0, 0]`` and ``[1, 0, 1]``
+    (and their self-couplings).
+
+    >>> bloch = Bloch([2, 1, 2])
+    >>> M = bloch(func, [0] * 3, parts=[[0, 0, 0], [1, 0, 1]])
+    >>> M.block_indexer[0, 3] # coupling between the two cells
     """
 
     def __init__(self, *bloch, finalize: bool = True):
@@ -154,7 +171,9 @@ class Bloch:
         # Back-transform shape
         return unfold.reshape(-1, 3)
 
-    def __call__(self, func, k: KPoint, *args, **kwargs):
+    def __call__(
+        self, func, k: KPoint, *args, parts: Optional[npt.ArrayLike] = None, **kwargs
+    ):
         """Return a functions return values as the Bloch unfolded equivalent according to this object
 
         Calling the `Bloch` object is a shorthand for the manual use of the `Bloch.unfold_points` and `Bloch.unfold`
@@ -179,13 +198,15 @@ class Bloch:
            k-point to be unfolded
         *args :
            arguments passed directly to `func`
+        parts :
+           only calculate the blocks coupling these unit-cells, see `unfold`.
         **kwargs :
            keyword arguments passed directly to `func`
 
         Returns
         -------
-        numpy.ndarray
-            unfolded Bloch matrix
+        numpy.ndarray or sisl_toolbox.btd.BlockArray
+            unfolded Bloch matrix, a `BlockArray` if `parts` is specified
         """
         K_unfold = self.unfold_points(k)
         M0 = func(*args, k=K_unfold[0, :], **kwargs)
@@ -195,10 +216,22 @@ class Bloch:
         del M0
         for i in range(1, K_unfold.shape[0]):
             M[i] = func(*args, k=K_unfold[i, :], **kwargs)
+        if parts is not None:
+            return self._unfold_parts(M, K_unfold, parts)
         return bloch_unfold(self._bloch, K_unfold, M, self.finalize)
 
-    def unfold(self, M, k_unfold: Sequence[KPoint]):
+    def unfold(
+        self,
+        M,
+        k_unfold: Sequence[KPoint],
+        parts: Optional[npt.ArrayLike] = None,
+    ) -> Union[np.ndarray, BlockArray]:
         r"""Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)
+
+        The unfolded matrix consists of ``len(self) x len(self)`` blocks, each
+        of shape ``M[0].shape``. Block ``I`` corresponds to the unit-cell with
+        indices ``(i0, i1, i2)`` (``0 <= ix < self.bloch[x]``) with
+        ``I = (i2 * self.bloch[1] + i1) * self.bloch[0] + i0``.
 
         Parameters
         ----------
@@ -206,15 +239,118 @@ class Bloch:
             an ``*``-N-M matrix used for unfolding
         k_unfold :
             unfolding k-points as returned by `Bloch.unfold_points`
+        parts :
+            only calculate the blocks coupling these unit-cells (all pairs of
+            the unit-cells, including the self-couplings).
+            Either an ``(N, 3)`` array of unit-cell indices, or a `tuple` of up to 3
+            arrays (one per lattice vector) that are broadcasted against each other,
+            e.g. ``(np.arange(2).reshape(-1, 1), np.arange(2), [1])``.
+            Lattice vectors missing in the `tuple` take all unit-cells along that
+            direction (like `numpy` indexing), e.g. ``([-2],)`` is all unit-cells
+            with the second last index along the first lattice vector.
+            Negative indices count from the end (like `numpy` indexing),
+            i.e. ``-1`` is the last unit-cell along that lattice vector.
+            Duplicate unit-cells are ignored.
 
         Returns
         -------
         numpy.ndarray
             unfolded matrix of size ``M[0].shape * k_unfold.shape[0] ** 2``
+            (if `parts` is None)
+        sisl_toolbox.btd.BlockArray
+            unfolded matrix of the same shape, but only with the blocks
+            of `parts` defined, all other blocks are zero (if `parts` is specified).
+            The `finalize` flag has no effect.
         """
         if isinstance(M, (list, tuple)):
             M = np.stack(M)
+        if parts is not None:
+            return self._unfold_parts(M, k_unfold, parts)
         return bloch_unfold(self._bloch, k_unfold, M, self.finalize)
+
+    def _parts_cells(self, parts) -> np.ndarray:
+        """Convert `parts` into a unique ``(N, 3)`` array of unit-cell indices"""
+        if isinstance(parts, tuple):
+            if len(parts) > 3:
+                raise ValueError(
+                    f"{self.__class__.__name__} parts as a tuple accepts at most "
+                    "one array per lattice vector (3)"
+                )
+            if len(parts) == 0:
+                cells = _a.emptyi([1, 0])
+            else:
+                cells = np.stack(
+                    [a.ravel() for a in np.broadcast_arrays(*map(_a.asarrayi, parts))],
+                    axis=-1,
+                )
+            # missing lattice vectors take all unit-cells (like numpy indexing)
+            for b in self._bloch[len(parts) :]:
+                cells = np.concatenate(
+                    [
+                        np.repeat(cells, b, axis=0),
+                        np.tile(_a.arangei(b), len(cells)).reshape(-1, 1),
+                    ],
+                    axis=1,
+                )
+        else:
+            cells = _a.asarrayi(parts)
+            if cells.ndim not in (1, 2) or cells.shape[-1] != 3:
+                raise ValueError(
+                    f"{self.__class__.__name__} parts must be an (N, 3) array of "
+                    "unit-cell indices"
+                )
+            cells = cells.reshape(-1, 3)
+        if np.any(cells < -self._bloch) or np.any(cells >= self._bloch):
+            raise ValueError(
+                f"{self.__class__.__name__} parts has unit-cell indices outside "
+                f"the Bloch expansion {self._bloch.tolist()}"
+            )
+        # wrap negative indices (counting from the end)
+        return np.unique(cells % self._bloch, axis=0)
+
+    def _unfold_parts(self, M: np.ndarray, k_unfold, parts) -> BlockArray:
+        r"""Unfold only the blocks coupling the unit-cells in `parts`
+
+        Block :math:`(I, J)` only depends on the unit-cell displacement
+        :math:`\mathbf d = \mathbf c_I - \mathbf c_J`:
+
+        .. math::
+
+            \mathbf M_{IJ} = \frac1N \sum_j e^{i 2\pi \mathbf k_j\cdot\mathbf d} \mathbf M_{\mathbf k_j}
+
+        so only the unique displacements are calculated (a single matrix product).
+        """
+        from sisl_toolbox.btd import BlockArray
+
+        B = self._bloch
+        N = len(self)
+        if M.ndim != 3 or M.shape[0] != N:
+            raise ValueError(
+                f"{self.__class__.__name__}.unfold requires M to have shape "
+                f"({N}, :, :), got {M.shape}"
+            )
+        k_unfold = _a.asarrayd(k_unfold).reshape(N, 3)
+        cells = self._parts_cells(parts)
+        # block index of the cells
+        idx = (cells[:, 2] * B[1] + cells[:, 1]) * B[0] + cells[:, 0]
+
+        # all pairs of cells, and their unique displacements
+        disp = (cells[:, None, :] - cells[None, :, :]).reshape(-1, 3)
+        disp, inv = np.unique(disp, axis=0, return_inverse=True)
+
+        _, n0, n1 = M.shape
+        dtype = dtype_float_to_complex(M.dtype)
+        phases = np.exp(2j * np.pi * (disp @ k_unfold.T)) / N
+        Md = (phases.astype(dtype, copy=False) @ M.reshape(N, -1)).reshape(-1, n0, n1)
+
+        ba = BlockArray([np.full(N, n0), np.full(N, n1)], dtype=dtype)
+        grid = ba._grid
+        nc = len(idx)
+        for i, I in enumerate(idx):
+            for j, J in enumerate(idx):
+                # copy, the blocks must be independent (in-place operations)
+                grid[I, J] = Md[inv[i * nc + j]].copy()
+        return ba
 
     def unfold_finalize(self, M):
         """Copy out the Toeplitz matrix from the sub-calculated elements.
@@ -232,4 +368,9 @@ class Bloch:
         -------
         the full matrix with copied out elements.
         """
+        from sisl_toolbox.btd import BlockArray
+
+        if isinstance(M, BlockArray):
+            # parts are always fully calculated
+            return M
         return bloch_unfold_finalize(self._bloch, M)

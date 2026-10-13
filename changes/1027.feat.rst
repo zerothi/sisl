@@ -1,0 +1,5 @@
+Added ``parts`` to `~sisl.physics.Bloch` to only calculate the blocks coupling specific unit-cells
+
+The unfolded matrix is returned as a `~sisl_toolbox.btd.BlockArray`
+with only the requested blocks, e.g. the outer rim of a large
+Bloch expansion, which greatly reduces the memory requirements.
