@@ -157,10 +157,10 @@ def _ncol_to_indptr(ncol):
     The pointer array has the same data-type as `ncol`, unless the total
     number of elements does not fit, in which case it is promoted.
     """
-    ptr = _a.emptyl(ncol.size + 1)
+    ptr = _a.empty(ncol.size + 1, dtype=ncol.dtype)
     ptr[0] = 0
-    _a.cumsuml(ncol, out=ptr[1:])
-    return ptr.astype(np.promote_types(ncol.dtype, _index_dtype(ptr[-1])), copy=False)
+    _a.cumsum(ncol, out=ptr[1:])
+    return ptr
 
 
 # Allowed index data-types and their limits (np.iinfo is slow to create)
