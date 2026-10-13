@@ -472,6 +472,9 @@ function(add_cython_library)
     endif()
   endforeach()
 
+  # Always add the src/ directory to the include path
+  list(APPEND _c_CYTHON_FLAGS "-I" "${PROJECT_SOURCE_DIR}/src")
+
   # Now we have everything
   sisl_file_as_gentarget(${_c_output_full} _gen_target)
   add_custom_target(${_gen_target} DEPENDS "${_c_output_full}")

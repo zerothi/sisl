@@ -111,7 +111,9 @@ sdist.reproducible = true
 sdist.include = [
     "src/sisl/_version.py",
     "src/sisl/_debug_info.py",
-    "*/CMakeLists.txt"
+    "*/CMakeLists.txt",
+    "*/*.pxd",
+    "*/*.pyx",
 ]
 
 wheel.expand-macos-universal-tags = true

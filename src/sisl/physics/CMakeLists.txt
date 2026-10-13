@@ -10,9 +10,6 @@ foreach(library
     SOURCE ${library}.pyx
     LIBRARY ${library}
     OUTPUT ${library}_C
-    INCLUDE_DIRS
-      "${CMAKE_CURRENT_SOURCE_DIR}/.."
-      "${CMAKE_CURRENT_SOURCE_DIR}/../_core"
     )
   install(TARGETS ${library}
     DESTINATION "${SKBUILD_PROJECT_NAME}/physics")
