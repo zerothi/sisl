@@ -57,12 +57,12 @@ jobs:
         uses: fortran-lang/setup-fortran@v1
         with:
           compiler: gcc
-          version: 13
+          version: 14
 
       - name: Setup python environment
         uses: actions/setup-python@v7
         with:
-          python-version: '3.12'
+          python-version: '3.14'
 
       - uses: r-lib/actions/setup-pandoc@v2
 
