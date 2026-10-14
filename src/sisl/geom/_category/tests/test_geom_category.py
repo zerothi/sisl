@@ -300,6 +300,14 @@ def test_geom_category_Z_symbols():
         AtomZ("Xx")
 
 
+def test_geom_category_sanitize_subset():
+    geom = Geometry(np.zeros([4, 3]), atoms=[Atom(6), Atom(7), Atom(6), Atom(7)])
+    assert np.all(geom._sanitize_atoms(AtomZ(7)) == [1, 3])
+    assert np.all(geom._sanitize_atoms(AtomZ(7), [2, 3]) == [3])
+    assert np.all(geom._sanitize_atoms(AtomZ(7), 3) == [3])
+    assert len(geom._sanitize_atoms(AtomZ(7), [0, 2])) == 0
+
+
 def test_geom_category_kw_aliases():
     assert AtomCategory(species="C") == AtomZ(6)
     assert AtomCategory(element="C") == AtomZ(6)

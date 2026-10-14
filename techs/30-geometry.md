@@ -138,4 +138,5 @@ They are not methods. See [34 · Geometry factories](34-geom.md).
 - "Not in the category" is `NullCategory`. It is equal to `None`.
 - `&`, `|`, `^` and `~` make composite categories.
 - Geometry indexing accepts a category or a `dict`.
+  `_sanitize_atoms(category, atoms)` returns the indices in `atoms` that are in the category.
 - A `Shape` used as an index selects only atoms in the unit cell. See [33 · Shapes](33-shape.md).
