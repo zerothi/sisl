@@ -16,6 +16,7 @@ Below is a list of the current tutorials:
 .. toctree::
    :maxdepth: 1
 
+   tutorial_categories.ipynb
    tutorial_es_1.ipynb
    tutorial_es_2.ipynb
    tutorial_siesta_2_ahc.ipynb
