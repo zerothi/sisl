@@ -137,6 +137,12 @@ They are not methods. See [34 · Geometry factories](34-geom.md).
 - Many keywords combine with `&`.
 - "Not in the category" is `NullCategory`. It is equal to `None`.
 - `&`, `|`, `^` and `~` make composite categories.
-- Geometry indexing accepts a category or a `dict`.
+- `mask(*args)` returns a boolean array. It calls `_mask(*args, cache={})`.
+  Composites combine the `_mask` of their parts with `&`, `|`, `^` and `~`.
+  All parts get the same `cache`. Thus the parts share a calculation, for example a neighbor search.
+- The default `_mask` uses `categorize`. Thus a user category with only `categorize` works.
+  The atom categories implement `_mask` with numpy. `AtomIndex` and `AtomSeq` use the default.
+- `categorize` stays for compatibility. Do not use it in new code: it makes one object for each atom.
+- Geometry indexing accepts a category or a `dict`. It uses `mask`.
   `_sanitize_atoms(category, atoms)` returns the indices in `atoms` that are in the category.
 - A `Shape` used as an index selects only atoms in the unit cell. See [33 · Shapes](33-shape.md).

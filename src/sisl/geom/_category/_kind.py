@@ -18,7 +18,7 @@ from sisl._internal import set_module
 from sisl.typing import AtomsIndex, SeqOrScalarInt
 from sisl.utils import lstranges, strmap
 
-from .base import AtomCategory, NullCategory, _sanitize_loop
+from .base import AtomCategory, NullCategory, _mask_subset, _sanitize_loop
 
 __all__ = ["AtomZ", "AtomIndex", "AtomSeq", "AtomTag", "AtomOdd", "AtomEven"]
 
@@ -60,6 +60,10 @@ class AtomZ(AtomCategory, aliases=("species", "element")):
         self._Z = set(map(_to_Z, Z))
         super().__init__(f"Z={self._Z}")
 
+    @_mask_subset
+    def _mask(self, geometry: Geometry, cache: dict) -> np.ndarray:
+        return np.isin(geometry.atoms.Z, list(self._Z))
+
     @_sanitize_loop
     def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
         # _sanitize_loop will ensure that atoms will always be an integer
@@ -93,6 +97,12 @@ class AtomTag(AtomCategory):
         self._re = tag
         self._compiled_re = re.compile(self._re)
         super().__init__(f"tag={self._re}")
+
+    @_mask_subset
+    def _mask(self, geometry: Geometry, cache: dict) -> np.ndarray:
+        match = self._compiled_re.match
+        species = [match(atom.tag) is not None for atom in geometry.atoms.atom]
+        return np.asarray(species, dtype=bool)[geometry.atoms.species]
 
     @_sanitize_loop
     def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
@@ -304,6 +314,10 @@ class AtomEven(AtomCategory):
     def __init__(self, name: str = "even"):
         super().__init__(name)
 
+    @_mask_subset
+    def _mask(self, geometry: Geometry, cache: dict) -> np.ndarray:
+        return np.arange(geometry.na) % 2 == 0
+
     @_sanitize_loop
     def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
         # _sanitize_loop will ensure that atoms will always be an integer
@@ -323,6 +337,10 @@ class AtomOdd(AtomCategory):
 
     def __init__(self, name: str = "odd"):
         super().__init__(name)
+
+    @_mask_subset
+    def _mask(self, geometry: Geometry, cache: dict) -> np.ndarray:
+        return np.arange(geometry.na) % 2 == 1
 
     @_sanitize_loop
     def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):

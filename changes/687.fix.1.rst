@@ -1,0 +1,4 @@
+`~sisl.geom.AtomNeighbors` with a callable ``R`` that returns a single radius
+
+The neighbor count failed with a `TypeError`. It now counts the atoms within the radius,
+including the atom itself, as documented.

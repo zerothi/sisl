@@ -3,13 +3,14 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import numpy as np
 from numpy import ndarray
 
 from sisl._core import Geometry
 from sisl._internal import set_module
 from sisl.typing import AtomsIndex
 
-from .base import AtomCategory, NullCategory, _sanitize_loop
+from .base import AtomCategory, NullCategory, _mask_subset, _neighbor_pairs
 
 __all__ = ["AtomNeighbors"]
 
@@ -102,26 +103,37 @@ class AtomNeighbors(AtomCategory, aliases=("neighbours",)):
             return self._R
         return (0.01, self._R)
 
-    @_sanitize_loop
+    def _R_window(self, geometry: Geometry) -> tuple[np.ndarray, np.ndarray]:
+        """Per atom ``(lo, hi)`` so that a neighbor at distance ``d`` has ``lo < d <= hi``"""
+        lo = []
+        hi = []
+        for atom in geometry.atoms.atom:
+            R = np.ravel(self.R(atom))
+            hi.append(R[-1])
+            # A single radius counts the atom itself (d == 0)
+            lo.append(R[-2] if R.size > 1 else -1.0)
+        species = geometry.atoms.species
+        return np.asarray(lo)[species], np.asarray(hi)[species]
+
+    @_mask_subset
+    def _mask(self, geometry: Geometry, cache: dict) -> np.ndarray:
+        lo, hi = self._R_window(geometry)
+        I, J, _, _, d = _neighbor_pairs(geometry, hi.max(initial=-1.0), cache)
+        keep = (lo[I] < d) & (d <= hi[I])
+        if self._in is not None:
+            keep &= self._in._mask(geometry, cache=cache)[J]
+        n = np.bincount(I[keep], minlength=geometry.na)
+        return (self._min <= n) & (n <= self._max)
+
     def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
         """Check if geometry and atoms matches the neighbor criteria"""
-        idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[-1]
-        # quick escape the lower bound, in case we have more than max, they could
-        # be limited by the self._in type
-        n = len(idx)
-        if n < self._min:
-            return NullCategory()
-
-        # Check if we have a condition
-        if self._in is not None:
-            # Get category of neighbors
-            cat = self._in.categorize(geometry, geometry.asc2uc(idx))
-            idx = [i for i, c in zip(idx, cat) if not isinstance(c, NullCategory)]
-            n = len(idx)
-
-        if self._min <= n <= self._max:
-            return self
-        return NullCategory()
+        if atoms is not None:
+            atoms = geometry._sanitize_atoms(atoms)
+        null = NullCategory()
+        ret = [self if m else null for m in self.mask(geometry, atoms)]
+        if atoms is not None and atoms.ndim == 0:
+            return ret[0]
+        return ret
 
     def __eq__(self, other):
         eq = self.__class__ is other.__class__

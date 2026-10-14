@@ -97,8 +97,23 @@ See `heteroribbon` in `nanoribbon.py`.
 | `_coord.py` | `AtomFracSite`, `AtomXYZ` (and generated `Atomx`, `Atomfx`, ... with `<` and `>`) |
 | `_neighbors.py` | `AtomNeighbors(min, max, neighbor=, R=)` |
 
-`AtomNeighbors` uses `Geometry.close` with `R = (0.01, maxR)`. Thus the atom itself is not counted.
-It does not use `NeighborFinder`.
+`AtomNeighbors` counts the neighbors in `(lo, hi]` of each atom.
+The default `R` is `(0.01, maxR)`. Thus the atom itself is not counted.
+A single radius gives `lo = -1`, and the atom itself is counted.
+
+`base._neighbor_pairs` gives all pairs in one `NeighborFinder` search.
+The result is equal to `Geometry.close` for each atom:
+
+- The search uses a copy with all atoms in the unit cell and `pbc` in all directions.
+  `NeighborFinder` does not accept atoms outside the unit cell.
+- The `isc` of the pairs goes back to the supercells of the input geometry.
+  Pairs outside `nsc` are removed, as in `close`.
+  Thus `close` and the categories ignore `pbc`.
+- The `cache` of one `mask` call keeps the pairs of the largest `R`.
+  A smaller `R` filters these pairs.
+
+`test_geom_category_mask.py` compares the masks with `close` for each atom.
+It also makes sure that a composite does one search and does not call `close`.
 
 ## Add a factory
 

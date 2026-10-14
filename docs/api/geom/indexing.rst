@@ -30,6 +30,11 @@ True
 >>> ribbon.sub(AtomCategory(odd=True) | AtomZ("N")).na
 4
 
+`AtomCategory.mask` returns a boolean array with one value per atom:
+
+>>> edge.mask(ribbon)
+array([ True, False, False,  True, False, False, False, False])
+
 
 .. autosummary::
    :toctree: generated/

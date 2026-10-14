@@ -34,7 +34,7 @@ from numpy import (
 from scipy.sparse import csr_array
 
 import sisl._array as _a
-from sisl._category import Category, GenericCategory, NullCategory
+from sisl._category import Category, GenericCategory
 from sisl._dispatch_class import _Dispatchs
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from sisl._help import has_module, isndarray
@@ -399,11 +399,9 @@ class Geometry(
         atoms: AtomsIndex = None,
     ) -> ndarray:
         if atoms is None:
-            atoms = _a.arangei(self.na)
-        else:
-            atoms = self._sanitize_atoms(atoms).ravel()
-        cat = atoms_.categorize(self, atoms)
-        return atoms[np.fromiter((not isinstance(c, NullCategory) for c in cat), bool)]
+            return np.flatnonzero(atoms_.mask(self))
+        atoms = self._sanitize_atoms(atoms).ravel()
+        return atoms[atoms_.mask(self, atoms)]
 
     @_sanitize_atoms.register
     def _(self, atoms_: dict, atoms: AtomsIndex = None) -> ndarray:

@@ -86,23 +86,19 @@ class AtomFracSite(AtomCategory):
             f"fracsite(atol={self._atol}, offset={self._offset}, foffset={self._foffset})"
         )
 
-    def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
-        # _sanitize_loop will ensure that atoms will always be an integer
-        if atoms is None:
-            fxyz = np.dot(geometry.xyz + self._offset, self._icell.T) + self._foffset
-        else:
-            atoms = geometry._sanitize_atoms(atoms)
-            fxyz = (
-                np.dot(geometry.xyz[atoms].reshape(-1, 3) + self._offset, self._icell.T)
-                + self._foffset
-            )
+    def _mask(
+        self, geometry: Geometry, atoms: AtomsIndex = None, *, cache: dict
+    ) -> np.ndarray:
+        xyz = geometry.xyz
+        if atoms is not None:
+            xyz = xyz[geometry._sanitize_atoms(atoms).ravel()]
+        fxyz = np.dot(xyz + self._offset, self._icell.T) + self._foffset
         # Find fractional indices that match to an integer of the passed cell
         # We multiply with the length of the cell to get an error in Ang
-        ret = np.where(
-            np.fabs((fxyz - np.rint(fxyz)) * self._length).max(1) <= self._atol,
-            self,
-            NullCategory(),
-        ).tolist()
+        return np.fabs((fxyz - np.rint(fxyz)) * self._length).max(1) <= self._atol
+
+    def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
+        ret = np.where(self.mask(geometry, atoms), self, NullCategory()).tolist()
         if isinstance(atoms, Integral):
             ret = ret[0]
         return ret
@@ -263,12 +259,14 @@ class AtomXYZ(AtomCategory):
         self._coord_check = coord_ops
         super().__init__("coord")
 
-    def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
+    def _mask(
+        self, geometry: Geometry, atoms: AtomsIndex = None, *, cache: dict
+    ) -> np.ndarray:
         if atoms is None:
             xyz = geometry.xyz
             fxyz = geometry.fxyz
         else:
-            atoms = geometry._sanitize_atoms(atoms)
+            atoms = geometry._sanitize_atoms(atoms).ravel()
             xyz = geometry.xyz[atoms]
             fxyz = geometry.fxyz[atoms]
 
@@ -277,12 +275,10 @@ class AtomXYZ(AtomCategory):
                 return func(fxyz[..., d], val)
             return func(xyz[..., d], val)
 
-        and_reduce = np.logical_and.reduce
-        ret = np.where(
-            and_reduce([call(*four) for four in self._coord_check]),
-            self,
-            NullCategory(),
-        ).tolist()
+        return np.logical_and.reduce([call(*four) for four in self._coord_check])
+
+    def categorize(self, geometry: Geometry, atoms: AtomsIndex = None):
+        ret = np.where(self.mask(geometry, atoms), self, NullCategory()).tolist()
         if isinstance(atoms, Integral):
             ret = ret[0]
         return ret

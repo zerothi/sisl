@@ -11,6 +11,8 @@ from difflib import get_close_matches
 from functools import lru_cache, singledispatchmethod, wraps
 from typing import Optional
 
+import numpy as np
+
 from ._internal import set_module
 
 __all__ = ["Category", "CompositeCategory", "NullCategory"]
@@ -273,6 +275,26 @@ class Category(metaclass=CategoryMeta):
         r"""Do categorization"""
         pass
 
+    def mask(self, *args, **kwargs) -> np.ndarray:
+        r"""Boolean array which is true for the objects in this category
+
+        The arguments are the same as for `categorize`.
+        The parts of a composite category share their calculations,
+        e.g. the neighbor search of `AtomNeighbors`.
+
+        Returns
+        -------
+        numpy.ndarray
+           1D boolean array, one value per categorized object.
+        """
+        return self._mask(*args, cache={}, **kwargs)
+
+    def _mask(self, *args, cache: dict, **kwargs) -> np.ndarray:
+        cat = self.categorize(*args, **kwargs)
+        if not isinstance(cat, Iterable):
+            cat = [cat]
+        return np.fromiter((not isinstance(c, NullCategory) for c in cat), dtype=bool)
+
     def __str__(self):
         r"""String representation of the class (non-distinguishable between equivalent classifiers)"""
         return self.name
@@ -395,6 +417,9 @@ class NotCategory(GenericCategory):
             self.name = f"~{cat}"
         self._cat = cat
 
+    def _mask(self, *args, cache: dict, **kwargs) -> np.ndarray:
+        return ~self._cat._mask(*args, cache=cache, **kwargs)
+
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""
         cat = self._cat.categorize(*args, **kwargs)
@@ -490,6 +515,11 @@ class OrCategory(CompositeCategory, composite_name="|"):
 
     __slots__ = ()
 
+    def _mask(self, *args, cache: dict, **kwargs) -> np.ndarray:
+        return self.A._mask(*args, cache=cache, **kwargs) | self.B._mask(
+            *args, cache=cache, **kwargs
+        )
+
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""
         catA = self.A.categorize(*args, **kwargs)
@@ -528,6 +558,11 @@ class AndCategory(CompositeCategory, composite_name="&"):
     """
 
     __slots__ = ()
+
+    def _mask(self, *args, cache: dict, **kwargs) -> np.ndarray:
+        return self.A._mask(*args, cache=cache, **kwargs) & self.B._mask(
+            *args, cache=cache, **kwargs
+        )
 
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""
@@ -570,6 +605,11 @@ class XOrCategory(CompositeCategory, composite_name="⊕"):
     """
 
     __slots__ = ()
+
+    def _mask(self, *args, cache: dict, **kwargs) -> np.ndarray:
+        return self.A._mask(*args, cache=cache, **kwargs) ^ self.B._mask(
+            *args, cache=cache, **kwargs
+        )
 
     def categorize(self, *args, **kwargs):
         r"""Base method for queriyng whether an object is a certain category"""

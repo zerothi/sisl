@@ -1,0 +1,6 @@
+``mask`` method for categories, and much faster atom categories
+
+``category.mask(geometry)`` returns a boolean array with one value per atom.
+The atom categories are now vectorized, and the parts of a composite category
+share one neighbor search. Selecting atoms with `~sisl.geom.AtomNeighbors`
+is more than 100 times faster for a thousand atoms.
