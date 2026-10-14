@@ -85,9 +85,3 @@ Both functions add to the grid in place.
   It has `get_overlap_matrix`, `reduce_orbitals` and `reduce_orbital_products`.
 - `_sparse_grid_ops.py` holds typed kernels in Cython pure-Python mode.
 - Only `Geometry._orbital_values` uses it.
-
-## Known defects
-
-Confirmed by running the code (2026-10-14).
-
-- `append(grid1, grid2, axis)` returns a grid of zeros. It does not copy the data.

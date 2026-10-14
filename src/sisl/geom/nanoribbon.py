@@ -366,7 +366,9 @@ class heteroribbon_section(CompositeGeometrySection):
         if self.kind in ("armchair", "zigzag"):
             self.long_ax, self.trans_ax = 0, 1
         else:
-            raise ValueError("Unknown kind={kind}, must be one of zigzag or armchair")
+            raise ValueError(
+                f"Unknown kind={self.kind}, must be one of zigzag or armchair"
+            )
 
         if self.shift_quantum:
             self.on_lone_atom = "raise"

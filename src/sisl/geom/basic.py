@@ -103,7 +103,7 @@ def fcc(alat: float, atoms: AtomsLike, orthogonal: bool = False) -> Geometry:
 @set_module("sisl.geom")
 def hcp(
     a: float, atoms: AtomsLike, coa: float = 49 / 30, orthogonal: bool = False
-) -> float:
+) -> Geometry:
     """Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters

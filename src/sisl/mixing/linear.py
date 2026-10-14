@@ -9,7 +9,7 @@ import numpy.typing as npt
 
 from sisl._internal import set_module
 
-from .base import BaseHistoryWeightMixer, T
+from .base import BaseHistoryWeightMixer, T, TypeArgHistory, TypeWeight
 
 __all__ = ["LinearMixer", "AndersonMixer"]
 
@@ -49,6 +49,7 @@ class LinearMixer(BaseHistoryWeightMixer):
         return f + self.weight * df
 
 
+@set_module("sisl.mixing")
 class AndersonMixer(BaseHistoryWeightMixer):
     r""" Anderson mixing
 
@@ -79,9 +80,20 @@ class AndersonMixer(BaseHistoryWeightMixer):
           + \alpha|\bar n^m_{\mathrm{out}}\rangle
 
     See :cite:`Johnson1988` for more details.
+
+    Parameters
+    ----------
+    weight : float, optional
+       weight used for the derivative of the functional.
+       The mixer will use a weight of :math:`1-w` for the *old* value
+    history : int or History, optional
+       how many history steps it will retain, only the last step is used
     """
 
     __slots__ = ()
+
+    def __init__(self, weight: TypeWeight = 0.2, history: TypeArgHistory = 1):
+        super().__init__(weight, history)
 
     @staticmethod
     def _beta(df1: T, df2: T) -> npt.NDArray:
@@ -90,7 +102,10 @@ class AndersonMixer(BaseHistoryWeightMixer):
             return a.ravel().conj().dot(b.ravel()).real
 
         ddf = df2 - df1
-        beta = metric(df2, ddf) / metric(ddf, ddf)
+        ddf2 = metric(ddf, ddf)
+        if ddf2 == 0:
+            return 0.0
+        beta = metric(df2, ddf) / ddf2
 
         return beta
 

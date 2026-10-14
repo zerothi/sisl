@@ -324,7 +324,7 @@ class History:
 
     Attributes
     ----------
-    history_max : int or tuple of int
+    max_elements : int
        maximum number of history elements
 
     Parameters

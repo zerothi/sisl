@@ -199,7 +199,9 @@ def append(grid: Grid, other: GridLike, axis: CellAxis) -> Grid:
         d["geometry"] = other.geometry
     d["lattice"] = grid.lattice.append(other.lattice, axis)
     d["dtype"] = grid.dtype
-    return grid.__class__(shape, **d)
+    out = grid.__class__(shape, **d)
+    out.grid[...] = np.concatenate([grid.grid, other.grid], axis=axis)
+    return out
 
 
 @register_sisl_dispatch(Grid, module="sisl")

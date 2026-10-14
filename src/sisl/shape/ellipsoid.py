@@ -176,7 +176,7 @@ class Ellipsoid(PureShape):
         other : array_like
            the object that is checked for containment
         rtol : float, optional
-           absolute tolerance for boundaries
+           relative tolerance for boundaries
         """
         other = _a.asarrayd(other).reshape(-1, 3)
 

@@ -515,3 +515,13 @@ def test_new_inherit_class():
     g2 = Grid.new(g)
     assert g2.__class__ == Grid
     assert g2 == g
+
+
+@pytest.mark.parametrize("axis", [0, 1, 2])
+def test_grid_append_data(axis):
+    g1 = Grid([2, 3, 4])
+    g1.grid[...] = np.random.rand(*g1.shape)
+    g2 = Grid([2, 3, 4])
+    g2.grid[...] = np.random.rand(*g2.shape)
+    g = g1.append(g2, axis)
+    assert np.allclose(g.grid, np.concatenate([g1.grid, g2.grid], axis=axis))

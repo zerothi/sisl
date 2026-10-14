@@ -91,6 +91,8 @@ A large Lagrange multiplier `λ` gives `min`. `λ → 0` gives `max`.
 - The history holds `(f, f + df, delta)`.
 - `β = <d2 | d2 - d1> / |d2 - d1|²`.
 - It returns `(1 - w) n_in + w n_out`. The first step is linear.
+- The default is `history=1`. Only the last entry is used.
+- When `|d2 - d1|² = 0`, `β = 0`. Thus the step is linear and there is no division by zero.
 
 ## Add a mixer
 
@@ -101,18 +103,12 @@ A large Lagrange multiplier `λ` gives `min`. `λ → 0` gives `max`.
 5. Add a test in `tests/` with `pytestmark = pytest.mark.mixing`.
 
 The tests iterate `f = cos(f)` on `linspace(0, 7, 1000)` until `max|df|` is small.
-They test only that the loop converges. There are no tests for sparse input, `metric=`, `delta` or a singular `B`.
+Most tests check only that the loop converges. `test_anderson_mixer_second_step` checks one Anderson step against the equation. There are no tests for sparse input, `metric=`, `delta` or a singular `B`.
 
 ## Known defects
 
 Confirmed by running or reading the code (2026-10-14).
 
-- `AndersonMixer` has no `__init__`. It gets `history=0` from `BaseHistoryWeightMixer`.
-  Thus it does only linear mixing. The test does not detect this.
 - When the DIIS solve fails, `c = [1]` mixes `history[0]`, the oldest entry. The comment says "the last entry".
 - A call with an empty history (`append=False` on a new mixer, or `history=0`) raises
   `TypeError: reduce() of empty iterable`.
-- Anderson divides by `|d2 - d1|²` without a check for zero.
-- Stale comments in `diis.py`: "cannot use assume_a='sym'" (the code uses it) and "B contains 1" (it contains `scale`).
-- The `History` doc-string names `history_max`. The property is `max_elements`.
-- `AndersonMixer` has no `@set_module`.

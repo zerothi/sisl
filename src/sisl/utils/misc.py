@@ -7,6 +7,7 @@ import ast
 import functools
 import importlib
 import inspect
+import itertools
 import operator as op
 import re
 import sys
@@ -97,12 +98,12 @@ def size_to_num(size: Union[int, float, str], unit: str = "MB") -> float:
     as a size in MB. Otherwise the string may contain the size specification.
     """
     if isinstance(size, (float, int)):
-        return size
-
-    # Now parse the size from a string
-    match = re.match(r"(\d+[.\d]*)(\D*)", size)
-    size = float(match[1].strip())
-    unit_in = match[2].strip()
+        size = float(size)
+        unit_in = ""
+    else:
+        match = re.match(r"(\d+[.\d]*)(\D*)", size)
+        size = float(match[1].strip())
+        unit_in = match[2].strip()
 
     # Now parse things
     # We expect data to be in MB (default unit)
@@ -167,31 +168,14 @@ def iter_shape(shape):
     --------
     >>> for slc in iter_shape([2, 1, 3]):
     ...    print(slc)
-    [0, 0, 0]
-    [0, 0, 1]
-    [0, 0, 2]
-    [1, 0, 0]
-    [1, 0, 1]
-    [1, 0, 2]
+    (0, 0, 0)
+    (0, 0, 1)
+    (0, 0, 2)
+    (1, 0, 0)
+    (1, 0, 1)
+    (1, 0, 2)
     """
-    shape1 = [i - 1 for i in shape]
-    ns = len(shape)
-    ns1 = ns - 1
-    # Create list for iterating
-    # we require a list because tuple's are immutable
-    slc = [0] * ns
-
-    while slc[0] < shape[0]:
-        for i in range(shape[ns1]):
-            slc[ns1] = i
-            yield slc
-
-        # Increment the previous shape indices
-        for i in range(ns1, 0, -1):
-            if slc[i] >= shape1[i]:
-                slc[i] = 0
-                if i > 0:
-                    slc[i - 1] += 1
+    yield from itertools.product(*map(range, shape))
 
 
 def str_spec(name) -> Tuple[str, Union[None, str]]:

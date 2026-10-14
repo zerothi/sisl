@@ -50,6 +50,8 @@ Parses index ranges from strings. The CLI and some Siles use it.
 | `listify` | Use as `x \| listify`. It sets `__array_priority__` so that numpy does not take `\|`. |
 
 `iter_shape`, `merge_instances`, `allow_kwargs`, `size_to_elements` and `import_attr` each have one user.
+`iter_shape` yields tuples in C order (`itertools.product`). Use a tuple to index a numpy or netCDF array.
+`size_to_num` reads an `int` or `float` as MB.
 `lazy_import` has no user. Its doc-string says that it does not work.
 
 ## mathematics.py
@@ -121,11 +123,5 @@ Only `_dispatcher.py` uses it (`new` and `to`). See [30 · Conversion](30-geomet
 
 Confirmed by running the code (2026-10-14).
 
-- `iter_shape([2, 3, 2])` does not yield the middle index `2`. The carry check runs too early.
-  It also yields the same mutable list each time. Its doc-string says tuples.
-  The only user is `io/tbtrans/tbt.py`.
-- `size_to_num` returns `int` and `float` input without the unit conversion.
-  Thus `size_to_elements(100)` gives `12`, not 100 MB / 8.
 - `allow_kwargs` raises `KeyError` when the removed keyword is not given (`del kwargs[arg]`).
-- The `strmap` and `fileindex` doc-strings do not say that the order is `start:step:end`.
 - `sisl_cmd(..., sile=None)` does not use `sile`.

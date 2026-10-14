@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 from sisl.utils.misc import *
+from sisl.utils.misc import size_to_elements, size_to_num
 
 pytestmark = pytest.mark.utils
 
@@ -76,20 +77,39 @@ def test_angle_a2a():
 def test_iter1():
     for i, slc in enumerate(iter_shape([2, 1, 3])):
         if i == 0:
-            assert slc == [0, 0, 0]
+            assert slc == (0, 0, 0)
         elif i == 1:
-            assert slc == [0, 0, 1]
+            assert slc == (0, 0, 1)
         elif i == 2:
-            assert slc == [0, 0, 2]
+            assert slc == (0, 0, 2)
         elif i == 3:
-            assert slc == [1, 0, 0]
+            assert slc == (1, 0, 0)
         elif i == 4:
-            assert slc == [1, 0, 1]
+            assert slc == (1, 0, 1)
         elif i == 5:
-            assert slc == [1, 0, 2]
+            assert slc == (1, 0, 2)
         else:
             # if this is reached, something is wrong
             assert False
+
+
+@pytest.mark.parametrize("shape", [[2, 3, 2], [4], [3, 4], [1, 5, 3, 2]])
+def test_iter_shape_all(shape):
+    expected = list(np.ndindex(*shape))
+    assert list(iter_shape(shape)) == expected
+
+
+def test_size_to_num_number():
+    assert size_to_num(100, "B") == pytest.approx(100 * 1024**2)
+    assert size_to_num(100.0, "kB") == pytest.approx(100 * 1024)
+    assert size_to_num(100) == pytest.approx(100)
+    assert size_to_num(1024, "GB") == pytest.approx(1)
+    assert size_to_num(100, "B") == pytest.approx(size_to_num("100MB", "B"))
+
+
+def test_size_to_elements_number():
+    assert size_to_elements(100) == 100 * 1024**2 // 8
+    assert size_to_elements(100) == size_to_elements("100MB")
 
 
 def test_str_spec1():

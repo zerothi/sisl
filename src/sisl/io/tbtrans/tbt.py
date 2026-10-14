@@ -36,6 +36,7 @@ from sisl.utils import (
     collect_action,
     default_ArgumentParser,
     default_namespace,
+    iter_shape,
     list2str,
     lstranges,
     run_actions,
@@ -3749,10 +3750,10 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
                     v[:] = dat[:]
                 else:
                     for slc in iter_shape(dvg.shape[:idx]):
-                        dat = np.asarray(dvg[slc][0][:] * wkpt[0])
+                        dat = np.asarray(dvg[slc + (0,)] * wkpt[0])
                         for k in range(1, nkpt):
-                            dat += dvg[slc][k][:] * wkpt[k]
-                        v[slc][:] = dat[:]
+                            dat += dvg[slc + (k,)] * wkpt[k]
+                        v[slc] = dat[:]
                 del dat
             else:
                 v[:] = dvg[:]

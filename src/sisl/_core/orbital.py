@@ -253,7 +253,7 @@ class Orbital:
         """
         if isinstance(other, str):
             # just check for the same name
-            return self.name == other
+            return self.name() == other
 
         elif not isinstance(other, Orbital):
             return False
@@ -456,8 +456,8 @@ def _set_radial(self, *args, **kwargs) -> None:
           set_radial(r, f)
                 which uses ``scipy.interpolate.UnivariateSpline(r, f, k=3, s=0, ext=1, check_finite=False)``
                 to define the interpolation function (see `interp` keyword).
-                Here the maximum radius of the orbital is the maximum `r` value,
-                regardless of ``f(r)`` is zero for smaller `r`.
+                The maximum radius of the orbital is not the maximum `r` value.
+                It is determined from the radial function, see `radial_minimize_range`.
 
           set_radial(func)
                 which sets the interpolation function directly.
@@ -588,8 +588,11 @@ class SphericalOrbital(Orbital):
     Note that in this case the used spherical harmonics is:
 
     .. math::
-        Y^m_l(\theta,\varphi) = (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
-             e^{i m \theta} P^m_l(\cos(\varphi))
+        Y^m_l(\theta,\varphi) &= -(-1)^m\sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \sin(m \theta) & m < 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{\frac{2l+1}{4\pi}} P^{m}_l (\cos(\varphi)) & m = 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \cos(m \theta) & m > 0
 
     The resulting orbital is
 
@@ -661,8 +664,6 @@ class SphericalOrbital(Orbital):
         R = kwargs.get("R")
 
         # Initialize R and tag through the parent
-        # Note that the maximum range of the orbital will be the
-        # maximum value in r.
         super().__init__(R, q0, tag)
 
     @property
@@ -858,8 +859,11 @@ class AtomicOrbital(Orbital):
     is then expanded using spherical harmonics
 
     .. math::
-        Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
-             e^{i m \theta} P^m_l(\cos(\varphi))
+        Y^m_l(\theta,\varphi) &= -(-1)^m\sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \sin(m \theta) & m < 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{\frac{2l+1}{4\pi}} P^{m}_l (\cos(\varphi)) & m = 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \cos(m \theta) & m > 0
         \\
                 \phi_{lmn}(\mathbf r) &= R(|\mathbf r|) Y^m_l(\theta, \varphi)
 
@@ -1144,7 +1148,9 @@ class AtomicOrbital(Orbital):
         radial :
            also compare that the radial parts are the same
         """
-        if isinstance(other, AtomicOrbital):
+        if isinstance(other, str):
+            return self.name() == other
+        elif isinstance(other, AtomicOrbital):
             same = self.orb.equal(other.orb, psi, radial)
             same &= self.n == other.n
             same &= self.l == other.l
@@ -1351,8 +1357,11 @@ class HydrogenicOrbital(AtomicOrbital):
     The orbital has the familiar spherical shape
 
     .. math::
-        Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
-             e^{i m \theta} P^m_l(\cos(\varphi))
+        Y^m_l(\theta,\varphi) &= -(-1)^m\sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \sin(m \theta) & m < 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{\frac{2l+1}{4\pi}} P^{m}_l (\cos(\varphi)) & m = 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \cos(m \theta) & m > 0
         \\
         \phi_{lmn}(\mathbf r) &= R_{nl}(|\mathbf r|) Y^m_l(\theta, \varphi)
         \\
@@ -1431,8 +1440,11 @@ class _ExponentialOrbital(Orbital):
     All exponential spherical orbitals are defined using:
 
     .. math::
-        Y^m_l(\theta,\varphi) = (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
-             e^{i m \theta} P^m_l(\cos(\varphi))
+        Y^m_l(\theta,\varphi) &= -(-1)^m\sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \sin(m \theta) & m < 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{\frac{2l+1}{4\pi}} P^{m}_l (\cos(\varphi)) & m = 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \cos(m \theta) & m > 0
 
     The resulting orbital is
 
@@ -1645,8 +1657,11 @@ class GTOrbital(_ExponentialOrbital):
     harmonic part that only depends on angles.
 
     .. math::
-        Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
-             e^{i m \theta} P^m_l(\cos(\varphi))
+        Y^m_l(\theta,\varphi) &= -(-1)^m\sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \sin(m \theta) & m < 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{\frac{2l+1}{4\pi}} P^{m}_l (\cos(\varphi)) & m = 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \cos(m \theta) & m > 0
         \\
         \phi_{lmn}(\mathbf r) &= R_l(|\mathbf r|) Y^m_l(\theta, \varphi)
         \\
@@ -1705,8 +1720,11 @@ class STOrbital(_ExponentialOrbital):
     harmonic part that only depends on angles.
 
     .. math::
-        Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
-             e^{i m \theta} P^m_l(\cos(\varphi))
+        Y^m_l(\theta,\varphi) &= -(-1)^m\sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \sin(m \theta) & m < 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{\frac{2l+1}{4\pi}} P^{m}_l (\cos(\varphi)) & m = 0\\
+        Y^m_l(\theta,\varphi) &= \sqrt{2\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+           P^{m}_l (\cos(\varphi)) \cos(m \theta) & m > 0
         \\
         \phi_{lmn}(\mathbf r) &= R_n(|\mathbf r|) Y^m_l(\theta, \varphi)
         \\

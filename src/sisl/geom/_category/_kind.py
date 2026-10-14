@@ -276,6 +276,7 @@ class AtomSeq(AtomIndex):
         return False
 
 
+@set_module("sisl.geom")
 class AtomEven(AtomCategory):
     r"""Classify atoms based on indices (even in this case)"""
 

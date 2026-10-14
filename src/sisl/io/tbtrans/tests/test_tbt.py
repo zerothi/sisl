@@ -676,3 +676,26 @@ def test_projection_raise(sisl_files):
 
     with pytest.raises(sisl.io.tbtrans.MissingFDFTBtransError):
         tbt.orbital_transmission(1.995, 0)
+
+
+def test_tbtav_kpt_not_first(sisl_tmp):
+    f = sisl_tmp("kpt_inner.TBT.nc")
+    wkpt = np.array([0.2, 0.3, 0.5])
+    x = np.random.rand(2, 3, 4)
+    y = np.random.rand(2, 5, 3, 4)
+    with netCDF4.Dataset(f, "w") as fh:
+        fh.createDimension("nkpt", 3)
+        fh.createDimension("a", 2)
+        fh.createDimension("b", 5)
+        fh.createDimension("e", 4)
+        fh.createVariable("wkpt", "f8", ("nkpt",))[:] = wkpt
+        fh.createVariable("x", "f8", ("a", "nkpt", "e"))[:] = x
+        fh.createVariable("y", "f8", ("a", "b", "nkpt", "e"))[:] = y
+
+    tbt = sisl.io.tbtrans.tbtncSileTBtrans(f)
+    fav = sisl_tmp("kpt_inner.TBT.AV.nc")
+    tbt.write_tbtav(fav)
+
+    with netCDF4.Dataset(fav, "r") as fh:
+        assert np.allclose(fh["x"][:], np.einsum("akb,k->ab", x, wkpt))
+        assert np.allclose(fh["y"][:], np.einsum("abkc,k->abc", y, wkpt))

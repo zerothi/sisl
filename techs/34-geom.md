@@ -108,10 +108,3 @@ It does not use `NeighborFinder`.
 4. Add it to `docs/api/geom/building.rst`.
 5. Add tests in `geom/tests/test_geom.py` (`pytest.mark.geom`).
    Use parameters for `orthogonal` and `vacuum`. Check `is_right_handed` and `has_vacuum`.
-
-## Known defects
-
-- `hcp` has the return annotation `-> float`. It returns a `Geometry`.
-- `hexagonal`, `goldene` and `AtomEven` do not have `@set_module`.
-- `heteroribbon_section`: the `ValueError` message for `kind` has no `f` prefix.
-- `NeighborFinder` doc-string: `overlap` is not inferred from `R`. `bin_size` must be `>= 1`, not `>= 2`.

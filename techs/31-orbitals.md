@@ -98,8 +98,5 @@ Real orbital labels: p is `(y, z, x)` for `m = -1, 0, 1`. d is `(xy, yz, z2, xz,
 These are confirmed by running the code (2026-10-14). Do not copy the patterns.
 
 - `GTOrbital` and `STOrbital` cannot be pickled. `_ExponentialOrbital` has no `__getstate__`.
-- `Orbital.equal(str)` compares the method `self.name` with the string. The result is always `False`.
 - `scale` is registered only for `Orbital`. It calls `cls(R, q0, tag)`. This fails for `AtomicOrbital`.
 - `SphericalOrbital.__hash__` and `AtomicOrbital.__hash__` hash `super(Orbital, self)`. This is not a value hash.
-- The doc-strings show complex `e^{imθ}` harmonics. The code uses real harmonics.
-- The `set_radial` doc-string says `R = max(r)`. The code finds `R` with `radial_minimize_range`.

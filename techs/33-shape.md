@@ -74,4 +74,3 @@ Thus the absolute tolerance increases with the size of the shape.
 ## Known defects
 
 - `base.py` defines `ToEllipsoidDispatcher` for composites but registers the base `ToEllipsoidDispatch`.
-- The doc-string of `Ellipsoid.within_index` calls `rtol` absolute. It is relative.

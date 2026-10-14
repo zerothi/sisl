@@ -56,13 +56,11 @@ class NeighborFinder:
         is within the sphere of the first atom. Note that this implies that
         atom :math:`I` might be atom :math:`J`'s neighbor while the opposite is not true.
 
-        If not provided, it will be `True` if `R` is an array and `False` if
-        it is a single float.
     bin_size : float or tuple of float, optional
         the factor for the radius to determine how large the bins are,
         optionally along each lattice vector.
-        It can minimally be 2, meaning that the maximum radius to consider
-        is twice the radius considered. For larger values, more atoms will be in
+        It can minimally be 1, meaning that the bins have the minimal size
+        that still covers the search radius. For larger values, more atoms will be in
         each bin (and thus fewer bins).
         Hence, this value can be used to fine-tune the memory requirement by
         decreasing number of bins, at the cost of a bit more run-time searching
@@ -224,8 +222,6 @@ class NeighborFinder:
         self.R = R
         self._aux_R = R
 
-        # If sphere overlap was not provided, set it to False if R is a single float
-        # and True otherwise.
         self._overlap = overlap
 
         # Determine the bin_size as the maximum DIAMETER to ensure that we ALWAYS
@@ -244,7 +240,7 @@ class NeighborFinder:
         bin_size = np.asarray(bin_size)
         if np.any(bin_size < 1):
             raise ValueError(
-                "The bin_size argument must be larger than 1 so that the search"
+                "The bin_size argument must be larger than 1 so that the search "
                 f"is performed on neighboring bins. Received {bin_size}"
             )
 

@@ -516,3 +516,14 @@ class Test_STO:
         orb.spher(theta, phi)
 
         orb.psi_spher((R**2).sum(-1) ** 0.5, theta, phi)
+
+
+def test_orbital_equal_name():
+    o = Orbital(1.0, tag="a")
+    assert o.equal("a")
+    assert not o.equal("b")
+    s = SphericalOrbital(1, r_f(6), tag="a")
+    assert s.equal("a")
+    a = AtomicOrbital("2pzZ1", r_f(6))
+    assert a.equal(a.name())
+    assert not a.equal("2pxZ1")

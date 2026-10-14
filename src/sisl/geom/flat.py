@@ -282,6 +282,7 @@ def triangulene(
     return geom
 
 
+@set_module("sisl.geom")
 def hexagonal(
     bond: float,
     atoms: AtomsLike = None,
@@ -343,6 +344,7 @@ def hexagonal(
     return g
 
 
+@set_module("sisl.geom")
 def goldene(
     bond: float = 2.7,
     atoms: AtomsLike = None,

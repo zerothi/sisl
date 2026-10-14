@@ -112,8 +112,7 @@ class DIISMixer(BaseHistoryWeightMixer):
         B[n_h, :] = scale
         B[n_h, n_h] = 0.0
 
-        # Although B contains 1 and a number on the order of
-        # number of elements (self._hist.size), it seems very
+        # B contains scale in the constraint row/column; it seems
         # numerically stable.
         last_metric = B[n_h - 1, n_h - 1]
 
@@ -122,9 +121,6 @@ class DIISMixer(BaseHistoryWeightMixer):
         RHS[-1] = 1
 
         try:
-            # Apparently we cannot use assume_a='sym'
-            # Is this because sym also implies positive definiteness?
-            # However, these are matrices of order ~30, so we don't care
             c = solve_destroy(B, RHS, assume_a="sym")
             return c[:-1] * scale, -c[-1] * scale**2
         except np.linalg.LinAlgError as e:

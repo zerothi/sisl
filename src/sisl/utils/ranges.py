@@ -26,6 +26,10 @@ def strmap(func, s, start=None, end=None, sep="b"):
     sep  : {"b", "c"}
        separator used, ``"b"`` is square brackets, ``"c"``, curly braces
 
+    Notes
+    -----
+    A range with 3 fields is ``start:step:end``, not the Python ``start:stop:step``.
+
     Examples
     --------
     >>> strmap(int, "1")
@@ -243,6 +247,9 @@ def fileindex(f, cast=int):
       file[1,2,3-6]
     in which case it will return:
       file, [1,2,3,4,5,6]
+
+    A range with 3 fields is ``start:step:end``, not the Python ``start:stop:step``.
+    Thus ``file[1:2:7]`` returns ``file, [1, 3, 5, 7]``.
 
     Parameters
     ----------
