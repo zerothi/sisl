@@ -288,3 +288,71 @@ def test_geom_category_xyz_meta():
             sc2uc(cls((-1, 1))) == sc2uc(get_cls("ge", -1) & get_cls("le", 1))
         )
         assert np.all(sc2uc(cls(-1, 1)) == sc2uc(get_cls("ge", -1) & get_cls("le", 1)))
+
+
+def test_geom_category_Z_symbols():
+    geom = Geometry(np.zeros([3, 3]), atoms=[Atom("C"), Atom("N"), Atom("C", R=2)])
+    assert AtomZ("C") == AtomZ(6)
+    assert AtomZ(["C", 7]) == AtomZ([6, 7])
+    assert AtomZ(Atom("N")) == AtomZ(7)
+    assert np.all(geom._sanitize_atoms(AtomZ("C")) == [0, 2])
+    with pytest.raises(ValueError, match="atomic number"):
+        AtomZ("Xx")
+
+
+def test_geom_category_kw_aliases():
+    assert AtomCategory(species="C") == AtomZ(6)
+    assert AtomCategory(element="C") == AtomZ(6)
+    assert AtomCategory(neighbours=3) == AtomNeighbors(3)
+    # case-insensitive fallback is kept
+    assert AtomCategory(NEIGHBORS=3) == AtomNeighbors(3)
+    # Z and z are distinct keywords
+    assert isinstance(AtomCategory(Z=1), AtomZ)
+    assert isinstance(AtomCategory(z=(None, 1)), AtomXYZ)
+
+
+def test_geom_category_kw_true():
+    assert AtomCategory(odd=True) == AtomOdd()
+    assert AtomCategory(odd=True).name == "odd"
+    assert AtomCategory(odd=True) == AtomCategory(odd={})
+
+
+def test_geom_category_kw_errors():
+    with pytest.raises(TypeError):
+        AtomZ()
+    with pytest.raises(TypeError, match="at least one keyword"):
+        AtomCategory()
+    with pytest.raises(ValueError, match="Did you mean"):
+        AtomCategory(neigbors=3)
+
+
+def test_geom_category_init_error_propagates():
+    class AtomRaises(AtomCategory, key="test_raises"):
+        def __init__(self, *args, **kwargs):
+            raise TypeError("inside __init__")
+
+        def categorize(self, geometry, atoms=None):
+            return self
+
+    with pytest.raises(TypeError, match="inside __init__"):
+        AtomRaises(value=1)
+    with pytest.raises(TypeError, match="inside __init__"):
+        AtomCategory(test_raises={"value": 1})
+
+
+def test_geom_category_subclass_keys():
+    class AtomTestKeyed(AtomCategory, key="test_keyed", aliases=("test_alias",)):
+        def __init__(self, value=None):
+            super().__init__(f"keyed={value}")
+
+        def categorize(self, geometry, atoms=None):
+            return self
+
+    class AtomTestDerived(AtomTestKeyed):
+        pass
+
+    assert isinstance(AtomCategory(test_keyed=1), AtomTestKeyed)
+    assert isinstance(AtomCategory(test_alias=True), AtomTestKeyed)
+    # without key= the key is the class name without "Atom"
+    assert AtomTestDerived._keys == ("TestDerived",)
+    assert isinstance(AtomCategory(TestDerived=1), AtomTestDerived)

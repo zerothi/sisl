@@ -6,8 +6,10 @@ from __future__ import annotations
 import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, defaultdict
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
+from difflib import get_close_matches
 from functools import lru_cache, singledispatchmethod, wraps
+from typing import Optional
 
 from ._internal import set_module
 
@@ -76,13 +78,10 @@ class CategoryMeta(ABCMeta):
     """
 
     def __call__(cls, *args, **kwargs):
-        """
-        If a category class is called, we will attempt to instantiate it.
+        """Instantiate the category, or build it from keywords
 
-        However, it may be that this is a parent class (e.g. `AtomCategory`)
-        that does not make sense to instantiate. Since these classes are abstract,
-        they will raise an error that we will use to build the categories that the user
-        requested.
+        A family class (e.g. `AtomCategory`) called with only keyword
+        arguments returns ``cls.kw(**kwargs)``.
 
         Examples
         -----------
@@ -90,21 +89,59 @@ class CategoryMeta(ABCMeta):
         >>> AtomZ(6) # returns an AtomZ category with the Z parameter set to 6
         >>> AtomCategory(Z=6) # returns exactly the same since it uses `AtomCategory.kw`
         """
-        try:
-            return super().__call__(*args, **kwargs)
-        except TypeError as e:
-            if len(args) == 0:
-                return cls.kw(**kwargs)
-            # If args were provided, the user probably didn't want to use the category builder,
-            # so we are going to let the exception be raised
-            raise e
+        if not args and not cls._keys:
+            return cls.kw(**kwargs)
+        return super().__call__(*args, **kwargs)
 
 
 @set_module("sisl.category")
 class Category(metaclass=CategoryMeta):
-    r"""A category"""
+    r"""A category
+
+    Sub-classes register the keywords that `kw` matches through
+    class arguments.
+
+    Parameters
+    ----------
+    key : str, optional
+       class argument, the keyword that selects this category in `kw`.
+       Defaults to the class name without the family prefix
+       (``AtomNeighbors`` gets ``Neighbors``).
+    aliases : tuple of str, optional
+       class argument, other keywords that select this category.
+    family : str, optional
+       class argument, declares a family class (e.g. `AtomCategory`).
+       The value is the prefix removed from the names of its sub-classes.
+       A family class has no keywords, and calling it with keywords
+       builds categories through `kw`.
+
+    Examples
+    --------
+    >>> class AtomCoordination(AtomCategory, key="coordination", aliases=("cn",)):
+    ...     ...
+    >>> AtomCategory(cn=3) # an AtomCoordination category
+    """
 
     __slots__ = ("_name", "_wrapper")
+    _key_prefix: str = ""
+    _keys: tuple[str, ...] = ()
+
+    def __init_subclass__(
+        cls,
+        /,
+        key: Optional[str] = None,
+        aliases: Sequence[str] = (),
+        family: Optional[str] = None,
+        **kwargs,
+    ):
+        super().__init_subclass__(**kwargs)
+        if family is not None:
+            cls._key_prefix = family
+            cls._keys = ()
+            return
+        if key is None:
+            key = cls.__name__.removeprefix(cls._key_prefix)
+        cls._keys = (key, *aliases)
 
     def __init__(self, name=None):
         if name is None:
@@ -123,32 +160,23 @@ class Category(metaclass=CategoryMeta):
         self._name = name
 
     @classmethod
-    @abstractmethod
-    def is_class(cls, name, case=True):
-        r"""Query whether `name` matches the class name by removing a prefix `kw`
+    def is_class(cls, name: str, case: bool = True) -> bool:
+        r"""Query whether `name` is one of the keywords of this class
 
-        This is important to ensure that users match the full class name
-        by omitting the prefix returned from this method.
+        The keywords are the ``key`` and ``aliases`` class arguments.
+        Sub-classes may override this method for other matching rules.
 
-        This is an abstract method to ensure sub-classes of `Category`
-        implements it.
-
-        For instance:
-
-        .. code::
-
-            class MyCategory(Category):
-
-                @classmethod
-                def is_class(cls, name):
-                     # strip "My" and do comparison
-                     return cl.__name__.lower()[2:] == name.lower()
-
-        would enable one to compare against the *base* category scheme.
-
-        This has the option to search case-sensitivity or not.
+        Parameters
+        ----------
+        name :
+           the keyword to match
+        case :
+           whether the match is case-sensitive
         """
-        pass
+        if case:
+            return name in cls._keys
+        name = name.lower()
+        return any(name == key.lower() for key in cls._keys)
 
     @classmethod
     def kw(cls, **kwargs):
@@ -160,7 +188,27 @@ class Category(metaclass=CategoryMeta):
         Since this is a class method one should use this
         on the base category class in the given section
         of the code.
+
+        Each keyword matches a sub-class through `is_class`, first
+        case-sensitive, then case-insensitive.
+        The value is passed to the matched class:
+
+        - ``True`` creates it without arguments (``odd=True``),
+        - a `dict` is passed as keyword arguments (``odd={}``),
+        - anything else is passed as the single argument (``Z="C"``).
+
+        Raises
+        ------
+        TypeError
+           if no keywords are given
+        ValueError
+           if a keyword matches no, or more than one, sub-class
         """
+        if not kwargs:
+            raise TypeError(
+                f"{cls.__name__} requires at least one keyword argument, "
+                f"e.g. {cls.__name__}(Z=6)."
+            )
 
         subcls = set()
         work = [cls]
@@ -174,6 +222,8 @@ class Category(metaclass=CategoryMeta):
         del work
 
         def get_cat(cl, args):
+            if args is True:
+                return cl()
             if isinstance(args, dict):
                 return cl(**args)
             return cl(args)
@@ -203,9 +253,12 @@ class Category(metaclass=CategoryMeta):
                         found = cl
 
             if found is None:
+                keys = sorted({k for cl in subcls for k in cl._keys})
+                close = get_close_matches(key, keys, n=3)
+                hint = f" Did you mean: {', '.join(close)}?" if close else ""
                 raise ValueError(
-                    f"{cls.__name__}.kw got an argument for category name:\n"
-                    f"    Searching for {key} but found no matches."
+                    f"{cls.__name__}.kw got an unknown keyword {key!r}.{hint}\n"
+                    f"    Valid keywords are: {', '.join(keys)}."
                 )
 
             if cat is None:
@@ -292,7 +345,7 @@ class GenericCategory(Category):
     __slots__ = ()
 
     @classmethod
-    def is_class(cls, name):
+    def is_class(cls, name, case=True):
         # never allow one to match a generic class
         # I.e. you can't instantiate a Null/Not/And/Or/XOr category by name
         return False

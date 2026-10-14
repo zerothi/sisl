@@ -83,16 +83,8 @@ _log = logging.getLogger(__name__)
 # It needs to be here otherwise we can't use it in these routines
 # Note how we are overwriting the module
 @set_module("sisl.geom")
-class AtomCategory(Category):
+class AtomCategory(Category, family="Atom"):
     __slots__ = ()
-
-    @classmethod
-    def is_class(cls, name, case=True) -> bool:
-        # Strip off `Atom`
-        cls_name = cls.__name__[4:]
-        if case:
-            return cls_name == name
-        return cls_name.lower() == name.lower()
 
 
 @set_module("sisl")

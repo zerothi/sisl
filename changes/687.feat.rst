@@ -1,0 +1,8 @@
+Lenient construction of atom categories
+
+`~sisl.geom.AtomZ` accepts symbols and `~sisl.Atom` objects, e.g. ``AtomZ("C")``.
+`~sisl.geom.AtomCategory` accepts the aliases ``species=``/``element=`` (for ``Z=``)
+and ``neighbours=``, and ``True`` as a value (``AtomCategory(odd=True)``).
+An unknown keyword now lists close matches and all valid keywords.
+Sub-classes declare their keywords with class arguments,
+e.g. ``class AtomCoordination(AtomCategory, key="coordination", aliases=("cn",))``.

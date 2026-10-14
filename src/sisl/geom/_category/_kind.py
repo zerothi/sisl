@@ -5,12 +5,14 @@ from __future__ import annotations
 
 import operator as op
 import re
+from collections.abc import Sequence
 from functools import reduce, wraps
 from numbers import Integral
+from typing import Union
 
 import numpy as np
 
-from sisl._core import Geometry
+from sisl._core import Atom, Geometry, PeriodicTable
 from sisl._help import isiterable
 from sisl._internal import set_module
 from sisl.typing import AtomsIndex, SeqOrScalarInt
@@ -21,24 +23,41 @@ from .base import AtomCategory, NullCategory, _sanitize_loop
 __all__ = ["AtomZ", "AtomIndex", "AtomSeq", "AtomTag", "AtomOdd", "AtomEven"]
 
 
+def _to_Z(Z: Union[int, str, Atom]) -> int:
+    if isinstance(Z, Atom):
+        return Z.Z
+    if isinstance(Z, str):
+        Zint = PeriodicTable().Z(Z)
+        if isinstance(Zint, str):
+            raise ValueError(f"AtomZ could not convert {Z!r} to an atomic number.")
+        return int(Zint)
+    return Z
+
+
 @set_module("sisl.geom")
-class AtomZ(AtomCategory):
+class AtomZ(AtomCategory, aliases=("species", "element")):
     r"""Classify atoms based on atomic number
 
     Parameters
     ----------
     Z :
-       atomic number match for several values this is equivalent to AND
+       atomic number to match. A symbol or an `Atom` is converted to its
+       atomic number. For several values an atom matches if its atomic
+       number is any of them (OR).
+
+    Examples
+    --------
+    >>> AtomZ("C") == AtomZ(6)
+    >>> AtomZ(["C", "N"]) == AtomZ([6, 7])
+    >>> AtomCategory(species="C") == AtomZ(6)
     """
 
     __slots__ = ("_Z",)
 
-    def __init__(self, Z: SeqOrScalarInt):
-        if isiterable(Z):
-            self._Z = set(Z)
-        else:
-            self._Z = set([Z])
-        # using a sorted list ensures that we can compare
+    def __init__(self, Z: Union[SeqOrScalarInt, str, Atom, Sequence[Union[str, Atom]]]):
+        if isinstance(Z, (str, Atom)) or not isiterable(Z):
+            Z = [Z]
+        self._Z = set(map(_to_Z, Z))
         super().__init__(f"Z={self._Z}")
 
     @_sanitize_loop

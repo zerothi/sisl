@@ -116,9 +116,25 @@ They are not methods. See [34 · Geometry factories](34-geom.md).
 
 `_category.py` holds the base classes. The atom categories are in `geom/_category/`.
 
-- `AtomCategory(Z=6)` works. The metaclass calls `cls.kw(**kwargs)`.
-- `kw` finds the subclass from the keyword name. `AtomZ` matches `Z=`.
-  Many keywords combine with `&`.
+- `AtomCategory` is a family class: `class AtomCategory(Category, family="Atom")`.
+  A family class has no keys.
+- A sub-class gets its keys from the class arguments `key=` and `aliases=`.
+  Without `key=`, the key is the class name without the family prefix.
+  `AtomNeighbors` gets `Neighbors`.
+- `AtomCategory(Z=6)` works. `CategoryMeta.__call__` calls `cls.kw(**kwargs)`
+  for a family class called with keywords only.
+- `CategoryMeta` does not catch `TypeError`. An error in `__init__` is shown to the user.
+  Before, it changed to a wrong "no match" error, and `AtomZ()` returned `None`.
+- `kw` finds the sub-class with `is_class`: first case-sensitive, then case-insensitive.
+  `Z=` selects `AtomZ`. `z=` selects the coordinate category.
+  We keep the case-insensitive fallback because users write `xyz=` for `AtomXYZ`.
+- `is_class` compares with the keys. A sub-class can override it.
+- `kw` sends `True` as no arguments (`odd=True`).
+  It sends a `dict` as keyword arguments, and other values as one argument.
+- An unknown keyword gives the close matches (`difflib`) and the list of keys.
+- `AtomZ` changes symbols and `Atom` objects to atomic numbers.
+  An unknown symbol raises `ValueError`. Before, `AtomZ("C")` silently matched no atoms.
+- Many keywords combine with `&`.
 - "Not in the category" is `NullCategory`. It is equal to `None`.
 - `&`, `|`, `^` and `~` make composite categories.
 - Geometry indexing accepts a category or a `dict`.

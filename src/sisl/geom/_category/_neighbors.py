@@ -15,7 +15,7 @@ __all__ = ["AtomNeighbors"]
 
 
 @set_module("sisl.geom")
-class AtomNeighbors(AtomCategory):
+class AtomNeighbors(AtomCategory, aliases=("neighbours",)):
     r"""Classify atoms based on number of neighbors
 
     Parameters
