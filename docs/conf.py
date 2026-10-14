@@ -202,6 +202,9 @@ extlinks = {
 # source_suffix = ['.rst', '.md']
 source_suffix = ".rst"
 
+# Single backticks are Python cross-references (`Geometry`).
+default_role = "py:obj"
+
 # prepend/append this snippet in _all_ sources
 rst_prolog = """
 .. highlight:: python

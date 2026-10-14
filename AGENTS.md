@@ -19,7 +19,8 @@ comment. Write in 95% ASD-STE100 — see [techs/README.md](techs/README.md#writi
 
 [`docs/`](docs/index.rst) is the PUBLIC guide (Sphinx RST), for end-users and
 agents alike. Write there only when a change affects end-user capabilities or
-usage patterns. Keep it lean, with explicit usage and clear purpose.
+usage patterns. Keep it lean, with explicit usage and clear purpose —
+see [15 · Public documentation](techs/15-public-docs.md).
 
 
 ## Rules that cost the most when broken

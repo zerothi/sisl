@@ -1,8 +1,7 @@
 .. _overview:
 
-*****************
 Package overview
-*****************
+================
 
 sisl is a Python package providing access to a large variety of things.
 
