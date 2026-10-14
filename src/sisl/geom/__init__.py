@@ -70,6 +70,7 @@ returned geometry:
 from ._category import *
 from ._composite import *
 from ._neighbors import *
+from ._saturate import *
 
 # isort: split
 from .basic import *

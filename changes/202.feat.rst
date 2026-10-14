@@ -1,0 +1,8 @@
+`~sisl.geom.saturate` adds atoms to missing bonds
+
+``saturate(geometry, [(selector, Saturate("H", bond=1.09)), ...])`` adds an atom
+for each missing bond of the selected atoms.
+The selectors are atom categories, so different environments get different
+atoms, e.g. hydrogen on carbon edges and fluorine on boron edges.
+The first rule that selects an atom is used.
+`~sisl.geom.Saturate` places the atoms in linear, trigonal planar or tetrahedral directions.

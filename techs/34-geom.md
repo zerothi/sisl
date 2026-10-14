@@ -115,6 +115,35 @@ The result is equal to `Geometry.close` for each atom:
 `test_geom_category_mask.py` compares the masks with `close` for each atom.
 It also makes sure that a composite does one search and does not call `close`.
 
+## Saturation
+
+`_saturate.py` holds `saturate(geometry, rules)` and `Saturate`.
+
+- `rules` is a sequence of `(selector, saturation)` pairs, not a `dict`.
+  The categories define `__eq__`, thus they are not hashable.
+- The first rule that selects an atom is used.
+  All rules select on the input geometry, with one `cache`.
+  Thus the rules share one neighbor search, and the added atoms do not change a selection.
+- The added atoms are at the end, in the order of the rules.
+  Thus the indices of the input atoms do not change.
+- `saturate` is a function in `sisl.geom`, not a `Geometry` method.
+  `Geometry.apply` has a different meaning.
+  We can register it with `register_sisl_dispatch` when the API is stable.
+- `Saturate` uses the `R` of `AtomNeighbors` to find the bonds.
+- The default `coordination` is the most frequent number of bonds of the same `Z`.
+  For a tie, it is the largest number.
+- The default `bond` is the sum of `PeriodicTable.radius` (`"calc"`).
+  This is approximate (C-H 1.20 Ang, not 1.09 Ang). The doc-string tells the user.
+- The directions of the missing bonds (`_bond_directions`):
+  - One missing bond: the negative sum of the present bonds.
+  - Coordination 4, two bonds: the tetrahedral pair in the plane of the bisector.
+  - One bond: the new bonds are in the plane of a bond of the neighbor.
+    They are planar for coordination 3, and staggered for coordination 4.
+  - Other cases raise `ValueError`.
+- An atom without bonds gets a warning, and no new atoms.
+- The loop over the selected atoms is in Python.
+  Usually only edge atoms are selected, thus the loop is short.
+
 ## Add a factory
 
 1. Write the function in the file of its group. Follow the [conventions](#conventions).

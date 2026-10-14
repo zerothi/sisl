@@ -89,3 +89,28 @@ Ancillary methods
 
    composite_geometry
    CompositeGeometrySection
+
+
+Saturation
+----------
+
+`saturate` adds atoms to the missing bonds of selected atoms.
+The selection uses the categories in :ref:`geom-indexing`.
+The first rule that selects an atom is used:
+
+>>> import sisl
+>>> from sisl.geom import AtomNeighbors, AtomZ, Saturate, saturate
+>>> ribbon = sisl.geom.zgnr(4)
+>>> edge = AtomNeighbors(max=2, R=1.5)
+>>> saturated = saturate(ribbon, [
+...     (edge & AtomZ("N"), Saturate("H", bond=1.01, R=1.5)),
+...     (edge, Saturate("H", bond=1.09, R=1.5)),
+... ])
+>>> saturated.na - ribbon.na
+2
+
+.. autosummary::
+   :toctree: generated/
+
+   saturate
+   Saturate
