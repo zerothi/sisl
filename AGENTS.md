@@ -1,113 +1,73 @@
-# Project configuration
+# sisl project
 
-## Project overview
-- **Name**: sisl
-- **Tech Stack**: Python, numpy, Cython, Fortran
-- **Team Size**: 5 developers
-- **Audience**: Researchers in condensed matter physics
+sisl is a Python/numpy/Cython/Fortran library for condensed matter physics
+(electronic structure, tight-binding, transport). It ships as wheels that
+end-users (master and PhD students) install on computational resources, so
+portability, a stable API and few dependencies matter.
 
+- `src/sisl/` holds the core sources. Sub-folders tell their intent,
+  e.g. `sisl/physics` holds physics specific implementations.
+- `src/sisl_toolbox/` holds a toolbox (namespace package) which other
+  packages may extend.
 
-## What this is
+[`techs/`](techs/README.md) is the **technical documentation**: the internal
+reference for exact, API-specific code decisions, and the only internal prose this
+repo maintains by hand. Read [01 · Welcome](techs/01-welcome.md) for orientation
+and [02 · Concepts](techs/02-concepts.md) for the ideas everything else assumes.
+Write there when you choose between alternatives, or when you remove an explaining
+comment. Write in 95% ASD-STE100 — see [techs/README.md](techs/README.md#writing-rules).
 
-`sisl` is a Python library (with Cython + Fortran extensions) for post-processing DFT output and building tight-binding models for NEGF transport. It couples tightly to LCAO/Siesta codes and feeds tight-binding matrices to TBtrans. Source lives in `src/sisl` (the main package) and `src/sisl_toolbox` (user-contributed toolboxes).
-
-## Source decisions
-
-The heavy computations are offloaded to Cython extensions. The Fortran extensions are
-*only* for interoperability with codes that writes files using Fortran codes.
-
-sisl tries to use classes for implementing contained functionality, but should try and
-avoid too many sub-classes as it obfuscates understanding.
-
-It's usage is guided by ease of use for beginners in programming, but capable of doing
-advanced computations by experienced users. It should strive to be easy to understand,
-but easily extendable for expert users.
+[`docs/`](docs/index.rst) is the PUBLIC guide (Sphinx RST), for end-users and
+agents alike. Write there only when a change affects end-user capabilities or
+usage patterns. Keep it lean, with explicit usage and clear purpose.
 
 
-## Build & install
+## Rules that cost the most when broken
 
-The build system is **scikit-build-core + CMake + Cython + f2py** (see `CMakeLists.txt`, `pyproject.toml`).
-It is **not** a pure-Python package — editing `.pyx`/`.f90` files requires a rebuild.
+- **Code carries little prose.** WHY goes in the owning `techs/` chapter, in the same
+  commit. If a change contradicts `techs/`, fix the chapter in the same commit (the `techs-check`
+  pre-commit hook names the owning chapters) —
+  [02 · Concepts](techs/02-concepts.md#code-carries-little-prose).
+- **Documentation is in-file.** Doc-strings are kept and follow `docs/` style —
+  [02 · Concepts](techs/02-concepts.md#documentation-is-in-the-file).
+- **Public API is stable.** Deprecate before removing or renaming
+  (`sisl.messages.deprecate*`) — [13 · Conventions](techs/13-conventions.md#public-and-private-names).
+- **Precision first, then performance.** Re-check correctness after each change —
+  [02 · Concepts](techs/02-concepts.md#precision-is-a-requirement). Hot paths need
+  regression tests — [12 · Performance](techs/12-performance.md).
+- **Verify cheapest first**, and report what was not run (e.g. IO tests without
+  `SISL_FILES_TESTS` are xfail-ed, not passed) —
+  [14 · Verifying a change](techs/14-verifying-a-change.md).
+- **Few strong classes.** Prefer a small generalization over many subclasses —
+  [02 · Concepts](techs/02-concepts.md#few-strong-classes).
+- **Ask first:** Cython ports, fixes to slow idioms, new required dependencies,
+  public API changes.
+- **Stage explicitly.** Never `git add -A` / `git add .`; untracked directories are
+  personal scratch.
+
+
+## Quick commands
 
 ```bash
-# Editable/dev install (recommended). Compiles Cython + Fortran extensions.
+# First install (builds Cython + Fortran extensions)
 python -m pip install -e .
-
-# Faster iterative rebuilds: skip build isolation and reuse a persistent build dir
+# Faster rebuilds afterwards; required after editing .pyx/.pxd/.f90
 python -m pip install -e . --no-build-isolation -Cbuild-dir=build-editable
+# Tests (set SISL_FILES_TESTS for IO tests, SISL_NUM_PROCS=1 when debugging)
+pytest src/sisl/_core/tests/test_geometry.py -k rotate
+pytest -m "not slow"
 ```
 
-Useful CMake toggles passed via `SKBUILD_CMAKE_ARGS`:
-- `-DWITH_FORTRAN=OFF` (skip Fortran)
-- `-DWITH_COVERAGE`
-- `-DWITH_ANNOTATE` (Cython HTML annotations).
-There are other toggles but they are mainly for development purposes.
+`_x.py` and `_x.pyx` companions are distinct modules: check which one is imported.
 
-## Tests
+Details: [10 · Build](techs/10-build.md), [11 · Testing](techs/11-testing.md),
+[13 · Conventions](techs/13-conventions.md) (license header, typing, dependencies,
+pre-commit, changelog fragments in `changes/`).
 
-Tests use `pytest`; `testpaths = src`, so tests live next to the code in `tests/` subdirectories throughout `src/sisl` and `src/sisl_toolbox`.
 
-```bash
-pytest  # full suite, additional args specified in pyproject.toml
-pytest src/sisl/physics/tests/test_hamiltonian.py    # one file
-pytest src/sisl/_core/tests/test_geometry.py -k rotate  # single test by pattern
-pytest -m "not slow"                      # skip slow-marked tests
-```
+## Agent rules
 
-- **Many tests require external data files** from the separate [`zerothi/sisl-files`](https://github.com/zerothi/sisl-files) repo. Point `SISL_FILES_TESTS` at a clone of it, otherwise tests using the `sisl_files` fixture are `xfail`-ed (not run). See `src/sisl/conftest.py`.
-- Set `SISL_NUM_PROCS=1` when debugging to disable parallelism (the tox config does this).
-
-## Lint / formatting
-
-Style is enforced by **pre-commit**. Set it up once with `pre-commit install`. Never hand-format — let pre-commit fix style on commit.
-
-## Changelog (required for user-facing PRs)
-
-Add a news fragment in `changes/` named `<PR-number>.<type>.rst` (types: `feat`, `fix`, `change`, `highlight`, `doc`, `dev`). These are assembled by **towncrier** into release notes.
-Toolbox changes go in `changes/toolbox/`. See `changes/README.rst`.
-
-## Architecture
-
-### Core data structures — `src/sisl/_core`
-The foundational objects, re-exported at the top level (`sisl.Geometry`, etc.):
-- `Geometry`, `Lattice` (cell/supercell), `Atom`/`Atoms`, `Orbital`/`AtomicOrbital`, `Grid` (real-space grids).
-- Sparse matrix stack: `SparseCSR` (`_sparse.pyx`) → `SparseAtom` / `SparseOrbital` (`sparse_geometry.py`). Nearly every physical matrix in sisl is a `SparseOrbital` subclass. Cython `.pyx`/`.pxd` files here are performance-critical hot paths.
-
-### Physics matrices — `src/sisl/physics`
-`Hamiltonian`, `DensityMatrix`, `EnergyDensityMatrix`, `Overlap`, `DynamicalMatrix` all subclass the sparse-geometry types. Electronic/phonon analysis in `electron.py`, `phonon.py`, `state.py`; `brillouinzone.py`, `bloch.py`, `self_energy.py`. The `_matrix_k.pyx`, `_matrix_dk.pyx`, `_matrix_ddk.pyx`, `_bloch.pyx`, `_phase.pyx` Cython modules build k-space matrices — this is the compiled numerical core.
-
-### I/O — `src/sisl/io` (the "Sile" system)
-File formats are `Sile` classes registered by suffix. `get_sile("foo.fdf")` dispatches to the right class via rules registered with `add_sile(suffix, cls)` (see `io/sile.py`). Base classes: `Sile` (text), `SileCDF` (netCDF), `SileBin` (binary/Fortran). Format families live in subpackages: `siesta/`, `tbtrans/`, `vasp/`, `wannier90/`, `orca/`, etc. When adding a format, create the `*Sile*` class and register it.
-One can use declarations for files that share extensions `get_sile("foo.fdf{siesta}")`
-ensures it's a classname that has `siesta` in it.
-
-### Dispatch patterns (pervasive — understand before extending classes)
-- **`_dispatcher.py`**: `AbstractDispatch` / `ClassDispatcher` / `TypeDispatcher`. Powers namespaces like `geometry.new(...)` (construct from other types) and `geometry.to(...)` (convert to other types, e.g. ASE/pymatgen).
-- **`_ufuncs.py`** (`register_sisl_dispatch`): methods are attached to core classes from separate `_ufuncs_*.py` files rather than defined inline in the class body. If a method seems "missing" from a class, grep the `_ufuncs_*.py` files. This keeps large classes split across files.
-  `_ufuncs_*.py` provides functional programming style that dispatches depending on first
-  argument class-types.
-
-### Other notable modules
-- `sisl_toolbox/` — higher-level toolboxes: `btd` (block-tri-diagonal Green functions / `DeviceGreen`), `transiesta`, `siesta`, `models`. Exposed via the `stoolbox` CLI.
-- `viz/` — plotting framework (plotly/matplotlib/blender backends), lazily loaded.
-- `mpi/` — distribution framework (mpi4py), lazily loaded.
-- `_environ.py` — all runtime config is `SISL_*` env vars registered via `register_environ_variable` (e.g. `SISL_NUM_PROCS`, `SISL_FILES_TESTS`, `SISL_SHOW_PROGRESS`, `SISL_IO_DEFAULT`). Use `sisl_environ(...)` context manager to override temporarily.
-- `geom/` — geometry generators (graphene, nanotubes, etc.); imported eagerly because its categories are needed for subclass handling.
-
-### CLI entry points (`pyproject.toml [project.scripts]`)
-- `sgeom` → geometry conversion/manipulation, `sgrid` → grid ops, `sdata` → generic Sile inspector (`sdata --cite` prints the BibTeX), `stoolbox` → toolbox commands.
-
-## Conventions
-
-- `sisl` is a physics code which requires strict precision in the algorithms.
-  Ensure correctness of code suggestions.
-  Once changes have been made, re-check for correctness and consistency.
-- Every source file starts with the MPL-2.0 header (`.LICENSE_header`; `add_header.sh` applies it).
-- `from __future__ import annotations` is used throughout; type hints live in `src/sisl/typing`.
-- Cython sources (`.pyx`/`.pxd`) are compiled — after editing them you must reinstall/rebuild before changes take effect. The pure-Python `.py` file and its `.pyx` companion (e.g. `_sparse.py` vs `_sparse.pyx`) are distinct; check which one is imported.
-- Claude commits should use a trailer as specified in the `.gitconfig` file.
-  When committing with an agent, ensure to use:
-  ```
-  git commit ... --trailer ai="<agent-name>:<model>[:<effort>]" where effort is optional.
-  ```
-  Example: Claude code Opus 5.5 would read `--trailer ai=claude-code:claude-opus-5-5`
+Mark agent commits only with the `ai` trailer (defined in `.gitconfig`; load it once
+with `git config include.path ../.gitconfig`), never with `Co-authored-by` or other
+trailers in the message:
+`git commit ... --trailer ai=<agent>:<model>[:<effort>]`, e.g. `ai=claude-code:claude-opus-5-5`.

@@ -62,3 +62,14 @@ repos:
 #  rev: v1.8.0
 #  hooks:
 #    - id: numpydoc-validation
+# Point at techs/ chapters that own staged files (warn only)
+- repo: local
+  hooks:
+    - id: techs-check
+      name: techs/ chapters to review
+      language: python
+      entry: python tools/techs_check.py
+      pass_filenames: false
+      always_run: true
+      verbose: true
+      stages: [pre-commit]
