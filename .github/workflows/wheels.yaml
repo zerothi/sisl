@@ -147,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_sdist
     # We have a problem with the dependencies available...
-    if: matrix.os == 'not-now'
+    if: false
 
     steps:
 
