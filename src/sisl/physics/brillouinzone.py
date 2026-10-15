@@ -1044,6 +1044,120 @@ class MonkhorstPack(BrillouinZone):
         # Return values
         return k, w
 
+    def unpack_trs(
+        self,
+        data: npt.ArrayLike,
+        axis: int = 0,
+        weighted: bool = False,
+        conjugate: bool = False,
+    ) -> tuple[MonkhorstPack, np.ndarray]:
+        r"""Expand `data` calculated on this (TRS reduced) grid to the full Brillouin zone
+
+        Time-reversal symmetry removes the :math:`-\mathbf k` points from the grid
+        and adds their weight to the :math:`\mathbf k` points.
+        This method reverses that. It returns the grid without TRS and `data` expanded
+        so that it matches the k-points of the returned grid.
+
+        Parameters
+        ----------
+        data :
+           data calculated at the k-points of this object, the k-points
+           are along `axis`.
+        axis :
+           the axis of `data` that corresponds to the k-points.
+        weighted :
+           whether `data` is multiplied by the k-point weights.
+           If true, the data is divided by the number of full k-points it represents,
+           so that summing over the k-points gives the same result for both grids.
+        conjugate :
+           whether to complex conjugate the data at the expanded :math:`-\mathbf k` points.
+           E.g. eigenvalues are the same at :math:`\pm\mathbf k`, whereas the eigenstates
+           and :math:`\mathbf H(\mathbf k)` are complex conjugated.
+
+        Returns
+        -------
+        MonkhorstPack
+           the grid without TRS
+        numpy.ndarray
+           a copy of `data` expanded to the k-points of the returned grid
+
+        Raises
+        ------
+        SislError
+           if the k-points of this object cannot be expanded to a regular grid,
+           e.g. after `replace`.
+
+        Examples
+        --------
+        >>> H = sisl.Hamiltonian(sisl.geom.graphene())
+        >>> mp = sisl.MonkhorstPack(H, [10, 10, 1])
+        >>> eig = mp.apply.array.eigh()
+        >>> mp_full, eig_full = mp.unpack_trs(eig)
+        >>> assert len(mp_full) == eig_full.shape[0] == 100
+        """
+        data = np.asarray(data)
+        if data.shape[axis] != len(self):
+            raise ValueError(
+                f"{self.__class__.__name__}.unpack_trs got data with {data.shape[axis]} "
+                f"elements along axis={axis}, expected {len(self)}."
+            )
+
+        full = MonkhorstPack(
+            self.parent,
+            self._diag,
+            displacement=self._displ,
+            size=self._size,
+            centered=self._centered,
+            trs=False,
+        )
+
+        def index(k):
+            idx = []
+            on_grid = np.ones(len(k), dtype=bool)
+            for i in (0, 1, 2):
+                n = self._diag[i]
+                g = self.grid(n, self._displ[i], self._size[i], self._centered)[0]
+                d = np.fabs(
+                    self.in_primitive(g.reshape(1, -1) - k[:, i].reshape(-1, 1))
+                )
+                j = np.argmin(d, axis=1)
+                on_grid &= d[np.arange(len(j)), j] <= self._size[i] / n * 1e-3
+                idx.append(j)
+            return np.ravel_multi_index(tuple(idx), self._diag), on_grid
+
+        ik = np.arange(len(self))
+        plus, on_grid = index(self.k)
+        if not np.all(on_grid):
+            raise SislError(
+                f"{self.__class__.__name__}.unpack_trs found k-points "
+                "that are not on the regular grid (e.g. after replace)."
+            )
+        minus, on_grid = index(-self.k)
+        full_idx = np.full(len(full), -1, dtype=np.int64)
+        full_idx[minus[on_grid]] = ik[on_grid]
+        full_idx[plus] = ik
+        if np.any(full_idx < 0):
+            raise SislError(
+                f"{self.__class__.__name__}.unpack_trs could not map the reduced "
+                "k-points and their -k partners onto the full grid."
+            )
+        is_minus = np.ones(len(full), dtype=bool)
+        is_minus[plus] = False
+
+        mult = np.bincount(full_idx, minlength=len(self))
+        if not np.allclose(np.bincount(full_idx, full.weight, len(self)), self.weight):
+            raise SislError(
+                f"{self.__class__.__name__}.unpack_trs found inconsistent weights "
+                "between the reduced and the full grid."
+            )
+
+        out = np.moveaxis(np.take(data, full_idx, axis=axis), axis, 0)
+        if conjugate:
+            out[is_minus] = out[is_minus].conj()
+        if weighted:
+            out = out / mult[full_idx].reshape(-1, *([1] * (out.ndim - 1)))
+        return full, np.moveaxis(out, 0, axis)
+
     def replace(
         self,
         k: KPoint,

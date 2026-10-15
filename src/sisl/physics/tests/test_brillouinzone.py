@@ -740,6 +740,72 @@ class TestMonkhorstPack:
     def test_in_primitive(self):
         assert np.allclose(MonkhorstPack.in_primitive([[1.0] * 3, [-1.0] * 3]), 0)
 
+    @staticmethod
+    def _H3d():
+        from sisl import Atom, Geometry, Hamiltonian
+
+        lattice = Lattice([1.5, 1.6, 1.7, 80, 95, 60], nsc=[3, 3, 3])
+        g = Geometry([[0, 0, 0], [0.7, 0.3, 0.2]], Atom(6, R=1.8), lattice=lattice)
+        H = Hamiltonian(g)
+        H.construct([(0.1, 1.8), (0.3, -1.0)])
+        return H
+
+    @pytest.mark.parametrize(
+        "nkpt, kwargs",
+        [
+            ([6, 6, 1], {}),
+            ([5, 7, 1], {}),
+            ([4, 3, 5], {}),
+            ([3, 4, 6], {"centered": False}),
+            ([4, 4, 3], {"displacement": [0.5, 0, 0]}),
+            ([4, 4, 4], {"size": [0.5, 0.5, 1]}),
+            ([1, 1, 1], {}),
+        ],
+    )
+    def test_unpack_trs(self, nkpt, kwargs):
+        H = self._H3d()
+        bz = MonkhorstPack(H, nkpt, trs=True, **kwargs)
+        bz_ref = MonkhorstPack(H, nkpt, trs=False, **kwargs)
+
+        Hk = np.array([H.Hk(k, format="array") for k in bz.k])
+        full, Hk_full = bz.unpack_trs(Hk, conjugate=True)
+        assert isinstance(full, MonkhorstPack)
+        assert np.allclose(full.k, bz_ref.k)
+        assert np.allclose(full.weight, bz_ref.weight)
+        Hk_ref = np.array([H.Hk(k, format="array") for k in bz_ref.k])
+        assert np.allclose(Hk_full, Hk_ref)
+
+        # weighted data along a different axis
+        eig = bz.apply.array.eigh().T * bz.weight
+        _, eig_full = bz.unpack_trs(eig, axis=1, weighted=True)
+        assert eig_full.shape == (eig.shape[0], len(full))
+        eig_ref = bz_ref.apply.array.eigh().T * bz_ref.weight
+        assert np.allclose(eig_full, eig_ref)
+        assert np.allclose(eig_full.sum(1), eig.sum(1))
+
+    def test_unpack_trs_no_trs(self):
+        H = self._H3d()
+        bz = MonkhorstPack(H, [3, 4, 2], trs=False)
+        data = np.arange(len(bz))
+        full, data_full = bz.unpack_trs(data)
+        assert np.allclose(full.k, bz.k)
+        assert np.allclose(data_full, data)
+        assert not np.shares_memory(data_full, data)
+
+    def test_unpack_trs_fail(self):
+        g = geom.graphene()
+        bz = MonkhorstPack(g, [4, 4, 1], trs=True)
+        with pytest.raises(ValueError):
+            bz.unpack_trs(np.zeros(len(bz) + 1))
+        bz.replace([0] * 3, MonkhorstPack(g, [3, 3, 1], size=[0.25, 0.25, 1]))
+        with pytest.raises(SislError, match="regular grid"):
+            bz.unpack_trs(np.zeros(len(bz)))
+
+        # the -k partners of a non-symmetric displaced grid are not in the grid
+        bz = MonkhorstPack(g, [4, 5, 1], displacement=[0.2, 0, 0], trs=True)
+        with pytest.raises(SislError, match="partners"):
+            bz.unpack_trs(np.zeros(len(bz)))
+
 
 @pytest.mark.bandstructure
 class TestBandStructure:

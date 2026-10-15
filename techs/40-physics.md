@@ -80,6 +80,14 @@ At Γ, sisl applies no phase.
 - Parallel execution uses `pathos` when it is installed. It maps the k-points with `pool.imap`.
   Set the pool with `bz.apply.renew(pool=...)`.
 - `MonkhorstPack.grid()` handles the time-reversal symmetry reduction.
+- `MonkhorstPack` does not store the map from the reduced to the full grid.
+  `MonkhorstPack.unpack_trs` makes this map again from `_diag`, `_displ`, `_size` and `_centered`.
+  It finds the full grid index of each `k` and `-k` along each axis.
+  A full point that is also a reduced point maps to that point, without conjugation.
+  The multiplicity is the number of full points for each reduced point (`np.bincount`).
+  It is not always 2, so do not use a constant.
+  The weights of the full grid must sum to the reduced weights; if not, the method raises `SislError`.
+  This check finds grids changed by `replace`.
 
 ## States
 
