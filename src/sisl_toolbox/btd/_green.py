@@ -368,11 +368,22 @@ class DeviceGreen:
             when they are created.
         """
 
+        def ensure_this_elec(elec):
+            if isinstance(elec, si.physics.SelfEnergy):
+                # automatic upscaling with no Name!
+                return BlochElectrode(elec)
+            return elec
+
         def as_tuple(elec):
             """Convert an electrode to the tuple form ``(elec, orbitals, *bulk)``"""
+            elec = ensure_this_elec(elec)
             if not isinstance(elec, Electrode):
                 elec, idx, *bulk = elec
-                return (elec, _to_orbs(H, idx, "electrode indices"), *bulk)
+                return (
+                    ensure_this_elec(elec),
+                    _to_orbs(H, idx, "electrode indices"),
+                    *bulk,
+                )
             if elec.orbs is None:
                 raise ValueError(
                     f"{self.__class__.__name__} electrode {elec.name} has no orbitals, "
