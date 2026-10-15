@@ -354,7 +354,7 @@ class TestObject:
         try:
             with sile(f, mode="r") as s:
                 g = s.read_geometry()
-                if isinstance(g, list):
+                if not isinstance(g, Geometry):
                     g = g[0]
             assert g.equal(
                 G, R=False, atol=1e-3
@@ -365,7 +365,7 @@ class TestObject:
         try:
             with sile(f, mode="r") as s:
                 g = Geometry.read(s)
-                if isinstance(g, list):
+                if not isinstance(g, Geometry):
                     g = g[0]
             assert g.equal(G, R=False, atol=1e-3)
         except UnicodeDecodeError as e:
