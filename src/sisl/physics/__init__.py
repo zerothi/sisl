@@ -21,6 +21,9 @@ Brillouin zone
    BrillouinZone - base class
    MonkhorstPack - MP class
    BandStructure - bandstructure class
+   AdaptiveBrillouinZone - base class of adaptive integrations
+   GaussKronrod - adaptive Gauss-Kronrod cubature
+   Farey - nested Farey grids
 
 
 Spin configuration
@@ -97,6 +100,8 @@ from .spin import *
 from .state import *
 
 # isort: split
+
+from ._brillouinzone_adaptive import *
 
 # Patch BrillouinZone objects and import apply classes
 from .bloch import *

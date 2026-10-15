@@ -89,6 +89,60 @@ At Γ, sisl applies no phase.
   The weights of the full grid must sum to the reduced weights; if not, the method raises `SislError`.
   This check finds grids changed by `replace`.
 
+### Adaptive Brillouin zones
+
+`AdaptiveBrillouinZone`, `GaussKronrod` and `Farey` are in `physics/_brillouinzone_adaptive.py`.
+
+- `AdaptiveBrillouinZone` is an abstract subclass of `BrillouinZone`.
+  It keeps `set_parent`, `tocartesian`, `volume` and the `isinstance` checks of the self-energies.
+- An adaptive grid has no k-points before an integration. Thus `k`, `weight` and `__len__` raise `TypeError`.
+  We rejected these alternatives:
+  - `len == 0`: `apply.average` then returns an empty result without an error.
+  - The length of the initial grid: `apply` then integrates on the coarsest grid without an error.
+  - The grid of the last integration: each energy needs a different grid.
+    A stored grid also makes the object depend on the call order, and a parallel pool cannot share it.
+- `TypeError` is the Python protocol for "no length". `bz.apply` calls `len(bz)`, so `apply` fails at once.
+  `__bool__` returns `True`, because `bool()` otherwise calls `__len__`.
+- `integrate(func, ret_bz=False)` is the only abstract method. The object stores the settings only.
+  `ret_bz=True` returns a plain `BrillouinZone` with the k-points and weights that were used.
+  Use it with `apply` when you need more quantities on the same grid.
+- The weights sum to 1, as for `MonkhorstPack`. The result is the Brillouin zone average.
+- The error of an array result is its largest absolute element.
+  The tolerance is `max(atol, rtol * max|I|)`.
+- When `max_k` stops the integration, `integrate` warns and returns the last value.
+
+`GaussKronrod`:
+
+- It uses the G7-K15 rule of QUADPACK (`qk15`). The tests check the polynomial degree of the constants.
+  Other rule orders need the Kronrod nodes, and sisl does not compute them.
+- A box uses the tensor product rule, with `15**d` points for `d` axes. Use it in 1 or 2 dimensions.
+- The error of a box is `|K - G|` with the full Gauss tensor rule. This is the error of G7.
+  It is larger than the error of K15 (often by orders of magnitude), so the result is more accurate than the tolerance.
+  We do not use the QUADPACK scaling `(200 |K - G| / resasc)**1.5`, because it can underestimate the error.
+- The box is halved along the axis with the largest error `|K - Q_a|`.
+  `Q_a` uses the Gauss weights along axis `a` and the Kronrod weights along the other axes.
+  This needs no new integrand values.
+- The integral and the error are summed again from all boxes after each split. This prevents round-off drift.
+
+`Farey`:
+
+- The points follow Chen *et al.*, Phys. Rev. B 106, 155102 (2022), Eq. (6) and (7).
+  `_farey_points` stores integer `p` and `q`. The integrand cache uses `(p, q)` as key, so a point is never evaluated twice.
+- The weight is the volume of the periodic Voronoi cell, in the Cartesian metric of `rcell[axes]`.
+  sisl does not use point-group symmetry, so the weights are those of plain Voronoi cells.
+  In 1D, this is the trapezoid rule on a non-uniform grid.
+- In 2D and 3D, `_voronoi_weights` adds periodic images in shells, until the volumes sum to the Brillouin zone volume.
+  A missing image can only make a cell larger. Thus the sum is equal to the volume only when all cells are correct.
+  One shell is not sufficient for skewed reciprocal cells.
+- The error estimate of order `l` is `|I_l - I_{l//2}|`. The difference to order `l - 1` underestimates the error.
+  The difference to order `l - 1` added only `phi(l)` points, which have small weights.
+  A test of the chain Green function showed a false convergence with an error of 100 times the tolerance.
+  For an error that decreases at least as `1/l`, `|I_l - I_{l//2}|` is larger than the error of `I_l`.
+- The integration stops when two consecutive orders are below the tolerance.
+- The Farey grid has large gaps near points with small `q` (for example Γ). It is not efficient
+  when the integrand is evaluated directly at each k-point (cost `s = 0` in the paper).
+  The gain in the paper is for supercell methods, where the cost increases with `q`.
+
 ## States
 
 `physics/state.py`:

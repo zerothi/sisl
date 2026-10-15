@@ -162,3 +162,30 @@ and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis
    BrillouinZone
    MonkhorstPack
    BandStructure
+
+
+Adaptive integration
+--------------------
+
+Some integrands need many k-points in a small part of the Brillouin zone only,
+for example a Green function with a small broadening.
+An adaptive Brillouin zone selects the k-points from the values of the integrand.
+It has no k-points before the integration, so ``len(bz)``, ``bz.k`` and ``bz.apply``
+raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`:
+
+>>> H = si.Hamiltonian(...)
+>>> gk = si.GaussKronrod(H, axes=0, atol=1e-6)
+>>> E = 0.1 + 1e-3j
+>>> def G(k):
+...     return np.linalg.inv(E * H.Sk(k, format="array") - H.Hk(k, format="array"))
+>>> Gavg, bz = gk.integrate(G, ret_bz=True)
+
+The result is the Brillouin zone average (as for `MonkhorstPack`).
+``bz`` is a `BrillouinZone` with the k-points and weights that were used.
+
+.. autosummary::
+   :toctree: generated/
+
+   AdaptiveBrillouinZone
+   GaussKronrod
+   Farey
