@@ -58,7 +58,8 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         self.set_parent(parent)
         self._bz_attr = ("", None)
 
-    def _undefined(self, what: str):
+    def _undefined(self, what: str) -> TypeError:
+        """The error for `what` (k-points, weights, length) that has no value before an integration"""
         return TypeError(
             f"{self.__class__.__name__} has no {what} before an integration; "
             "use last_bz() after integrate(...) to get the used k-points."
@@ -316,15 +317,21 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
 
     Examples
     --------
-    Integrate along the first lattice direction only:
+    The Green function of a 1D chain, with a small broadening, integrated along the
+    first lattice direction only:
 
-    >>> H = si.Hamiltonian(...)
+    >>> H = Hamiltonian(geom.sc(1.0, Atom(1, R=1.1)))
+    >>> H.set_nsc([3, 1, 1])
+    >>> H.construct([[0.1, 1.1], [0.0, -1.0]])
     >>> gk = GaussKronrodGrid(H, [15, 0, 0], atol=1e-8)
+    >>> z = 0.5 + 1e-3j
     >>> def G(k):
-    ...     return np.linalg.inv((E + 1j * eta) * H.Sk(k, format="array") - H.Hk(k, format="array"))
+    ...     return np.linalg.inv(z * H.Sk(k, format="array") - H.Hk(k, format="array"))
     >>> Gavg = gk.integrate(G)
-    >>> bz = gk.last_bz()  # the k-points and weights that were used
-    >>> len(bz)
+    >>> print(f"{Gavg[0, 0]:.6f}")
+    0.000069-0.516398j
+    >>> len(gk.last_bz())  # the k-points that were used
+    255
 
     Integrate the first two directions, and limit the k-point density to that of a
     1000 x 200 grid:
@@ -402,6 +409,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         return self._trs >= 0
 
     def _str_attrs(self) -> str:
+        """Settings shown by `__str__`"""
         return (
             f"nkpt: {self._nkpt_in.tolist()}, max_k: {self._max_k_in.tolist()}, "
             f"trs: {self.trs}, "
@@ -461,7 +469,59 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
             return True
         return len(_GK_X) / (h[a] / 2) <= self._max_k_axes[a] * (1 + 1e-12)
 
-    def integrate(self, func):
+    def integrate(self, func: Callable) -> Union[np.ndarray, oplist]:
+        """Integrate `func` over the Brillouin zone with adaptive Gauss-Kronrod boxes
+
+        The integration starts with the boxes from `nkpt`. Then it halves the box
+        with the largest error, until the summed error of all boxes is below
+        ``max(atol, rtol * max|I|)``, or until `max_k` stops it.
+
+        Parameters
+        ----------
+        func :
+           the integrand, called as ``func(k)`` with ``k`` a reduced k-point with
+           shape ``(3,)``. It must return a scalar, an array with a fixed shape,
+           or a sequence (`list`, `tuple` or `~sisl.oplist`, not `numpy.ndarray`)
+           of these. A sequence is integrated element by element, and its elements
+           can have different shapes. The errors include all elements.
+
+        Returns
+        -------
+        numpy.ndarray or oplist
+            the Brillouin zone average of `func`. It is an `~sisl.oplist` when
+            `func` returns a sequence.
+
+        Raises
+        ------
+        ValueError
+            if `func` returns sequences with different lengths
+
+        Warns
+        -----
+        SislWarning
+            when `max_k` stops the integration before the error is below the tolerance.
+            The returned value is then the last value.
+
+        See Also
+        --------
+        last_bz : the k-points and weights that the integration used
+
+        Examples
+        --------
+        >>> gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-10, trs=False)
+        >>> def f(k):
+        ...     return 1 / (1.5 - np.cos(2 * np.pi * k[0]))
+        >>> print(f"{gk.integrate(f):.10f}")
+        0.8944271910
+        >>> print(f"{1 / np.sqrt(1.5**2 - 1):.10f}")
+        0.8944271910
+
+        Values with different shapes in one integration:
+
+        >>> v = gk.integrate(lambda k: [f(k), np.ones((2, 2)) * f(k)])
+        >>> type(v).__name__, v[1].shape
+        ('oplist', (2, 2))
+        """
         d = len(self._axes)
         nper = len(_GK_X) ** d
         lo0, width = self._domain()
@@ -520,6 +580,34 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         return np.asarray(value)[()]
 
     def last_bz(self) -> BrillouinZone:
+        """The k-points and weights of the last `integrate` call
+
+        The k-points are the Gauss-Kronrod nodes of the final boxes. They are
+        created from the stored box bounds when this method is called.
+        The k-points of halved boxes were also evaluated, but they are not in the
+        final result, and thus not in the returned object.
+
+        Returns
+        -------
+        BrillouinZone
+            the k-points and weights (the weights sum to 1). The weighted sum of
+            the integrand at these k-points is the value that `integrate` returned.
+
+        Raises
+        ------
+        SislError
+            if `integrate` was not called before
+
+        Examples
+        --------
+        >>> gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], trs=False)
+        >>> v = gk.integrate(lambda k: k[0] ** 2)
+        >>> bz = gk.last_bz()
+        >>> len(bz)
+        15
+        >>> print(f"{sum(w * k[0] ** 2 for k, w in bz.iter(True)):.10f}")
+        0.0833333333
+        """
         if self._last is None:
             raise SislError(
                 f"{self.__class__.__name__}.last_bz requires a call to integrate first"
