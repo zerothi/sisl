@@ -170,6 +170,10 @@ At Γ, sisl applies no phase.
   Elements with very different magnitudes need `atol`, or the user must scale them.
 - A sequence must have the same length at all k-points, else `_sums_add` raises `ValueError`.
 - When `max_k` stops the integration, `integrate` warns and returns the last value.
+- A NaN or inf in the integrand gives a NaN or inf error. The loop condition is
+  `not (err <= tol and isfinite(err))`, because `err > tol` is false for NaN, and `inf <= inf`
+  is true when the value (and thus `rtol * max|I|`) is inf. `integrate` then warns and stops
+  at once: halving does not remove a NaN, and a NaN breaks the order of the box heap.
 - A scalar `max_k` is the total number of integrand evaluations (`_max_k`).
   A `(3,)` sequence is a k-point density for each lattice direction (`_max_k_axes` keeps the integrated directions).
   An adaptive grid has no fixed number of k-points along a direction. Thus a density is the only well-defined limit for each direction.

@@ -694,6 +694,8 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         SislWarning
             when `max_k` stops the integration before the error is below the tolerance.
             The returned value is then the last value.
+            Also when `func` returns a value that is not finite (NaN or inf); the
+            integration then stops at once.
 
         See Also
         --------
@@ -747,7 +749,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         nk = len(boxes) * nper
 
         tol = self._tolerance(value)
-        while err + err_c > tol:
+        while not (err + err_c <= tol and np.isfinite(err + err_c)):
+            if not np.isfinite(err + err_c):
+                self._not_converged(err + err_c, tol, nk, "the integrand is not finite")
+                break
             if len(boxes) == 0 or (
                 self._max_k is not None and nk + 2 * nper > self._max_k
             ):

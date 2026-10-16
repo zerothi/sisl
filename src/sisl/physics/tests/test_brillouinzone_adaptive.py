@@ -417,6 +417,21 @@ def test_gk_max_k_axes_density():
     assert bz.weight.sum() == pytest.approx(1)
 
 
+@pytest.mark.parametrize("bad", [np.nan, np.inf])
+@pytest.mark.parametrize("nkpt", [[15, 0, 0], [15, 15, 0]])
+def test_gk_not_finite(bad, nkpt):
+    gk = GaussKronrodGrid(Lattice(1), nkpt=nkpt, atol=1e-10, trs=False)
+
+    def func(k):
+        return np.array([bad if abs(k[0] - 0.2) < 0.05 else 1.0, 1.0])
+
+    with pytest.warns(SislWarning, match="not finite"):
+        v = gk.integrate(func)
+    assert not np.isfinite(v[0])
+    # no splits, only the initial boxes
+    assert len(gk.last_bz()) == 15 ** len(gk._axes)
+
+
 def test_gk_max_k_axes_next_direction():
     # the integrand only varies along a; when a is blocked, b is halved instead
     # until b is also blocked, then the integration stops with a warning
