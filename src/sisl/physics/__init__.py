@@ -22,7 +22,7 @@ Brillouin zone
    MonkhorstPack - MP class
    BandStructure - bandstructure class
    AdaptiveBrillouinZone - base class of adaptive integrations
-   GaussKronrod - adaptive Gauss-Kronrod cubature
+   GaussKronrodGrid - adaptive Gauss-Kronrod cubature
 
 
 Spin configuration

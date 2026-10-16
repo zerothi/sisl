@@ -20,7 +20,7 @@ from sisl.utils.misc import direction, listify
 
 from .brillouinzone import BrillouinZone
 
-__all__ = ["AdaptiveBrillouinZone", "GaussKronrod"]
+__all__ = ["AdaptiveBrillouinZone", "GaussKronrodGrid"]
 
 
 @set_module("sisl.physics")
@@ -53,7 +53,7 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
 
     See Also
     --------
-    GaussKronrod : adaptive Gauss-Kronrod cubature
+    GaussKronrodGrid : adaptive Gauss-Kronrod cubature
     """
 
     def __init__(
@@ -230,7 +230,7 @@ def _maxabs(a) -> float:
 
 
 @set_module("sisl.physics")
-class GaussKronrod(AdaptiveBrillouinZone):
+class GaussKronrodGrid(AdaptiveBrillouinZone):
     r"""Adaptive Gauss-Kronrod cubature of the Brillouin zone
 
     The sampled Brillouin zone is split in boxes. Each box is integrated with
@@ -263,7 +263,7 @@ class GaussKronrod(AdaptiveBrillouinZone):
     Examples
     --------
     >>> H = si.Hamiltonian(...)
-    >>> gk = GaussKronrod(H, axes=0, atol=1e-8)
+    >>> gk = GaussKronrodGrid(H, axes=0, atol=1e-8)
     >>> def G(k):
     ...     return np.linalg.inv((E + 1j * eta) * H.Sk(k, format="array") - H.Hk(k, format="array"))
     >>> Gavg, bz = gk.integrate(G, ret_bz=True)

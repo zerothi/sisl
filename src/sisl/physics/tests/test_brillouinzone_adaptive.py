@@ -12,7 +12,7 @@ from sisl import (
     AdaptiveBrillouinZone,
     Atom,
     BrillouinZone,
-    GaussKronrod,
+    GaussKronrodGrid,
     Hamiltonian,
     Lattice,
     SislWarning,
@@ -31,7 +31,7 @@ def peak(a):
     return func, 1 / np.sqrt(a**2 - 1)
 
 
-@pytest.mark.parametrize("cls", [GaussKronrod])
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
 def test_adaptive_undefined_grid(cls):
     H = Hamiltonian(geom.sc(1.0, Atom(1, R=1.1)))
     bz = cls(H, axes=0)
@@ -54,7 +54,7 @@ def test_adaptive_abstract():
         AdaptiveBrillouinZone(Lattice(1))
 
 
-@pytest.mark.parametrize("cls", [GaussKronrod])
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
 def test_adaptive_axes(cls):
     assert np.all(cls(Lattice(1), axes="b").axes == [1])
     assert np.all(cls(Lattice(1), axes=[2, 0]).axes == [0, 2])
@@ -62,7 +62,7 @@ def test_adaptive_axes(cls):
         cls(Lattice(1), axes=[0, 0])
 
 
-@pytest.mark.parametrize("cls", [GaussKronrod])
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
 def test_adaptive_pickle(cls):
     bz = cls(Lattice(1), axes=[0, 1], atol=1e-3)
     bz2 = pickle.loads(pickle.dumps(bz))
@@ -73,7 +73,7 @@ def test_adaptive_pickle(cls):
 
 def test_gk_polynomial_exact():
     # G7 is exact up to degree 13, so one box is enough
-    gk = GaussKronrod(Lattice(1), axes=0, atol=1e-14, rtol=0)
+    gk = GaussKronrodGrid(Lattice(1), axes=0, atol=1e-14, rtol=0)
     v, bz = gk.integrate(lambda k: k[0] ** 12, ret_bz=True)
     assert v == pytest.approx(0.5**12 / 13, abs=1e-15)
     assert len(bz) == 15
@@ -83,7 +83,7 @@ def test_gk_polynomial_exact():
 
 def test_gk_peak_local_refinement():
     func, ref = peak(1 + 1e-3)
-    gk = GaussKronrod(Lattice(1), axes=0, atol=0, rtol=1e-10, max_k=5000)
+    gk = GaussKronrodGrid(Lattice(1), axes=0, atol=0, rtol=1e-10, max_k=5000)
     v, bz = gk.integrate(func, ret_bz=True)
     assert v == pytest.approx(ref, rel=1e-9)
     assert bz.weight.sum() == pytest.approx(1)
@@ -93,7 +93,7 @@ def test_gk_peak_local_refinement():
 
 def test_gk_array_and_complex():
     func, ref = peak(1.2)
-    gk = GaussKronrod(Lattice(1), axes=0, atol=1e-12, rtol=0)
+    gk = GaussKronrodGrid(Lattice(1), axes=0, atol=1e-12, rtol=0)
     v = gk.integrate(lambda k: np.array([[func(k), 2j * func(k)]]))
     assert v.shape == (1, 2)
     assert np.allclose(v, [[ref, 2j * ref]], atol=1e-10, rtol=0)
@@ -102,7 +102,7 @@ def test_gk_array_and_complex():
 def test_gk_2d_split_direction():
     # the integrand does not depend on k_b, so boxes only split along a
     func, ref = peak(1.05)
-    gk = GaussKronrod(Lattice(1), axes=[0, 1], atol=1e-9, rtol=0, max_k=50000)
+    gk = GaussKronrodGrid(Lattice(1), axes=[0, 1], atol=1e-9, rtol=0, max_k=50000)
     v, bz = gk.integrate(func, ret_bz=True)
     assert v == pytest.approx(ref, abs=1e-9)
     assert len(np.unique(bz.k[:, 1])) == 15
@@ -111,20 +111,22 @@ def test_gk_2d_split_direction():
 
 def test_gk_2d_separable():
     f, ref = peak(1.1)
-    gk = GaussKronrod(Lattice(1), axes=[0, 2], n=[2, 1], atol=1e-9, rtol=0, max_k=50000)
+    gk = GaussKronrodGrid(
+        Lattice(1), axes=[0, 2], n=[2, 1], atol=1e-9, rtol=0, max_k=50000
+    )
     v = gk.integrate(lambda k: f(k) * f(k[::-1]))
     assert v == pytest.approx(ref**2, abs=1e-8)
 
 
 def test_gk_max_k_warns():
     func, _ = peak(1 + 1e-6)
-    gk = GaussKronrod(Lattice(1), axes=0, atol=1e-12, rtol=0, max_k=100)
+    gk = GaussKronrodGrid(Lattice(1), axes=0, atol=1e-12, rtol=0, max_k=100)
     with pytest.warns(SislWarning, match="did not converge"):
         gk.integrate(func)
 
 
 @pytest.mark.filterwarnings("error::sisl.SislWarning")
-@pytest.mark.parametrize("cls, atol", [(GaussKronrod, 1e-8)])
+@pytest.mark.parametrize("cls, atol", [(GaussKronrodGrid, 1e-8)])
 def test_adaptive_green_chain(cls, atol):
     # local Green function of a 1D chain against a dense periodic sum
     H = Hamiltonian(geom.sc(1.0, Atom(1, R=1.1)))

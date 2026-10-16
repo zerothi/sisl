@@ -91,7 +91,7 @@ At Γ, sisl applies no phase.
 
 ### Adaptive Brillouin zones
 
-`AdaptiveBrillouinZone` and `GaussKronrod` are in `physics/_brillouinzone_adaptive.py`.
+`AdaptiveBrillouinZone` and `GaussKronrodGrid` are in `physics/_brillouinzone_adaptive.py`.
 
 - `AdaptiveBrillouinZone` is an abstract subclass of `BrillouinZone`.
   It keeps `set_parent`, `tocartesian`, `volume` and the `isinstance` checks of the self-energies.
@@ -111,7 +111,7 @@ At Γ, sisl applies no phase.
   The tolerance is `max(atol, rtol * max|I|)`.
 - When `max_k` stops the integration, `integrate` warns and returns the last value.
 
-`GaussKronrod`:
+`GaussKronrodGrid`:
 
 - It uses the G7-K15 rule of QUADPACK (`qk15`). The tests check the polynomial degree of the constants.
   Other rule orders need the Kronrod nodes, and sisl does not compute them.
