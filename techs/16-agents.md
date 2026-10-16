@@ -93,6 +93,23 @@ A file `_x.py` and a file `_x.pyx` with the same name are two different modules.
 Before you change one, find the module that the code imports.
 A change to the other file has no effect.
 
+## Write fast tests, and no redundant tests
+
+The CI runs each test on many platforms and Python versions.
+Each test adds to the CI time on all of them.
+
+- Make each test fast. Use the smallest geometry, basis, `nsc` and k-point set that shows the behavior.
+- Do not write a test that checks the same code path as an existing test.
+  Read the tests of the module before you add a test.
+  Extend an existing test, or add a case to its `pytest.mark.parametrize`.
+- Parametrize only the arguments that select a different code path, for example a dtype or a spin type.
+  Do not parametrize over values that run the same code.
+- Mark a test that cannot be fast with `slow`. See [11 · Markers](11-testing.md#markers).
+- Do not test numpy, scipy or other dependencies. Test the sisl code.
+
+The rules in [11 · What a new test must do](11-testing.md#what-a-new-test-must-do) still apply.
+A fast test that does not check the behavior has no value.
+
 ## Report what you did not run
 
 Follow the order of checks in [14 · Verifying a change](14-verifying-a-change.md).
