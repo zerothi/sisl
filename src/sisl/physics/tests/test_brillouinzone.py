@@ -357,6 +357,10 @@ class TestMonkhorstPack:
         with pytest.raises(ValueError, match="larger than 0"):
             MonkhorstPack(setup.s1, nkpt)
 
+    def test_str(self, setup):
+        bz = MonkhorstPack(setup.s1, [2, 2, 2], size=[1, 0.5, 0.25])
+        assert "size: [1.00000 0.50000 0.25000]" in str(bz)
+
     def test_init_simple(self, setup):
         bz = MonkhorstPack(setup.s1, [2] * 3, trs=False)
         assert len(bz) == 8

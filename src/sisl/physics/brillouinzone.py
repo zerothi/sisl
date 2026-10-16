@@ -924,7 +924,7 @@ class MonkhorstPack(BrillouinZone):
         """String representation of `MonkhorstPack`"""
         p = self._parent_lattice()
         return (
-            "{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[0]:.5f}], trs: {trs},"
+            "{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[2]:.5f}], trs: {trs},"
             "\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.5f} {disp[1]:.5f} {disp[2]:.5f}],"
             "\n {lattice}\n}}"
         ).format(
