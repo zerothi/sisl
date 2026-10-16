@@ -24,3 +24,6 @@ CLAUDE.local.md
 .DS_Store?
 Thumbs.db
 ehtumbs.db
+
+# git worktrees (see techs/16-agents.md)
+/wt/

@@ -44,6 +44,7 @@ The remaining 5% is for formulas, tables and code that STE cannot express.
 | 13 | [Conventions](13-conventions.md) | Headers, typing, style, changelog. |
 | 14 | [Verifying a change](14-verifying-a-change.md) | The order of checks before you commit. |
 | 15 | [Public documentation](15-public-docs.md) | How to write in `docs/`: structure, style, doc-strings, RST. |
+| 16 | [Agents](16-agents.md) | Rules for agents only: ask first, staging, commit trailer, reports. |
 | 20 | [Sparse matrices](20-sparse.md) | `SparseCSR` and the sparse geometry classes. |
 | 30 | [Geometry](30-geometry.md) | `Lattice`, `Geometry`, supercells, dispatch. |
 | 31 | [Orbitals](31-orbitals.md) | Orbital classes, cutoff, radial functions, spherical harmonics. |
@@ -62,7 +63,7 @@ The remaining 5% is for formulas, tables and code that STE cannot express.
 
 - Numbers are in groups:
   - `0x`: orientation.
-  - `1x`: code development (build, test, performance, conventions, verification, public documentation).
+  - `1x`: code development (build, test, performance, conventions, verification, public documentation, agents).
   - `20`–`99`: one group of ten for each code area of `sisl` (sparse, geometry, physics, IO, viz, mixing, utils).
   - `100` and higher: namespace packages next to `sisl` (`100`: `sisl_toolbox`). The next package gets `110`.
     Chapters on subpackages increment from the package number (`101`: `sisl_toolbox.btd`).

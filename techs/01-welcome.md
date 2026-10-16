@@ -41,3 +41,4 @@ Put new code in the subfolder that matches its purpose.
 - [02 · Concepts](02-concepts.md): the principles that all other chapters assume.
 - [10 · Build](10-build.md): sisl is not a pure-Python package.
 - [14 · Verifying a change](14-verifying-a-change.md): before each commit.
+- [16 · Agents](16-agents.md): if you are an agent.
