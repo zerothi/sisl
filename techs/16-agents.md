@@ -55,6 +55,7 @@ git worktree add -b <branch-name> wt/<branch-name>
 
 Use the same name for the branch and the folder.
 Then the maintainer can find each worktree and its branch in one place.
+`.gitignore` contains `/wt/`, thus `git status` does not show the worktrees.
 
 ## Commit trailer
 
