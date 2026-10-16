@@ -758,6 +758,15 @@ class TestGeometry:
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
 
+    def test_angle_no_mutation(self):
+        g = sisl_geom.graphene()
+        xyz = g.xyz.copy()
+        ang = g.angle(None, ref=1)
+        assert np.allclose(g.xyz, xyz)
+        assert np.allclose(g.angle(None, ref=1), ang)
+        g.angle(None, ref=[0.5, 0, 0])
+        assert np.allclose(g.xyz, xyz)
+
     def test_dihedral(self):
         g = sisl_geom.graphene() * (2, 2, 1)
         g.xyz[-1, 2] = 1

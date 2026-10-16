@@ -1755,9 +1755,9 @@ class Geometry(
         if ref is None:
             pass
         elif isinstance(ref, Integral):
-            xi -= self.axyz(ref)[None, :]
+            xi = xi - self.axyz(ref)[None, :]
         else:
-            xi -= _a.asarrayd(ref)[None, :]
+            xi = xi - _a.asarrayd(ref)[None, :]
         nx = sqrt(square(xi).sum(1))
         ang = np.zeros_like(nx)
         # Typically the angles then becomes a precision of the length
