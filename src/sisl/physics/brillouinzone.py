@@ -1377,6 +1377,8 @@ class BandStructure(BrillouinZone):
        If it is an array_like input it must have length one
        less than `point`, in this case the total number of points
        will be ``sum(divisions) + 1`` due to the end-point constraint.
+       The division of a segment over a discontinuity is not used (it is set to 1),
+       the segment has no k-points between its two points.
     names : array_like of str
        the associated names of the points on the Brillouin Zone path
     jump_dk: float or array_like, optional
@@ -1539,6 +1541,8 @@ class BandStructure(BrillouinZone):
             )
 
         self.divisions = _a.arrayi(divisions).ravel()
+        # a segment over a discontinuity only has its first point
+        self.divisions[jump_idx - 1] = 1
 
         if names is None:
             self.names = "ABCDEFGHIJKLMNOPQRSTUVXYZ"[: len(self.points)]

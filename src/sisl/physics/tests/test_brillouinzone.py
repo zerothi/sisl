@@ -956,6 +956,18 @@ class TestBandStructure:
         )
         assert len(bs) == 30
 
+    def test_jump_divisions(self):
+        g = geom.graphene()
+        points = [[0] * 3, [0.5, 0, 0], None, [0, 0.5, 0], [0.5, 0.5, 0]]
+        bs = BandStructure(g, points, [4, 4, 4])
+        # no k-points between [0.5, 0, 0] and [0, 0.5, 0]
+        assert np.allclose(bs.divisions, [4, 1, 4])
+        assert len(bs) == 10
+        assert np.allclose(bs.k[4], [0.5, 0, 0])
+        assert np.allclose(bs.k[5], [0, 0.5, 0])
+        # same k-points as an integer number of divisions
+        assert np.allclose(bs.k, BandStructure(g, points, 10).k)
+
     def test_jump_skipping_none(self):
         g = geom.graphene()
         bs1 = BandStructure(
