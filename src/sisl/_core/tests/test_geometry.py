@@ -1602,6 +1602,18 @@ class TestGeometry:
         to_ase = gr.to.ase()
         from_ase = gr.new(to_ase)
         assert gr.equal(from_ase, R=False)
+        assert np.all(gr.pbc == from_ase.pbc)
+
+    def test_geometry_ase_pbc(self):
+        pytest.importorskip("ase", reason="ase not available")
+        from ase import Atoms as ase_Atoms
+
+        aseg = ase_Atoms("H2", positions=[[0, 0, 0], [0, 0, 1]], cell=[2, 2, 10])
+        aseg.pbc = [True, False, False]
+        geom = Geometry.new(aseg)
+        assert np.all(geom.pbc == [True, False, False])
+        assert np.all(geom.nsc == [3, 1, 1])
+        assert np.all(geom.to.ase().pbc == aseg.pbc)
 
     def test_geometry_ase_run_center(self):
         pytest.importorskip("ase", reason="ase not available")

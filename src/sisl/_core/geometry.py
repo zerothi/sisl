@@ -72,7 +72,7 @@ from sisl.utils import (
 from sisl.utils.mathematics import fnorm
 
 from .atom import Atom, Atoms
-from .lattice import Lattice, LatticeChild
+from .lattice import BoundaryCondition, Lattice, LatticeChild
 from .orbital import Orbital
 
 __all__ = ["Geometry", "sgeom", "AtomCategory"]
@@ -4673,7 +4673,9 @@ class GeometryNewAseDispatch(GeometryNewDispatch):
         xyz = aseg.get_positions()
         cell = aseg.get_cell()
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
-        lattice = Lattice(cell, nsc=nsc)
+        BC = BoundaryCondition
+        bc = [BC.PERIODIC if pbc else BC.UNKNOWN for pbc in aseg.pbc]
+        lattice = Lattice(cell, nsc=nsc, boundary_condition=bc)
         return cls(xyz, atoms=Z, lattice=lattice, **kwargs)
 
 
