@@ -326,11 +326,23 @@ class Geometry(
         return dot(self.xyz, self.icell.T)
 
     def __setitem__(self, atoms, value):
-        """Specify geometry coordinates"""
+        """Specify geometry coordinates, or a name for a group of atoms
+
+        Examples
+        --------
+        >>> geom = Geometry([[0, 0, 0], [1, 0, 0]])
+        >>> geom[1] = [2, 0, 0]
+        >>> geom[1, 2] = 1.
+        >>> geom["second"] = [1]
+        """
         if isinstance(atoms, str):
             self.names.add_name(atoms, value)
         elif isinstance(value, str):
             self.names.add_name(value, atoms)
+        elif isinstance(atoms, tuple):
+            self.xyz[self._sanitize_atoms(atoms[0]), atoms[1]] = value
+        else:
+            self.xyz[self._sanitize_atoms(atoms)] = value
 
     @singledispatchmethod
     def __getitem__(self, atoms) -> ndarray:

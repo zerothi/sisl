@@ -776,6 +776,21 @@ class TestGeometry:
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
 
+    def test_setitem_xyz(self):
+        g = Geometry([[0, 0, 0], [1, 0, 0], [2, 0, 0]], lattice=10)
+        g[0] = [9, 9, 9]
+        assert np.allclose(g.xyz[0], 9)
+        g[[1, 2], 2] = 3.0
+        assert np.allclose(g.xyz[1:, 2], 3)
+        g[1:] = 0.0
+        assert np.allclose(g.xyz[1:], 0)
+        g["A"] = [0]
+        assert np.all(g.names["A"] == [0])
+        g[[1, 2]] = "B"
+        assert np.all(g.names["B"] == [1, 2])
+        with pytest.raises(IndexError):
+            g[3] = [0, 0, 0]
+
     def test_oxyz_isc(self, setup):
         g = setup.g
         assert g.no != g.na
