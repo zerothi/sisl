@@ -1617,7 +1617,7 @@ class BandStructure(BrillouinZone):
         >>> data = np.zeros([len(bs), 10])
         >>> data_with_jump = bs.insert_jump(data)
         >>> assert data_with_jump.shape == (len(bs)+1, 10)
-        >>> np.all(data_with_jump[2] == np.nan)
+        >>> np.all(np.isnan(data_with_jump[2]))
         True
         """
         # quick return if nothing needs changed
