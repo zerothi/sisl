@@ -21,6 +21,19 @@ Ask the maintainer before you do one of these changes:
 
 Tell what you want to change and why. Then wait for the answer.
 
+## No URL lookups
+
+Do not add code that reads from a URL.
+This rule applies to all code in the repository, also to tests.
+Examples are `urllib`, `requests`, `httpx`, `pooch`, or a call to `curl` or `wget`.
+
+Only a human can make this change.
+If a task needs a URL lookup, stop and tell the maintainer.
+
+- sisl runs on computational resources. Many compute nodes have no internet access.
+- A result must not change when a remote file changes.
+- Data from a URL is not trusted.
+
 ## Stage explicitly
 
 - Stage each file by its name: `git add <path>`.
