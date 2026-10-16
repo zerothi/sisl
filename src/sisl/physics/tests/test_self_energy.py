@@ -12,9 +12,11 @@ from sisl import (
     Atom,
     Bloch,
     BrillouinZone,
+    GaussKronrodGrid,
     Geometry,
     Hamiltonian,
     Lattice,
+    MonkhorstPack,
     RealSpaceSE,
     RealSpaceSI,
     RecursiveSI,
@@ -560,3 +562,41 @@ def test_real_space_SI_green_indices(setup, unfold):
     assert np.allclose(
         RSI.green(E, indices=indices), G[np.ix_(indices, indices)], atol=1e-12
     )
+
+
+@pytest.mark.filterwarnings("error::sisl.SislWarning")
+def test_real_space_SE_adaptive_bz(setup):
+    # an adaptive Brillouin zone through bz.apply.average
+    RSE = RealSpaceSE(setup.H, 0, 1, (2, 2, 1))
+    E = 0.1 + 0.5j
+    lattice = setup.H.lattice * (2, 2, 1)
+    RSE.setup(bz=MonkhorstPack(lattice, [1, 60, 1], trs=False))
+    G_mp = RSE.green(E)
+    gk = GaussKronrodGrid(lattice, [0, 15, 0], trs=False, atol=1e-6, rtol=0)
+    RSE.setup(bz=gk)
+    G_gk = RSE.green(E)
+    assert np.allclose(G_gk, G_mp, atol=1e-8, rtol=0)
+
+    # trs is taken from the adaptive grid, as for MonkhorstPack
+    RSE.setup(bz=GaussKronrodGrid(lattice, [0, 15, 0], trs=True, atol=1e-6, rtol=0))
+    G_trs = RSE.green(E)
+    assert np.allclose(G_trs, (G_mp + G_mp.T) / 2, atol=1e-8, rtol=0)
+
+    RSE.setup(bz=gk)
+    with pytest.raises(NotImplementedError):
+        RSE.green(E, [0, 0, 0.1])
+
+
+@pytest.mark.filterwarnings("error::sisl.SislWarning")
+def test_real_space_SI_adaptive_bz(setup):
+    semi = RecursiveSI(setup.H, "-B")
+    surf = setup.H.tile(4, 1)
+    surf.set_nsc(b=1)
+    RSI = RealSpaceSI(semi, surf, 0, (2, 1, 1))
+    E = 0.1 + 0.5j
+    lattice = surf.lattice * (2, 1, 1)
+    RSI.setup(bz=MonkhorstPack(lattice, [60, 1, 1], trs=False))
+    G_mp = RSI.green(E)
+    RSI.setup(bz=GaussKronrodGrid(lattice, [15, 0, 0], trs=False, atol=1e-6, rtol=0))
+    G_gk = RSI.green(E)
+    assert np.allclose(G_gk, G_mp, atol=1e-8, rtol=0)

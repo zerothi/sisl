@@ -35,11 +35,13 @@ from sisl.utils.mathematics import cart2spher
 from sisl.utils.misc import allow_kwargs
 
 # Stuff used for patching
+from ._brillouinzone_adaptive import AdaptiveBrillouinZone
 from .brillouinzone import BrillouinZone, MonkhorstPack
 
 # We expose the Apply and ParentApply classes
 __all__ = ["BrillouinZoneApply", "BrillouinZoneParentApply"]
 __all__ += ["MonkhorstPackApply", "MonkhorstPackParentApply"]
+__all__ += ["AdaptiveBrillouinZoneApply"]
 
 
 def _asoplist(arg):
@@ -832,3 +834,73 @@ apply_dispatch = MonkhorstPack.apply
 apply_dispatch.register("grid", GridApply)
 
 del apply_dispatch
+
+
+@set_module("sisl.physics")
+class AdaptiveBrillouinZoneApply(BrillouinZoneParentApply):
+    def _parse_kwargs(self, wrap, eta=None, eta_key=""):
+        """Parse kwargs, the number of k-points is unknown before the integration"""
+        bz = self._obj
+        parent = bz.parent
+        if wrap is None:
+
+            def wrap(v, parent=None, k=None, weight=None):
+                return v
+
+        else:
+            wrap = allow_kwargs("parent", "k", "weight")(wrap)
+        eta = progressbar(None, f"{bz.__class__.__name__}.{eta_key}", "k", eta)
+        return bz, parent, wrap, eta
+
+
+@set_module("sisl.physics")
+class AdaptiveAverageApply(AdaptiveBrillouinZoneApply):
+    def __str__(self, message="average"):
+        return super().__str__(message)
+
+    def dispatch(self, method):
+        """Dispatch the method by an adaptive integration (`integrate`)"""
+        if self._attrs.get("pool"):
+            warn(
+                f"{self._obj.__class__.__name__}.apply.average does not run in "
+                "parallel, the pool argument is ignored."
+            )
+
+        @wraps(method)
+        def func(*args, wrap=None, eta=None, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
+
+            def integrand(k):
+                v = wrap(method(*args, k=k, **kwargs), parent=parent, k=k, weight=None)
+                eta.update()
+                return v
+
+            try:
+                return bz.integrate(integrand)
+            finally:
+                eta.close()
+
+        return func
+
+
+@set_module("sisl.physics")
+class AdaptiveUndefinedApply(AdaptiveBrillouinZoneApply):
+    def __str__(self, message="undefined (needs fixed k-points)"):
+        return super().__str__(message)
+
+    def dispatch(self, method):
+        """Raise a `TypeError`, the dispatch needs fixed k-points"""
+        raise TypeError(
+            f"{self._obj.__class__.__name__}.apply only defines 'average'; "
+            "the other apply modes need fixed k-points. Integrate with "
+            "apply.average, and use last_bz().apply.<mode> on the used k-points."
+        )
+
+
+# The BrillouinZone dispatches need fixed k-points, only average is defined
+apply_dispatch = AdaptiveBrillouinZone.apply
+for key in BrillouinZone.apply._dispatchs:
+    apply_dispatch.register(key, AdaptiveUndefinedApply, default=key == "iter")
+apply_dispatch.register("average", AdaptiveAverageApply)
+
+del apply_dispatch, key

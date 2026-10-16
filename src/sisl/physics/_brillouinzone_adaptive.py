@@ -19,7 +19,7 @@ from sisl._internal import set_module
 from sisl.messages import SislError, warn
 from sisl.typing import SeqOrScalarInt
 
-from .brillouinzone import BrillouinZone
+from .brillouinzone import BrillouinZone, BrillouinZoneDispatcher
 from .spin import Spin
 
 __all__ = ["AdaptiveBrillouinZone", "GaussKronrodGrid"]
@@ -31,11 +31,18 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
 
     An adaptive grid selects its k-points from the values of the integrand.
     Before an integration, there are no k-points. Therefore `k`, `weight` and
-    ``len(bz)`` raise a `TypeError`. This also makes ``bz.apply`` fail, use
-    `integrate` instead.
+    ``len(bz)`` raise a `TypeError`.
 
     The integral is the Brillouin zone average (the weights sum to 1), as for
     `MonkhorstPack`.
+
+    ``bz.apply.average`` integrates the methods of the parent, as for
+    `BrillouinZone` (``wrap`` and ``eta`` work the same way, ``wrap`` gets
+    ``weight=None``). The other ``apply`` modes need fixed k-points and raise a
+    `TypeError`, use them on `last_bz`:
+
+    >>> G = bz.apply.average.green(E)  # doctest: +SKIP
+    >>> eigs = bz.last_bz().apply.array.eigh()  # doctest: +SKIP
 
     After an integration, `last_bz` returns a `BrillouinZone` with the k-points
     and weights that the integration used. The object only stores what is necessary
@@ -54,6 +61,13 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
     --------
     GaussKronrodGrid : adaptive Gauss-Kronrod cubature
     """
+
+    # own dispatches, the BrillouinZone dispatches need fixed k-points
+    apply = BrillouinZoneDispatcher(
+        "apply",
+        type_dispatcher=None,
+        obj_getattr=lambda obj, key: getattr(obj.parent, key),
+    )
 
     def __init__(self, parent):
         self.set_parent(parent)

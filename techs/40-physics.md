@@ -101,8 +101,25 @@ At Γ, sisl applies no phase.
   - The length of the initial grid: `apply` then integrates on the coarsest grid without an error.
   - The grid of the last integration: each energy needs a different grid.
     A stored grid also makes the object depend on the call order, and a parallel pool cannot share it.
-- `TypeError` is the Python protocol for "no length". `bz.apply` calls `len(bz)`, so `apply` fails at once.
+- `TypeError` is the Python protocol for "no length". The `BrillouinZone` apply modes call `len(bz)`, so they fail at once.
   `__bool__` returns `True`, because `bool()` otherwise calls `__len__`.
+- `AdaptiveBrillouinZone.apply` is a separate `BrillouinZoneDispatcher`, not a child of `BrillouinZone.apply`.
+  `MonkhorstPack` shares the dispatcher of `BrillouinZone`, so a registration on one is also on the other.
+  - `average` (`AdaptiveAverageApply`) calls `integrate` with the parent method (or function) and `wrap`.
+    Thus the self-energies (`RealSpaceSE`, `RealSpaceSI`) use an adaptive grid without changes, through `bz.apply.average`.
+    The error is measured on the wrapped value, because that is the value that is integrated.
+  - `wrap` gets `weight=None`. A node has more than one weight (Kronrod, and the error weights), and the
+    Kronrod weight of a box is not final until the box is not halved.
+  - `eta` shows a progress bar without a total, because the number of k-points is not known.
+  - `pool` warns and runs serially. The boxes are refined one by one.
+    The nodes of a box can run in parallel, but in 1D that is only 15 to 30 k-points.
+  - All other `BrillouinZone` modes (also the default `iter`) are registered as `AdaptiveUndefinedApply`.
+    They raise `TypeError` and refer to `last_bz().apply.<mode>`.
+    `sum` is not a weighted sum, so its value depends on the number of k-points that the refinement selects.
+    The other modes return a value for each k-point, so they need fixed k-points.
+    We rejected to use `last_bz()` in these modes, for the same reasons as for `__len__` (call order, pools).
+- The self-energies move the k-points for a k-point that is not zero (`bz._k += k`).
+  An adaptive grid has no `_k`, so they raise `NotImplementedError` for an adaptive grid and a k-point that is not zero.
 - `integrate(func)` and `last_bz()` are the abstract methods.
   `last_bz()` returns a plain `BrillouinZone` with the k-points and weights of the last `integrate` call.
   Use it with `apply` when you need more quantities on the same grid.

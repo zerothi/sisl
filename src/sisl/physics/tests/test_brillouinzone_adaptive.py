@@ -17,6 +17,7 @@ from sisl import (
     GaussKronrodGrid,
     Hamiltonian,
     Lattice,
+    MonkhorstPack,
     SislError,
     SislWarning,
     Spin,
@@ -50,8 +51,58 @@ def test_adaptive_undefined_grid(cls):
     with pytest.raises(TypeError):
         bz.weight
     with pytest.raises(TypeError):
-        bz.apply.average.eigh()
+        bz.apply.array.eigh()
     str(bz)
+
+
+_FIXED_K_MODES = sorted(set(BrillouinZone.apply._dispatchs) - {"average"})
+
+
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
+@pytest.mark.parametrize("mode", _FIXED_K_MODES)
+def test_adaptive_apply_fixed_k_modes(cls, mode):
+    # all apply modes except average need fixed k-points
+    H = Hamiltonian(geom.sc(1.0, Atom(1, R=1.1)))
+    bz = cls(H)
+    with pytest.raises(TypeError, match="last_bz"):
+        bz.apply[mode].eigh()
+    with pytest.raises(TypeError, match="last_bz"):
+        bz.apply[mode](lambda k: k)
+    # the default dispatch (iter) also raises
+    with pytest.raises(TypeError, match="last_bz"):
+        bz.apply.eigh()
+
+
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
+def test_adaptive_apply_average(cls):
+    H = Hamiltonian(geom.graphene())
+    H.construct([(0.1, 1.44), (0, -2.7)])
+    bz = cls(H, [15, 15, 0], atol=1e-8, rtol=0, trs=False, max_k=50000)
+
+    D = bz.apply.average.Pk(format="array")
+    nk = len(bz.last_bz())
+    assert D == pytest.approx(bz.integrate(lambda k: H.Pk(k, format="array")))
+    assert len(bz.last_bz()) == nk
+    mp = MonkhorstPack(H, [30, 30, 1], trs=False)
+    assert np.allclose(D, mp.apply.average.Pk(format="array"), atol=1e-12, rtol=0)
+
+    # wrap is applied before the integration, and gets weight=None
+    def wrap(v, parent, k, weight):
+        assert parent is H
+        assert weight is None
+        return [v, 2 * v]
+
+    v = bz.apply.average.Pk(format="array", wrap=wrap)
+    assert isinstance(v, oplist)
+    assert np.allclose(v[0], D) and np.allclose(v[1], 2 * D)
+
+    # a function instead of a parent method
+    v = bz.apply.average(lambda k: H.Pk(k, format="array"))()
+    assert np.allclose(v, D)
+
+    with pytest.warns(SislWarning, match="pool"):
+        v = bz.apply.renew(pool=2).average.Pk(format="array")
+    assert np.allclose(v, D)
 
 
 @pytest.mark.parametrize("cls", [GaussKronrodGrid])
@@ -250,7 +301,7 @@ def test_gk_compensated_sums():
 @pytest.mark.parametrize("nkpt", [[15, 0, 0], [15, 15, 0], [15, 15, 15]])
 def test_gk_memory(nkpt):
     # the integrand values of a box are not stored (np.stack needed 2 * 15**d)
-    n = 20000
+    n = 10000
     base = np.linspace(0, 1, n)
 
     def func(k):

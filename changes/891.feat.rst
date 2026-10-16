@@ -4,6 +4,9 @@ Adaptive Brillouin zone integration with `~sisl.physics.GaussKronrodGrid`
 select their k-points from the integrand. Integrate with
 ``bz.integrate(func)``, where ``func(k)`` returns a scalar, an array, or a
 sequence of these (integrated element by element, returned as `~sisl.oplist`).
+``bz.apply.average`` integrates parent methods (with ``wrap``), so the
+self-energies `~sisl.physics.RealSpaceSE` and `~sisl.physics.RealSpaceSI` accept
+an adaptive ``bz``; the other ``apply`` modes need fixed k-points and raise.
 ``bz.last_bz()`` returns a `~sisl.physics.BrillouinZone` with the k-points and
 weights of the last integration.
 `~sisl.physics.GaussKronrodGrid` refines boxes of a 15-point Gauss-Kronrod rule

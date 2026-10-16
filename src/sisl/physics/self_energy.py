@@ -17,6 +17,7 @@ from sisl._internal import set_module
 from sisl.linalg import inv, linalg_info, solve
 from sisl.linalg.base import _compute_lwork
 from sisl.messages import deprecate_argument, deprecation, warn
+from sisl.physics._brillouinzone_adaptive import AdaptiveBrillouinZone
 from sisl.physics.bloch import Bloch
 from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.typing import KPoint, SparseMatrixPhysical
@@ -1217,6 +1218,10 @@ class RealSpaceSE(SelfEnergy):
                 raise ValueError(
                     f"{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry."
                 )
+            if isinstance(bz, AdaptiveBrillouinZone):
+                raise NotImplementedError(
+                    f"{self.__class__.__name__}.green does not implement a k-point with an adaptive Brillouin zone."
+                )
             # Shift k-points to get the correct k-point in the larger one.
             bz._k += k.reshape(1, 3)
 
@@ -1939,6 +1944,10 @@ class RealSpaceSI(SelfEnergy):
             if trs:
                 raise ValueError(
                     f"{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry."
+                )
+            if isinstance(bz, AdaptiveBrillouinZone):
+                raise NotImplementedError(
+                    f"{self.__class__.__name__}.green does not implement a k-point with an adaptive Brillouin zone."
                 )
             # Shift k-points to get the correct k-point in the larger one.
             bz._k += k.reshape(1, 3)

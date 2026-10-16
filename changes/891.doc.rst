@@ -1,6 +1,6 @@
 Documented adaptive Brillouin zone integration
 
 The Brillouin zone reference has a new section, "Adaptive integration". It
-explains when an adaptive grid is useful, why ``len(bz)``, ``bz.k`` and
-``bz.apply`` are not available before an integration, and shows how to
+explains when an adaptive grid is useful, why ``len(bz)``, ``bz.k`` and the
+``bz.apply`` modes other than ``average`` are not available, and shows how to
 average a Green function with `~sisl.physics.GaussKronrodGrid`.
