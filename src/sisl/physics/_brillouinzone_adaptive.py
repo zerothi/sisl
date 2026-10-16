@@ -11,6 +11,7 @@ from typing import Optional, Union
 
 import numpy as np
 import numpy.typing as npt
+from scipy.linalg.blas import get_blas_funcs
 
 import sisl._array as _a
 from sisl._core.oplist import oplist
@@ -201,11 +202,12 @@ def _gk15_unit():
 _GK_X, _GK_WK, _GK_WG = _gk15_unit()
 
 
-def _contract(F: np.ndarray, ws) -> np.ndarray:
-    """Contract the leading axes of `F` with the weights in `ws`, one by one"""
-    for w in ws:
-        F = np.tensordot(w, F, axes=(0, 0))
-    return F
+def _tensor_weights(ws: list) -> np.ndarray:
+    """Weights of the tensor product rule (flattened) from the 1D weights `ws`"""
+    w = ws[0]
+    for wa in ws[1:]:
+        w = np.multiply.outer(w, wa)
+    return w.ravel()
 
 
 def _is_oplist(a) -> bool:
@@ -220,43 +222,195 @@ def _maxabs(a) -> float:
     return float(np.max(np.abs(a)))
 
 
-def _gk_rule(results: list, wk: list, wg: list):
-    """Kronrod value, error and error for each direction of the integrand values `results`
+def _box_w1d(w: np.ndarray, h: np.ndarray, scale: float) -> list:
+    """1D weights `w` along each direction of a box, `scale` is in the first direction"""
+    ws = [w * h[a] for a in range(len(h))]
+    ws[0] = ws[0] * scale
+    return ws
 
-    `results` has one integrand value for each node of the box.
-    A sequence (not `numpy.ndarray`) is integrated element by element,
-    and the Kronrod value is then an `oplist`.
-    The errors are the largest absolute errors of all elements.
+
+def _structure_error() -> ValueError:
+    return ValueError(
+        "GaussKronrodGrid requires the integrand to return the same structure "
+        "(sequence lengths and array shapes) for all k-points"
+    )
+
+
+def _axpy_numpy(x: np.ndarray, y: np.ndarray, a) -> np.ndarray:
+    y += a * x
+    return y
+
+
+def _axpy(dtype):
+    """``axpy(x, y, a)`` adds ``a * x`` to the 1D array `y`, in place"""
+    if dtype in (np.float64, np.complex128):
+        return get_blas_funcs("axpy", dtype=dtype)
+    return _axpy_numpy
+
+
+class _WeightedSums:
+    """Weighted sums of one array element of the integrand
+
+    Sum 0 is a compensated sum (``sums[0] + comp``): each line of `_GK_X` values
+    is summed in `line`, and the line sum is added with Knuth TwoSum.
+    The other sums are plain. `t` and `z` are scratch buffers.
+    All arrays are 1D, `shape` is the shape of the integrand value.
     """
-    d = len(wk)
-    first = results[0]
-    if _is_oplist(first):
-        n = len(first)
-        if any(not _is_oplist(r) or len(r) != n for r in results):
-            raise ValueError(
-                "GaussKronrodGrid requires the integrand to return sequences "
-                "with the same length for all k-points"
-            )
-        parts = [_gk_rule([r[i] for r in results], wk, wg) for i in range(n)]
-        K = oplist(p[0] for p in parts)
-        err = max((p[1] for p in parts), default=0.0)
-        dir_err = np.max([p[2] for p in parts], axis=0) if n > 0 else np.zeros(d)
-        return K, err, dir_err
 
-    F = np.stack([np.asarray(r) for r in results])
-    F = F.reshape((len(_GK_X),) * d + F.shape[1:])
-    K = _contract(F, wk)
-    err = _maxabs(K - _contract(F, wg))
-    if d == 1:
-        dir_err = np.array([err])
+    __slots__ = ("shape", "dtype", "axpy", "sums", "comp", "line", "nline", "t", "z")
+
+    def __init__(self, r: np.ndarray, n: int):
+        self.shape = r.shape
+        self._allocate(np.result_type(r.dtype, np.float64), n)
+
+    def _allocate(self, dtype, n: int) -> None:
+        self.dtype = dtype
+        self.axpy = _axpy(dtype)
+        size = int(np.prod(self.shape))
+        self.sums = [np.zeros(size, dtype) for _ in range(n)]
+        self.comp = np.zeros(size, dtype)
+        self.line = np.zeros(size, dtype)
+        self.nline = 0
+        self.t = np.empty(size, dtype)
+        self.z = np.empty(size, dtype)
+
+    def _upcast(self, dtype) -> None:
+        old = (self.sums, self.comp, self.line, self.nline)
+        self._allocate(dtype, len(old[0]))
+        for s, o in zip(self.sums, old[0]):
+            s[:] = o
+        self.comp[:] = old[1]
+        self.line[:] = old[2]
+        self.nline = old[3]
+
+    def add(self, r, ws) -> None:
+        """Add ``ws[i] * r`` to sum `i`, in place"""
+        r = np.asarray(r)
+        if r.shape != self.shape:
+            raise _structure_error()
+        dtype = np.result_type(self.dtype, r.dtype)
+        if dtype != self.dtype:
+            self._upcast(dtype)
+        x = np.ascontiguousarray(r, dtype=self.dtype).reshape(-1)
+        for s, w in zip(self.sums[1:], ws[1:]):
+            self.axpy(x, s, a=w)
+        self.axpy(x, self.line, a=ws[0])
+        self.nline += 1
+        if self.nline == len(_GK_X):
+            self._flush()
+
+    def _flush(self) -> None:
+        """Add `line` to the compensated sum (Knuth TwoSum), and zero it"""
+        s, x, t, z = self.sums[0], self.line, self.t, self.z
+        np.add(s, x, out=t)
+        np.subtract(t, s, out=z)
+        # rounding error (s - (t - z)) + (x - z) goes to comp
+        x -= z
+        np.subtract(t, z, out=z)
+        s -= z
+        s += x
+        self.comp += s
+        # t is the new sum, s the next scratch buffer
+        self.sums[0], self.t = t, s
+        x[:] = 0
+        self.nline = 0
+
+    def value(self, i: int) -> np.ndarray:
+        """Weighted sum `i`"""
+        if i == 0:
+            if self.nline > 0:
+                self._flush()
+            v = self.sums[0] + self.comp
+        else:
+            v = self.sums[i]
+        return v.reshape(self.shape)
+
+
+def _sums_new(r, n: int):
+    """`n` zero weighted sums with the structure of the integrand value `r`
+
+    A sequence (not `numpy.ndarray`) is integrated element by element.
+    """
+    if _is_oplist(r):
+        return [_sums_new(x, n) for x in r]
+    return _WeightedSums(np.asarray(r), n)
+
+
+def _sums_add(sums, r, ws) -> None:
+    """Add ``ws[i] * r`` to the weighted sums `i` of `sums`, in place"""
+    if isinstance(sums, _WeightedSums):
+        if _is_oplist(r):
+            raise _structure_error()
+        sums.add(r, ws)
+        return
+    if not _is_oplist(r) or len(r) != len(sums):
+        raise _structure_error()
+    for s, x in zip(sums, r):
+        _sums_add(s, x, ws)
+
+
+def _sums_get(sums, i: int):
+    """Weighted sum `i`, an `oplist` for a sequence integrand"""
+    if isinstance(sums, _WeightedSums):
+        return sums.value(i)
+    return oplist(_sums_get(s, i) for s in sums)
+
+
+def _copy(a):
+    """Copy of an array or a (nested) `oplist`"""
+    if isinstance(a, oplist):
+        return oplist(_copy(x) for x in a)
+    return np.array(a)
+
+
+def _zeros_like(a):
+    """Zeros with the structure of an array or a (nested) `oplist`"""
+    if isinstance(a, oplist):
+        return oplist(_zeros_like(x) for x in a)
+    return np.zeros_like(a)
+
+
+def _two_sum(s, c, x, sign: int = 1):
+    """Add ``sign * x`` to the compensated sum ``s + c`` (Knuth TwoSum)
+
+    The rounding error of each addition is added to `c`, so ``s + c`` keeps
+    full precision when large terms cancel. Returns the new ``(s, c)``.
+    """
+    if isinstance(s, oplist):
+        for i, (si, ci, xi) in enumerate(zip(s, c, x)):
+            s[i], c[i] = _two_sum(si, ci, xi, sign)
+        return s, c
+    dtype = np.result_type(s.dtype, x.dtype)
+    if dtype != s.dtype:
+        s, c = s.astype(dtype), c.astype(dtype)
+    if sign < 0:
+        x = -x
+    t = s + x
+    z = t - s
+    # rounding error: (s - (t - z)) + (x - z)
+    s -= t - z
+    z *= -1
+    z += x
+    s += z
+    c += s
+    return t, c
+
+
+def _sum_value(s, c):
+    """The value of the compensated sum ``s + c``"""
+    if isinstance(s, oplist):
+        return oplist(_sum_value(x, y) for x, y in zip(s, c))
+    return s + c
+
+
+def _fsum_add(s: float, c: float, x: float) -> tuple[float, float]:
+    """Add `x` to the compensated (Neumaier) sum ``s + c``"""
+    t = s + x
+    if abs(s) >= abs(x):
+        c += (s - t) + x
     else:
-        dir_err = np.array(
-            [
-                _maxabs(K - _contract(F, wk[:a] + [wg[a]] + wk[a + 1 :]))
-                for a in range(d)
-            ]
-        )
-    return K, err, dir_err
+        c += (x - t) + s
+    return t, c
 
 
 @set_module("sisl.physics")
@@ -441,25 +595,40 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         d = len(lo)
         nodes = [lo[a] + h[a] * _GK_X for a in range(d)]
         kd = np.stack([g.ravel() for g in np.meshgrid(*nodes, indexing="ij")], axis=1)
-        w = _GK_WK * h[0] * scale
-        for a in range(1, d):
-            w = np.multiply.outer(w, _GK_WK * h[a])
-        return self._k_full(kd), w.ravel()
+        return self._k_full(kd), _tensor_weights(_box_w1d(_GK_WK, h, scale))
 
     def _box(self, func, lo: np.ndarray, h: np.ndarray, scale: float):
         """Integrate one box
 
         Returns the Kronrod value, the error and the axes sorted by decreasing error.
+        Each integrand value is added to the weighted sums at once, it is not stored.
         """
         d = len(lo)
-        k, _ = self._box_kw(lo, h, scale)
-        results = [func(kk) for kk in k]
+        k, wk = self._box_kw(lo, h, scale)
+        wk1 = _box_w1d(_GK_WK, h, scale)
+        wg1 = _box_w1d(_GK_WG, h, scale)
+        # weights of K, of K - G and of K - Q_a for each direction a
+        W = [wk, wk - _tensor_weights(wg1)]
+        if d > 1:
+            W.extend(
+                wk - _tensor_weights(wk1[:a] + [wg1[a]] + wk1[a + 1 :])
+                for a in range(d)
+            )
+        W = np.stack(W, axis=1)
 
-        wk = [_GK_WK * h[a] for a in range(d)]
-        wg = [_GK_WG * h[a] for a in range(d)]
-        wk[0] = wk[0] * scale
-        wg[0] = wg[0] * scale
-        K, err, dir_err = _gk_rule(results, wk, wg)
+        sums = None
+        for kk, w in zip(k, W):
+            r = func(kk)
+            if sums is None:
+                sums = _sums_new(r, len(w))
+            _sums_add(sums, r, w)
+
+        K = _sums_get(sums, 0)
+        err = _maxabs(_sums_get(sums, 1))
+        if d == 1:
+            dir_err = np.array([err])
+        else:
+            dir_err = np.array([_maxabs(_sums_get(sums, 2 + a)) for a in range(d)])
         order = np.argsort(dir_err, kind="stable")[::-1].tolist()
         return K, err, order
 
@@ -484,6 +653,8 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
            or a sequence (`list`, `tuple` or `~sisl.oplist`, not `numpy.ndarray`)
            of these. A sequence is integrated element by element, and its elements
            can have different shapes. The errors include all elements.
+           Each returned value is used at once and not stored, so `func` can
+           return the same array (changed in place) at each call.
 
         Returns
         -------
@@ -494,7 +665,15 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         Raises
         ------
         ValueError
-            if `func` returns sequences with different lengths
+            if `func` returns sequences with different lengths, or arrays with
+            different shapes
+
+        Notes
+        -----
+        The integration keeps one integrated value for each box, and a few values
+        for the box that it evaluates (6 values for :math:`d=1`, :math:`6+d` for
+        :math:`d>1` integrated directions). The memory thus scales with the number
+        of boxes times the size of a value of `func`.
 
         Warns
         -----
@@ -536,37 +715,54 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         def push(lo, h):
             K, err, order = self._box(func, lo, h, scale)
             heapq.heappush(boxes, (-err, next(counter), lo, h, K, order))
+            return K, err
 
-        for idx in itertools.product(*[range(n) for n in self._n]):
+        # running integral (value + value_c) and error (err + err_c) of all boxes,
+        # both compensated sums: a split adds the children and subtracts the parent
+        init = [
             push(lo0 + _a.arrayd(idx) * h0, h0.copy())
+            for idx in itertools.product(*[range(n) for n in self._n])
+        ]
+        value = _copy(init[0][0])
+        value_c = _zeros_like(value)
+        err, err_c = init[0][1], 0.0
+        for K, e in init[1:]:
+            value, value_c = _two_sum(value, value_c, K)
+            err, err_c = _fsum_add(err, err_c, e)
+        del init
         nk = len(boxes) * nper
 
-        def total():
-            all_boxes = boxes + frozen
-            return sum(b[4] for b in all_boxes), sum(-b[0] for b in all_boxes)
-
-        value, err = total()
         tol = self._tolerance(value)
-        while err > tol:
+        while err + err_c > tol:
             if len(boxes) == 0 or (
                 self._max_k is not None and nk + 2 * nper > self._max_k
             ):
-                self._not_converged(err, tol, nk, f"max_k={self._max_k_in.tolist()}")
+                self._not_converged(
+                    err + err_c, tol, nk, f"max_k={self._max_k_in.tolist()}"
+                )
                 break
             box = heapq.heappop(boxes)
-            _, _, lo, h, _, order = box
+            neg_err, _, lo, h, K, order = box
             split = next((a for a in order if self._can_split(h, a)), None)
             if split is None:
                 frozen.append(box)
                 continue
+            del box
             h = h.copy()
             h[split] /= 2
             hi = lo.copy()
             hi[split] += h[split]
-            push(lo, h)
-            push(hi, h)
+            K_lo, e_lo = push(lo, h)
+            K_hi, e_hi = push(hi, h)
             nk += 2 * nper
-            value, err = total()
+
+            value, value_c = _two_sum(value, value_c, K_lo)
+            value, value_c = _two_sum(value, value_c, K_hi)
+            value, value_c = _two_sum(value, value_c, K, -1)
+            del K, K_lo, K_hi
+            err, err_c = _fsum_add(err, err_c, e_lo)
+            err, err_c = _fsum_add(err, err_c, e_hi)
+            err, err_c = _fsum_add(err, err_c, neg_err)
             tol = self._tolerance(value)
 
         all_boxes = boxes + frozen
@@ -575,6 +771,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
             "h": np.array([b[3] for b in all_boxes]),
             "scale": scale,
         }
+        value = _sum_value(value, value_c)
         if isinstance(value, oplist):
             return value
         return np.asarray(value)[()]

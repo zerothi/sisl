@@ -3,7 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import math
 import pickle
+import tracemalloc
 
 import numpy as np
 import pytest
@@ -191,6 +193,77 @@ def test_gk_array_and_complex():
     v = gk.integrate(lambda k: np.array([[func(k), 2j * func(k)]]))
     assert v.shape == (1, 2)
     assert np.allclose(v, [[ref, 2j * ref]], atol=1e-10, rtol=0)
+
+
+def test_gk_mixed_dtype():
+    # real values first, then complex values
+    gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-10, rtol=0, trs=False)
+    v = gk.integrate(lambda k: np.array([1.0 if k[0] < 0 else 1j]))
+    assert np.allclose(v, [0.5 + 0.5j], atol=1e-14, rtol=0)
+
+    # float32 is summed in float64, longdouble without BLAS
+    gk32 = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-6, rtol=0, trs=False)
+    v = gk32.integrate(lambda k: np.float32(np.cos(2 * np.pi * k[0]) ** 2))
+    assert v.dtype == np.float64
+    assert v == pytest.approx(0.5, abs=1e-7)
+    v = gk.integrate(lambda k: np.longdouble(np.cos(2 * np.pi * k[0]) ** 2))
+    assert v.dtype == np.longdouble
+    assert v == pytest.approx(0.5, abs=1e-14)
+
+
+def test_gk_shape_mismatch():
+    gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], trs=False)
+    with pytest.raises(ValueError):
+        gk.integrate(lambda k: np.ones(2 + int(k[0] > 0.2)))
+    with pytest.raises(ValueError):
+        gk.integrate(lambda k: np.ones(2) if k[0] > 0.2 else 1.0)
+
+
+def test_gk_reused_output_buffer():
+    # the values are used at once, so func can return the same array
+    buf = np.zeros(3)
+
+    def func(k):
+        buf[:] = [np.cos(2 * np.pi * k[0]) ** 2, k[0] ** 2, 1.0]
+        return buf
+
+    gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-12, rtol=0, trs=False)
+    assert np.allclose(gk.integrate(func), [0.5, 1 / 12, 1], atol=1e-12, rtol=0)
+
+
+def test_gk_compensated_sums():
+    # the coarse boxes overestimate the peak by orders of magnitude,
+    # the running sums must still equal the sum over the final k-points
+    def func(k):
+        return 1 / (np.sin(np.pi * k[0]) ** 2 + np.sin(np.pi * k[1]) ** 2 / 3 + 1e-6)
+
+    gk = GaussKronrodGrid(
+        Lattice(1), [15, 15, 0], atol=1e-14, rtol=0, max_k=3000, trs=False
+    )
+    with pytest.warns(SislWarning):
+        v = gk.integrate(func)
+    bz = gk.last_bz()
+    ref = math.fsum(w * func(k) for k, w in zip(bz.k, bz.weight))
+    assert v == pytest.approx(ref, rel=4 * np.finfo(np.float64).eps, abs=0)
+
+
+@pytest.mark.parametrize("nkpt", [[15, 0, 0], [15, 15, 0], [15, 15, 15]])
+def test_gk_memory(nkpt):
+    # the integrand values of a box are not stored (np.stack needed 2 * 15**d)
+    n = 20000
+    base = np.linspace(0, 1, n)
+
+    def func(k):
+        return base * (2 + np.cos(2 * np.pi * k[0])) + 0j
+
+    gk = GaussKronrodGrid(Lattice(1), nkpt, max_k=15 ** np.count_nonzero(nkpt))
+    tracemalloc.start()
+    try:
+        gk.integrate(func)
+        peak = tracemalloc.get_traced_memory()[1]
+    finally:
+        tracemalloc.stop()
+    assert peak < 16 * base.nbytes * 2
 
 
 def test_gk_2d_split_direction():
