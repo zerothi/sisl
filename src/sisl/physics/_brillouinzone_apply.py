@@ -339,6 +339,7 @@ class NDArrayApply(BrillouinZoneParentApply):
         unzip = self._attrs.get("zip", self._attrs.get("unzip", False))
 
         def _create_v(nk, v):
+            v = np.asarray(v)
             out = np.empty((nk, *v.shape), dtype=v.dtype)
             out[0] = v
             return out

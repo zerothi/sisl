@@ -616,6 +616,16 @@ class TestMonkhorstPack:
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
 
+        # a Python scalar, also for zipped values
+        asfloat = bz.apply.array.eigh(wrap=lambda eig: float(eig[0]))
+        assert asfloat.shape == (len(bz),)
+        assert np.allclose(asfloat, asarray)
+        a, b = bz.apply.renew(zip=True).array.eigh(
+            wrap=lambda eig: (float(eig[0]), eig)
+        )
+        assert np.allclose(a, asarray)
+        assert b.shape == (len(bz), 2)
+
     def test_as_wrap(self):
         from sisl import Hamiltonian, geom
 
