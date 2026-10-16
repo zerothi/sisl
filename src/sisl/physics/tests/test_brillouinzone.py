@@ -88,6 +88,12 @@ class TestBrillouinZone:
         assert dim == 3
         assert v == pytest.approx((2 * np.pi) ** 3)
 
+    def test_type_hints(self):
+        import typing
+
+        for method in (BrillouinZone.volume, MonkhorstPack.__init__):
+            typing.get_type_hints(method)
+
     def test_volume_direct(self):
         bz = BrillouinZone(1.0)
         assert bz.volume(True, [0, 1])[1] == 2

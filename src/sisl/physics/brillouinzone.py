@@ -159,7 +159,7 @@ from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate_argument, info, warn
-from sisl.typing import Coord, SeqOrScalarFloat, SeqOrScalarInt
+from sisl.typing import CellAxes, Coord, SeqOrScalarFloat, SeqOrScalarInt
 from sisl.typing._common import KPoint
 from sisl.utils import batched_indices
 from sisl.utils.mathematics import fnorm
