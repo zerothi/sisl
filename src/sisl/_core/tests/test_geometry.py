@@ -607,6 +607,20 @@ class TestGeometry:
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
 
+    @pytest.mark.parametrize("axis", [0, 1, 2])
+    def test_prepend_lattice(self, setup, axis):
+        g = setup.g
+        lat = g.lattice.copy()
+        lat.cell[axis] *= 2.5
+        a = g.append(lat, axis)
+        p = g.prepend(lat, axis)
+        assert np.allclose(a.cell, p.cell)
+        assert np.allclose(a.xyz, g.xyz)
+        # the added cell is before the atoms
+        assert np.allclose(p.xyz, g.xyz + lat.cell[axis])
+        p = g.prepend(lat, axis, offset=[0, 0, 1])
+        assert np.allclose(p.xyz, g.xyz + lat.cell[axis] + [0, 0, 1])
+
     def test_append_raise_valueerror(self, setup):
         with pytest.raises(ValueError):
             s = setup.g.append(setup.g, 0, offset="not")
