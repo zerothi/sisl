@@ -162,7 +162,7 @@ from sisl.messages import SislError, deprecate_argument, info, warn
 from sisl.typing import Coord, SeqOrScalarFloat, SeqOrScalarInt
 from sisl.typing._common import KPoint
 from sisl.utils import batched_indices
-from sisl.utils.mathematics import cart2spher, fnorm
+from sisl.utils.mathematics import fnorm
 from sisl.utils.misc import direction, listify
 
 from .spin import Spin
@@ -603,14 +603,13 @@ class BrillouinZone:
         k[:, 1] = np.sin(radians)
         k[:, 2] = 0.0
 
-        # Now generate the rotation
-        _, theta, phi = cart2spher(k_n)
-        if theta != 0:
-            pv = _a.arrayd([k_n[0], k_n[1], 0])
-            pv /= fnorm(pv)
-            q = Quaternion(phi, pv, rad=True) * Quaternion(theta, [0, 0, 1], rad=True)
+        # Now generate the rotation of the z-axis onto the normal
+        axis = cross3(_a.arrayd([0, 0, 1]), k_n)
+        sin = fnorm(axis)
+        if sin > 1e-12 * fnorm(k_n):
+            q = Quaternion(np.arctan2(sin, k_n[2]), axis / sin, rad=True)
         else:
-            q = Quaternion(0.0, [0, 0, np.sign(k_n[2])], rad=True)
+            q = Quaternion(0.0, [0, 0, 1], rad=True)
 
         # Calculate k-points
         k = q.rotate(k)

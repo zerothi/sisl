@@ -190,6 +190,21 @@ class TestBrillouinZone:
         assert not np.allclose(bz.k, bz_loop.k)
         assert np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :])
 
+    @pytest.mark.parametrize(
+        "normal",
+        [[0, 0, 1], [0, 0, -1], [1, 0, 0], [0, 1, 0], [1, 0, 1], [1, 1, 1], [1, 2, -3]],
+    )
+    def test_param_circle_normal(self, normal):
+        lattice = Lattice([1.0, 1.2, 1.5, 80, 95, 60])
+        origin = [0.1, 0.2, 0.3]
+        kR = 0.1
+        bz = BrillouinZone.param_circle(lattice, 12, kR, normal, origin)
+        # the circle is perpendicular to the normal (in Cartesian coordinates)
+        k = bz.tocartesian(bz.k) - bz.tocartesian(origin)
+        n = bz.tocartesian(normal)
+        assert np.allclose(k @ n, 0)
+        assert np.allclose(np.linalg.norm(k, axis=1), kR)
+
     def test_merge_simple(self):
         normal = [0] * 3
         origin = [1 / 2] * 3
