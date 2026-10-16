@@ -1237,7 +1237,7 @@ class Geometry(
                     Cube((2 * iR + 1.501) * R),
                 )
 
-            yield from self.iter_block_shape(dS)
+            yield from self.iter_block_shape(dS, iR=iR, atoms=atoms)
         else:
             raise ValueError(
                 f"{self.__class__.__name__}.iter_block got unexpected 'method' argument: {method}"

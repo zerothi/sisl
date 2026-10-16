@@ -533,6 +533,15 @@ class TestGeometry:
             i += len(ias)
         assert i == len(setup.g)
 
+    @pytest.mark.parametrize("method", ["rand", "sphere", "cube"])
+    def test_iter_block_atoms(self, setup, method):
+        g = setup.g.tile(10, 0).tile(10, 1)
+        atoms = np.arange(5)
+        seen = []
+        for ias, _ in g.iter_block(iR=3, atoms=atoms, method=method):
+            seen.extend(ias)
+        assert np.all(np.sort(seen) == atoms)
+
     @pytest.mark.slow
     def test_iter_shape2(self, setup):
         g = setup.g.tile(30, 0).tile(30, 1)
