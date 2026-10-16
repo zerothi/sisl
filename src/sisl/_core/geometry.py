@@ -346,15 +346,19 @@ class Geometry(
 
     @singledispatchmethod
     def __getitem__(self, atoms) -> ndarray:
-        """Geometry coordinates (allows supercell indices)"""
+        """Geometry coordinates (allows supercell indices)
+
+        A slice is limited to the unit-cell atoms, unless its stop is larger than
+        `na`. Then it is limited to the supercell atoms (`na_s`).
+        """
         return self.axyz(atoms)
 
     @__getitem__.register
     def _(self, atoms: slice) -> ndarray:
-        if atoms.stop is None:
-            atoms = atoms.indices(self.na)
-        else:
+        if atoms.stop is not None and atoms.stop > self.na:
             atoms = atoms.indices(self.na_s)
+        else:
+            atoms = atoms.indices(self.na)
         return self.axyz(_a.arangei(*atoms))
 
     @__getitem__.register

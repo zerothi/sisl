@@ -776,6 +776,19 @@ class TestGeometry:
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
 
+    def test_getitem_slice(self):
+        g = sisl_geom.graphene()
+        g.set_nsc([3, 3, 1])
+        assert g[:].shape == (2, 3)
+        assert np.allclose(g[:-1], g.xyz[:-1])
+        assert np.allclose(g[0:-1], g.xyz[:-1])
+        assert np.allclose(g[-1:], g.xyz[-1:])
+        assert np.allclose(g[::-1], g.xyz[::-1])
+        assert np.allclose(g[0:2], g.xyz)
+        # a stop beyond na reaches the supercell atoms
+        assert np.allclose(g[0:4], g.axyz(np.arange(4)))
+        assert g[2:4].shape == (2, 3)
+
     def test_setitem_xyz(self):
         g = Geometry([[0, 0, 0], [1, 0, 0], [2, 0, 0]], lattice=10)
         g[0] = [9, 9, 9]

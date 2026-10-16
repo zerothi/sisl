@@ -41,6 +41,8 @@ Paths are relative to `src/sisl/`.
 - `sc_index` accepts `None` for one component. `None` means "all".
 - A supercell atom index is `isc * na + ia`. `asc2uc` is `% na`. `a2isc` uses `// na`.
   Orbitals use `no` in the same way.
+- `geom[start:stop]` resolves the slice with `na`, unless `stop > na`. Then it uses `na_s`.
+  Thus `geom[:-1]` gives unit-cell atoms, and `geom[0:2 * na]` reaches into the supercell.
 - The Cartesian offset of a supercell is `isc @ cell`.
 - To change `nsc` of a sparse matrix, use `set_nsc` on the matrix.
   See [20 · Supercell columns](20-sparse.md#supercell-columns).
