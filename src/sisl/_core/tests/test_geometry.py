@@ -776,6 +776,14 @@ class TestGeometry:
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
 
+    def test_oxyz_isc(self, setup):
+        g = setup.g
+        assert g.no != g.na
+        assert g.oxyz().shape == (g.no, 3)
+        off = g.lattice.offset([1, 0, 0])
+        assert np.allclose(g.oxyz(None, isc=[1, 0, 0]), g.oxyz() + off)
+        assert np.allclose(g.oxyz([1, 2], isc=[1, 0, 0]), g.oxyz([1, 2]) + off)
+
     def test_angle_no_mutation(self):
         g = sisl_geom.graphene()
         xyz = g.xyz.copy()

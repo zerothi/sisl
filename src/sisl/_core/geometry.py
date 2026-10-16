@@ -2286,9 +2286,7 @@ class Geometry(
         --------
         axyz : atomic coordinates in supercell from an atomic index.
         """
-        if orbitals is None and isc is None:
-            orbitals = range(self.no)
-        orbitals = self._sanitize_atoms(orbitals)
+        orbitals = self._sanitize_orbs(orbitals)
 
         # If only atoms has been specified
         if isc is None:
