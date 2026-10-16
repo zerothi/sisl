@@ -23,8 +23,8 @@ Tell what you want to change and why. Then wait for the answer.
 
 ## No URL lookups
 
-Do not add code that reads from a URL.
-This rule applies to all code in the repository, also to tests.
+Do not add code below `src/` that reads from a URL.
+This rule applies to all files below `src/`, also to the tests there.
 Examples are `urllib`, `requests`, `httpx`, `pooch`, or a call to `curl` or `wget`.
 
 Only a human can make this change.
