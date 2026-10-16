@@ -234,11 +234,13 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     parent : object or array-like
        An object with associated ``parent.cell`` and ``parent.rcell`` or
        an array of floats which may be turned into a `Lattice`
-    n :
-       initial number of boxes along each lattice direction (as the ``nkpt``
-       argument of `MonkhorstPack`). A direction with 0 boxes is not integrated.
-       A scalar is the same value for all 3 directions.
-       The initial boxes are always integrated, also when they exceed `max_k`.
+    nkpt :
+       initial number of k-points along each lattice direction, per reciprocal
+       lattice vector (as for `MonkhorstPack`). A direction with 0 k-points is not
+       integrated. A scalar is the same value for all 3 directions.
+       The value is rounded up to a multiple of 15 (one box has 15 k-points along a
+       direction). With `trs`, the integrated half of the direction gets half the k-points.
+       The initial k-points are always integrated, also when they exceed `max_k`.
     max_k :
        a scalar is the maximum number of integrand evaluations for one integration.
        A sequence of 3 values is the maximum k-point density along each lattice
@@ -261,7 +263,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     Integrate along the first lattice direction only:
 
     >>> H = si.Hamiltonian(...)
-    >>> gk = GaussKronrodGrid(H, [1, 0, 0], atol=1e-8)
+    >>> gk = GaussKronrodGrid(H, [15, 0, 0], atol=1e-8)
     >>> def G(k):
     ...     return np.linalg.inv((E + 1j * eta) * H.Sk(k, format="array") - H.Hk(k, format="array"))
     >>> Gavg = gk.integrate(G)
@@ -271,13 +273,13 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     Integrate the first two directions, and limit the k-point density to that of a
     1000 x 200 grid:
 
-    >>> gk = GaussKronrodGrid(H, [1, 1, 0], max_k=[1000, 200, 1])
+    >>> gk = GaussKronrodGrid(H, [15, 15, 0], max_k=[1000, 200, 1])
     """
 
     def __init__(
         self,
         parent,
-        n: SeqOrScalarInt = 1,
+        nkpt: SeqOrScalarInt = 15,
         max_k: SeqOrScalarInt = 10000,
         trs: Optional[bool] = None,
         atol: float = 1e-6,
@@ -286,18 +288,18 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         super().__init__(parent)
         cls = self.__class__.__name__
 
-        n3 = _a.arrayi(n)
-        if n3.ndim == 0:
-            n3 = np.repeat(n3, 3)
-            if n3[0] < 1:
-                raise ValueError(f"{cls} requires a scalar n >= 1, got {n}")
-        if n3.shape != (3,) or np.any(n3 < 0) or not np.any(n3 > 0):
+        nkpt3 = _a.arrayi(nkpt)
+        if nkpt3.ndim == 0:
+            nkpt3 = np.repeat(nkpt3, 3)
+            if nkpt3[0] < 1:
+                raise ValueError(f"{cls} requires a scalar nkpt >= 1, got {nkpt}")
+        if nkpt3.shape != (3,) or np.any(nkpt3 < 0) or not np.any(nkpt3 > 0):
             raise ValueError(
-                f"{cls} requires n to be a scalar or 3 values >= 0 "
-                f"(at least one > 0), got {n}"
+                f"{cls} requires nkpt to be a scalar or 3 values >= 0 "
+                f"(at least one > 0), got {nkpt}"
             )
-        self._axes = np.flatnonzero(n3 > 0)
-        self._n = n3[self._axes]
+        self._nkpt_in = nkpt3
+        self._axes = np.flatnonzero(nkpt3 > 0)
 
         nk = _a.arrayi(max_k)
         if nk.ndim == 0:
@@ -327,6 +329,11 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
                 pass
         self._trs = int(self._axes[0]) if trs else -1
 
+        # initial number of boxes, from the k-points in the integrated domain
+        _, width = self._domain()
+        nbox = np.ceil(nkpt3[self._axes] * width / len(_GK_X) - 1e-12)
+        self._n = np.maximum(nbox, 1).astype(int)
+
         if atol < 0 or rtol < 0:
             raise ValueError(f"{cls} requires atol, rtol >= 0")
         self._atol = atol
@@ -339,10 +346,9 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         return self._trs >= 0
 
     def _str_attrs(self) -> str:
-        n3 = np.zeros(3, dtype=int)
-        n3[self._axes] = self._n
         return (
-            f"n: {n3.tolist()}, max_k: {self._max_k_in.tolist()}, trs: {self.trs}, "
+            f"nkpt: {self._nkpt_in.tolist()}, max_k: {self._max_k_in.tolist()}, "
+            f"trs: {self.trs}, "
             f"atol: {self._atol}, rtol: {self._rtol},"
         )
 

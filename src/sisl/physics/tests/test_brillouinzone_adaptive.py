@@ -78,7 +78,7 @@ def test_gk_last_bz_used_k():
         used.append(k.copy())
         return 1 / (1.05 - np.cos(2 * np.pi * k[0]))
 
-    gk = GaussKronrodGrid(Lattice(1), [1, 0, 0], atol=1e-9, rtol=0, trs=False)
+    gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-9, rtol=0, trs=False)
     gk.integrate(f)
     last = gk.last_bz()
     # the final boxes, the halved boxes were also evaluated
@@ -99,20 +99,30 @@ def test_adaptive_pickle(cls):
     assert np.allclose(bz2.rcell, bz.rcell)
 
 
-def test_gk_n():
-    gk = GaussKronrodGrid(Lattice(1))
+def test_gk_nkpt():
+    gk = GaussKronrodGrid(Lattice(1), trs=False)
     assert np.all(gk._axes == [0, 1, 2]) and np.all(gk._n == 1)
-    gk = GaussKronrodGrid(Lattice(1), [0, 3, 1])
-    assert np.all(gk._axes == [1, 2]) and np.all(gk._n == [3, 1])
-    assert "n: [0, 3, 1]" in str(gk)
-    for n in (0, [0, 0, 0], [1, 1], [1, -1, 0]):
+    # rounded up to a multiple of 15
+    gk = GaussKronrodGrid(Lattice(1), [0, 16, 15], trs=False)
+    assert np.all(gk._axes == [1, 2]) and np.all(gk._n == [2, 1])
+    assert "nkpt: [0, 16, 15]" in str(gk)
+    gk = GaussKronrodGrid(Lattice(1), [0, 1, 45], trs=False)
+    assert np.all(gk._n == [1, 3])
+    # TRS integrates half of the first direction with half the k-points
+    gk = GaussKronrodGrid(Lattice(1), [0, 30, 30], trs=True)
+    assert np.all(gk._n == [1, 2])
+    gk = GaussKronrodGrid(Lattice(1), [0, 31, 30], trs=True)
+    assert np.all(gk._n == [2, 2])
+    gk.integrate(lambda k: 1.0)
+    assert len(gk.last_bz()) == (2 * 15) * (2 * 15)
+    for nkpt in (0, [0, 0, 0], [1, 1], [1, -1, 0]):
         with pytest.raises(ValueError):
-            GaussKronrodGrid(Lattice(1), n)
+            GaussKronrodGrid(Lattice(1), nkpt)
 
 
 def test_gk_polynomial_exact():
     # G7 is exact up to degree 13, so one box is enough
-    gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=1e-14, rtol=0)
+    gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 0, 0], atol=1e-14, rtol=0)
     v = gk.integrate(lambda k: k[0] ** 12)
     bz = gk.last_bz()
     assert v == pytest.approx(0.5**12 / 13, abs=1e-15)
@@ -123,7 +133,7 @@ def test_gk_polynomial_exact():
 
 def test_gk_peak_local_refinement():
     func, ref = peak(1 + 1e-3)
-    gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=0, rtol=1e-10, max_k=5000)
+    gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 0, 0], atol=0, rtol=1e-10, max_k=5000)
     v = gk.integrate(func)
     bz = gk.last_bz()
     assert v == pytest.approx(ref, rel=1e-9)
@@ -134,7 +144,7 @@ def test_gk_peak_local_refinement():
 
 def test_gk_array_and_complex():
     func, ref = peak(1.2)
-    gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=1e-12, rtol=0)
+    gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 0, 0], atol=1e-12, rtol=0)
     v = gk.integrate(lambda k: np.array([[func(k), 2j * func(k)]]))
     assert v.shape == (1, 2)
     assert np.allclose(v, [[ref, 2j * ref]], atol=1e-10, rtol=0)
@@ -143,7 +153,7 @@ def test_gk_array_and_complex():
 def test_gk_2d_split_direction():
     # the integrand does not depend on k_b, so boxes only split along a
     func, ref = peak(1.05)
-    gk = GaussKronrodGrid(Lattice(1), n=[1, 1, 0], atol=1e-9, rtol=0, max_k=50000)
+    gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 15, 0], atol=1e-9, rtol=0, max_k=50000)
     v = gk.integrate(func)
     bz = gk.last_bz()
     assert v == pytest.approx(ref, abs=1e-9)
@@ -153,14 +163,14 @@ def test_gk_2d_split_direction():
 
 def test_gk_2d_separable():
     f, ref = peak(1.1)
-    gk = GaussKronrodGrid(Lattice(1), n=[2, 0, 1], atol=1e-9, rtol=0, max_k=50000)
+    gk = GaussKronrodGrid(Lattice(1), nkpt=[30, 0, 15], atol=1e-9, rtol=0, max_k=50000)
     v = gk.integrate(lambda k: f(k) * f(k[::-1]))
     assert v == pytest.approx(ref**2, abs=1e-8)
 
 
 def test_gk_max_k_warns():
     func, _ = peak(1 + 1e-6)
-    gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=1e-12, rtol=0, max_k=100)
+    gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 0, 0], atol=1e-12, rtol=0, max_k=100)
     with pytest.warns(SislWarning, match="did not converge"):
         gk.integrate(func)
 
@@ -177,7 +187,7 @@ def test_gk_trs_default():
 
 
 def test_gk_max_k_input():
-    n = [1, 1, 0]
+    n = [15, 15, 0]
     assert GaussKronrodGrid(Lattice(1), n, max_k=100)._max_k == 100
     gk = GaussKronrodGrid(Lattice(1), n, max_k=[100, 20, 0])
     assert gk._max_k is None
@@ -197,7 +207,7 @@ def test_gk_trs_half_domain():
     def g(k):
         return f(k - 0.1)
 
-    gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=1e-10, rtol=0, trs=True)
+    gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 0, 0], atol=1e-10, rtol=0, trs=True)
     v = gk.integrate(lambda k: (g(k) + g(-k)) / 2)
     bz = gk.last_bz()
     assert v == pytest.approx(ref, abs=1e-10)
@@ -209,7 +219,7 @@ def test_gk_trs_half_domain():
         return np.sin(2 * np.pi * k[0])
 
     assert gk.integrate(odd) == pytest.approx(2 / np.pi, abs=1e-10)
-    gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=1e-10, rtol=0, trs=False)
+    gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 0, 0], atol=1e-10, rtol=0, trs=False)
     assert gk.integrate(odd) == pytest.approx(0, abs=1e-10)
     assert gk.integrate(g) == pytest.approx(ref, abs=1e-10)
 
@@ -218,7 +228,7 @@ def test_gk_trs_half_domain():
 def test_gk_trs_2d(trs):
     f, ref = peak(1.1)
     gk = GaussKronrodGrid(
-        Lattice(1), n=[0, 1, 1], atol=1e-9, rtol=0, max_k=50000, trs=trs
+        Lattice(1), nkpt=[0, 15, 15], atol=1e-9, rtol=0, max_k=50000, trs=trs
     )
     v = gk.integrate(lambda k: f(k[[1, 0, 2]]) * f(k[[2, 0, 1]]))
     bz = gk.last_bz()
@@ -230,7 +240,7 @@ def test_gk_trs_2d(trs):
 def test_gk_max_k_axes_density():
     func, _ = peak(1 + 1e-6)
     gk = GaussKronrodGrid(
-        Lattice(1), n=[1, 0, 0], atol=1e-12, rtol=0, max_k=[150, 1, 1], trs=False
+        Lattice(1), nkpt=[15, 0, 0], atol=1e-12, rtol=0, max_k=[150, 1, 1], trs=False
     )
     with pytest.warns(SislWarning, match="did not converge"):
         gk.integrate(func)
@@ -245,7 +255,7 @@ def test_gk_max_k_axes_next_direction():
     # until b is also blocked, then the integration stops with a warning
     func, _ = peak(1 + 1e-6)
     gk = GaussKronrodGrid(
-        Lattice(1), n=[1, 1, 0], atol=1e-12, rtol=0, max_k=[60, 120, 1], trs=False
+        Lattice(1), nkpt=[15, 15, 0], atol=1e-12, rtol=0, max_k=[60, 120, 1], trs=False
     )
     with pytest.warns(SislWarning, match="did not converge"):
         gk.integrate(func)
@@ -272,5 +282,5 @@ def test_adaptive_green_chain(cls, atol):
 
     k = np.linspace(-0.5, 0.5, 20000, endpoint=False)
     ref = np.mean(1 / (z + 2 * np.cos(2 * np.pi * k)))
-    bz = cls(H, n=[1, 0, 0], atol=atol, rtol=0, max_k=20000)
+    bz = cls(H, nkpt=[15, 0, 0], atol=atol, rtol=0, max_k=20000)
     assert bz.integrate(G)[0, 0] == pytest.approx(ref, abs=atol)

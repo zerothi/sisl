@@ -126,10 +126,15 @@ At Γ, sisl applies no phase.
 
 `GaussKronrodGrid`:
 
-- `n` has one value for each lattice direction (scalar or `(3,)`), as `nkpt` of `MonkhorstPack`.
-  `n[a]` is the initial number of boxes along `a`. `n[a] == 0` means that `a` is not integrated (`k_a = 0`).
-  We merged the old `axes` argument into `n`, because the two arguments had a 1-1 correspondence.
-  `_axes` (the integrated directions) and `_n` (their boxes) are derived from `n`.
+- `nkpt` has one value for each lattice direction (scalar or `(3,)`), as `nkpt` of `MonkhorstPack`.
+  `nkpt[a]` is the initial number of k-points along `a`, per reciprocal lattice vector.
+  `nkpt[a] == 0` means that `a` is not integrated (`k_a = 0`).
+  We merged the old `axes` argument into it, because the two arguments had a 1-1 correspondence.
+- The user gives k-points, not boxes, because k-points are the unit of `MonkhorstPack` and of `max_k`.
+  The initial number of boxes is `_n = max(1, ceil(nkpt * width / 15))`, with `width` from `_domain()`.
+  Thus `nkpt` is rounded up to a multiple of 15. With TRS, the half direction gets half the k-points,
+  so `nkpt` is a density for the full direction (as for `MonkhorstPack`).
+  `_axes` (the integrated directions) and `_n` (their boxes) are derived from `nkpt`.
 - The error of an array result is its largest absolute element.
   The tolerance is `max(atol, rtol * max|I|)`.
 - When `max_k` stops the integration, `integrate` warns and returns the last value.

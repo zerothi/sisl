@@ -174,7 +174,7 @@ It has no k-points before the integration, so ``len(bz)``, ``bz.k`` and ``bz.app
 raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`:
 
 >>> H = si.Hamiltonian(...)
->>> gk = si.GaussKronrodGrid(H, [1, 0, 0], atol=1e-6)
+>>> gk = si.GaussKronrodGrid(H, [15, 0, 0], atol=1e-6)
 >>> E = 0.1 + 1e-3j
 >>> def G(k):
 ...     return np.linalg.inv(E * H.Sk(k, format="array") - H.Hk(k, format="array"))
