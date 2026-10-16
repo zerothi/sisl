@@ -80,6 +80,12 @@ At Γ, sisl applies no phase.
 - Parallel execution uses `pathos` when it is installed. It maps the k-points with `pool.imap`.
   Set the pool with `bz.apply.renew(pool=...)`.
 - `MonkhorstPack.grid()` handles the time-reversal symmetry reduction.
+  It takes `|k|` along one direction. This is `k -> -k` only when the k-points along the
+  other directions are symmetric for `k -> -k`.
+  Thus `MonkhorstPack` uses TRS only when the `grid()` of each direction is symmetric (a
+  displacement of 0 or 1/2, or e.g. 1/8 for 4 k-points). Other grids have no `k`, `-k` pairs,
+  so they cannot be reduced. Rejected: fold only one displaced direction. That is correct,
+  but it does not remove k-points, and it moves them to `-k`.
 - `MonkhorstPack` does not store the map from the reduced to the full grid.
   `MonkhorstPack.unpack_trs` makes this map again from `_diag`, `_displ`, `_size` and `_centered`.
   It finds the full grid index of each `k` and `-k` along each axis.

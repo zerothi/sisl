@@ -747,6 +747,9 @@ class MonkhorstPack(BrillouinZone):
        If ``None``, it will be true for (un)-polarized calculations.
        For spin configurations higher than or equal to non-collinear, it will
        be false.
+       The reduction removes the :math:`-\mathbf k` points. If the k-points are not
+       symmetric for :math:`\mathbf k\to-\mathbf k` (e.g. a displacement different
+       from 0 and 1/2), time-reversal symmetry is not used.
 
     Examples
     --------
@@ -811,18 +814,23 @@ class MonkhorstPack(BrillouinZone):
 
         i_trs = -1
         if trs:
-            # Figure out which direction to TRS
-            nmax = 0
+            # the reduction requires that each direction is symmetric for k -> -k
             for i in (0, 1, 2):
-                if displacement[i] in (0.0, 0.5) and Dn[i] > nmax:
-                    nmax = Dn[i]
-                    i_trs = i
-            if nmax == 1:
-                i_trs = -1
-            if i_trs == -1:
-                # If we still haven't decided (say for weird displacements)
-                # simply take the one with the maximum number of k-points.
-                i_trs = np.argmax(Dn)
+                k = self.grid(Dn[i], displacement[i], size[i], centered)[0]
+                if not np.allclose(
+                    k,
+                    np.sort(self.in_primitive(-k)),
+                    rtol=0,
+                    atol=size[i] / Dn[i] * 1e-3,
+                ):
+                    trs = False
+            if trs:
+                i_trs = int(np.argmax(Dn))
+            else:
+                info(
+                    f"{self.__class__.__name__} does not use time-reversal symmetry, "
+                    "the k-points are not symmetric for k -> -k (displacement)."
+                )
 
         # Calculate k-points and weights along all directions
         kw = [

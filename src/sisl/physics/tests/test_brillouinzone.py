@@ -758,6 +758,8 @@ class TestMonkhorstPack:
             ([4, 3, 5], {}),
             ([3, 4, 6], {"centered": False}),
             ([4, 4, 3], {"displacement": [0.5, 0, 0]}),
+            ([4, 3, 1], {"displacement": [1 / 8, 0, 0], "centered": False}),
+            ([4, 5, 1], {"displacement": [0.2, 0, 0]}),
             ([4, 4, 4], {"size": [0.5, 0.5, 1]}),
             ([1, 1, 1], {}),
         ],
@@ -801,10 +803,33 @@ class TestMonkhorstPack:
         with pytest.raises(SislError, match="regular grid"):
             bz.unpack_trs(np.zeros(len(bz)))
 
-        # the -k partners of a non-symmetric displaced grid are not in the grid
-        bz = MonkhorstPack(g, [4, 5, 1], displacement=[0.2, 0, 0], trs=True)
-        with pytest.raises(SislError, match="partners"):
-            bz.unpack_trs(np.zeros(len(bz)))
+    @pytest.mark.parametrize(
+        "displacement, reduced",
+        [
+            ([0, 0, 0], True),
+            ([0.5, 0, 0], True),
+            # symmetric for 4 k-points
+            ([1 / 8, 0, 0], True),
+            ([0, 0.1, 0], False),
+            ([0.1, 0, 0], False),
+            ([0.5, 0.1, 0], False),
+            ([0.13, 0.27, 0], False),
+        ],
+    )
+    def test_trs_displaced(self, setup, displacement, reduced):
+        # f(k) == f(-k), but f is not symmetric for a sign change of one component
+        def f(k):
+            k = 2 * np.pi * k
+            return 1 / (2.5 - np.cos(k[:, 0]) - 0.8 * np.cos(k[:, 0] + 2 * k[:, 1]))
+
+        bz = MonkhorstPack(setup.s1, [4, 3, 1], displacement=displacement, trs=True)
+        ref = MonkhorstPack(setup.s1, [4, 3, 1], displacement=displacement, trs=False)
+        assert (f(bz.k) * bz.weight).sum() == pytest.approx(
+            (f(ref.k) * ref.weight).sum()
+        )
+        assert (len(bz) < len(ref)) == reduced
+        if not reduced:
+            assert np.allclose(bz.k, ref.k)
 
 
 @pytest.mark.bandstructure
