@@ -4670,6 +4670,12 @@ class GeometryNewAseDispatch(GeometryNewDispatch):
         """Convert an `ase.Atoms` object into a `Geometry`"""
         cls = self._get_class()
         Z = aseg.get_atomic_numbers()
+        if aseg.has("masses"):
+            ZM, species = np.unique(
+                np.column_stack([Z, aseg.get_masses()]), axis=0, return_inverse=True
+            )
+            uatoms = [Atom(int(z), mass=m) for z, m in ZM]
+            Z = [uatoms[s] for s in species.ravel()]
         xyz = aseg.get_positions()
         cell = aseg.get_cell()
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
@@ -4769,6 +4775,7 @@ class GeometryToAseDispatch(GeometryToDispatch):
         return ase_Atoms(
             symbols=geom.atoms.Z,
             positions=geom.xyz.tolist(),
+            masses=geom.atoms.mass,
             cell=geom.cell.tolist(),
             pbc=geom.pbc,
             **kwargs,

@@ -1615,6 +1615,27 @@ class TestGeometry:
         assert np.all(geom.nsc == [3, 1, 1])
         assert np.all(geom.to.ase().pbc == aseg.pbc)
 
+    def test_geometry_ase_mass(self):
+        pytest.importorskip("ase", reason="ase not available")
+        from ase import Atoms as ase_Atoms
+
+        geom = Geometry(
+            [[0, 0, 0], [1, 0, 0], [2, 0, 0]],
+            atoms=[Atom(6, mass=13.0), Atom(6), Atom(6, mass=13.0)],
+            lattice=[3, 10, 10],
+        )
+        aseg = geom.to.ase()
+        assert np.allclose(aseg.get_masses(), geom.atoms.mass)
+        back = Geometry.new(aseg)
+        assert np.allclose(back.atoms.mass, geom.atoms.mass)
+        assert back.atoms.nspecies == 2
+        assert np.all(back.atoms.Z == 6)
+
+        aseg = ase_Atoms(
+            "H2", positions=[[0, 0, 0], [0, 0, 1]], masses=[2.014, 1.008], cell=[5] * 3
+        )
+        assert np.allclose(Geometry.new(aseg).atoms.mass, [2.014, 1.008])
+
     def test_geometry_ase_run_center(self):
         pytest.importorskip("ase", reason="ase not available")
         gr = sisl_geom.graphene()
