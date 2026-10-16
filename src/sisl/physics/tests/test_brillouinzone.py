@@ -190,6 +190,14 @@ class TestBrillouinZone:
         assert not np.allclose(bz.k, bz_loop.k)
         assert np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :])
 
+    def test_param_circle_dk(self):
+        # the discretization length is along the circle
+        bz = BrillouinZone.param_circle(1, 0.01, 0.1, [0, 0, 1], [0] * 3)
+        assert len(bz) == 63
+        k = bz.tocartesian(bz.k)
+        dk = np.linalg.norm(k - np.roll(k, 1, axis=0), axis=1)
+        assert np.allclose(dk, 0.01, rtol=1e-2)
+
     @pytest.mark.parametrize(
         "normal",
         [[0, 0, 1], [0, 0, -1], [1, 0, 0], [0, 1, 0], [1, 0, 1], [1, 1, 1], [1, 2, -3]],

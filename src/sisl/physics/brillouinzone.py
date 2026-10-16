@@ -578,7 +578,7 @@ class BrillouinZone:
             N = N_or_dk
         else:
             # Calculate the required number of points
-            N = int(kR**2 * pi / N_or_dk + 0.5)
+            N = int(2 * pi * kR / N_or_dk + 0.5)
             if N < 2:
                 N = 2
                 info(
