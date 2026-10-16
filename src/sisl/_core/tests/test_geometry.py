@@ -1632,6 +1632,16 @@ class TestGeometry:
         with pytest.raises(ValueError):
             g.untile(3, 0)
 
+    @pytest.mark.parametrize("na", [100, 1000])
+    def test_geometry_iR(self, na):
+        # homogeneous 3D density, all atoms are equivalent
+        g = sisl_geom.sc(1.5, Atom(1, R=1.0))
+        g.set_nsc([31, 31, 31])
+        R = g.maxR() + 0.001
+        iR = g.iR(na=na)
+        n = len(g.close(0, R=R * iR))
+        assert na <= n < 3 * na
+
     def test_geometry_iR_negative_R(self):
         g = sisl_geom.graphene()
         with pytest.raises(ValueError):

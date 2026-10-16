@@ -942,6 +942,9 @@ class Geometry(
     def iR(self, na: int = 1000, iR: int = 20, R: Optional[float] = None) -> int:
         """Return an integer number of maximum radii (``self.maxR()``) which holds approximately `na` atoms
 
+        The estimate assumes a homogeneous atomic density in 3D. For slabs and
+        2D structures the returned sphere holds more than `na` atoms.
+
         Parameters
         ----------
         na :
@@ -966,11 +969,11 @@ class Geometry(
                 f"{self.__class__.__name__}.iR unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?"
             )
 
-        # Number of atoms within 20 * R
+        # Number of atoms within iR * R
         naiR = max(1, len(self.close(ia, R=R * iR)))
 
-        # Convert to na atoms spherical radii
-        iR = int(4 / 3 * np.pi * R**3 / naiR * na)
+        # The number of atoms scales with the volume of the sphere
+        iR = int(ceil(iR * (na / naiR) ** (1 / 3)))
 
         return max(2, iR)
 
