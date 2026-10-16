@@ -533,6 +533,15 @@ class TestGeometry:
             i += len(ias)
         assert i == len(setup.g)
 
+    @pytest.mark.parametrize("method", ["sphere", "cube"])
+    def test_iter_block_shape_all_atoms(self, method):
+        rng = np.random.default_rng(1234)
+        g = Geometry(rng.random([4000, 3]) * 40, Atom(1, R=1.0), lattice=100)
+        n = 0
+        for ias, _ in g.iter_block(iR=3, method=method):
+            n += len(ias)
+        assert n == g.na
+
     @pytest.mark.parametrize("method", ["rand", "sphere", "cube"])
     def test_iter_block_atoms(self, setup, method):
         g = setup.g.tile(10, 0).tile(10, 1)
