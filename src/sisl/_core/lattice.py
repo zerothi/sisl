@@ -1154,11 +1154,17 @@ class Lattice(
             "nsc": self.nsc,
             "sc_off": self.sc_off,
             "origin": self.origin,
+            "boundary_condition": self.boundary_condition,
         }
 
     def __setstate__(self, d):
         """Re-create the state of this object"""
-        self.__init__(d["cell"], d["nsc"], d["origin"])
+        self.__init__(
+            d["cell"],
+            d["nsc"],
+            d["origin"],
+            d.get("boundary_condition", BoundaryCondition.PERIODIC),
+        )
         self.sc_off = d["sc_off"]
 
 

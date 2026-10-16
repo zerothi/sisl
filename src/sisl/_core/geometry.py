@@ -10,7 +10,6 @@ from collections import OrderedDict
 from collections.abc import Iterator, Sequence
 from functools import singledispatchmethod
 from itertools import product
-from math import acos
 from numbers import Integral, Real
 from pathlib import Path
 from typing import Optional, Union
@@ -72,7 +71,7 @@ from sisl.utils import (
 from sisl.utils.mathematics import fnorm
 
 from .atom import Atom, Atoms
-from .lattice import Lattice, LatticeChild
+from .lattice import BoundaryCondition, Lattice, LatticeChild
 from .orbital import Orbital
 
 __all__ = ["Geometry", "sgeom", "AtomCategory"]
@@ -326,23 +325,39 @@ class Geometry(
         return dot(self.xyz, self.icell.T)
 
     def __setitem__(self, atoms, value):
-        """Specify geometry coordinates"""
+        """Specify geometry coordinates, or a name for a group of atoms
+
+        Examples
+        --------
+        >>> geom = Geometry([[0, 0, 0], [1, 0, 0]])
+        >>> geom[1] = [2, 0, 0]
+        >>> geom[1, 2] = 1.
+        >>> geom["second"] = [1]
+        """
         if isinstance(atoms, str):
             self.names.add_name(atoms, value)
         elif isinstance(value, str):
             self.names.add_name(value, atoms)
+        elif isinstance(atoms, tuple):
+            self.xyz[self._sanitize_atoms(atoms[0]), atoms[1]] = value
+        else:
+            self.xyz[self._sanitize_atoms(atoms)] = value
 
     @singledispatchmethod
     def __getitem__(self, atoms) -> ndarray:
-        """Geometry coordinates (allows supercell indices)"""
+        """Geometry coordinates (allows supercell indices)
+
+        A slice is limited to the unit-cell atoms, unless its stop is larger than
+        `na`. Then it is limited to the supercell atoms (`na_s`).
+        """
         return self.axyz(atoms)
 
     @__getitem__.register
     def _(self, atoms: slice) -> ndarray:
-        if atoms.stop is None:
-            atoms = atoms.indices(self.na)
-        else:
+        if atoms.stop is not None and atoms.stop > self.na:
             atoms = atoms.indices(self.na_s)
+        else:
+            atoms = atoms.indices(self.na)
         return self.axyz(_a.arangei(*atoms))
 
     @__getitem__.register
@@ -927,6 +942,9 @@ class Geometry(
     def iR(self, na: int = 1000, iR: int = 20, R: Optional[float] = None) -> int:
         """Return an integer number of maximum radii (``self.maxR()``) which holds approximately `na` atoms
 
+        The estimate assumes a homogeneous atomic density in 3D. For slabs and
+        2D structures the returned sphere holds more than `na` atoms.
+
         Parameters
         ----------
         na :
@@ -951,11 +969,11 @@ class Geometry(
                 f"{self.__class__.__name__}.iR unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?"
             )
 
-        # Number of atoms within 20 * R
+        # Number of atoms within iR * R
         naiR = max(1, len(self.close(ia, R=R * iR)))
 
-        # Convert to na atoms spherical radii
-        iR = int(4 / 3 * np.pi * R**3 / naiR * na)
+        # The number of atoms scales with the volume of the sphere
+        iR = int(ceil(iR * (na / naiR) ** (1 / 3)))
 
         return max(2, iR)
 
@@ -1098,12 +1116,12 @@ class Geometry(
         if isinstance(dS[0], Cube):
             ir = dS[0].edge_length
         elif isinstance(dS[0], Sphere):
-            ir = [dS[0].radius * 0.5**0.5 * 2] * 3
+            ir = [dS[0].radius * 2 / 3**0.5] * 3
         elif isinstance(dS[0], Shape):
             # Convert to spheres (which probably should be cubes for performance)
             dS = [s.to.Sphere() for s in dS]
             # Now do the same with spheres
-            ir = [dS[0].radius * 0.5**0.5 * 2] * 3
+            ir = [dS[0].radius * 2 / 3**0.5] * 3
 
         # Figure out number of segments in each iteration
         # (minimum 1)
@@ -1237,7 +1255,7 @@ class Geometry(
                     Cube((2 * iR + 1.501) * R),
                 )
 
-            yield from self.iter_block_shape(dS)
+            yield from self.iter_block_shape(dS, iR=iR, atoms=atoms)
         else:
             raise ValueError(
                 f"{self.__class__.__name__}.iter_block got unexpected 'method' argument: {method}"
@@ -1334,7 +1352,8 @@ class Geometry(
             only the atoms ranges are taken into account.
             For instance if a lattice vector is as long as the orbital range
             it will have 3 supercells (it can only connect to its neighboring
-            cells).
+            cells). For non-orthogonal cells the distance between the lattice
+            planes is used instead of the length of the lattice vector.
 
         ``method=overlap``
             determine nsc by examining at what range two orbitals overlaps.
@@ -1379,12 +1398,6 @@ class Geometry(
                 "internal atoms (defaulting to zero radius)."
             )
 
-        cell = self.cell
-        length, angles = self.lattice.parameters()
-
-        # TODO check that angles below 60 degrees are
-        # important.
-
         # Half-nsc (only 1 direction)
         hsc = nsc // 2
 
@@ -1398,36 +1411,29 @@ class Geometry(
                 f"{self.__class__.__name__}.find_nsc got wrong 'method' argument, got {method}"
             )
 
-        # Determine the actual range depending on the actual R
-        hsc[axes] = ceil(R_actual / length[axes])
+        # Images further away than R_actual from all lattice planes
+        # cannot connect
+        hsc_R = ceil(R_actual * fnorm(self.icell)).astype(hsc.dtype)
+        hsc[axes] = hsc_R[axes]
 
         if method == "atoms":
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
+            from scipy.spatial import cKDTree
 
-                isc = _a.emptyi(3)
-
-                for ax in axes:
-                    # Initialize the isc for this direction
-                    # (note we do not take non-orthogonal directions
-                    #  into account)
-                    isc[:] = 0
-
-                    # Initialize the actual number of supercell connections
-                    # along this direction.
-                    prev_isc = 0
-
-                    while prev_isc == isc[ax]:
-                        # Try next supercell connection
-                        isc[ax] += 1
-
-                        for ia in self:
-                            idx = self.close_sc(ia, isc=isc, R=R)
-                            if len(idx) > 0:
-                                prev_isc = isc[ax]
-                                break
-
-                    hsc[ax] = prev_isc
+            tree = cKDTree(self.xyz)
+            R_upper = np.nextafter(R, np.inf)
+            found = _a.zerosi(3)
+            cell = self.cell
+            ranges = [range(-h, h + 1) for h in np.minimum(hsc, hsc_R)]
+            for isc in product(*ranges):
+                isc = _a.arrayi(isc)
+                if np.all(np.abs(isc[axes]) <= found[axes]):
+                    continue
+                dist, _ = tree.query(
+                    self.xyz + isc @ cell, distance_upper_bound=R_upper
+                )
+                if np.isfinite(dist).any():
+                    found = np.maximum(found, np.abs(isc))
+            hsc[axes] = found[axes]
 
         nsc[axes] = hsc[axes] * 2 + 1
 
@@ -1755,9 +1761,9 @@ class Geometry(
         if ref is None:
             pass
         elif isinstance(ref, Integral):
-            xi -= self.axyz(ref)[None, :]
+            xi = xi - self.axyz(ref)[None, :]
         else:
-            xi -= _a.asarrayd(ref)[None, :]
+            xi = xi - _a.asarrayd(ref)[None, :]
         nx = sqrt(square(xi).sum(1))
         ang = np.zeros_like(nx)
         # Typically the angles then becomes a precision of the length
@@ -1858,27 +1864,32 @@ class Geometry(
         """Align Miller direction along ``v``
 
         Rotate geometry and cell such that the Miller direction
+        ``[m[0], m[1], m[2]]`` (in units of the lattice vectors)
         points along the Cartesian vector ``v``.
+
+        Examples
+        --------
+        >>> geom = sisl.geom.fcc(4.05, "Al")
+        >>> rot = geom.rotate_miller([1, 1, 1], [0, 0, 1])
+        >>> np.allclose(np.cross([1, 1, 1] @ rot.cell, [0, 0, 1]), 0)
+        True
         """
-        # Create normal vector to miller direction and cartesian
-        # direction
-        cp = _a.arrayd(
-            [
-                m[1] * v[2] - m[2] * v[1],
-                m[2] * v[0] - m[0] * v[2],
-                m[0] * v[1] - m[1] * v[0],
-            ]
-        )
-        cp /= fnorm(cp)
+        m = _a.asarrayd(m) @ self.cell
+        v = _a.asarrayd(v)
 
-        lm = _a.arrayd(m)
-        lm /= fnorm(lm)
-        lv = _a.arrayd(v)
-        lv /= fnorm(lv)
-
-        # Now rotate the angle between them
-        a = acos(np.sum(lm * lv))
-        return self.rotate([a, cp], rad=True)
+        # Rotate around the normal vector of m and v
+        cp = np.cross(m, v)
+        ncp = fnorm(cp)
+        dot = m @ v
+        angle = np.arctan2(ncp, dot)
+        if ncp <= 1e-12 * fnorm(m) * fnorm(v):
+            if dot > 0:
+                return self.copy()
+            # anti-parallel, rotate around any vector normal to m
+            cp = np.cross(m, np.eye(3)[np.argmin(np.abs(m))])
+            ncp = fnorm(cp)
+            angle = np.pi
+        return self.rotate([angle, cp / ncp], rad=True)
 
     def translate2uc(
         self,
@@ -2298,9 +2309,7 @@ class Geometry(
         --------
         axyz : atomic coordinates in supercell from an atomic index.
         """
-        if orbitals is None and isc is None:
-            orbitals = range(self.no)
-        orbitals = self._sanitize_atoms(orbitals)
+        orbitals = self._sanitize_orbs(orbitals)
 
         # If only atoms has been specified
         if isc is None:
@@ -4100,6 +4109,7 @@ class Geometry(
         d = self.lattice.__getstate__()
         d["xyz"] = self.xyz
         d["atoms"] = self.atoms.__getstate__()
+        d["names"] = dict(zip(self._names._name, self._names._index))
         return d
 
     def __setstate__(self, d):
@@ -4108,7 +4118,7 @@ class Geometry(
         lattice.__setstate__(d)
         atoms = Atoms()
         atoms.__setstate__(d["atoms"])
-        self.__init__(d["xyz"], atoms=atoms, lattice=lattice)
+        self.__init__(d["xyz"], atoms=atoms, lattice=lattice, names=d.get("names"))
 
     @classmethod
     def _ArgumentParser_args_single(cls):
@@ -4669,10 +4679,18 @@ class GeometryNewAseDispatch(GeometryNewDispatch):
         """Convert an `ase.Atoms` object into a `Geometry`"""
         cls = self._get_class()
         Z = aseg.get_atomic_numbers()
+        if aseg.has("masses"):
+            ZM, species = np.unique(
+                np.column_stack([Z, aseg.get_masses()]), axis=0, return_inverse=True
+            )
+            uatoms = [Atom(int(z), mass=m) for z, m in ZM]
+            Z = [uatoms[s] for s in species.ravel()]
         xyz = aseg.get_positions()
         cell = aseg.get_cell()
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
-        lattice = Lattice(cell, nsc=nsc)
+        BC = BoundaryCondition
+        bc = [BC.PERIODIC if pbc else BC.UNKNOWN for pbc in aseg.pbc]
+        lattice = Lattice(cell, nsc=nsc, boundary_condition=bc)
         return cls(xyz, atoms=Z, lattice=lattice, **kwargs)
 
 
@@ -4766,6 +4784,7 @@ class GeometryToAseDispatch(GeometryToDispatch):
         return ase_Atoms(
             symbols=geom.atoms.Z,
             positions=geom.xyz.tolist(),
+            masses=geom.atoms.mass,
             cell=geom.cell.tolist(),
             pbc=geom.pbc,
             **kwargs,

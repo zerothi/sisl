@@ -1529,8 +1529,8 @@ def prepend(
         With 'min', the routine will shift both the structures along the cell
         axis of `other` such that they coincide at the first atom, lastly one
         may use a specified offset to manually select how `geometry` is displaced.
-        NOTE: That `other.cell[axis, :]` will be added to `offset` if `other` is
-        a geometry.
+        NOTE: That `other.cell[axis, :]` will be added to `offset`, also when
+        `other` is a `Lattice`.
 
     See Also
     --------
@@ -1553,7 +1553,7 @@ def prepend(
                 raise ValueError(
                     f"{geometry.__class__.__name__}.prepend requires offset to be (3,) for supercell input"
                 )
-        xyz += _a.arrayd(offset)
+        xyz += other.cell[axis, :] + _a.arrayd(offset)
 
     else:
         # sanitize output

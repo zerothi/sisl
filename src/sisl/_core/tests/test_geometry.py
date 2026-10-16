@@ -270,6 +270,21 @@ class TestGeometry:
         # Also check multidimensional things
         assert g.axyz([[0], [1]]).shape == (2, 1, 3)
 
+        # a slice uses na_s only for a stop beyond na
+        assert np.allclose(g[:-1], g.xyz[:-1])
+        assert np.allclose(g[0 : g.na + 2], g.axyz(np.arange(g.na + 2)))
+
+        assert g.no != g.na
+        off = g.lattice.offset([1, 0, 0])
+        assert np.allclose(g.oxyz(None, isc=[1, 0, 0]), g.oxyz() + off)
+
+        g = g.copy()
+        g[0] = [9, 9, 9]
+        g[1, 2] = 3.0
+        assert np.allclose(
+            g.xyz, [[9, 9, 9], [setup.g.xyz[1, 0], setup.g.xyz[1, 1], 3]]
+        )
+
     def test_atranspose_indices(self, setup):
         g = setup.g
         # All supercell indices
@@ -532,6 +547,18 @@ class TestGeometry:
         for ias, _ in setup.g.iter_block(method="cube"):
             i += len(ias)
         assert i == len(setup.g)
+        for method in ("sphere", "cube"):
+            ias = [
+                ia
+                for ias, _ in setup.g.iter_block(atoms=1, method=method)
+                for ia in ias
+            ]
+            assert ias == [1]
+
+        # this seed has atoms in the grid-cell corners outside a too small sphere
+        rng = np.random.default_rng(1234)
+        g = Geometry(rng.random([200, 3]) * 10, Atom(1, R=1.0), lattice=100)
+        assert sum(len(ias) for ias, _ in g.iter_block(iR=3, method="sphere")) == g.na
 
     @pytest.mark.slow
     def test_iter_shape2(self, setup):
@@ -587,7 +614,7 @@ class TestGeometry:
             s = setup.g.prepend(setup.g.lattice, axis)
             assert len(s) == len(setup.g)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
+            assert np.allclose(s.xyz, setup.g.xyz + setup.g.cell[axis])
 
     def test_append_raise_valueerror(self, setup):
         with pytest.raises(ValueError):
@@ -757,6 +784,20 @@ class TestGeometry:
         g.angle([0], ref=1)
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
+        g.angle(None, ref=1)
+        assert np.allclose(g.xyz, [[0] * 3, [1, 0, 0]])
+
+    # general, parallel and anti-parallel to the Cartesian direction
+    @pytest.mark.parametrize("m", [[1, 1, 0], [1, 0, 0], [-1, 0, 0]])
+    def test_rotate_miller(self, m):
+        g = Geometry(
+            [[0, 0, 0], [0.5, 0.2, 0.1]],
+            lattice=[[2, 0, 0], [1, 1.7, 0], [0.5, 0.3, 3]],
+        )
+        rot = g.rotate_miller(m, [1, 0, 0])
+        mc = np.asarray(m) @ rot.cell
+        assert np.allclose(mc / np.linalg.norm(mc), [1, 0, 0])
+        assert np.allclose(rot.fxyz, g.fxyz)
 
     def test_dihedral(self):
         g = sisl_geom.graphene() * (2, 2, 1)
@@ -1325,6 +1366,17 @@ class TestGeometry:
         geom.set_nsc([5, 1, 5])
         assert np.allclose(geom.find_nsc([0, 2], R=0.9999), [1, 1, 1])
 
+    @pytest.mark.parametrize("method", ["atoms", "cell"])
+    def test_find_nsc_skewed(self, method):
+        # the image at isc=(-10, 1, 0) is 1 Ang away
+        geom = Geometry(
+            [0] * 3, Atom(1, R=1.5), lattice=[[1, 0, 0], [10, 1, 0], [0, 0, 20]]
+        )
+        geom.set_nsc([25, 3, 1])
+        nclose = len(geom.close(0, R=1.5))
+        geom.set_nsc(geom.find_nsc(method=method))
+        assert len(geom.close(0, R=1.5)) == nclose
+
     def test_find_nsc2(self, setup):
         # 2 ** 0.5 ensures lattice vectors with length 1
         geom = sisl_geom.fcc(2**0.5, Atom(1, R=1.0001))
@@ -1476,6 +1528,12 @@ class TestGeometry:
         n = p.loads(s)
         assert n == setup.g
 
+        g = sisl_geom.graphene()
+        g["A"] = [0]
+        n = p.loads(p.dumps(g))
+        assert np.all(n.pbc == g.pbc)
+        assert n.names.names == ["A"]
+
     def test_geometry_names(self):
         g = sisl_geom.graphene()
 
@@ -1516,6 +1574,14 @@ class TestGeometry:
         g = sisl_geom.graphene()
         with pytest.raises(ValueError):
             g.untile(3, 0)
+
+    def test_geometry_iR(self):
+        # homogeneous 3D density, all atoms are equivalent
+        g = sisl_geom.sc(1.5, Atom(1, R=1.0))
+        g.set_nsc([9, 9, 9])
+        iR = g.iR(na=100, iR=5)
+        n = len(g.close(0, R=(g.maxR() + 0.001) * iR))
+        assert 100 <= n < 300
 
     def test_geometry_iR_negative_R(self):
         g = sisl_geom.graphene()
@@ -1578,10 +1644,12 @@ class TestGeometry:
 
     def test_geometry_ase_new_to(self):
         pytest.importorskip("ase", reason="ase not available")
-        gr = sisl_geom.graphene()
+        gr = sisl_geom.graphene(atoms=[Atom(6, mass=13.0), Atom(6)])
         to_ase = gr.to.ase()
         from_ase = gr.new(to_ase)
         assert gr.equal(from_ase, R=False)
+        assert np.all(gr.pbc == from_ase.pbc)
+        assert np.allclose(from_ase.atoms.mass, [13.0, gr.atoms.mass[1]])
 
     def test_geometry_ase_run_center(self):
         pytest.importorskip("ase", reason="ase not available")

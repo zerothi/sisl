@@ -41,9 +41,16 @@ Paths are relative to `src/sisl/`.
 - `sc_index` accepts `None` for one component. `None` means "all".
 - A supercell atom index is `isc * na + ia`. `asc2uc` is `% na`. `a2isc` uses `// na`.
   Orbitals use `no` in the same way.
+- `geom[start:stop]` resolves the slice with `na`, unless `stop > na`. Then it uses `na_s`.
+  Thus `geom[:-1]` gives unit-cell atoms, and `geom[0:2 * na]` reaches into the supercell.
 - The Cartesian offset of a supercell is `isc @ cell`.
 - To change `nsc` of a sparse matrix, use `set_nsc` on the matrix.
   See [20 · Supercell columns](20-sparse.md#supercell-columns).
+- `find_nsc` limits the images with the distance between the lattice planes, `1 / |icell[i]|`.
+  Do not use the length of the lattice vector: in a skewed cell an image along two
+  lattice vectors can be nearer than the length of one vector.
+- `find_nsc(method="atoms")` checks all images in that range, not only the images along one axis.
+  It uses one `cKDTree` query for each image, not one `close_sc` call for each atom and image.
 
 ## Boundary conditions
 
