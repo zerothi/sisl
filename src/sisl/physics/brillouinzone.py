@@ -304,7 +304,7 @@ class BrillouinZone:
             self._w = _a.onesd(1)
         else:
             self._k = _a.arrayd(k).reshape(-1, 3)
-            self._w = _a.emptyd(len(k))
+            self._w = _a.emptyd(len(self._k))
             if weight is None:
                 weight = 1.0 / len(self._k)
             self._w[:] = weight

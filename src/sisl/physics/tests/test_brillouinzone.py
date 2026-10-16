@@ -67,6 +67,12 @@ class TestBrillouinZone:
         bz = BrillouinZone(setup.s1, np.random.rand(3, 3), 0.5)
         assert bz.weight.sum() == pytest.approx(1.5)
 
+        # a single k-point as a flat list
+        bz = BrillouinZone(setup.s1, [0.1, 0.2, 0.3])
+        assert len(bz) == 1
+        assert bz.weight.shape == (1,)
+        assert bz.weight[0] == 1.0
+
     def test_volume_self(self):
         bz = BrillouinZone(1.0)
         bz.parent.pbc = (False, False, False)
