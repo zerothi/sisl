@@ -243,7 +243,7 @@ def _axpy_numpy(x: np.ndarray, y: np.ndarray, a) -> np.ndarray:
 
 def _axpy(dtype):
     """``axpy(x, y, a)`` adds ``a * x`` to the 1D array `y`, in place"""
-    if dtype in (np.float64, np.complex128):
+    if dtype in (np.float32, np.float64, np.complex64, np.complex128):
         return get_blas_funcs("axpy", dtype=dtype)
     return _axpy_numpy
 

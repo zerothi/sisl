@@ -169,7 +169,7 @@ At Γ, sisl applies no phase.
 - `_box` does not store the integrand values. `_WeightedSums` adds each value at once to the sums
   with the weights `wK`, `wK - wG` and `wK - wQ_a`, then the value is dropped.
   A box thus needs `6` values (`6 + d` for `d > 1`): the sums, a compensation, a line sum and 2 scratch buffers.
-  The sums use BLAS `axpy` (one pass, in place), and `numpy` for other data-types (e.g. `longdouble`).
+  The sums use BLAS `axpy` (one pass, in place) for single and double precision, and `numpy` for other data-types (e.g. `longdouble`).
   For a large value it is faster than the old `np.stack` and `tensordot`, for a scalar it costs approximately 8 µs for each k-point.
   Before, `np.stack` copied the `15**d` values (`2 * 15**d` values in memory, about 7000 for `d = 3`).
   We rejected these alternatives:
