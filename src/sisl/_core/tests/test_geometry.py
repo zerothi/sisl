@@ -1485,6 +1485,17 @@ class TestGeometry:
         n = p.loads(s)
         assert n == setup.g
 
+    def test_pickle_bc_names(self):
+        import pickle as p
+
+        g = sisl_geom.graphene()
+        g["A"] = [0]
+        n = p.loads(p.dumps(g))
+        assert np.all(n.pbc == g.pbc)
+        assert np.all(n.lattice.boundary_condition == g.lattice.boundary_condition)
+        assert n.names.names == ["A"]
+        assert np.all(n["A"] == [0])
+
     def test_geometry_names(self):
         g = sisl_geom.graphene()
 

@@ -4100,6 +4100,7 @@ class Geometry(
         d = self.lattice.__getstate__()
         d["xyz"] = self.xyz
         d["atoms"] = self.atoms.__getstate__()
+        d["names"] = dict(zip(self._names._name, self._names._index))
         return d
 
     def __setstate__(self, d):
@@ -4108,7 +4109,7 @@ class Geometry(
         lattice.__setstate__(d)
         atoms = Atoms()
         atoms.__setstate__(d["atoms"])
-        self.__init__(d["xyz"], atoms=atoms, lattice=lattice)
+        self.__init__(d["xyz"], atoms=atoms, lattice=lattice, names=d.get("names"))
 
     @classmethod
     def _ArgumentParser_args_single(cls):
