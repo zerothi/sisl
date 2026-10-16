@@ -494,6 +494,32 @@ class TestMonkhorstPack:
             assert np.allclose(ds1.data_vars[var].values, data)
         assert len(ds1.coords) < len(ds0.coords)
 
+    @pytest.mark.parametrize("ncpus", [4, None])
+    def test_pool_object(self, ncpus):
+        import warnings
+
+        from sisl import SislWarning
+        from sisl.physics._brillouinzone_apply import _pool_procs
+
+        class Pool:
+            def terminate(self):
+                pass
+
+            def join(self):
+                pass
+
+        pool = Pool()
+        if ncpus is not None:
+            pool.ncpus = ncpus
+            with warnings.catch_warnings():
+                warnings.simplefilter("error")
+                ret, run = _pool_procs(pool, 100)
+        else:
+            with pytest.warns(SislWarning, match="number of CPUs"):
+                ret, run = _pool_procs(pool, 100)
+        assert ret is pool
+        assert "chunksize" in run
+
     def test_bz_parallel_pathos(self):
         pytest.importorskip("pathos", reason="pathos not available")
 
