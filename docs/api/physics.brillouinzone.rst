@@ -162,3 +162,34 @@ and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis
    BrillouinZone
    MonkhorstPack
    BandStructure
+
+
+Adaptive integration
+--------------------
+
+Some integrands need many k-points in a small part of the Brillouin zone only,
+for example a Green function with a small broadening.
+An adaptive Brillouin zone selects the k-points from the values of the integrand.
+It has no k-points before the integration, so ``len(bz)``, ``bz.k`` and ``bz.apply``
+raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`:
+
+>>> H = si.Hamiltonian(...)
+>>> gk = si.GaussKronrodGrid(H, [15, 0, 0], atol=1e-6)
+>>> E = 0.1 + 1e-3j
+>>> def G(k):
+...     return np.linalg.inv(E * H.Sk(k, format="array") - H.Hk(k, format="array"))
+>>> Gavg = gk.integrate(G)
+>>> bz = gk.last_bz()
+
+The result is the Brillouin zone average (as for `MonkhorstPack`).
+When ``G`` returns a list of values with different shapes, the result is an `~sisl.oplist`,
+and the convergence includes all values.
+`~AdaptiveBrillouinZone.last_bz` returns a `BrillouinZone` with the k-points
+and weights of the last integration. It is only created when you call it, and you can
+use it with ``bz.apply`` to calculate more quantities on the same k-points.
+
+.. autosummary::
+   :toctree: generated/
+
+   AdaptiveBrillouinZone
+   GaussKronrodGrid

@@ -89,6 +89,103 @@ At Γ, sisl applies no phase.
   The weights of the full grid must sum to the reduced weights; if not, the method raises `SislError`.
   This check finds grids changed by `replace`.
 
+### Adaptive Brillouin zones
+
+`AdaptiveBrillouinZone` and `GaussKronrodGrid` are in `physics/_brillouinzone_adaptive.py`.
+
+- `AdaptiveBrillouinZone` is an abstract subclass of `BrillouinZone`.
+  It keeps `set_parent`, `tocartesian`, `volume` and the `isinstance` checks of the self-energies.
+- An adaptive grid has no k-points before an integration. Thus `k`, `weight` and `__len__` raise `TypeError`.
+  We rejected these alternatives:
+  - `len == 0`: `apply.average` then returns an empty result without an error.
+  - The length of the initial grid: `apply` then integrates on the coarsest grid without an error.
+  - The grid of the last integration: each energy needs a different grid.
+    A stored grid also makes the object depend on the call order, and a parallel pool cannot share it.
+- `TypeError` is the Python protocol for "no length". `bz.apply` calls `len(bz)`, so `apply` fails at once.
+  `__bool__` returns `True`, because `bool()` otherwise calls `__len__`.
+- `integrate(func)` and `last_bz()` are the abstract methods.
+  `last_bz()` returns a plain `BrillouinZone` with the k-points and weights of the last `integrate` call.
+  Use it with `apply` when you need more quantities on the same grid.
+- `integrate` stores only the data that is necessary to create these k-points again (`_last`).
+  `last_bz()` creates the `BrillouinZone` only on request. Most integrations do not need it.
+  `GaussKronrodGrid` stores the lower bound and the width of each box, and the TRS weight scale.
+  `_box_kw` makes the k-points and weights both in `integrate` and in `last_bz`.
+  Thus `last_bz` gives the same values, and its weighted sum is equal to the integral.
+- We replaced the old `integrate(..., ret_bz=True)`. It always created the k-points, also when nobody used them.
+- `last_bz` has only the k-points of the final result.
+  `GaussKronrodGrid` also evaluates the k-points of a box before it halves the box. These are not in `last_bz`.
+- `_last` is state of the object. It changes with each `integrate` call.
+  Call `last_bz` before the next `integrate` call on the same object.
+- The weights sum to 1, as for `MonkhorstPack`. The result is the Brillouin zone average.
+- `AdaptiveBrillouinZone.__init__` takes only `parent`.
+  Other adaptive grids can need other arguments, so the directions, limits, tolerances and `trs` are in the sub-class.
+  The base class has only the helpers that do not depend on these arguments:
+  `_not_converged` (the warning) and `_str_attrs` (the attributes that `__str__` shows).
+- Each sub-class must work with only `parent` (all other arguments have defaults).
+  The common tests are parametrized over the sub-classes, and call `cls(parent)`.
+
+`GaussKronrodGrid`:
+
+- `nkpt` has one value for each lattice direction (scalar or `(3,)`), as `nkpt` of `MonkhorstPack`.
+  `nkpt[a]` is the initial number of k-points along `a`, per reciprocal lattice vector.
+  `nkpt[a] == 0` means that `a` is not integrated (`k_a = 0`).
+  We merged the old `axes` argument into it, because the two arguments had a 1-1 correspondence.
+- The user gives k-points, not boxes, because k-points are the unit of `MonkhorstPack` and of `max_k`.
+  The initial number of boxes is `_n = max(1, ceil(nkpt * width / 15))`, with `width` from `_domain()`.
+  Thus `nkpt` is rounded up to a multiple of 15. With TRS, the half direction gets half the k-points,
+  so `nkpt` is a density for the full direction (as for `MonkhorstPack`).
+  `_axes` (the integrated directions) and `_n` (their boxes) are derived from `nkpt`.
+- The error of an array result is its largest absolute element.
+  The tolerance is `max(atol, rtol * max|I|)`.
+- An integrand can return a sequence (`list`, `tuple`, `oplist`, not `ndarray`).
+  `_gk_rule` then integrates each element alone, also nested sequences, and returns an `oplist`.
+  This is the same as `bz.apply.average` with `oplist`: the elements can have different shapes.
+  `_maxabs` takes the maximum over all elements. Thus the box error, the error of each direction
+  and `max|I|` for `rtol` include all elements, and the most difficult element decides the refinement.
+  We did not use a tolerance for each element.
+  The box error is one number for the heap, and a tolerance for each element needs the final value of each element.
+  Elements with very different magnitudes need `atol`, or the user must scale them.
+- A sequence must have the same length at all k-points, else `_gk_rule` raises `ValueError`.
+- When `max_k` stops the integration, `integrate` warns and returns the last value.
+- A scalar `max_k` is the total number of integrand evaluations (`_max_k`).
+  A `(3,)` sequence is a k-point density for each lattice direction (`_max_k_axes` keeps the integrated directions).
+  An adaptive grid has no fixed number of k-points along a direction. Thus a density is the only well-defined limit for each direction.
+  A sequence does not limit the total, but the densities limit it to approximately `prod(max_k)`.
+- `trs` follows `MonkhorstPack`: the default comes from `parent.spin`, and `_trs` is the direction index or -1.
+  The self-energies read `bz._trs >= 0`, so do not rename it.
+- With TRS, `_domain()` gives `[0, 1/2]` along the first integrated direction, and the weights are scaled to sum to 1.
+  This is the same contract as `MonkhorstPack`: the caller must symmetrize the result (for example `(G + G.T) / 2`).
+  An odd integrand gives `2 * integral(0, 1/2)`, not 0. A test checks this.
+
+- It uses the G7-K15 rule of QUADPACK (`qk15`). The tests check the polynomial degree of the constants.
+  Other rule orders need the Kronrod nodes, and sisl does not compute them.
+- A box uses the tensor product rule, with `15**d` points for `d` integrated directions. Use it in 1 or 2 dimensions.
+- The error of a box is `|K - G|` with the full Gauss tensor rule. This is the error of G7.
+  It is larger than the error of K15 (often by orders of magnitude), so the result is more accurate than the tolerance.
+  We do not use the QUADPACK scaling `(200 |K - G| / resasc)**1.5`, because it can underestimate the error.
+- The box is halved along the axis with the largest error `|K - Q_a|`.
+  `Q_a` uses the Gauss weights along axis `a` and the Kronrod weights along the other axes.
+  This needs no new integrand values.
+- The integral and the error are summed again from all boxes after each split. This prevents round-off drift.
+- With `_max_k_axes`, a box is halved along the axis with the largest error that keeps `15 / (h / 2) <= max_k[a]`.
+  A box that cannot be halved along any axis moves to a list of frozen boxes. It stays in the integral and the error.
+  When no box can be halved, `integrate` warns.
+- The nodes of the 15-point rule are inside the box. Thus with TRS no k-point is on the `k = 0` or `k = 1/2` planes,
+  and no weight correction for points on the boundary is necessary (unlike `MonkhorstPack`).
+
+Rejected: Farey grids (Chen *et al.*, Phys. Rev. B 106, 155102 (2022)).
+
+- We implemented and tested them, then removed them. Do not add them again without a new reason.
+- The Voronoi weights of the paper make the trapezoid rule on a non-uniform grid (in 1D).
+  This rule is not exact for `cos(2 pi k)`. Thus the error decreases as `N**-1.5`.
+  A uniform grid of `N` points is exact for all Fourier modes below `N`. Its error decreases exponentially.
+- The gaps of order `l` are approximately `1/(q l)` near `p/q`. The largest gaps (`1/l`) are next to Γ.
+  For `1/(1.5 - cos 2 pi k)` at `l = 64`, the 2 intervals next to Γ gave all of the error.
+- At `l = 128` (5022 k-points), the error was `1.2e-5`. The uniform sub-grid `j/l` (128 k-points) was exact.
+- The gain in the paper is for supercell methods, where the cost of `p/q` increases with `q`.
+  sisl evaluates each k-point directly, so all k-points have the same cost.
+  Nested uniform grids (double `N`) are then better.
+
 ## States
 
 `physics/state.py`:
