@@ -7,14 +7,14 @@ import heapq
 import itertools
 from abc import ABCMeta, abstractmethod
 from collections.abc import Callable
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 import numpy.typing as npt
 
 import sisl._array as _a
 from sisl._internal import set_module
-from sisl.messages import warn
+from sisl.messages import SislError, warn
 from sisl.typing import SeqOrScalarInt
 
 from .brillouinzone import BrillouinZone
@@ -34,6 +34,10 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
 
     The integral is the Brillouin zone average (the weights sum to 1), as for
     `MonkhorstPack`.
+
+    After an integration, `last_bz` returns a `BrillouinZone` with the k-points
+    and weights that the integration used. The object only stores what is necessary
+    to create these again, so the `BrillouinZone` is only created on request.
 
     The base class only stores the `parent`. Each sub-class defines its own
     parameters (directions, limits, tolerances).
@@ -56,7 +60,7 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
     def _undefined(self, what: str):
         return TypeError(
             f"{self.__class__.__name__} has no {what} before an integration; "
-            "use integrate(..., ret_bz=True) to get the realized k-points."
+            "use last_bz() after integrate(...) to get the used k-points."
         )
 
     @property
@@ -84,27 +88,38 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def integrate(
-        self,
-        func: Callable[[np.ndarray], npt.ArrayLike],
-        ret_bz: bool = False,
-    ) -> Union[np.ndarray, tuple[np.ndarray, BrillouinZone]]:
+    def integrate(self, func: Callable[[np.ndarray], npt.ArrayLike]) -> np.ndarray:
         """Integrate `func` over the Brillouin zone
+
+        The k-points that the integration used are available from `last_bz`.
 
         Parameters
         ----------
         func :
            the integrand, called as ``func(k)`` with ``k`` a reduced k-point with
            shape ``(3,)``. It must return a scalar or an array with a fixed shape.
-        ret_bz :
-           also return a `BrillouinZone` with the k-points and weights used.
 
         Returns
         -------
-        value : numpy.ndarray
+        numpy.ndarray
             the integral (equal to the Brillouin zone average)
-        bz : BrillouinZone
-            the realized k-points and weights, only if `ret_bz` is true
+        """
+
+    @abstractmethod
+    def last_bz(self) -> BrillouinZone:
+        """The k-points and weights of the last `integrate` call
+
+        The weights sum to 1, and
+        ``sum(w * func(k) for k, w in last_bz().iter(True))`` is the integral
+        that `integrate` returned.
+        A grid can evaluate the integrand at more k-points than it uses in the
+        final result (e.g. `GaussKronrodGrid` does not re-use the k-points of a
+        halved box). These k-points are not in the returned object.
+
+        Raises
+        ------
+        SislError
+            if `integrate` was not called before
         """
 
     def _str_attrs(self) -> str:
@@ -249,8 +264,9 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     >>> gk = GaussKronrodGrid(H, [1, 0, 0], atol=1e-8)
     >>> def G(k):
     ...     return np.linalg.inv((E + 1j * eta) * H.Sk(k, format="array") - H.Hk(k, format="array"))
-    >>> Gavg, bz = gk.integrate(G, ret_bz=True)
-    >>> len(bz)  # the number of k-points used
+    >>> Gavg = gk.integrate(G)
+    >>> bz = gk.last_bz()  # the k-points and weights that were used
+    >>> len(bz)
 
     Integrate the first two directions, and limit the k-point density to that of a
     1000 x 200 grid:
@@ -315,6 +331,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
             raise ValueError(f"{cls} requires atol, rtol >= 0")
         self._atol = atol
         self._rtol = rtol
+        self._last = None
 
     @property
     def trs(self) -> bool:
@@ -349,16 +366,23 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         kfull[:, self._axes] = k
         return kfull
 
-    def _box(self, func, lo: np.ndarray, h: np.ndarray, scale: float):
-        """Integrate one box
-
-        Returns k, weights, Kronrod value, error and the axes sorted by decreasing error.
-        The weights are multiplied by `scale`.
-        """
+    def _box_kw(self, lo: np.ndarray, h: np.ndarray, scale: float):
+        """k-points and (Kronrod) weights of one box, the weights are multiplied by `scale`"""
         d = len(lo)
         nodes = [lo[a] + h[a] * _GK_X for a in range(d)]
         kd = np.stack([g.ravel() for g in np.meshgrid(*nodes, indexing="ij")], axis=1)
-        k = self._k_full(kd)
+        w = _GK_WK * h[0] * scale
+        for a in range(1, d):
+            w = np.multiply.outer(w, _GK_WK * h[a])
+        return self._k_full(kd), w.ravel()
+
+    def _box(self, func, lo: np.ndarray, h: np.ndarray, scale: float):
+        """Integrate one box
+
+        Returns the Kronrod value, the error and the axes sorted by decreasing error.
+        """
+        d = len(lo)
+        k, _ = self._box_kw(lo, h, scale)
         F = np.stack([np.asarray(func(kk)) for kk in k])
         F = F.reshape((len(_GK_X),) * d + F.shape[1:])
 
@@ -376,11 +400,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
                 for a in range(d)
             ]
             order = np.argsort(dir_err, kind="stable")[::-1].tolist()
-
-        w = wk[0]
-        for wa in wk[1:]:
-            w = np.multiply.outer(w, wa)
-        return k, w.ravel(), K, err, order
+        return K, err, order
 
     def _can_split(self, h: np.ndarray, a: int) -> bool:
         """Whether halving `h` along integrated direction `a` keeps the density below `max_k`"""
@@ -388,7 +408,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
             return True
         return len(_GK_X) / (h[a] / 2) <= self._max_k_axes[a] * (1 + 1e-12)
 
-    def integrate(self, func, ret_bz: bool = False):
+    def integrate(self, func):
         d = len(self._axes)
         nper = len(_GK_X) ** d
         lo0, width = self._domain()
@@ -401,8 +421,8 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         counter = itertools.count()
 
         def push(lo, h):
-            k, w, K, err, order = self._box(func, lo, h, scale)
-            heapq.heappush(boxes, (-err, next(counter), lo, h, k, w, K, order))
+            K, err, order = self._box(func, lo, h, scale)
+            heapq.heappush(boxes, (-err, next(counter), lo, h, K, order))
 
         for idx in itertools.product(*[range(n) for n in self._n]):
             push(lo0 + _a.arrayd(idx) * h0, h0.copy())
@@ -410,7 +430,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
 
         def total():
             all_boxes = boxes + frozen
-            return sum(b[6] for b in all_boxes), sum(-b[0] for b in all_boxes)
+            return sum(b[4] for b in all_boxes), sum(-b[0] for b in all_boxes)
 
         value, err = total()
         tol = self._tolerance(value)
@@ -421,7 +441,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
                 self._not_converged(err, tol, nk, f"max_k={self._max_k_in.tolist()}")
                 break
             box = heapq.heappop(boxes)
-            _, _, lo, h, *_, order = box
+            _, _, lo, h, _, order = box
             split = next((a for a in order if self._can_split(h, a)), None)
             if split is None:
                 frozen.append(box)
@@ -436,9 +456,23 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
             value, err = total()
             tol = self._tolerance(value)
 
-        value = np.asarray(value)[()]
-        if ret_bz:
-            k = np.concatenate([b[4] for b in boxes + frozen])
-            w = np.concatenate([b[5] for b in boxes + frozen])
-            return value, BrillouinZone(self.parent, k, w)
-        return value
+        all_boxes = boxes + frozen
+        self._last = {
+            "lo": np.array([b[2] for b in all_boxes]),
+            "h": np.array([b[3] for b in all_boxes]),
+            "scale": scale,
+        }
+        return np.asarray(value)[()]
+
+    def last_bz(self) -> BrillouinZone:
+        if self._last is None:
+            raise SislError(
+                f"{self.__class__.__name__}.last_bz requires a call to integrate first"
+            )
+        last = self._last
+        kw = [
+            self._box_kw(lo, h, last["scale"]) for lo, h in zip(last["lo"], last["h"])
+        ]
+        k = np.concatenate([k for k, _ in kw])
+        w = np.concatenate([w for _, w in kw])
+        return BrillouinZone(self.parent, k, w)

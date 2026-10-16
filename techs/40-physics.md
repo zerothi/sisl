@@ -103,9 +103,19 @@ At Γ, sisl applies no phase.
     A stored grid also makes the object depend on the call order, and a parallel pool cannot share it.
 - `TypeError` is the Python protocol for "no length". `bz.apply` calls `len(bz)`, so `apply` fails at once.
   `__bool__` returns `True`, because `bool()` otherwise calls `__len__`.
-- `integrate(func, ret_bz=False)` is the only abstract method. The object stores the settings only.
-  `ret_bz=True` returns a plain `BrillouinZone` with the k-points and weights that were used.
+- `integrate(func)` and `last_bz()` are the abstract methods.
+  `last_bz()` returns a plain `BrillouinZone` with the k-points and weights of the last `integrate` call.
   Use it with `apply` when you need more quantities on the same grid.
+- `integrate` stores only the data that is necessary to create these k-points again (`_last`).
+  `last_bz()` creates the `BrillouinZone` only on request. Most integrations do not need it.
+  `GaussKronrodGrid` stores the lower bound and the width of each box, and the TRS weight scale.
+  `_box_kw` makes the k-points and weights both in `integrate` and in `last_bz`.
+  Thus `last_bz` gives the same values, and its weighted sum is equal to the integral.
+- We replaced the old `integrate(..., ret_bz=True)`. It always created the k-points, also when nobody used them.
+- `last_bz` has only the k-points of the final result.
+  `GaussKronrodGrid` also evaluates the k-points of a box before it halves the box. These are not in `last_bz`.
+- `_last` is state of the object. It changes with each `integrate` call.
+  Call `last_bz` before the next `integrate` call on the same object.
 - The weights sum to 1, as for `MonkhorstPack`. The result is the Brillouin zone average.
 - `AdaptiveBrillouinZone.__init__` takes only `parent`.
   Other adaptive grids can need other arguments, so the directions, limits, tolerances and `trs` are in the sub-class.

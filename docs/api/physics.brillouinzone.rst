@@ -178,10 +178,13 @@ raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`:
 >>> E = 0.1 + 1e-3j
 >>> def G(k):
 ...     return np.linalg.inv(E * H.Sk(k, format="array") - H.Hk(k, format="array"))
->>> Gavg, bz = gk.integrate(G, ret_bz=True)
+>>> Gavg = gk.integrate(G)
+>>> bz = gk.last_bz()
 
 The result is the Brillouin zone average (as for `MonkhorstPack`).
-``bz`` is a `BrillouinZone` with the k-points and weights that were used.
+`~AdaptiveBrillouinZone.last_bz` returns a `BrillouinZone` with the k-points
+and weights of the last integration. It is only created when you call it, and you can
+use it with ``bz.apply`` to calculate more quantities on the same k-points.
 
 .. autosummary::
    :toctree: generated/

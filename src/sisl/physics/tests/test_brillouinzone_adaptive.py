@@ -15,6 +15,7 @@ from sisl import (
     GaussKronrodGrid,
     Hamiltonian,
     Lattice,
+    SislError,
     SislWarning,
     Spin,
     geom,
@@ -50,6 +51,41 @@ def test_adaptive_undefined_grid(cls):
     str(bz)
 
 
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
+def test_adaptive_last_bz(cls):
+    bz = cls(Lattice(1))
+    with pytest.raises(SislError):
+        bz.last_bz()
+
+    def check(f):
+        v = bz.integrate(f)
+        last = bz.last_bz()
+        assert type(last) is BrillouinZone
+        assert last.weight.sum() == pytest.approx(1)
+        assert sum(w * f(k) for k, w in last.iter(True)) == pytest.approx(v, abs=1e-14)
+        return last
+
+    last = check(lambda k: k[0] ** 2 + k[1] ** 4)
+    assert len(pickle.loads(pickle.dumps(bz)).last_bz()) == len(last)
+    # a new integration replaces the k-points
+    check(lambda k: np.array([k[2] ** 2, 1.0]))
+
+
+def test_gk_last_bz_used_k():
+    used = []
+
+    def f(k):
+        used.append(k.copy())
+        return 1 / (1.05 - np.cos(2 * np.pi * k[0]))
+
+    gk = GaussKronrodGrid(Lattice(1), [1, 0, 0], atol=1e-9, rtol=0, trs=False)
+    gk.integrate(f)
+    last = gk.last_bz()
+    # the final boxes, the halved boxes were also evaluated
+    assert len(last) < len(used)
+    assert set(map(tuple, last.k)) <= set(map(tuple, used))
+
+
 def test_adaptive_abstract():
     with pytest.raises(TypeError):
         AdaptiveBrillouinZone(Lattice(1))
@@ -77,7 +113,8 @@ def test_gk_n():
 def test_gk_polynomial_exact():
     # G7 is exact up to degree 13, so one box is enough
     gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=1e-14, rtol=0)
-    v, bz = gk.integrate(lambda k: k[0] ** 12, ret_bz=True)
+    v = gk.integrate(lambda k: k[0] ** 12)
+    bz = gk.last_bz()
     assert v == pytest.approx(0.5**12 / 13, abs=1e-15)
     assert len(bz) == 15
     assert bz.weight.sum() == pytest.approx(1)
@@ -87,7 +124,8 @@ def test_gk_polynomial_exact():
 def test_gk_peak_local_refinement():
     func, ref = peak(1 + 1e-3)
     gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=0, rtol=1e-10, max_k=5000)
-    v, bz = gk.integrate(func, ret_bz=True)
+    v = gk.integrate(func)
+    bz = gk.last_bz()
     assert v == pytest.approx(ref, rel=1e-9)
     assert bz.weight.sum() == pytest.approx(1)
     # points concentrate around the peak at k=0
@@ -106,7 +144,8 @@ def test_gk_2d_split_direction():
     # the integrand does not depend on k_b, so boxes only split along a
     func, ref = peak(1.05)
     gk = GaussKronrodGrid(Lattice(1), n=[1, 1, 0], atol=1e-9, rtol=0, max_k=50000)
-    v, bz = gk.integrate(func, ret_bz=True)
+    v = gk.integrate(func)
+    bz = gk.last_bz()
     assert v == pytest.approx(ref, abs=1e-9)
     assert len(np.unique(bz.k[:, 1])) == 15
     assert len(np.unique(bz.k[:, 0])) > 15
@@ -159,7 +198,8 @@ def test_gk_trs_half_domain():
         return f(k - 0.1)
 
     gk = GaussKronrodGrid(Lattice(1), n=[1, 0, 0], atol=1e-10, rtol=0, trs=True)
-    v, bz = gk.integrate(lambda k: (g(k) + g(-k)) / 2, ret_bz=True)
+    v = gk.integrate(lambda k: (g(k) + g(-k)) / 2)
+    bz = gk.last_bz()
     assert v == pytest.approx(ref, abs=1e-10)
     assert np.all(bz.k[:, 0] >= 0) and np.all(bz.k[:, 0] <= 0.5)
     assert bz.weight.sum() == pytest.approx(1)
@@ -180,7 +220,8 @@ def test_gk_trs_2d(trs):
     gk = GaussKronrodGrid(
         Lattice(1), n=[0, 1, 1], atol=1e-9, rtol=0, max_k=50000, trs=trs
     )
-    v, bz = gk.integrate(lambda k: f(k[[1, 0, 2]]) * f(k[[2, 0, 1]]), ret_bz=True)
+    v = gk.integrate(lambda k: f(k[[1, 0, 2]]) * f(k[[2, 0, 1]]))
+    bz = gk.last_bz()
     assert v == pytest.approx(ref**2, abs=1e-8)
     assert bz.weight.sum() == pytest.approx(1)
     assert np.all(bz.k[:, 1] >= 0) == trs
@@ -192,7 +233,8 @@ def test_gk_max_k_axes_density():
         Lattice(1), n=[1, 0, 0], atol=1e-12, rtol=0, max_k=[150, 1, 1], trs=False
     )
     with pytest.warns(SislWarning, match="did not converge"):
-        v, bz = gk.integrate(func, ret_bz=True)
+        gk.integrate(func)
+        bz = gk.last_bz()
     # boxes are at least 15 / 150 wide, so at most 10 boxes
     assert len(bz) <= 150
     assert bz.weight.sum() == pytest.approx(1)
@@ -206,7 +248,8 @@ def test_gk_max_k_axes_next_direction():
         Lattice(1), n=[1, 1, 0], atol=1e-12, rtol=0, max_k=[60, 120, 1], trs=False
     )
     with pytest.warns(SislWarning, match="did not converge"):
-        v, bz = gk.integrate(func, ret_bz=True)
+        gk.integrate(func)
+        bz = gk.last_bz()
     ka = np.unique(bz.k[:, 0])
     kb = np.unique(bz.k[:, 1])
     assert len(ka) <= 60
