@@ -1334,7 +1334,8 @@ class Geometry(
             only the atoms ranges are taken into account.
             For instance if a lattice vector is as long as the orbital range
             it will have 3 supercells (it can only connect to its neighboring
-            cells).
+            cells). For non-orthogonal cells the distance between the lattice
+            planes is used instead of the length of the lattice vector.
 
         ``method=overlap``
             determine nsc by examining at what range two orbitals overlaps.
@@ -1379,12 +1380,6 @@ class Geometry(
                 "internal atoms (defaulting to zero radius)."
             )
 
-        cell = self.cell
-        length, angles = self.lattice.parameters()
-
-        # TODO check that angles below 60 degrees are
-        # important.
-
         # Half-nsc (only 1 direction)
         hsc = nsc // 2
 
@@ -1398,36 +1393,29 @@ class Geometry(
                 f"{self.__class__.__name__}.find_nsc got wrong 'method' argument, got {method}"
             )
 
-        # Determine the actual range depending on the actual R
-        hsc[axes] = ceil(R_actual / length[axes])
+        # Images further away than R_actual from all lattice planes
+        # cannot connect
+        hsc_R = ceil(R_actual * fnorm(self.icell)).astype(hsc.dtype)
+        hsc[axes] = hsc_R[axes]
 
         if method == "atoms":
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
+            from scipy.spatial import cKDTree
 
-                isc = _a.emptyi(3)
-
-                for ax in axes:
-                    # Initialize the isc for this direction
-                    # (note we do not take non-orthogonal directions
-                    #  into account)
-                    isc[:] = 0
-
-                    # Initialize the actual number of supercell connections
-                    # along this direction.
-                    prev_isc = 0
-
-                    while prev_isc == isc[ax]:
-                        # Try next supercell connection
-                        isc[ax] += 1
-
-                        for ia in self:
-                            idx = self.close_sc(ia, isc=isc, R=R)
-                            if len(idx) > 0:
-                                prev_isc = isc[ax]
-                                break
-
-                    hsc[ax] = prev_isc
+            tree = cKDTree(self.xyz)
+            R_upper = np.nextafter(R, np.inf)
+            found = _a.zerosi(3)
+            cell = self.cell
+            ranges = [range(-h, h + 1) for h in np.minimum(hsc, hsc_R)]
+            for isc in product(*ranges):
+                isc = _a.arrayi(isc)
+                if np.all(np.abs(isc[axes]) <= found[axes]):
+                    continue
+                dist, _ = tree.query(
+                    self.xyz + isc @ cell, distance_upper_bound=R_upper
+                )
+                if np.isfinite(dist).any():
+                    found = np.maximum(found, np.abs(isc))
+            hsc[axes] = found[axes]
 
         nsc[axes] = hsc[axes] * 2 + 1
 

@@ -1334,6 +1334,17 @@ class TestGeometry:
         geom.set_nsc([5, 1, 5])
         assert np.allclose(geom.find_nsc([0, 2], R=0.9999), [1, 1, 1])
 
+    @pytest.mark.parametrize("method", ["atoms", "cell"])
+    def test_find_nsc_skewed(self, method):
+        # the image at isc=(-10, 1, 0) is 1 Ang away
+        geom = Geometry(
+            [0] * 3, Atom(1, R=1.5), lattice=[[1, 0, 0], [10, 1, 0], [0, 0, 20]]
+        )
+        geom.set_nsc([25, 3, 1])
+        nclose = len(geom.close(0, R=1.5))
+        geom.set_nsc(geom.find_nsc(method=method))
+        assert len(geom.close(0, R=1.5)) == nclose
+
     def test_find_nsc2(self, setup):
         # 2 ** 0.5 ensures lattice vectors with length 1
         geom = sisl_geom.fcc(2**0.5, Atom(1, R=1.0001))
