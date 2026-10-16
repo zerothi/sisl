@@ -42,6 +42,20 @@ If a task needs a URL lookup, stop and tell the maintainer.
 The maintainer keeps personal scratch files and folders as untracked files in the checkout.
 A broad `git add` puts them in the commit.
 
+## Worktrees
+
+You can use a git worktree.
+Put each worktree in `<repo-root>/wt/<branch-name>`.
+Do not put a worktree in a different folder, for example a folder of your tool.
+
+```bash
+# from <repo-root>
+git worktree add -b <branch-name> wt/<branch-name>
+```
+
+Use the same name for the branch and the folder.
+Then the maintainer can find each worktree and its branch in one place.
+
 ## Commit trailer
 
 Mark each agent commit with the `ai` trailer. Do not use other trailers in the message.

@@ -72,6 +72,8 @@ Read it before your first change. In short:
 - **Ask first** and **stage explicitly** (above).
 - **No URL lookups.** Never add code below `src/` that reads from a URL. Only a human
   can make that change: stop and tell the maintainer.
+- **Worktrees** are ok, but always in `<repo-root>/wt/<branch-name>`:
+  `git worktree add -b <branch-name> wt/<branch-name>`.
 - **Commit trailer.** Mark agent commits only with the `ai` trailer (load it once with
   `git config include.path ../.gitconfig`), never with `Co-authored-by` or other trailers:
   `git commit ... --trailer ai=<agent>:<model>[:<effort>]`, e.g. `ai=claude-code:claude-opus-5-5`.
