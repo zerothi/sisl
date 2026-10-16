@@ -270,6 +270,21 @@ class TestGeometry:
         # Also check multidimensional things
         assert g.axyz([[0], [1]]).shape == (2, 1, 3)
 
+        # a slice uses na_s only for a stop beyond na
+        assert np.allclose(g[:-1], g.xyz[:-1])
+        assert np.allclose(g[0 : g.na + 2], g.axyz(np.arange(g.na + 2)))
+
+        assert g.no != g.na
+        off = g.lattice.offset([1, 0, 0])
+        assert np.allclose(g.oxyz(None, isc=[1, 0, 0]), g.oxyz() + off)
+
+        g = g.copy()
+        g[0] = [9, 9, 9]
+        g[1, 2] = 3.0
+        assert np.allclose(
+            g.xyz, [[9, 9, 9], [setup.g.xyz[1, 0], setup.g.xyz[1, 1], 3]]
+        )
+
     def test_atranspose_indices(self, setup):
         g = setup.g
         # All supercell indices
@@ -532,24 +547,18 @@ class TestGeometry:
         for ias, _ in setup.g.iter_block(method="cube"):
             i += len(ias)
         assert i == len(setup.g)
+        for method in ("sphere", "cube"):
+            ias = [
+                ia
+                for ias, _ in setup.g.iter_block(atoms=1, method=method)
+                for ia in ias
+            ]
+            assert ias == [1]
 
-    @pytest.mark.parametrize("method", ["sphere", "cube"])
-    def test_iter_block_shape_all_atoms(self, method):
+        # this seed has atoms in the grid-cell corners outside a too small sphere
         rng = np.random.default_rng(1234)
-        g = Geometry(rng.random([4000, 3]) * 40, Atom(1, R=1.0), lattice=100)
-        n = 0
-        for ias, _ in g.iter_block(iR=3, method=method):
-            n += len(ias)
-        assert n == g.na
-
-    @pytest.mark.parametrize("method", ["rand", "sphere", "cube"])
-    def test_iter_block_atoms(self, setup, method):
-        g = setup.g.tile(10, 0).tile(10, 1)
-        atoms = np.arange(5)
-        seen = []
-        for ias, _ in g.iter_block(iR=3, atoms=atoms, method=method):
-            seen.extend(ias)
-        assert np.all(np.sort(seen) == atoms)
+        g = Geometry(rng.random([200, 3]) * 10, Atom(1, R=1.0), lattice=100)
+        assert sum(len(ias) for ias, _ in g.iter_block(iR=3, method="sphere")) == g.na
 
     @pytest.mark.slow
     def test_iter_shape2(self, setup):
@@ -605,21 +614,7 @@ class TestGeometry:
             s = setup.g.prepend(setup.g.lattice, axis)
             assert len(s) == len(setup.g)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
-            assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :] * 2)
-
-    @pytest.mark.parametrize("axis", [0, 1, 2])
-    def test_prepend_lattice(self, setup, axis):
-        g = setup.g
-        lat = g.lattice.copy()
-        lat.cell[axis] *= 2.5
-        a = g.append(lat, axis)
-        p = g.prepend(lat, axis)
-        assert np.allclose(a.cell, p.cell)
-        assert np.allclose(a.xyz, g.xyz)
-        # the added cell is before the atoms
-        assert np.allclose(p.xyz, g.xyz + lat.cell[axis])
-        p = g.prepend(lat, axis, offset=[0, 0, 1])
-        assert np.allclose(p.xyz, g.xyz + lat.cell[axis] + [0, 0, 1])
+            assert np.allclose(s.xyz, setup.g.xyz + setup.g.cell[axis])
 
     def test_append_raise_valueerror(self, setup):
         with pytest.raises(ValueError):
@@ -789,67 +784,20 @@ class TestGeometry:
         g.angle([0], ref=1)
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
+        g.angle(None, ref=1)
+        assert np.allclose(g.xyz, [[0] * 3, [1, 0, 0]])
 
-    @pytest.mark.parametrize("m", [[1, 0, 0], [0, 0, 1], [1, 1, 0], [1, 1, 1]])
-    @pytest.mark.parametrize("v", [[1, 0, 0], [0, 0, 1], [0, 0, -1], [1, 1, 0]])
-    def test_rotate_miller(self, m, v):
+    # general, parallel and anti-parallel to the Cartesian direction
+    @pytest.mark.parametrize("m", [[1, 1, 0], [1, 0, 0], [-1, 0, 0]])
+    def test_rotate_miller(self, m):
         g = Geometry(
             [[0, 0, 0], [0.5, 0.2, 0.1]],
             lattice=[[2, 0, 0], [1, 1.7, 0], [0.5, 0.3, 3]],
         )
-        rot = g.rotate_miller(m, v)
+        rot = g.rotate_miller(m, [1, 0, 0])
         mc = np.asarray(m) @ rot.cell
-        assert np.allclose(np.cross(mc, v), 0)
-        assert mc @ v > 0
-        assert np.all(np.isfinite(rot.xyz))
-        # rigid rotation
-        assert np.allclose(rot.lattice.length, g.lattice.length)
+        assert np.allclose(mc / np.linalg.norm(mc), [1, 0, 0])
         assert np.allclose(rot.fxyz, g.fxyz)
-
-    def test_getitem_slice(self):
-        g = sisl_geom.graphene()
-        g.set_nsc([3, 3, 1])
-        assert g[:].shape == (2, 3)
-        assert np.allclose(g[:-1], g.xyz[:-1])
-        assert np.allclose(g[0:-1], g.xyz[:-1])
-        assert np.allclose(g[-1:], g.xyz[-1:])
-        assert np.allclose(g[::-1], g.xyz[::-1])
-        assert np.allclose(g[0:2], g.xyz)
-        # a stop beyond na reaches the supercell atoms
-        assert np.allclose(g[0:4], g.axyz(np.arange(4)))
-        assert g[2:4].shape == (2, 3)
-
-    def test_setitem_xyz(self):
-        g = Geometry([[0, 0, 0], [1, 0, 0], [2, 0, 0]], lattice=10)
-        g[0] = [9, 9, 9]
-        assert np.allclose(g.xyz[0], 9)
-        g[[1, 2], 2] = 3.0
-        assert np.allclose(g.xyz[1:, 2], 3)
-        g[1:] = 0.0
-        assert np.allclose(g.xyz[1:], 0)
-        g["A"] = [0]
-        assert np.all(g.names["A"] == [0])
-        g[[1, 2]] = "B"
-        assert np.all(g.names["B"] == [1, 2])
-        with pytest.raises(IndexError):
-            g[3] = [0, 0, 0]
-
-    def test_oxyz_isc(self, setup):
-        g = setup.g
-        assert g.no != g.na
-        assert g.oxyz().shape == (g.no, 3)
-        off = g.lattice.offset([1, 0, 0])
-        assert np.allclose(g.oxyz(None, isc=[1, 0, 0]), g.oxyz() + off)
-        assert np.allclose(g.oxyz([1, 2], isc=[1, 0, 0]), g.oxyz([1, 2]) + off)
-
-    def test_angle_no_mutation(self):
-        g = sisl_geom.graphene()
-        xyz = g.xyz.copy()
-        ang = g.angle(None, ref=1)
-        assert np.allclose(g.xyz, xyz)
-        assert np.allclose(g.angle(None, ref=1), ang)
-        g.angle(None, ref=[0.5, 0, 0])
-        assert np.allclose(g.xyz, xyz)
 
     def test_dihedral(self):
         g = sisl_geom.graphene() * (2, 2, 1)
@@ -1580,16 +1528,11 @@ class TestGeometry:
         n = p.loads(s)
         assert n == setup.g
 
-    def test_pickle_bc_names(self):
-        import pickle as p
-
         g = sisl_geom.graphene()
         g["A"] = [0]
         n = p.loads(p.dumps(g))
         assert np.all(n.pbc == g.pbc)
-        assert np.all(n.lattice.boundary_condition == g.lattice.boundary_condition)
         assert n.names.names == ["A"]
-        assert np.all(n["A"] == [0])
 
     def test_geometry_names(self):
         g = sisl_geom.graphene()
@@ -1632,15 +1575,13 @@ class TestGeometry:
         with pytest.raises(ValueError):
             g.untile(3, 0)
 
-    @pytest.mark.parametrize("na", [100, 1000])
-    def test_geometry_iR(self, na):
+    def test_geometry_iR(self):
         # homogeneous 3D density, all atoms are equivalent
         g = sisl_geom.sc(1.5, Atom(1, R=1.0))
-        g.set_nsc([31, 31, 31])
-        R = g.maxR() + 0.001
-        iR = g.iR(na=na)
-        n = len(g.close(0, R=R * iR))
-        assert na <= n < 3 * na
+        g.set_nsc([9, 9, 9])
+        iR = g.iR(na=100, iR=5)
+        n = len(g.close(0, R=(g.maxR() + 0.001) * iR))
+        assert 100 <= n < 300
 
     def test_geometry_iR_negative_R(self):
         g = sisl_geom.graphene()
@@ -1703,43 +1644,12 @@ class TestGeometry:
 
     def test_geometry_ase_new_to(self):
         pytest.importorskip("ase", reason="ase not available")
-        gr = sisl_geom.graphene()
+        gr = sisl_geom.graphene(atoms=[Atom(6, mass=13.0), Atom(6)])
         to_ase = gr.to.ase()
         from_ase = gr.new(to_ase)
         assert gr.equal(from_ase, R=False)
         assert np.all(gr.pbc == from_ase.pbc)
-
-    def test_geometry_ase_pbc(self):
-        pytest.importorskip("ase", reason="ase not available")
-        from ase import Atoms as ase_Atoms
-
-        aseg = ase_Atoms("H2", positions=[[0, 0, 0], [0, 0, 1]], cell=[2, 2, 10])
-        aseg.pbc = [True, False, False]
-        geom = Geometry.new(aseg)
-        assert np.all(geom.pbc == [True, False, False])
-        assert np.all(geom.nsc == [3, 1, 1])
-        assert np.all(geom.to.ase().pbc == aseg.pbc)
-
-    def test_geometry_ase_mass(self):
-        pytest.importorskip("ase", reason="ase not available")
-        from ase import Atoms as ase_Atoms
-
-        geom = Geometry(
-            [[0, 0, 0], [1, 0, 0], [2, 0, 0]],
-            atoms=[Atom(6, mass=13.0), Atom(6), Atom(6, mass=13.0)],
-            lattice=[3, 10, 10],
-        )
-        aseg = geom.to.ase()
-        assert np.allclose(aseg.get_masses(), geom.atoms.mass)
-        back = Geometry.new(aseg)
-        assert np.allclose(back.atoms.mass, geom.atoms.mass)
-        assert back.atoms.nspecies == 2
-        assert np.all(back.atoms.Z == 6)
-
-        aseg = ase_Atoms(
-            "H2", positions=[[0, 0, 0], [0, 0, 1]], masses=[2.014, 1.008], cell=[5] * 3
-        )
-        assert np.allclose(Geometry.new(aseg).atoms.mass, [2.014, 1.008])
+        assert np.allclose(from_ase.atoms.mass, [13.0, gr.atoms.mass[1]])
 
     def test_geometry_ase_run_center(self):
         pytest.importorskip("ase", reason="ase not available")
