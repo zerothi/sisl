@@ -51,10 +51,6 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
     axes :
        the lattice directions that are integrated. The k-point component
        along the other directions is 0.
-    atol :
-       absolute tolerance of the integral (largest absolute element error)
-    rtol :
-       relative tolerance of the integral, relative to the largest absolute element
     max_k :
        a scalar is the maximum number of integrand evaluations for one integration.
        A sequence (one value for each of the `axes`) is the maximum k-point density
@@ -64,6 +60,10 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
        whether time-reversal symmetry is used. If ``None``, it is true for
        (un)-polarized calculations, and false for non-colinear and higher spin
        configurations (as for `MonkhorstPack`).
+    atol :
+       absolute tolerance of the integral (largest absolute element error)
+    rtol :
+       relative tolerance of the integral, relative to the largest absolute element
 
     See Also
     --------
@@ -74,10 +74,10 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         self,
         parent,
         axes: CellAxes = (0, 1, 2),
-        atol: float = 1e-6,
-        rtol: float = 1e-6,
         max_k: SeqOrScalarInt = 10000,
         trs: Optional[bool] = None,
+        atol: float = 1e-6,
+        rtol: float = 1e-6,
     ):
         self.set_parent(parent)
         self._bz_attr = ("", None)
@@ -207,8 +207,8 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         parent = str(self._parent_lattice()).replace("\n", "\n ")
         return (
             f"{self.__class__.__name__}{{axes: {self._axes.tolist()}, "
-            f"atol: {self._atol}, rtol: {self._rtol}, max_k: {self._max_k_str()}, "
-            f"trs: {self.trs},\n "
+            f"max_k: {self._max_k_str()}, trs: {self.trs}, "
+            f"atol: {self._atol}, rtol: {self._rtol},\n "
             f"{parent}\n}}"
         )
 
@@ -312,10 +312,6 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     n :
        initial number of boxes along each of the sampled `axes`.
        The initial boxes are always integrated, also when they exceed `max_k`.
-    atol :
-       absolute tolerance of the integral
-    rtol :
-       relative tolerance of the integral
     max_k :
        a scalar is the maximum number of integrand evaluations.
        A sequence (one value for each of the `axes`) is the maximum k-point density
@@ -324,6 +320,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
        The box is then halved along the axis with the next largest error.
     trs :
        whether time-reversal symmetry is used, see `AdaptiveBrillouinZone`.
+    atol :
+       absolute tolerance of the integral
+    rtol :
+       relative tolerance of the integral
 
     Examples
     --------
@@ -344,12 +344,12 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         parent,
         axes: CellAxes = (0, 1, 2),
         n: SeqOrScalarInt = 1,
-        atol: float = 1e-6,
-        rtol: float = 1e-6,
         max_k: SeqOrScalarInt = 10000,
         trs: Optional[bool] = None,
+        atol: float = 1e-6,
+        rtol: float = 1e-6,
     ):
-        super().__init__(parent, axes=axes, atol=atol, rtol=rtol, max_k=max_k, trs=trs)
+        super().__init__(parent, axes=axes, max_k=max_k, trs=trs, atol=atol, rtol=rtol)
         nbox = _a.arrayi(n).ravel()
         if nbox.size == 1:
             nbox = np.repeat(nbox, len(self._axes))
@@ -361,7 +361,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
 
     def __str__(self) -> str:
         s = super().__str__()
-        return s.replace("{", f"{{n: {self._n.tolist()}, ", 1)
+        return s.replace(", max_k:", f", n: {self._n.tolist()}, max_k:", 1)
 
     def _box(self, func, lo: np.ndarray, h: np.ndarray, scale: float):
         """Integrate one box
