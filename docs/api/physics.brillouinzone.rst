@@ -188,4 +188,3 @@ The result is the Brillouin zone average (as for `MonkhorstPack`).
 
    AdaptiveBrillouinZone
    GaussKronrod
-   Farey

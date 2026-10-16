@@ -12,14 +12,12 @@ from sisl import (
     AdaptiveBrillouinZone,
     Atom,
     BrillouinZone,
-    Farey,
     GaussKronrod,
     Hamiltonian,
     Lattice,
     SislWarning,
     geom,
 )
-from sisl.physics._brillouinzone_adaptive import _farey_points, _voronoi_weights
 
 pytestmark = [pytest.mark.physics, pytest.mark.brillouinzone, pytest.mark.bz]
 
@@ -33,11 +31,7 @@ def peak(a):
     return func, 1 / np.sqrt(a**2 - 1)
 
 
-def totient(n):
-    return sum(1 for i in range(1, n + 1) if np.gcd(i, n) == 1)
-
-
-@pytest.mark.parametrize("cls", [GaussKronrod, Farey])
+@pytest.mark.parametrize("cls", [GaussKronrod])
 def test_adaptive_undefined_grid(cls):
     H = Hamiltonian(geom.sc(1.0, Atom(1, R=1.1)))
     bz = cls(H, axes=0)
@@ -60,7 +54,7 @@ def test_adaptive_abstract():
         AdaptiveBrillouinZone(Lattice(1))
 
 
-@pytest.mark.parametrize("cls", [GaussKronrod, Farey])
+@pytest.mark.parametrize("cls", [GaussKronrod])
 def test_adaptive_axes(cls):
     assert np.all(cls(Lattice(1), axes="b").axes == [1])
     assert np.all(cls(Lattice(1), axes=[2, 0]).axes == [0, 2])
@@ -68,7 +62,7 @@ def test_adaptive_axes(cls):
         cls(Lattice(1), axes=[0, 0])
 
 
-@pytest.mark.parametrize("cls", [GaussKronrod, Farey])
+@pytest.mark.parametrize("cls", [GaussKronrod])
 def test_adaptive_pickle(cls):
     bz = cls(Lattice(1), axes=[0, 1], atol=1e-3)
     bz2 = pickle.loads(pickle.dumps(bz))
@@ -129,85 +123,8 @@ def test_gk_max_k_warns():
         gk.integrate(func)
 
 
-@pytest.mark.parametrize("order", [1, 2, 5, 9])
-def test_farey_points_1d(order):
-    p, q = _farey_points(order, 1)
-    assert len(p) == sum(totient(n) for n in range(1, order + 1))
-    k = (p / q).ravel()
-    assert np.all(k > -0.5) and np.all(k <= 0.5)
-    assert len(np.unique(k)) == len(k)
-    assert np.all(np.gcd(p, q) == 1)
-
-
-@pytest.mark.parametrize("ndim", [2, 3])
-def test_farey_points_nested(ndim):
-    for order in range(2, 7):
-        p, q = _farey_points(order, ndim)
-        assert np.all(np.lcm.reduce(q, axis=1) <= order)
-        new = set(map(tuple, np.concatenate([p, q], 1)))
-        p0, q0 = _farey_points(order - 1, ndim)
-        old = set(map(tuple, np.concatenate([p0, q0], 1)))
-        assert old < new
-    # order 2 in 2D: Gamma, and 1/2 along a, b and a+b
-    assert len(_farey_points(2, 2)[0]) == 4
-
-
-def test_farey_weights_1d():
-    p, q = _farey_points(5, 1)
-    w = _voronoi_weights(p / q, np.eye(1))
-    assert w.sum() == pytest.approx(1)
-    # Gamma lies between -1/5 and 1/5
-    assert w[np.argmin(np.abs(p[:, 0]))] == pytest.approx(0.2)
-
-
-@pytest.mark.parametrize(
-    "lattice",
-    [Lattice(1), Lattice([2, 2, 10, 90, 90, 60]), Lattice([1, 2, 3, 70, 80, 60])],
-)
-def test_farey_weights_voronoi(lattice):
-    rcell = lattice.rcell
-    for ndim in (2, 3):
-        metric = rcell[:ndim] @ rcell[:ndim].T
-        p, q = _farey_points(1, ndim)
-        assert np.allclose(_voronoi_weights(p / q, metric), 1)
-        # a regular grid (all denominators 4) has equal weights
-        k = np.array(np.meshgrid(*[np.arange(-1, 3) / 4] * ndim)).reshape(ndim, -1).T
-        w = _voronoi_weights(k, metric)
-        assert np.allclose(w, 1 / len(k))
-        p, q = _farey_points(6, ndim)
-        w = _voronoi_weights(p / q, metric)
-        assert w.sum() == pytest.approx(1)
-        assert np.all(w > 0)
-
-
 @pytest.mark.filterwarnings("error::sisl.SislWarning")
-def test_farey_integrate_1d():
-    func, ref = peak(1.5)
-    fa = Farey(Lattice(1), axes=0, atol=1e-4, rtol=0, max_k=5000)
-    v, bz = fa.integrate(func, ret_bz=True)
-    assert v == pytest.approx(ref, abs=1e-4)
-    assert bz.weight.sum() == pytest.approx(1)
-
-
-@pytest.mark.filterwarnings("error::sisl.SislWarning")
-def test_farey_integrate_2d():
-    f, ref = peak(2)
-    fa = Farey(
-        Lattice([2, 2, 10, 90, 90, 60]), axes=[0, 1], atol=1e-2, rtol=0, max_k=5000
-    )
-    v = fa.integrate(lambda k: f(k) * f(k[[1, 0, 2]]))
-    assert v == pytest.approx(ref**2, abs=1e-2)
-
-
-def test_farey_max_k_warns():
-    func, _ = peak(1 + 1e-6)
-    fa = Farey(Lattice(1), axes=0, atol=1e-12, rtol=0, max_k=50)
-    with pytest.warns(SislWarning, match="did not converge"):
-        fa.integrate(func)
-
-
-@pytest.mark.filterwarnings("error::sisl.SislWarning")
-@pytest.mark.parametrize("cls, atol", [(GaussKronrod, 1e-8), (Farey, 1e-3)])
+@pytest.mark.parametrize("cls, atol", [(GaussKronrod, 1e-8)])
 def test_adaptive_green_chain(cls, atol):
     # local Green function of a 1D chain against a dense periodic sum
     H = Hamiltonian(geom.sc(1.0, Atom(1, R=1.1)))

@@ -23,7 +23,6 @@ Brillouin zone
    BandStructure - bandstructure class
    AdaptiveBrillouinZone - base class of adaptive integrations
    GaussKronrod - adaptive Gauss-Kronrod cubature
-   Farey - nested Farey grids
 
 
 Spin configuration

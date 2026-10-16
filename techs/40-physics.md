@@ -91,7 +91,7 @@ At Γ, sisl applies no phase.
 
 ### Adaptive Brillouin zones
 
-`AdaptiveBrillouinZone`, `GaussKronrod` and `Farey` are in `physics/_brillouinzone_adaptive.py`.
+`AdaptiveBrillouinZone` and `GaussKronrod` are in `physics/_brillouinzone_adaptive.py`.
 
 - `AdaptiveBrillouinZone` is an abstract subclass of `BrillouinZone`.
   It keeps `set_parent`, `tocartesian`, `volume` and the `isinstance` checks of the self-energies.
@@ -124,24 +124,18 @@ At Γ, sisl applies no phase.
   This needs no new integrand values.
 - The integral and the error are summed again from all boxes after each split. This prevents round-off drift.
 
-`Farey`:
+Rejected: Farey grids (Chen *et al.*, Phys. Rev. B 106, 155102 (2022)).
 
-- The points follow Chen *et al.*, Phys. Rev. B 106, 155102 (2022), Eq. (6) and (7).
-  `_farey_points` stores integer `p` and `q`. The integrand cache uses `(p, q)` as key, so a point is never evaluated twice.
-- The weight is the volume of the periodic Voronoi cell, in the Cartesian metric of `rcell[axes]`.
-  sisl does not use point-group symmetry, so the weights are those of plain Voronoi cells.
-  In 1D, this is the trapezoid rule on a non-uniform grid.
-- In 2D and 3D, `_voronoi_weights` adds periodic images in shells, until the volumes sum to the Brillouin zone volume.
-  A missing image can only make a cell larger. Thus the sum is equal to the volume only when all cells are correct.
-  One shell is not sufficient for skewed reciprocal cells.
-- The error estimate of order `l` is `|I_l - I_{l//2}|`. The difference to order `l - 1` underestimates the error.
-  The difference to order `l - 1` added only `phi(l)` points, which have small weights.
-  A test of the chain Green function showed a false convergence with an error of 100 times the tolerance.
-  For an error that decreases at least as `1/l`, `|I_l - I_{l//2}|` is larger than the error of `I_l`.
-- The integration stops when two consecutive orders are below the tolerance.
-- The Farey grid has large gaps near points with small `q` (for example Γ). It is not efficient
-  when the integrand is evaluated directly at each k-point (cost `s = 0` in the paper).
-  The gain in the paper is for supercell methods, where the cost increases with `q`.
+- We implemented and tested them, then removed them. Do not add them again without a new reason.
+- The Voronoi weights of the paper make the trapezoid rule on a non-uniform grid (in 1D).
+  This rule is not exact for `cos(2 pi k)`. Thus the error decreases as `N**-1.5`.
+  A uniform grid of `N` points is exact for all Fourier modes below `N`. Its error decreases exponentially.
+- The gaps of order `l` are approximately `1/(q l)` near `p/q`. The largest gaps (`1/l`) are next to Γ.
+  For `1/(1.5 - cos 2 pi k)` at `l = 64`, the 2 intervals next to Γ gave all of the error.
+- At `l = 128` (5022 k-points), the error was `1.2e-5`. The uniform sub-grid `j/l` (128 k-points) was exact.
+- The gain in the paper is for supercell methods, where the cost of `p/q` increases with `q`.
+  sisl evaluates each k-point directly, so all k-points have the same cost.
+  Nested uniform grids (double `N`) are then better.
 
 ## States
 
