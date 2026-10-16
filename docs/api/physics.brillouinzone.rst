@@ -170,8 +170,8 @@ Adaptive integration
 Some integrands need many k-points in a small part of the Brillouin zone only,
 for example a Green function with a small broadening.
 An adaptive Brillouin zone selects the k-points from the values of the integrand.
-It has no k-points before the integration, so ``len(bz)``, ``bz.k`` and ``bz.apply``
-raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`:
+It has no k-points before the integration, so ``len(bz)`` and ``bz.k``
+raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`, or ``bz.apply.average``:
 
 >>> H = si.Hamiltonian(...)
 >>> gk = si.GaussKronrodGrid(H, [15, 0, 0], atol=1e-6)
@@ -179,11 +179,16 @@ raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`:
 >>> def G(k):
 ...     return np.linalg.inv(E * H.Sk(k, format="array") - H.Hk(k, format="array"))
 >>> Gavg = gk.integrate(G)
+>>> D = gk.apply.average.Pk(format="array")
 >>> bz = gk.last_bz()
 
 The result is the Brillouin zone average (as for `MonkhorstPack`).
 When ``G`` returns a list of values with different shapes, the result is an `~sisl.oplist`,
 and the convergence includes all values.
+``bz.apply.average`` accepts ``wrap`` as for `BrillouinZone`, and the convergence
+is on the wrapped value. The self-energies `RealSpaceSE` and `RealSpaceSI` accept an
+adaptive Brillouin zone as their ``bz`` option.
+The other ``bz.apply`` modes (``array``, ``iter``, ``sum``, ...) need fixed k-points and raise a `TypeError`.
 `~AdaptiveBrillouinZone.last_bz` returns a `BrillouinZone` with the k-points
 and weights of the last integration. It is only created when you call it, and you can
 use it with ``bz.apply`` to calculate more quantities on the same k-points.

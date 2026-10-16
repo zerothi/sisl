@@ -3,7 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import math
 import pickle
+import tracemalloc
 
 import numpy as np
 import pytest
@@ -15,6 +17,7 @@ from sisl import (
     GaussKronrodGrid,
     Hamiltonian,
     Lattice,
+    MonkhorstPack,
     SislError,
     SislWarning,
     Spin,
@@ -48,8 +51,58 @@ def test_adaptive_undefined_grid(cls):
     with pytest.raises(TypeError):
         bz.weight
     with pytest.raises(TypeError):
-        bz.apply.average.eigh()
+        bz.apply.array.eigh()
     str(bz)
+
+
+_FIXED_K_MODES = sorted(set(BrillouinZone.apply._dispatchs) - {"average"})
+
+
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
+@pytest.mark.parametrize("mode", _FIXED_K_MODES)
+def test_adaptive_apply_fixed_k_modes(cls, mode):
+    # all apply modes except average need fixed k-points
+    H = Hamiltonian(geom.sc(1.0, Atom(1, R=1.1)))
+    bz = cls(H)
+    with pytest.raises(TypeError, match="last_bz"):
+        bz.apply[mode].eigh()
+    with pytest.raises(TypeError, match="last_bz"):
+        bz.apply[mode](lambda k: k)
+    # the default dispatch (iter) also raises
+    with pytest.raises(TypeError, match="last_bz"):
+        bz.apply.eigh()
+
+
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
+def test_adaptive_apply_average(cls):
+    H = Hamiltonian(geom.graphene())
+    H.construct([(0.1, 1.44), (0, -2.7)])
+    bz = cls(H, [15, 15, 0], atol=1e-8, rtol=0, trs=False, max_k=50000)
+
+    D = bz.apply.average.Pk(format="array")
+    nk = len(bz.last_bz())
+    assert D == pytest.approx(bz.integrate(lambda k: H.Pk(k, format="array")))
+    assert len(bz.last_bz()) == nk
+    mp = MonkhorstPack(H, [30, 30, 1], trs=False)
+    assert np.allclose(D, mp.apply.average.Pk(format="array"), atol=1e-12, rtol=0)
+
+    # wrap is applied before the integration, and gets weight=None
+    def wrap(v, parent, k, weight):
+        assert parent is H
+        assert weight is None
+        return [v, 2 * v]
+
+    v = bz.apply.average.Pk(format="array", wrap=wrap)
+    assert isinstance(v, oplist)
+    assert np.allclose(v[0], D) and np.allclose(v[1], 2 * D)
+
+    # a function instead of a parent method
+    v = bz.apply.average(lambda k: H.Pk(k, format="array"))()
+    assert np.allclose(v, D)
+
+    with pytest.warns(SislWarning, match="pool"):
+        v = bz.apply.renew(pool=2).average.Pk(format="array")
+    assert np.allclose(v, D)
 
 
 @pytest.mark.parametrize("cls", [GaussKronrodGrid])
@@ -191,6 +244,77 @@ def test_gk_array_and_complex():
     v = gk.integrate(lambda k: np.array([[func(k), 2j * func(k)]]))
     assert v.shape == (1, 2)
     assert np.allclose(v, [[ref, 2j * ref]], atol=1e-10, rtol=0)
+
+
+def test_gk_mixed_dtype():
+    # real values first, then complex values
+    gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-10, rtol=0, trs=False)
+    v = gk.integrate(lambda k: np.array([1.0 if k[0] < 0 else 1j]))
+    assert np.allclose(v, [0.5 + 0.5j], atol=1e-14, rtol=0)
+
+    # float32 is summed in float64, longdouble without BLAS
+    gk32 = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-6, rtol=0, trs=False)
+    v = gk32.integrate(lambda k: np.float32(np.cos(2 * np.pi * k[0]) ** 2))
+    assert v.dtype == np.float64
+    assert v == pytest.approx(0.5, abs=1e-7)
+    v = gk.integrate(lambda k: np.longdouble(np.cos(2 * np.pi * k[0]) ** 2))
+    assert v.dtype == np.longdouble
+    assert v == pytest.approx(0.5, abs=1e-14)
+
+
+def test_gk_shape_mismatch():
+    gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], trs=False)
+    with pytest.raises(ValueError):
+        gk.integrate(lambda k: np.ones(2 + int(k[0] > 0.2)))
+    with pytest.raises(ValueError):
+        gk.integrate(lambda k: np.ones(2) if k[0] > 0.2 else 1.0)
+
+
+def test_gk_reused_output_buffer():
+    # the values are used at once, so func can return the same array
+    buf = np.zeros(3)
+
+    def func(k):
+        buf[:] = [np.cos(2 * np.pi * k[0]) ** 2, k[0] ** 2, 1.0]
+        return buf
+
+    gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-12, rtol=0, trs=False)
+    assert np.allclose(gk.integrate(func), [0.5, 1 / 12, 1], atol=1e-12, rtol=0)
+
+
+def test_gk_compensated_sums():
+    # the coarse boxes overestimate the peak by orders of magnitude,
+    # the running sums must still equal the sum over the final k-points
+    def func(k):
+        return 1 / (np.sin(np.pi * k[0]) ** 2 + np.sin(np.pi * k[1]) ** 2 / 3 + 1e-6)
+
+    gk = GaussKronrodGrid(
+        Lattice(1), [15, 15, 0], atol=1e-14, rtol=0, max_k=3000, trs=False
+    )
+    with pytest.warns(SislWarning):
+        v = gk.integrate(func)
+    bz = gk.last_bz()
+    ref = math.fsum(w * func(k) for k, w in zip(bz.k, bz.weight))
+    assert v == pytest.approx(ref, rel=4 * np.finfo(np.float64).eps, abs=0)
+
+
+@pytest.mark.parametrize("nkpt", [[15, 0, 0], [15, 15, 0], [15, 15, 15]])
+def test_gk_memory(nkpt):
+    # the integrand values of a box are not stored (np.stack needed 2 * 15**d)
+    n = 10000
+    base = np.linspace(0, 1, n)
+
+    def func(k):
+        return base * (2 + np.cos(2 * np.pi * k[0])) + 0j
+
+    gk = GaussKronrodGrid(Lattice(1), nkpt, max_k=15 ** np.count_nonzero(nkpt))
+    tracemalloc.start()
+    try:
+        gk.integrate(func)
+        peak = tracemalloc.get_traced_memory()[1]
+    finally:
+        tracemalloc.stop()
+    assert peak < 16 * base.nbytes * 2
 
 
 def test_gk_2d_split_direction():

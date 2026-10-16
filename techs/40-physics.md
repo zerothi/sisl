@@ -101,8 +101,25 @@ At Γ, sisl applies no phase.
   - The length of the initial grid: `apply` then integrates on the coarsest grid without an error.
   - The grid of the last integration: each energy needs a different grid.
     A stored grid also makes the object depend on the call order, and a parallel pool cannot share it.
-- `TypeError` is the Python protocol for "no length". `bz.apply` calls `len(bz)`, so `apply` fails at once.
+- `TypeError` is the Python protocol for "no length". The `BrillouinZone` apply modes call `len(bz)`, so they fail at once.
   `__bool__` returns `True`, because `bool()` otherwise calls `__len__`.
+- `AdaptiveBrillouinZone.apply` is a separate `BrillouinZoneDispatcher`, not a child of `BrillouinZone.apply`.
+  `MonkhorstPack` shares the dispatcher of `BrillouinZone`, so a registration on one is also on the other.
+  - `average` (`AdaptiveAverageApply`) calls `integrate` with the parent method (or function) and `wrap`.
+    Thus the self-energies (`RealSpaceSE`, `RealSpaceSI`) use an adaptive grid without changes, through `bz.apply.average`.
+    The error is measured on the wrapped value, because that is the value that is integrated.
+  - `wrap` gets `weight=None`. A node has more than one weight (Kronrod, and the error weights), and the
+    Kronrod weight of a box is not final until the box is not halved.
+  - `eta` shows a progress bar without a total, because the number of k-points is not known.
+  - `pool` warns and runs serially. The boxes are refined one by one.
+    The nodes of a box can run in parallel, but in 1D that is only 15 to 30 k-points.
+  - All other `BrillouinZone` modes (also the default `iter`) are registered as `AdaptiveUndefinedApply`.
+    They raise `TypeError` and refer to `last_bz().apply.<mode>`.
+    `sum` is not a weighted sum, so its value depends on the number of k-points that the refinement selects.
+    The other modes return a value for each k-point, so they need fixed k-points.
+    We rejected to use `last_bz()` in these modes, for the same reasons as for `__len__` (call order, pools).
+- The self-energies move the k-points for a k-point that is not zero (`bz._k += k`).
+  An adaptive grid has no `_k`, so they raise `NotImplementedError` for an adaptive grid and a k-point that is not zero.
 - `integrate(func)` and `last_bz()` are the abstract methods.
   `last_bz()` returns a plain `BrillouinZone` with the k-points and weights of the last `integrate` call.
   Use it with `apply` when you need more quantities on the same grid.
@@ -138,14 +155,14 @@ At Γ, sisl applies no phase.
 - The error of an array result is its largest absolute element.
   The tolerance is `max(atol, rtol * max|I|)`.
 - An integrand can return a sequence (`list`, `tuple`, `oplist`, not `ndarray`).
-  `_gk_rule` then integrates each element alone, also nested sequences, and returns an `oplist`.
+  `_sums_new` then makes sums for each element (also nested sequences), and `_sums_get` returns an `oplist`.
   This is the same as `bz.apply.average` with `oplist`: the elements can have different shapes.
   `_maxabs` takes the maximum over all elements. Thus the box error, the error of each direction
   and `max|I|` for `rtol` include all elements, and the most difficult element decides the refinement.
   We did not use a tolerance for each element.
   The box error is one number for the heap, and a tolerance for each element needs the final value of each element.
   Elements with very different magnitudes need `atol`, or the user must scale them.
-- A sequence must have the same length at all k-points, else `_gk_rule` raises `ValueError`.
+- A sequence must have the same length at all k-points, else `_sums_add` raises `ValueError`.
 - When `max_k` stops the integration, `integrate` warns and returns the last value.
 - A scalar `max_k` is the total number of integrand evaluations (`_max_k`).
   A `(3,)` sequence is a k-point density for each lattice direction (`_max_k_axes` keeps the integrated directions).
@@ -166,7 +183,32 @@ At Γ, sisl applies no phase.
 - The box is halved along the axis with the largest error `|K - Q_a|`.
   `Q_a` uses the Gauss weights along axis `a` and the Kronrod weights along the other axes.
   This needs no new integrand values.
-- The integral and the error are summed again from all boxes after each split. This prevents round-off drift.
+- `_box` does not store the integrand values. `_WeightedSums` adds each value at once to the sums
+  with the weights `wK`, `wK - wG` and `wK - wQ_a`, then the value is dropped.
+  A box thus needs `6` values (`6 + d` for `d > 1`): the sums, a compensation, a line sum and 2 scratch buffers.
+  The sums use BLAS `axpy` (one pass, in place) for single and double precision, and `numpy` for other data-types (e.g. `longdouble`).
+  For a large value it is faster than the old `np.stack` and `tensordot`, for a scalar it costs approximately 8 µs for each k-point.
+  Before, `np.stack` copied the `15**d` values (`2 * 15**d` values in memory, about 7000 for `d = 3`).
+  We rejected these alternatives:
+  - Pre-allocate the `15**d` values: this only removes the copy, the memory still scales with `15**d`.
+  - Nested sums along each direction (as `tensordot`): `d` sums for each weight, and no better precision than compensation.
+- The integrand can return the same array at each call (a buffer changed in place).
+  The stored list had `15**d` references to the last value, and gave wrong results. A test checks this.
+- The errors are sums with the weights `wK - wG` (not `K - G` of two sums).
+  `K - G` cancels: its round-off is `eps * |K|`, and it is not the error when the box has converged.
+- The Kronrod sum of a box is a compensated sum (Knuth TwoSum). A plain sum of `15**d` values lost
+  10 `eps` in 3D, the old `tensordot` did not. The error sums are plain, they are estimates.
+  Each line of 15 values (the last direction) is summed plainly, and then added with TwoSum.
+  TwoSum for each value took 8 array passes, and made large values 2 times slower.
+- The integral and the error are running sums. A split adds the two children and subtracts the parent.
+  We do not sum all boxes again: it costs `N_boxes` values of `func` for each split.
+  The running integral is a compensated sum (`_two_sum`), and the error a scalar Neumaier sum (`_fsum_add`).
+  The terms are added one by one. A coarse box can overestimate a peak by orders of magnitude, so
+  `(children - parent)` cancels, and a plain running sum lost `1e-13` (relative). A test checks this against `math.fsum`.
+- Each box keeps its Kronrod value, because the value is subtracted when the box is halved.
+  The memory is thus `N_boxes` values of `func`. We do not evaluate a box again to get this value.
+- `_WeightedSums` and `_two_sum` change the data-type to complex when a later value is complex.
+  A different shape or sequence length raises `ValueError`.
 - With `_max_k_axes`, a box is halved along the axis with the largest error that keeps `15 / (h / 2) <= max_k[a]`.
   A box that cannot be halved along any axis moves to a list of frozen boxes. It stays in the integral and the error.
   When no box can be halved, `integrate` warns.
