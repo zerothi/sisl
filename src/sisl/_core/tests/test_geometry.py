@@ -776,6 +776,22 @@ class TestGeometry:
         g.angle([0], dir=1)
         assert np.allclose(g.cell[1], cell[1])
 
+    @pytest.mark.parametrize("m", [[1, 0, 0], [0, 0, 1], [1, 1, 0], [1, 1, 1]])
+    @pytest.mark.parametrize("v", [[1, 0, 0], [0, 0, 1], [0, 0, -1], [1, 1, 0]])
+    def test_rotate_miller(self, m, v):
+        g = Geometry(
+            [[0, 0, 0], [0.5, 0.2, 0.1]],
+            lattice=[[2, 0, 0], [1, 1.7, 0], [0.5, 0.3, 3]],
+        )
+        rot = g.rotate_miller(m, v)
+        mc = np.asarray(m) @ rot.cell
+        assert np.allclose(np.cross(mc, v), 0)
+        assert mc @ v > 0
+        assert np.all(np.isfinite(rot.xyz))
+        # rigid rotation
+        assert np.allclose(rot.lattice.length, g.lattice.length)
+        assert np.allclose(rot.fxyz, g.fxyz)
+
     def test_getitem_slice(self):
         g = sisl_geom.graphene()
         g.set_nsc([3, 3, 1])

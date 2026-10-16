@@ -10,7 +10,6 @@ from collections import OrderedDict
 from collections.abc import Iterator, Sequence
 from functools import singledispatchmethod
 from itertools import product
-from math import acos
 from numbers import Integral, Real
 from pathlib import Path
 from typing import Optional, Union
@@ -1862,27 +1861,32 @@ class Geometry(
         """Align Miller direction along ``v``
 
         Rotate geometry and cell such that the Miller direction
+        ``[m[0], m[1], m[2]]`` (in units of the lattice vectors)
         points along the Cartesian vector ``v``.
+
+        Examples
+        --------
+        >>> geom = sisl.geom.fcc(4.05, "Al")
+        >>> rot = geom.rotate_miller([1, 1, 1], [0, 0, 1])
+        >>> np.allclose(np.cross([1, 1, 1] @ rot.cell, [0, 0, 1]), 0)
+        True
         """
-        # Create normal vector to miller direction and cartesian
-        # direction
-        cp = _a.arrayd(
-            [
-                m[1] * v[2] - m[2] * v[1],
-                m[2] * v[0] - m[0] * v[2],
-                m[0] * v[1] - m[1] * v[0],
-            ]
-        )
-        cp /= fnorm(cp)
+        m = _a.asarrayd(m) @ self.cell
+        v = _a.asarrayd(v)
 
-        lm = _a.arrayd(m)
-        lm /= fnorm(lm)
-        lv = _a.arrayd(v)
-        lv /= fnorm(lv)
-
-        # Now rotate the angle between them
-        a = acos(np.sum(lm * lv))
-        return self.rotate([a, cp], rad=True)
+        # Rotate around the normal vector of m and v
+        cp = np.cross(m, v)
+        ncp = fnorm(cp)
+        dot = m @ v
+        angle = np.arctan2(ncp, dot)
+        if ncp <= 1e-12 * fnorm(m) * fnorm(v):
+            if dot > 0:
+                return self.copy()
+            # anti-parallel, rotate around any vector normal to m
+            cp = np.cross(m, np.eye(3)[np.argmin(np.abs(m))])
+            ncp = fnorm(cp)
+            angle = np.pi
+        return self.rotate([angle, cp / ncp], rad=True)
 
     def translate2uc(
         self,
