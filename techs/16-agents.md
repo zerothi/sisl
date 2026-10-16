@@ -57,6 +57,14 @@ Use the same name for the branch and the folder.
 Then the maintainer can find each worktree and its branch in one place.
 `.gitignore` contains `/wt/`, thus `git status` does not show the worktrees.
 
+## Do not push
+
+Do not push to a remote. Push only when a human tells you to push.
+Approval for one push is not approval for the next push.
+
+Commit your work locally. In your report, tell the branch name and the commits.
+The maintainer reviews the commits and decides when to push.
+
 ## Commit trailer
 
 Mark each agent commit with the `ai` trailer. Do not use other trailers in the message.

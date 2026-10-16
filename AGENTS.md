@@ -74,6 +74,7 @@ Read it before your first change. In short:
   can make that change: stop and tell the maintainer.
 - **Worktrees** are ok, but always in `<repo-root>/wt/<branch-name>`:
   `git worktree add -b <branch-name> wt/<branch-name>`.
+- **Do not push** unless a human tells you to. Commit locally and report the branch.
 - **Commit trailer.** Mark agent commits only with the `ai` trailer (load it once with
   `git config include.path ../.gitconfig`), never with `Co-authored-by` or other trailers:
   `git commit ... --trailer ai=<agent>:<model>[:<effort>]`, e.g. `ai=claude-code:claude-opus-5-5`.
