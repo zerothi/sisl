@@ -152,6 +152,13 @@ At Γ, sisl applies no phase.
 - `nkpt` has one value for each lattice direction (scalar or `(3,)`), as `nkpt` of `MonkhorstPack`.
   `nkpt[a]` is the initial number of k-points along `a`, per reciprocal lattice vector.
   `nkpt[a] == 0` means that `a` is not integrated (`k_a = 0`).
+- A scalar `nkpt` is set to 0 along the non-periodic directions (`parent.pbc`, as
+  `BrillouinZone.volume`). Each integrated direction multiplies the k-points by 15 or more,
+  so the default must not integrate a slab or molecule direction. Without a lattice to check,
+  all 3 directions are integrated; with no periodic direction, it raises (give `nkpt` per direction).
+  An explicit `(3,)` `nkpt` is used as given. Rejected: `nsc > 1`, because `Lattice(1)` has
+  `nsc == 1` and `func(k)` need not come from a sparse matrix.
+  `MonkhorstPack` keeps a scalar for all 3 directions (existing behaviour).
   We merged the old `axes` argument into it, because the two arguments had a 1-1 correspondence.
 - The user gives k-points, not boxes, because k-points are the unit of `MonkhorstPack` and of `max_k`.
   The initial number of boxes is `_n = max(1, ceil(nkpt * width / 15))`, with `width` from `_domain()`.

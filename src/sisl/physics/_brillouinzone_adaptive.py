@@ -459,7 +459,8 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     nkpt :
        initial number of k-points along each lattice direction, per reciprocal
        lattice vector (as for `MonkhorstPack`). A direction with 0 k-points is not
-       integrated. A scalar is the same value for all 3 directions.
+       integrated. A scalar is the same value for the periodic directions of the
+       parent lattice (``pbc``); the other directions are not integrated.
        The value is rounded up to a multiple of 15 (one box has 15 k-points along a
        direction). With `trs`, the integrated half of the direction gets half the k-points.
        The initial k-points are always integrated, also when they exceed `max_k`.
@@ -521,9 +522,18 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
 
         nkpt3 = _a.arrayi(nkpt)
         if nkpt3.ndim == 0:
-            nkpt3 = np.repeat(nkpt3, 3)
-            if nkpt3[0] < 1:
+            if nkpt3 < 1:
                 raise ValueError(f"{cls} requires a scalar nkpt >= 1, got {nkpt}")
+            try:
+                pbc = self._parent_lattice().pbc
+            except (AttributeError, ValueError):
+                pbc = np.ones(3, dtype=bool)
+            if not np.any(pbc):
+                raise ValueError(
+                    f"{cls} found no periodic directions for a scalar nkpt; "
+                    "give nkpt for each lattice direction"
+                )
+            nkpt3 = np.where(pbc, nkpt3, 0)
         if nkpt3.shape != (3,) or np.any(nkpt3 < 0) or not np.any(nkpt3 > 0):
             raise ValueError(
                 f"{cls} requires nkpt to be a scalar or 3 values >= 0 "

@@ -174,6 +174,22 @@ def test_gk_nkpt():
             GaussKronrodGrid(Lattice(1), nkpt)
 
 
+def test_gk_nkpt_periodic():
+    # a scalar nkpt only integrates the periodic directions
+    H = Hamiltonian(geom.graphene())
+    assert GaussKronrodGrid(H)._axes.tolist() == [0, 1]
+    assert GaussKronrodGrid(H, 30, trs=False)._n.tolist() == [2, 2]
+    lattice = Lattice(1)
+    lattice.pbc = [False, True, False]
+    assert GaussKronrodGrid(lattice)._axes.tolist() == [1]
+    # an explicit nkpt is used as given
+    assert GaussKronrodGrid(lattice, [15, 15, 0])._axes.tolist() == [0, 1]
+    lattice.pbc = [False] * 3
+    with pytest.raises(ValueError, match="no periodic"):
+        GaussKronrodGrid(lattice)
+    GaussKronrodGrid(lattice, [15, 0, 0])
+
+
 def test_gk_polynomial_exact():
     # G7 is exact up to degree 13, so one box is enough
     gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 0, 0], atol=1e-14, rtol=0)

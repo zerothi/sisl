@@ -12,7 +12,8 @@ weights of the last integration.
 `~sisl.physics.GaussKronrodGrid` refines boxes of a 15-point Gauss-Kronrod rule
 where the integrand changes fast, e.g. Green functions with a small broadening.
 ``nkpt`` is the initial number of k-points along each direction (0 for a direction
-that is not integrated), as for `~sisl.physics.MonkhorstPack`.
+that is not integrated), as for `~sisl.physics.MonkhorstPack`. A scalar ``nkpt``
+only integrates the periodic directions of the parent lattice.
 ``max_k`` limits the total number of k-points, or (as a sequence) the k-point
 density along each direction. Time-reversal symmetry (``trs``) halves the
 integrated domain, as for `~sisl.physics.MonkhorstPack`.
