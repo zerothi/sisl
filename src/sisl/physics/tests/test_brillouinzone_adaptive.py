@@ -16,6 +16,7 @@ from sisl import (
     Hamiltonian,
     Lattice,
     SislWarning,
+    Spin,
     geom,
 )
 
@@ -123,6 +124,91 @@ def test_gk_max_k_warns():
     gk = GaussKronrodGrid(Lattice(1), axes=0, atol=1e-12, rtol=0, max_k=100)
     with pytest.warns(SislWarning, match="did not converge"):
         gk.integrate(func)
+
+
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
+def test_adaptive_trs_default(cls):
+    g = geom.sc(1.0, Atom(1, R=1.1))
+    assert cls(Lattice(1)).trs
+    assert cls(Hamiltonian(g)).trs
+    assert cls(Hamiltonian(g, spin=Spin("polarized"))).trs
+    assert not cls(Hamiltonian(g, spin=Spin("non-colinear"))).trs
+    assert not cls(Lattice(1), trs=False).trs
+    assert "trs: True" in str(cls(Lattice(1)))
+
+
+@pytest.mark.parametrize("cls", [GaussKronrodGrid])
+def test_adaptive_max_k_input(cls):
+    assert cls(Lattice(1), axes=[0, 1], max_k=100)._max_k == 100
+    assert cls(Lattice(1), axes=[0, 1], max_k=[100, 20])._max_k is None
+    with pytest.raises(ValueError):
+        cls(Lattice(1), axes=[0, 1], max_k=[100, 20, 3])
+    with pytest.raises(ValueError):
+        cls(Lattice(1), axes=0, max_k=0)
+
+
+def test_gk_trs_half_domain():
+    # a peak away from Gamma, so f(k) != f(-k)
+    f, ref = peak(1.05)
+
+    def g(k):
+        return f(k - 0.1)
+
+    gk = GaussKronrodGrid(Lattice(1), axes=0, atol=1e-10, rtol=0, trs=True)
+    v, bz = gk.integrate(lambda k: (g(k) + g(-k)) / 2, ret_bz=True)
+    assert v == pytest.approx(ref, abs=1e-10)
+    assert np.all(bz.k[:, 0] >= 0) and np.all(bz.k[:, 0] <= 0.5)
+    assert bz.weight.sum() == pytest.approx(1)
+
+    # an odd integrand: TRS integrates only [0, 1/2] and doubles it
+    def odd(k):
+        return np.sin(2 * np.pi * k[0])
+
+    assert gk.integrate(odd) == pytest.approx(2 / np.pi, abs=1e-10)
+    gk = GaussKronrodGrid(Lattice(1), axes=0, atol=1e-10, rtol=0, trs=False)
+    assert gk.integrate(odd) == pytest.approx(0, abs=1e-10)
+    assert gk.integrate(g) == pytest.approx(ref, abs=1e-10)
+
+
+@pytest.mark.parametrize("trs", [True, False])
+def test_gk_trs_2d(trs):
+    f, ref = peak(1.1)
+    gk = GaussKronrodGrid(
+        Lattice(1), axes=[1, 2], atol=1e-9, rtol=0, max_k=50000, trs=trs
+    )
+    v, bz = gk.integrate(lambda k: f(k[[1, 0, 2]]) * f(k[[2, 0, 1]]), ret_bz=True)
+    assert v == pytest.approx(ref**2, abs=1e-8)
+    assert bz.weight.sum() == pytest.approx(1)
+    assert np.all(bz.k[:, 1] >= 0) == trs
+
+
+def test_gk_max_k_axes_density():
+    func, _ = peak(1 + 1e-6)
+    gk = GaussKronrodGrid(
+        Lattice(1), axes=0, atol=1e-12, rtol=0, max_k=[150], trs=False
+    )
+    with pytest.warns(SislWarning, match="did not converge"):
+        v, bz = gk.integrate(func, ret_bz=True)
+    # boxes are at least 15 / 150 wide, so at most 10 boxes
+    assert len(bz) <= 150
+    assert bz.weight.sum() == pytest.approx(1)
+
+
+def test_gk_max_k_axes_next_direction():
+    # the integrand only varies along a; when a is blocked, b is halved instead
+    # until b is also blocked, then the integration stops with a warning
+    func, _ = peak(1 + 1e-6)
+    gk = GaussKronrodGrid(
+        Lattice(1), axes=[0, 1], atol=1e-12, rtol=0, max_k=[60, 120], trs=False
+    )
+    with pytest.warns(SislWarning, match="did not converge"):
+        v, bz = gk.integrate(func, ret_bz=True)
+    ka = np.unique(bz.k[:, 0])
+    kb = np.unique(bz.k[:, 1])
+    assert len(ka) <= 60
+    assert len(kb) <= 120
+    assert len(kb) > 15
+    assert bz.weight.sum() == pytest.approx(1)
 
 
 @pytest.mark.filterwarnings("error::sisl.SislWarning")

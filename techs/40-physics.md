@@ -110,6 +110,15 @@ At Γ, sisl applies no phase.
 - The error of an array result is its largest absolute element.
   The tolerance is `max(atol, rtol * max|I|)`.
 - When `max_k` stops the integration, `integrate` warns and returns the last value.
+- A scalar `max_k` is the total number of integrand evaluations (`_max_k`).
+  A sequence is a k-point density for each of the `axes` (`_max_k_axes`), as `nkpt` of `MonkhorstPack`.
+  An adaptive grid has no fixed number of k-points along an axis. Thus a density is the only well-defined limit for each axis.
+  A sequence does not limit the total, but the densities limit it to approximately `prod(max_k)`.
+- `trs` follows `MonkhorstPack`: the default comes from `parent.spin`, and `_trs` is the axis index or -1.
+  The self-energies read `bz._trs >= 0`, so do not rename it.
+- With TRS, `_domain()` gives `[0, 1/2]` along the first of the `axes`, and the weights are scaled to sum to 1.
+  This is the same contract as `MonkhorstPack`: the caller must symmetrize the result (for example `(G + G.T) / 2`).
+  An odd integrand gives `2 * integral(0, 1/2)`, not 0. A test checks this.
 
 `GaussKronrodGrid`:
 
@@ -123,6 +132,11 @@ At Γ, sisl applies no phase.
   `Q_a` uses the Gauss weights along axis `a` and the Kronrod weights along the other axes.
   This needs no new integrand values.
 - The integral and the error are summed again from all boxes after each split. This prevents round-off drift.
+- With `_max_k_axes`, a box is halved along the axis with the largest error that keeps `15 / (h / 2) <= max_k[a]`.
+  A box that cannot be halved along any axis moves to a list of frozen boxes. It stays in the integral and the error.
+  When no box can be halved, `integrate` warns.
+- The nodes of the 15-point rule are inside the box. Thus with TRS no k-point is on the `k = 0` or `k = 1/2` planes,
+  and no weight correction for points on the boundary is necessary (unlike `MonkhorstPack`).
 
 Rejected: Farey grids (Chen *et al.*, Phys. Rev. B 106, 155102 (2022)).
 

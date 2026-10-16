@@ -7,7 +7,7 @@ import heapq
 import itertools
 from abc import ABCMeta, abstractmethod
 from collections.abc import Callable
-from typing import Union
+from typing import Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -19,6 +19,7 @@ from sisl.typing import CellAxes, SeqOrScalarInt
 from sisl.utils.misc import direction, listify
 
 from .brillouinzone import BrillouinZone
+from .spin import Spin
 
 __all__ = ["AdaptiveBrillouinZone", "GaussKronrodGrid"]
 
@@ -33,8 +34,14 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
     `integrate` instead.
 
     The integration domain is the reduced Brillouin zone :math:`]-1/2 ; 1/2]` along
-    the sampled `axes`. The domain has unit volume, so the integral is equal to the
+    the sampled `axes`. The weights sum to 1, so the integral is equal to the
     Brillouin zone average, as for `MonkhorstPack`.
+
+    With time-reversal symmetry (`trs`), only :math:`[0 ; 1/2]` along the first of the
+    `axes` is integrated, and the weights are doubled. As for `MonkhorstPack`, the
+    result is only correct when :math:`f(\mathbf k)` and :math:`f(-\mathbf k)` have the
+    same integral, e.g. a Green function symmetrized as
+    :math:`(\mathbf G + \mathbf G^T)/2` after the integration.
 
     Parameters
     ----------
@@ -49,7 +56,14 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
     rtol :
        relative tolerance of the integral, relative to the largest absolute element
     max_k :
-       maximum number of integrand evaluations for one integration
+       a scalar is the maximum number of integrand evaluations for one integration.
+       A sequence (one value for each of the `axes`) is the maximum k-point density
+       along each axis, in k-points per reciprocal lattice vector (as the
+       ``nkpt`` argument of `MonkhorstPack`). The total number is then not limited.
+    trs :
+       whether time-reversal symmetry is used. If ``None``, it is true for
+       (un)-polarized calculations, and false for non-colinear and higher spin
+       configurations (as for `MonkhorstPack`).
 
     See Also
     --------
@@ -62,7 +76,8 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         axes: CellAxes = (0, 1, 2),
         atol: float = 1e-6,
         rtol: float = 1e-6,
-        max_k: int = 10000,
+        max_k: SeqOrScalarInt = 10000,
+        trs: Optional[bool] = None,
     ):
         self.set_parent(parent)
         self._bz_attr = ("", None)
@@ -76,7 +91,29 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
             raise ValueError(f"{self.__class__.__name__} requires atol, rtol >= 0")
         self._atol = atol
         self._rtol = rtol
-        self._max_k = max_k
+
+        nk = _a.arrayi(max_k)
+        if np.any(nk < 1):
+            raise ValueError(f"{self.__class__.__name__} requires max_k >= 1")
+        if nk.ndim == 0:
+            self._max_k = int(nk)
+            self._max_k_axes = None
+        elif nk.shape == self._axes.shape:
+            self._max_k = None
+            self._max_k_axes = nk
+        else:
+            raise ValueError(
+                f"{self.__class__.__name__} requires max_k to be a scalar or have "
+                f"one value per axes ({len(self._axes)}), got {nk.tolist()}"
+            )
+
+        if trs is None:
+            trs = True
+            try:
+                trs = parent.spin <= Spin("polarized")
+            except AttributeError:
+                pass
+        self._trs = int(self._axes[0]) if trs else -1
 
     def _undefined(self, what: str):
         return TypeError(
@@ -105,6 +142,26 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         """Lattice directions that are integrated"""
         return self._axes
 
+    @property
+    def trs(self) -> bool:
+        """Whether time-reversal symmetry is used"""
+        return self._trs >= 0
+
+    def _domain(self) -> tuple[np.ndarray, np.ndarray]:
+        """Lower bound and width of the integrated domain along `axes`"""
+        lo = np.full(len(self._axes), -0.5)
+        width = np.ones(len(self._axes))
+        if self._trs >= 0:
+            i = np.flatnonzero(self._axes == self._trs)[0]
+            lo[i] = 0.0
+            width[i] = 0.5
+        return lo, width
+
+    def _max_k_str(self) -> str:
+        if self._max_k_axes is None:
+            return str(self._max_k)
+        return str(self._max_k_axes.tolist())
+
     def _tolerance(self, value: npt.ArrayLike) -> float:
         """Requested absolute tolerance for the integral `value`"""
         return max(self._atol, self._rtol * float(np.max(np.abs(value))))
@@ -119,7 +176,7 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         warn(
             f"{self.__class__.__name__}.integrate did not converge: "
             f"error estimate {err:.3e} > tolerance {tol:.3e} using {nk} k-points "
-            f"(max_k={self._max_k})"
+            f"(max_k={self._max_k_str()})"
         )
 
     @abstractmethod
@@ -150,7 +207,8 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         parent = str(self._parent_lattice()).replace("\n", "\n ")
         return (
             f"{self.__class__.__name__}{{axes: {self._axes.tolist()}, "
-            f"atol: {self._atol}, rtol: {self._rtol}, max_k: {self._max_k},\n "
+            f"atol: {self._atol}, rtol: {self._rtol}, max_k: {self._max_k_str()}, "
+            f"trs: {self.trs},\n "
             f"{parent}\n}}"
         )
 
@@ -252,13 +310,20 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     axes :
        the lattice directions that are integrated
     n :
-       initial number of boxes along each of the sampled `axes`
+       initial number of boxes along each of the sampled `axes`.
+       The initial boxes are always integrated, also when they exceed `max_k`.
     atol :
        absolute tolerance of the integral
     rtol :
        relative tolerance of the integral
     max_k :
-       maximum number of integrand evaluations
+       a scalar is the maximum number of integrand evaluations.
+       A sequence (one value for each of the `axes`) is the maximum k-point density
+       along each axis: a box of width :math:`h` (in reduced units) is not halved along
+       an axis when :math:`15/(h/2)` is larger than the value of that axis.
+       The box is then halved along the axis with the next largest error.
+    trs :
+       whether time-reversal symmetry is used, see `AdaptiveBrillouinZone`.
 
     Examples
     --------
@@ -268,6 +333,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     ...     return np.linalg.inv((E + 1j * eta) * H.Sk(k, format="array") - H.Hk(k, format="array"))
     >>> Gavg, bz = gk.integrate(G, ret_bz=True)
     >>> len(bz)  # the number of k-points used
+
+    Limit the k-point density to that of a 1000 x 200 grid:
+
+    >>> gk = GaussKronrodGrid(H, axes=[0, 1], max_k=[1000, 200])
     """
 
     def __init__(
@@ -277,9 +346,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         n: SeqOrScalarInt = 1,
         atol: float = 1e-6,
         rtol: float = 1e-6,
-        max_k: int = 10000,
+        max_k: SeqOrScalarInt = 10000,
+        trs: Optional[bool] = None,
     ):
-        super().__init__(parent, axes=axes, atol=atol, rtol=rtol, max_k=max_k)
+        super().__init__(parent, axes=axes, atol=atol, rtol=rtol, max_k=max_k, trs=trs)
         nbox = _a.arrayi(n).ravel()
         if nbox.size == 1:
             nbox = np.repeat(nbox, len(self._axes))
@@ -293,8 +363,12 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         s = super().__str__()
         return s.replace("{", f"{{n: {self._n.tolist()}, ", 1)
 
-    def _box(self, func, lo: np.ndarray, h: np.ndarray):
-        """Integrate one box, returns k, weights, Kronrod value, error and split direction"""
+    def _box(self, func, lo: np.ndarray, h: np.ndarray, scale: float):
+        """Integrate one box
+
+        Returns k, weights, Kronrod value, error and the axes sorted by decreasing error.
+        The weights are multiplied by `scale`.
+        """
         d = len(lo)
         nodes = [lo[a] + h[a] * _GK_X for a in range(d)]
         kd = np.stack([g.ravel() for g in np.meshgrid(*nodes, indexing="ij")], axis=1)
@@ -304,51 +378,68 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
 
         wk = [_GK_WK * h[a] for a in range(d)]
         wg = [_GK_WG * h[a] for a in range(d)]
+        wk[0] = wk[0] * scale
+        wg[0] = wg[0] * scale
         K = _contract(F, wk)
         err = _maxabs(K - _contract(F, wg))
         if d == 1:
-            split = 0
+            order = [0]
         else:
-            split = int(
-                np.argmax(
-                    [
-                        _maxabs(K - _contract(F, wk[:a] + [wg[a]] + wk[a + 1 :]))
-                        for a in range(d)
-                    ]
-                )
-            )
+            dir_err = [
+                _maxabs(K - _contract(F, wk[:a] + [wg[a]] + wk[a + 1 :]))
+                for a in range(d)
+            ]
+            order = np.argsort(dir_err, kind="stable")[::-1].tolist()
 
         w = wk[0]
         for wa in wk[1:]:
             w = np.multiply.outer(w, wa)
-        return k, w.ravel(), K, err, split
+        return k, w.ravel(), K, err, order
+
+    def _can_split(self, h: np.ndarray, a: int) -> bool:
+        """Whether halving `h` along axis `a` keeps the density below `max_k`"""
+        if self._max_k_axes is None:
+            return True
+        return len(_GK_X) / (h[a] / 2) <= self._max_k_axes[a] * (1 + 1e-12)
 
     def integrate(self, func, ret_bz: bool = False):
         d = len(self._axes)
         nper = len(_GK_X) ** d
-        h0 = 1.0 / self._n
+        lo0, width = self._domain()
+        scale = 1 / float(np.prod(width))
+        h0 = width / self._n
 
+        # boxes that may be halved (heap on the error), and boxes that may not
         boxes = []
+        frozen = []
         counter = itertools.count()
 
         def push(lo, h):
-            k, w, K, err, split = self._box(func, lo, h)
-            heapq.heappush(boxes, (-err, next(counter), lo, h, k, w, K, split))
+            k, w, K, err, order = self._box(func, lo, h, scale)
+            heapq.heappush(boxes, (-err, next(counter), lo, h, k, w, K, order))
 
         for idx in itertools.product(*[range(n) for n in self._n]):
-            push(-0.5 + _a.arrayd(idx) * h0, h0.copy())
+            push(lo0 + _a.arrayd(idx) * h0, h0.copy())
         nk = len(boxes) * nper
 
         def total():
-            return sum(b[6] for b in boxes), sum(-b[0] for b in boxes)
+            all_boxes = boxes + frozen
+            return sum(b[6] for b in all_boxes), sum(-b[0] for b in all_boxes)
 
         value, err = total()
         tol = self._tolerance(value)
         while err > tol:
-            if nk + 2 * nper > self._max_k:
+            if len(boxes) == 0 or (
+                self._max_k is not None and nk + 2 * nper > self._max_k
+            ):
                 self._not_converged(err, tol, nk)
                 break
-            _, _, lo, h, *_, split = heapq.heappop(boxes)
+            box = heapq.heappop(boxes)
+            _, _, lo, h, *_, order = box
+            split = next((a for a in order if self._can_split(h, a)), None)
+            if split is None:
+                frozen.append(box)
+                continue
             h = h.copy()
             h[split] /= 2
             hi = lo.copy()
@@ -361,7 +452,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
 
         value = np.asarray(value)[()]
         if ret_bz:
-            k = np.concatenate([b[4] for b in boxes])
-            w = np.concatenate([b[5] for b in boxes])
+            k = np.concatenate([b[4] for b in boxes + frozen])
+            w = np.concatenate([b[5] for b in boxes + frozen])
             return value, BrillouinZone(self.parent, k, w)
         return value
