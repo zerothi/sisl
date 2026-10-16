@@ -1248,7 +1248,7 @@ class MonkhorstPack(BrillouinZone):
             k_int = mp._size / k_vol
             if not np.allclose(np.rint(k_int), k_int):
                 raise SislError(
-                    f"{self.__class__.__name__}.reduce could not replace k-point, BZ "
+                    f"{self.__class__.__name__}.replace could not replace k-point, BZ "
                     "volume replaced is not equivalent to the inherent k-point volume."
                 )
 
@@ -1281,7 +1281,7 @@ class MonkhorstPack(BrillouinZone):
 
         if len(idx) == 0:
             raise SislError(
-                f"{self.__class__.__name__}.reduce found no k-points to replace. "
+                f"{self.__class__.__name__}.replace found no k-points to replace. "
                 f"Searched with precision: {dk.ravel()}"
             )
 
@@ -1318,7 +1318,7 @@ class MonkhorstPack(BrillouinZone):
             weight_factor = 2.0
             if self._trs < 0:
                 info(
-                    f"{self.__class__.__name__}.reduce assumes that the replaced k-point has double weights."
+                    f"{self.__class__.__name__}.replace assumes that the replaced k-point has double weights."
                 )
         else:
             # print("k-point to replace: ", k.ravel())
@@ -1335,7 +1335,7 @@ class MonkhorstPack(BrillouinZone):
             # print(total_weight, replace_weight)
             # print(mp)
             raise SislError(
-                f"{self.__class__.__name__}.reduce found inconsistent replacement weights "
+                f"{self.__class__.__name__}.replace found inconsistent replacement weights "
                 f"self={total_weight} vs. mp={replace_weight}. "
                 f"Replacement indices: {idx}."
             )
