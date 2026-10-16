@@ -182,6 +182,8 @@ raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`:
 >>> bz = gk.last_bz()
 
 The result is the Brillouin zone average (as for `MonkhorstPack`).
+When ``G`` returns a list of values with different shapes, the result is an `~sisl.oplist`,
+and the convergence includes all values.
 `~AdaptiveBrillouinZone.last_bz` returns a `BrillouinZone` with the k-points
 and weights of the last integration. It is only created when you call it, and you can
 use it with ``bz.apply`` to calculate more quantities on the same k-points.

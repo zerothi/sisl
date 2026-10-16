@@ -19,6 +19,7 @@ from sisl import (
     SislWarning,
     Spin,
     geom,
+    oplist,
 )
 
 pytestmark = [pytest.mark.physics, pytest.mark.brillouinzone, pytest.mark.bz]
@@ -140,6 +141,48 @@ def test_gk_peak_local_refinement():
     assert bz.weight.sum() == pytest.approx(1)
     # points concentrate around the peak at k=0
     assert np.sum(np.abs(bz.k[:, 0]) < 0.05) > len(bz) / 2
+
+
+def test_gk_oplist():
+    func, ref = peak(1.2)
+    gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-12, rtol=0)
+    M = np.arange(6).reshape(2, 3)
+
+    for ret in (list, tuple, oplist):
+        v = gk.integrate(lambda k: ret([func(k), M * func(k)]))
+        assert isinstance(v, oplist)
+        assert len(v) == 2
+        assert v[0] == pytest.approx(ref, abs=1e-10)
+        assert v[1].shape == (2, 3)
+        assert np.allclose(v[1], M * ref, atol=1e-10, rtol=0)
+
+    # nested oplist, and arithmetic on the result
+    v = gk.integrate(lambda k: oplist([func(k), oplist([2 * func(k), M])]))
+    assert isinstance(v[1], oplist)
+    assert v[1][0] == pytest.approx(2 * ref, abs=1e-10)
+    assert np.allclose(v[1][1], M)
+    assert (v * 2)[0] == pytest.approx(2 * ref, abs=1e-10)
+
+    with pytest.raises(ValueError):
+        gk.integrate(lambda k: [1.0] * (1 + int(k[0] > 0.25)))
+
+
+def test_gk_oplist_convergence_all_elements():
+    sharp, _ = peak(1 + 1e-3)
+
+    def smooth(k):
+        return k[0] ** 2
+
+    def nk(func):
+        gk = GaussKronrodGrid(Lattice(1), [15, 0, 0], atol=1e-9, rtol=0, trs=False)
+        gk.integrate(func)
+        return len(gk.last_bz())
+
+    n_sharp = nk(sharp)
+    assert nk(smooth) == 15 < n_sharp
+    # the sharp element decides the refinement, in any position
+    assert nk(lambda k: [smooth(k), sharp(k)]) == n_sharp
+    assert nk(lambda k: (sharp(k), np.full(3, smooth(k)))) == n_sharp
 
 
 def test_gk_array_and_complex():

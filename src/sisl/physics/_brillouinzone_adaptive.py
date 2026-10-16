@@ -7,12 +7,13 @@ import heapq
 import itertools
 from abc import ABCMeta, abstractmethod
 from collections.abc import Callable
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 import numpy.typing as npt
 
 import sisl._array as _a
+from sisl._core.oplist import oplist
 from sisl._internal import set_module
 from sisl.messages import SislError, warn
 from sisl.typing import SeqOrScalarInt
@@ -88,7 +89,7 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def integrate(self, func: Callable[[np.ndarray], npt.ArrayLike]) -> np.ndarray:
+    def integrate(self, func: Callable) -> Union[np.ndarray, oplist]:
         """Integrate `func` over the Brillouin zone
 
         The k-points that the integration used are available from `last_bz`.
@@ -97,12 +98,17 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         ----------
         func :
            the integrand, called as ``func(k)`` with ``k`` a reduced k-point with
-           shape ``(3,)``. It must return a scalar or an array with a fixed shape.
+           shape ``(3,)``. It must return a scalar, an array with a fixed shape,
+           or a sequence (`list`, `tuple` or `~sisl.oplist`, not `numpy.ndarray`)
+           of these. A sequence is integrated element by element, so its elements
+           can have different shapes (as for ``bz.apply.average`` with `~sisl.oplist`).
+           The convergence includes all elements.
 
         Returns
         -------
-        numpy.ndarray
-            the integral (equal to the Brillouin zone average)
+        numpy.ndarray or oplist
+            the integral (equal to the Brillouin zone average). An `~sisl.oplist`
+            when `func` returns a sequence.
         """
 
     @abstractmethod
@@ -201,8 +207,55 @@ def _contract(F: np.ndarray, ws) -> np.ndarray:
     return F
 
 
+def _is_oplist(a) -> bool:
+    """Whether `a` is a sequence that is integrated element by element (as `oplist`)"""
+    return isinstance(a, (list, tuple)) and not isinstance(a, np.ndarray)
+
+
 def _maxabs(a) -> float:
+    """Largest absolute element of an array, or of all elements of an `oplist`"""
+    if _is_oplist(a):
+        return max((_maxabs(x) for x in a), default=0.0)
     return float(np.max(np.abs(a)))
+
+
+def _gk_rule(results: list, wk: list, wg: list):
+    """Kronrod value, error and error for each direction of the integrand values `results`
+
+    `results` has one integrand value for each node of the box.
+    A sequence (not `numpy.ndarray`) is integrated element by element,
+    and the Kronrod value is then an `oplist`.
+    The errors are the largest absolute errors of all elements.
+    """
+    d = len(wk)
+    first = results[0]
+    if _is_oplist(first):
+        n = len(first)
+        if any(not _is_oplist(r) or len(r) != n for r in results):
+            raise ValueError(
+                "GaussKronrodGrid requires the integrand to return sequences "
+                "with the same length for all k-points"
+            )
+        parts = [_gk_rule([r[i] for r in results], wk, wg) for i in range(n)]
+        K = oplist(p[0] for p in parts)
+        err = max((p[1] for p in parts), default=0.0)
+        dir_err = np.max([p[2] for p in parts], axis=0) if n > 0 else np.zeros(d)
+        return K, err, dir_err
+
+    F = np.stack([np.asarray(r) for r in results])
+    F = F.reshape((len(_GK_X),) * d + F.shape[1:])
+    K = _contract(F, wk)
+    err = _maxabs(K - _contract(F, wg))
+    if d == 1:
+        dir_err = np.array([err])
+    else:
+        dir_err = np.array(
+            [
+                _maxabs(K - _contract(F, wk[:a] + [wg[a]] + wk[a + 1 :]))
+                for a in range(d)
+            ]
+        )
+    return K, err, dir_err
 
 
 @set_module("sisl.physics")
@@ -256,7 +309,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     atol :
        absolute tolerance of the integral (largest absolute element error)
     rtol :
-       relative tolerance of the integral, relative to the largest absolute element
+       relative tolerance of the integral, relative to the largest absolute element.
+       For a sequence (`~sisl.oplist`) result, the errors and the largest element
+       are taken over all elements. Elements with very different magnitudes should
+       then be scaled, or use `atol`.
 
     Examples
     --------
@@ -364,7 +420,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
 
     def _tolerance(self, value: npt.ArrayLike) -> float:
         """Requested absolute tolerance for the integral `value`"""
-        return max(self._atol, self._rtol * float(np.max(np.abs(value))))
+        return max(self._atol, self._rtol * _maxabs(value))
 
     def _k_full(self, k: np.ndarray) -> np.ndarray:
         """Convert k-points along the integrated directions to 3D reduced k-points"""
@@ -389,23 +445,14 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         """
         d = len(lo)
         k, _ = self._box_kw(lo, h, scale)
-        F = np.stack([np.asarray(func(kk)) for kk in k])
-        F = F.reshape((len(_GK_X),) * d + F.shape[1:])
+        results = [func(kk) for kk in k]
 
         wk = [_GK_WK * h[a] for a in range(d)]
         wg = [_GK_WG * h[a] for a in range(d)]
         wk[0] = wk[0] * scale
         wg[0] = wg[0] * scale
-        K = _contract(F, wk)
-        err = _maxabs(K - _contract(F, wg))
-        if d == 1:
-            order = [0]
-        else:
-            dir_err = [
-                _maxabs(K - _contract(F, wk[:a] + [wg[a]] + wk[a + 1 :]))
-                for a in range(d)
-            ]
-            order = np.argsort(dir_err, kind="stable")[::-1].tolist()
+        K, err, dir_err = _gk_rule(results, wk, wg)
+        order = np.argsort(dir_err, kind="stable")[::-1].tolist()
         return K, err, order
 
     def _can_split(self, h: np.ndarray, a: int) -> bool:
@@ -468,6 +515,8 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
             "h": np.array([b[3] for b in all_boxes]),
             "scale": scale,
         }
+        if isinstance(value, oplist):
+            return value
         return np.asarray(value)[()]
 
     def last_bz(self) -> BrillouinZone:

@@ -137,6 +137,15 @@ At Γ, sisl applies no phase.
   `_axes` (the integrated directions) and `_n` (their boxes) are derived from `nkpt`.
 - The error of an array result is its largest absolute element.
   The tolerance is `max(atol, rtol * max|I|)`.
+- An integrand can return a sequence (`list`, `tuple`, `oplist`, not `ndarray`).
+  `_gk_rule` then integrates each element alone, also nested sequences, and returns an `oplist`.
+  This is the same as `bz.apply.average` with `oplist`: the elements can have different shapes.
+  `_maxabs` takes the maximum over all elements. Thus the box error, the error of each direction
+  and `max|I|` for `rtol` include all elements, and the most difficult element decides the refinement.
+  We did not use a tolerance for each element.
+  The box error is one number for the heap, and a tolerance for each element needs the final value of each element.
+  Elements with very different magnitudes need `atol`, or the user must scale them.
+- A sequence must have the same length at all k-points, else `_gk_rule` raises `ValueError`.
 - When `max_k` stops the integration, `integrate` warns and returns the last value.
 - A scalar `max_k` is the total number of integrand evaluations (`_max_k`).
   A `(3,)` sequence is a k-point density for each lattice direction (`_max_k_axes` keeps the integrated directions).
