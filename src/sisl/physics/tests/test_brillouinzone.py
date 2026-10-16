@@ -67,6 +67,12 @@ class TestBrillouinZone:
         bz = BrillouinZone(setup.s1, np.random.rand(3, 3), 0.5)
         assert bz.weight.sum() == pytest.approx(1.5)
 
+        # a single k-point as a flat list
+        bz = BrillouinZone(setup.s1, [0.1, 0.2, 0.3])
+        assert len(bz) == 1
+        assert bz.weight.shape == (1,)
+        assert bz.weight[0] == 1.0
+
     def test_volume_self(self):
         bz = BrillouinZone(1.0)
         bz.parent.pbc = (False, False, False)
@@ -81,6 +87,12 @@ class TestBrillouinZone:
         v, dim = bz.volume(True)
         assert dim == 3
         assert v == pytest.approx((2 * np.pi) ** 3)
+
+    def test_type_hints(self):
+        import typing
+
+        for method in (BrillouinZone.volume, MonkhorstPack.__init__):
+            typing.get_type_hints(method)
 
     def test_volume_direct(self):
         bz = BrillouinZone(1.0)
@@ -189,6 +201,29 @@ class TestBrillouinZone:
         assert len(bz_loop) == 10
         assert not np.allclose(bz.k, bz_loop.k)
         assert np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :])
+
+    def test_param_circle_dk(self):
+        # the discretization length is along the circle
+        bz = BrillouinZone.param_circle(1, 0.01, 0.1, [0, 0, 1], [0] * 3)
+        assert len(bz) == 63
+        k = bz.tocartesian(bz.k)
+        dk = np.linalg.norm(k - np.roll(k, 1, axis=0), axis=1)
+        assert np.allclose(dk, 0.01, rtol=1e-2)
+
+    @pytest.mark.parametrize(
+        "normal",
+        [[0, 0, 1], [0, 0, -1], [1, 0, 0], [0, 1, 0], [1, 0, 1], [1, 1, 1], [1, 2, -3]],
+    )
+    def test_param_circle_normal(self, normal):
+        lattice = Lattice([1.0, 1.2, 1.5, 80, 95, 60])
+        origin = [0.1, 0.2, 0.3]
+        kR = 0.1
+        bz = BrillouinZone.param_circle(lattice, 12, kR, normal, origin)
+        # the circle is perpendicular to the normal (in Cartesian coordinates)
+        k = bz.tocartesian(bz.k) - bz.tocartesian(origin)
+        n = bz.tocartesian(normal)
+        assert np.allclose(k @ n, 0)
+        assert np.allclose(np.linalg.norm(k, axis=1), kR)
 
     def test_merge_simple(self):
         normal = [0] * 3
@@ -322,6 +357,15 @@ class TestMonkhorstPack:
         bz = MonkhorstPack(Test(setup.s1), [2] * 3, displacement=[0.1] * 3).apply.grid
         with pytest.raises(SislError):
             bz.eigh(wrap=lambda eig: eig[0])
+
+    @pytest.mark.parametrize("nkpt", [[10, 0, 1], [0, 0, 0], [2, -1, 1], 0])
+    def test_init_no_kpoints(self, setup, nkpt):
+        with pytest.raises(ValueError, match="larger than 0"):
+            MonkhorstPack(setup.s1, nkpt)
+
+    def test_str(self, setup):
+        bz = MonkhorstPack(setup.s1, [2, 2, 2], size=[1, 0.5, 0.25])
+        assert "size: [1.00000 0.50000 0.25000]" in str(bz)
 
     def test_init_simple(self, setup):
         bz = MonkhorstPack(setup.s1, [2] * 3, trs=False)
@@ -465,6 +509,32 @@ class TestMonkhorstPack:
             assert np.allclose(ds1.data_vars[var].values, data)
         assert len(ds1.coords) < len(ds0.coords)
 
+    @pytest.mark.parametrize("ncpus", [4, None])
+    def test_pool_object(self, ncpus):
+        import warnings
+
+        from sisl import SislWarning
+        from sisl.physics._brillouinzone_apply import _pool_procs
+
+        class Pool:
+            def terminate(self):
+                pass
+
+            def join(self):
+                pass
+
+        pool = Pool()
+        if ncpus is not None:
+            pool.ncpus = ncpus
+            with warnings.catch_warnings():
+                warnings.simplefilter("error")
+                ret, run = _pool_procs(pool, 100)
+        else:
+            with pytest.warns(SislWarning, match="number of CPUs"):
+                ret, run = _pool_procs(pool, 100)
+        assert ret is pool
+        assert "chunksize" in run
+
     def test_bz_parallel_pathos(self):
         pytest.importorskip("pathos", reason="pathos not available")
 
@@ -555,6 +625,16 @@ class TestMonkhorstPack:
         asyield = np.array([a for a in bz.apply.iter.eigh(wrap=wrap)])
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
+
+        # a Python scalar, also for zipped values
+        asfloat = bz.apply.array.eigh(wrap=lambda eig: float(eig[0]))
+        assert asfloat.shape == (len(bz),)
+        assert np.allclose(asfloat, asarray)
+        a, b = bz.apply.renew(zip=True).array.eigh(
+            wrap=lambda eig: (float(eig[0]), eig)
+        )
+        assert np.allclose(a, asarray)
+        assert b.shape == (len(bz), 2)
 
     def test_as_wrap(self):
         from sisl import Hamiltonian, geom
@@ -758,6 +838,8 @@ class TestMonkhorstPack:
             ([4, 3, 5], {}),
             ([3, 4, 6], {"centered": False}),
             ([4, 4, 3], {"displacement": [0.5, 0, 0]}),
+            ([4, 3, 1], {"displacement": [1 / 8, 0, 0], "centered": False}),
+            ([4, 5, 1], {"displacement": [0.2, 0, 0]}),
             ([4, 4, 4], {"size": [0.5, 0.5, 1]}),
             ([1, 1, 1], {}),
         ],
@@ -801,10 +883,33 @@ class TestMonkhorstPack:
         with pytest.raises(SislError, match="regular grid"):
             bz.unpack_trs(np.zeros(len(bz)))
 
-        # the -k partners of a non-symmetric displaced grid are not in the grid
-        bz = MonkhorstPack(g, [4, 5, 1], displacement=[0.2, 0, 0], trs=True)
-        with pytest.raises(SislError, match="partners"):
-            bz.unpack_trs(np.zeros(len(bz)))
+    @pytest.mark.parametrize(
+        "displacement, reduced",
+        [
+            ([0, 0, 0], True),
+            ([0.5, 0, 0], True),
+            # symmetric for 4 k-points
+            ([1 / 8, 0, 0], True),
+            ([0, 0.1, 0], False),
+            ([0.1, 0, 0], False),
+            ([0.5, 0.1, 0], False),
+            ([0.13, 0.27, 0], False),
+        ],
+    )
+    def test_trs_displaced(self, setup, displacement, reduced):
+        # f(k) == f(-k), but f is not symmetric for a sign change of one component
+        def f(k):
+            k = 2 * np.pi * k
+            return 1 / (2.5 - np.cos(k[:, 0]) - 0.8 * np.cos(k[:, 0] + 2 * k[:, 1]))
+
+        bz = MonkhorstPack(setup.s1, [4, 3, 1], displacement=displacement, trs=True)
+        ref = MonkhorstPack(setup.s1, [4, 3, 1], displacement=displacement, trs=False)
+        assert (f(bz.k) * bz.weight).sum() == pytest.approx(
+            (f(ref.k) * ref.weight).sum()
+        )
+        assert (len(bz) < len(ref)) == reduced
+        if not reduced:
+            assert np.allclose(bz.k, ref.k)
 
 
 @pytest.mark.bandstructure
@@ -870,6 +975,18 @@ class TestBandStructure:
             ["A", "B", "C", "D"],
         )
         assert len(bs) == 30
+
+    def test_jump_divisions(self):
+        g = geom.graphene()
+        points = [[0] * 3, [0.5, 0, 0], None, [0, 0.5, 0], [0.5, 0.5, 0]]
+        bs = BandStructure(g, points, [4, 4, 4])
+        # no k-points between [0.5, 0, 0] and [0, 0.5, 0]
+        assert np.allclose(bs.divisions, [4, 1, 4])
+        assert len(bs) == 10
+        assert np.allclose(bs.k[4], [0.5, 0, 0])
+        assert np.allclose(bs.k[5], [0, 0.5, 0])
+        # same k-points as an integer number of divisions
+        assert np.allclose(bs.k, BandStructure(g, points, 10).k)
 
     def test_jump_skipping_none(self):
         g = geom.graphene()

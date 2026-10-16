@@ -80,6 +80,12 @@ At Γ, sisl applies no phase.
 - Parallel execution uses `pathos` when it is installed. It maps the k-points with `pool.imap`.
   Set the pool with `bz.apply.renew(pool=...)`.
 - `MonkhorstPack.grid()` handles the time-reversal symmetry reduction.
+  It takes `|k|` along one direction. This is `k -> -k` only when the k-points along the
+  other directions are symmetric for `k -> -k`.
+  Thus `MonkhorstPack` uses TRS only when the `grid()` of each direction is symmetric (a
+  displacement of 0 or 1/2, or e.g. 1/8 for 4 k-points). Other grids have no `k`, `-k` pairs,
+  so they cannot be reduced. Rejected: fold only one displaced direction. That is correct,
+  but it does not remove k-points, and it moves them to `-k`.
 - `MonkhorstPack` does not store the map from the reduced to the full grid.
   `MonkhorstPack.unpack_trs` makes this map again from `_diag`, `_displ`, `_size` and `_centered`.
   It finds the full grid index of each `k` and `-k` along each axis.
@@ -146,10 +152,19 @@ At Γ, sisl applies no phase.
 - `nkpt` has one value for each lattice direction (scalar or `(3,)`), as `nkpt` of `MonkhorstPack`.
   `nkpt[a]` is the initial number of k-points along `a`, per reciprocal lattice vector.
   `nkpt[a] == 0` means that `a` is not integrated (`k_a = 0`).
+- A scalar `nkpt` is set to 0 along the non-periodic directions (`parent.pbc`, as
+  `BrillouinZone.volume`). Each integrated direction multiplies the k-points by `n` (7 or more),
+  so the default must not integrate a slab or molecule direction. Without a lattice to check,
+  all 3 directions are integrated; with no periodic direction, it raises (give `nkpt` per direction).
+  An explicit `(3,)` `nkpt` is used as given. Rejected: `nsc > 1`, because `Lattice(1)` has
+  `nsc == 1` and `func(k)` need not come from a sparse matrix.
+  `MonkhorstPack` keeps a scalar for all 3 directions (existing behaviour).
   We merged the old `axes` argument into it, because the two arguments had a 1-1 correspondence.
 - The user gives k-points, not boxes, because k-points are the unit of `MonkhorstPack` and of `max_k`.
-  The initial number of boxes is `_n = max(1, ceil(nkpt * width / 15))`, with `width` from `_domain()`.
-  Thus `nkpt` is rounded up to a multiple of 15. With TRS, the half direction gets half the k-points,
+  The initial number of boxes is `_n = max(1, ceil(nkpt * width / n))`, with `width` from `_domain()`
+  and `n = 2 * gauss + 1` the nodes of the rule. Thus `nkpt` is rounded up to a multiple of `n`.
+  The default `nkpt=None` is `n` (one box along each periodic direction) for each `gauss`.
+  A fixed default of 15 gave 3 boxes along each direction for `gauss=3`. With TRS, the half direction gets half the k-points,
   so `nkpt` is a density for the full direction (as for `MonkhorstPack`).
   `_axes` (the integrated directions) and `_n` (their boxes) are derived from `nkpt`.
 - The error of an array result is its largest absolute element.
@@ -164,6 +179,10 @@ At Γ, sisl applies no phase.
   Elements with very different magnitudes need `atol`, or the user must scale them.
 - A sequence must have the same length at all k-points, else `_sums_add` raises `ValueError`.
 - When `max_k` stops the integration, `integrate` warns and returns the last value.
+- A NaN or inf in the integrand gives a NaN or inf error. The loop condition is
+  `not (err <= tol and isfinite(err))`, because `err > tol` is false for NaN, and `inf <= inf`
+  is true when the value (and thus `rtol * max|I|`) is inf. `integrate` then warns and stops
+  at once: halving does not remove a NaN, and a NaN breaks the order of the box heap.
 - A scalar `max_k` is the total number of integrand evaluations (`_max_k`).
   A `(3,)` sequence is a k-point density for each lattice direction (`_max_k_axes` keeps the integrated directions).
   An adaptive grid has no fixed number of k-points along a direction. Thus a density is the only well-defined limit for each direction.
@@ -174,11 +193,32 @@ At Γ, sisl applies no phase.
   This is the same contract as `MonkhorstPack`: the caller must symmetrize the result (for example `(G + G.T) / 2`).
   An odd integrand gives `2 * integral(0, 1/2)`, not 0. A test checks this.
 
-- It uses the G7-K15 rule of QUADPACK (`qk15`). The tests check the polynomial degree of the constants.
-  Other rule orders need the Kronrod nodes, and sisl does not compute them.
-- A box uses the tensor product rule, with `15**d` points for `d` integrated directions. Use it in 1 or 2 dimensions.
-- The error of a box is `|K - G|` with the full Gauss tensor rule. This is the error of G7.
-  It is larger than the error of K15 (often by orders of magnitude), so the result is more accurate than the tolerance.
+- `gauss` selects the rule: G3-K7, G7-K15 (QUADPACK `qk15`, the default) or G10-K21 (QUADPACK `qk21`).
+  The G3-K7 constants are the published ones (e.g. Boost.Math `gauss_kronrod<7>`).
+  `_GK_TABLES` keeps the QUADPACK layout for all rules: the Kronrod nodes `>= 0`, decreasing, the
+  Gauss nodes at the odd indices. `_gk_unit` thus builds every rule (G10 has no node at the centre, and
+  the centre index is even). The tests check the Gauss-Legendre nodes and the polynomial degree of
+  the constants (exact to the degree, not exact at the next degree).
+  sisl does not compute Kronrod nodes, so other rules need their tables.
+  Rejected: G15-K31 (`qk31`). A box has `31**d` points (961 in 2D), and the maintainer chose to skip it.
+- `gauss` is the last argument, so the positional order of the other arguments is kept.
+  The rule is stored on the instance (`_rule`), because `max_k`, the line sums and the box count all need `n`.
+- Measured integrand evaluations (with the halved boxes), `rtol=0`, `trs=False`, `1/(a - sum cos 2 pi k)`:
+
+  | case | G3 | G7 | G10 |
+  |---|---|---|---|
+  | 1D, `a = 1.5`, `atol = 1e-13` | 2219 | 315 | 231 |
+  | 1D, `a = 1.001`, `atol = 1e-10` | 3437 | 735 | 567 |
+  | 2D, `a = 2.01`, `atol = 1e-8` | 102361 | 20025 | 24255 |
+  | 3D, `a = 4`, `atol = 1e-4` | 18179 | 37125 | 9261 |
+  | 3D, `a = 4`, `atol = 1e-6` | 144403 | 50625 | 138915 |
+  | 3D, `a = 3.1`, `atol = 1e-4` | 73059 | 50625 | 138915 |
+
+  Thus G7 stays the default. G10 is better in 1D. G3 is not more efficient in 3D in general, but a box
+  has 343 points, so it can halve boxes with the default `max_k=10000` (G7 can not: `3375 + 2 * 3375`).
+- A box uses the tensor product rule, with `n**d` points for `d` integrated directions. Use it in 1 or 2 dimensions.
+- The error of a box is `|K - G|` with the full Gauss tensor rule. This is the error of the Gauss rule.
+  It is larger than the error of the Kronrod rule (often by orders of magnitude), so the result is more accurate than the tolerance.
   We do not use the QUADPACK scaling `(200 |K - G| / resasc)**1.5`, because it can underestimate the error.
 - The box is halved along the axis with the largest error `|K - Q_a|`.
   `Q_a` uses the Gauss weights along axis `a` and the Kronrod weights along the other axes.
@@ -188,7 +228,7 @@ At Γ, sisl applies no phase.
   A box thus needs `6` values (`6 + d` for `d > 1`): the sums, a compensation, a line sum and 2 scratch buffers.
   The sums use BLAS `axpy` (one pass, in place) for single and double precision, and `numpy` for other data-types (e.g. `longdouble`).
   For a large value it is faster than the old `np.stack` and `tensordot`, for a scalar it costs approximately 8 µs for each k-point.
-  Before, `np.stack` copied the `15**d` values (`2 * 15**d` values in memory, about 7000 for `d = 3`).
+  Before, `np.stack` copied the `15**d` values (G7) (`2 * 15**d` values in memory, about 7000 for `d = 3`).
   We rejected these alternatives:
   - Pre-allocate the `15**d` values: this only removes the copy, the memory still scales with `15**d`.
   - Nested sums along each direction (as `tensordot`): `d` sums for each weight, and no better precision than compensation.
@@ -198,7 +238,7 @@ At Γ, sisl applies no phase.
   `K - G` cancels: its round-off is `eps * |K|`, and it is not the error when the box has converged.
 - The Kronrod sum of a box is a compensated sum (Knuth TwoSum). A plain sum of `15**d` values lost
   10 `eps` in 3D, the old `tensordot` did not. The error sums are plain, they are estimates.
-  Each line of 15 values (the last direction) is summed plainly, and then added with TwoSum.
+  Each line of `n` values (the last direction, `_WeightedSums.nx`) is summed plainly, and then added with TwoSum.
   TwoSum for each value took 8 array passes, and made large values 2 times slower.
 - The integral and the error are running sums. A split adds the two children and subtracts the parent.
   We do not sum all boxes again: it costs `N_boxes` values of `func` for each split.
@@ -209,10 +249,10 @@ At Γ, sisl applies no phase.
   The memory is thus `N_boxes` values of `func`. We do not evaluate a box again to get this value.
 - `_WeightedSums` and `_two_sum` change the data-type to complex when a later value is complex.
   A different shape or sequence length raises `ValueError`.
-- With `_max_k_axes`, a box is halved along the axis with the largest error that keeps `15 / (h / 2) <= max_k[a]`.
+- With `_max_k_axes`, a box is halved along the axis with the largest error that keeps `n / (h / 2) <= max_k[a]`.
   A box that cannot be halved along any axis moves to a list of frozen boxes. It stays in the integral and the error.
   When no box can be halved, `integrate` warns.
-- The nodes of the 15-point rule are inside the box. Thus with TRS no k-point is on the `k = 0` or `k = 1/2` planes,
+- The nodes of all rules are inside the box. Thus with TRS no k-point is on the `k = 0` or `k = 1/2` planes,
   and no weight correction for points on the boundary is necessary (unlike `MonkhorstPack`).
 
 Rejected: Farey grids (Chen *et al.*, Phys. Rev. B 106, 155102 (2022)).

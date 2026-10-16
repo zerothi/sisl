@@ -167,53 +167,109 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
         self.set_parent(parent)
 
 
-# Gauss-Kronrod G7-K15 rule on [-1, 1] (QUADPACK qk15)
-_GK15_XK = np.array(
-    [
-        0.991455371120812639206854697526329,
-        0.949107912342758524526189684047851,
-        0.864864423359769072789712788640926,
-        0.741531185599394439863864773280788,
-        0.586087235467691130294144845693013,
-        0.405845151377397166906606412076961,
-        0.207784955007898467600689403773245,
-        0.000000000000000000000000000000000,
-    ]
-)
-_GK15_WK = np.array(
-    [
-        0.022935322010529224963732008058970,
-        0.063092092629978553290700663189204,
-        0.104790010322250183839876322541518,
-        0.140653259715525918745189590510238,
-        0.169004726639267902826583426598550,
-        0.190350578064785409913256402421014,
-        0.204432940075298892414161999234649,
-        0.209482141084727828012999174891714,
-    ]
-)
-_GK15_WG = np.array(
-    [
-        0.129484966168869693270611432679082,
-        0.279705391489276667901467771423780,
-        0.381830050505118944950369775488975,
-        0.417959183673469387755102040816327,
-    ]
-)
+# Gauss-Kronrod rules on [-1, 1]: Kronrod nodes (>= 0, decreasing), Kronrod and
+# Gauss weights. Keyed by the number of Gauss nodes. G3-K7 from Boost.Math
+# (gauss_kronrod<7>), G7-K15 and G10-K21 from QUADPACK (qk15, qk21).
+_GK_TABLES = {
+    3: (
+        [
+            0.960491268708020283423507092629080,
+            0.774596669241483377035853079956480,
+            0.434243749346802558002071502844628,
+            0.000000000000000000000000000000000,
+        ],
+        [
+            0.104656226026467265193823857192073,
+            0.268488089868333440728569280666710,
+            0.401397414775962222905051818618432,
+            0.450916538658474142345110087045571,
+        ],
+        [
+            0.555555555555555555555555555555556,
+            0.888888888888888888888888888888889,
+        ],
+    ),
+    7: (
+        [
+            0.991455371120812639206854697526329,
+            0.949107912342758524526189684047851,
+            0.864864423359769072789712788640926,
+            0.741531185599394439863864773280788,
+            0.586087235467691130294144845693013,
+            0.405845151377397166906606412076961,
+            0.207784955007898467600689403773245,
+            0.000000000000000000000000000000000,
+        ],
+        [
+            0.022935322010529224963732008058970,
+            0.063092092629978553290700663189204,
+            0.104790010322250183839876322541518,
+            0.140653259715525918745189590510238,
+            0.169004726639267902826583426598550,
+            0.190350578064785409913256402421014,
+            0.204432940075298892414161999234649,
+            0.209482141084727828012999174891714,
+        ],
+        [
+            0.129484966168869693270611432679082,
+            0.279705391489276667901467771423780,
+            0.381830050505118944950369775488975,
+            0.417959183673469387755102040816327,
+        ],
+    ),
+    10: (
+        [
+            0.995657163025808080735527280689003,
+            0.973906528517171720077964012084452,
+            0.930157491355708226001207180059508,
+            0.865063366688984510732096688423493,
+            0.780817726586416897063717578345042,
+            0.679409568299024406234327365114874,
+            0.562757134668604683339000099272694,
+            0.433395394129247190799265943165784,
+            0.294392862701460198131126603103866,
+            0.148874338981631210884826001129720,
+            0.000000000000000000000000000000000,
+        ],
+        [
+            0.011694638867371874278064396062192,
+            0.032558162307964727478818972459390,
+            0.054755896574351996031381300244580,
+            0.075039674810919952767043140916190,
+            0.093125454583697605535065465083366,
+            0.109387158802297641899210590325805,
+            0.123491976262065851077208034193795,
+            0.134709217311473325928054001771707,
+            0.142775938577060080797094273138717,
+            0.147739104901338491374841515972068,
+            0.149445554002916905664936468389821,
+        ],
+        [
+            0.066671344308688137593568809893332,
+            0.149451349150580593145776339657697,
+            0.219086362515982043995534934228163,
+            0.269266719309996355091226921569469,
+            0.295524224714752870173892994651338,
+        ],
+    ),
+}
 
 
-def _gk15_unit():
+def _gk_unit(xk, wk, wg):
     """Nodes on [0, 1] and Kronrod and Gauss weights (Gauss is 0 at Kronrod-only nodes)"""
-    j = np.concatenate([np.arange(7), np.arange(7, -1, -1)])
-    sign = np.concatenate([-np.ones(7), np.ones(8)])
-    x = sign * _GK15_XK[j]
-    wk = _GK15_WK[j]
-    wg = np.where(j % 2 == 1, _GK15_WG[(j - 1) // 2], 0.0)
+    xk, wk, wg = map(np.array, (xk, wk, wg))
+    n = len(xk) - 1
+    j = np.concatenate([np.arange(n), np.arange(n, -1, -1)])
+    sign = np.concatenate([-np.ones(n), np.ones(n + 1)])
+    x = sign * xk[j]
+    wk = wk[j]
+    # the Gauss nodes are at odd indices of the Kronrod nodes
+    wg = np.where(j % 2 == 1, wg[(j - 1) // 2], 0.0)
     # map [-1, 1] -> [0, 1]
     return (x + 1) / 2, wk / 2, wg / 2
 
 
-_GK_X, _GK_WK, _GK_WG = _gk15_unit()
+_GK_RULES = {g: _gk_unit(*t) for g, t in _GK_TABLES.items()}
 
 
 def _tensor_weights(ws: list) -> np.ndarray:
@@ -265,16 +321,28 @@ def _axpy(dtype):
 class _WeightedSums:
     """Weighted sums of one array element of the integrand
 
-    Sum 0 is a compensated sum (``sums[0] + comp``): each line of `_GK_X` values
+    Sum 0 is a compensated sum (``sums[0] + comp``): each line of `nx` values
     is summed in `line`, and the line sum is added with Knuth TwoSum.
     The other sums are plain. `t` and `z` are scratch buffers.
     All arrays are 1D, `shape` is the shape of the integrand value.
     """
 
-    __slots__ = ("shape", "dtype", "axpy", "sums", "comp", "line", "nline", "t", "z")
+    __slots__ = (
+        "shape",
+        "dtype",
+        "axpy",
+        "sums",
+        "comp",
+        "line",
+        "nline",
+        "nx",
+        "t",
+        "z",
+    )
 
-    def __init__(self, r: np.ndarray, n: int):
+    def __init__(self, r: np.ndarray, n: int, nx: int):
         self.shape = r.shape
+        self.nx = nx
         self._allocate(np.result_type(r.dtype, np.float64), n)
 
     def _allocate(self, dtype, n: int) -> None:
@@ -310,7 +378,7 @@ class _WeightedSums:
             self.axpy(x, s, a=w)
         self.axpy(x, self.line, a=ws[0])
         self.nline += 1
-        if self.nline == len(_GK_X):
+        if self.nline == self.nx:
             self._flush()
 
     def _flush(self) -> None:
@@ -340,14 +408,15 @@ class _WeightedSums:
         return v.reshape(self.shape)
 
 
-def _sums_new(r, n: int):
+def _sums_new(r, n: int, nx: int):
     """`n` zero weighted sums with the structure of the integrand value `r`
 
     A sequence (not `numpy.ndarray`) is integrated element by element.
+    `nx` is the number of values in a line of the compensated sum.
     """
     if _is_oplist(r):
-        return [_sums_new(x, n) for x in r]
-    return _WeightedSums(np.asarray(r), n)
+        return [_sums_new(x, n, nx) for x in r]
+    return _WeightedSums(np.asarray(r), n, nx)
 
 
 def _sums_add(sums, r, ws) -> None:
@@ -432,15 +501,19 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     r"""Adaptive Gauss-Kronrod cubature of the Brillouin zone
 
     The integrated Brillouin zone is split in boxes. Each box is integrated with
-    a tensor product of the 15-point Kronrod rule (7-point Gauss embedded).
-    A box uses :math:`15^d` k-points for :math:`d` integrated directions.
+    a tensor product of the :math:`n`-point Kronrod rule with the
+    :math:`g`-point Gauss rule embedded (:math:`g` is `gauss`, :math:`n = 2g+1`).
+    A box uses :math:`n^d` k-points for :math:`d` integrated directions.
     The error of a box is the largest absolute element of the difference between
     the Kronrod and the Gauss results. The box with the largest error is
     halved along the direction with the largest error, until the summed error
     is below the tolerance.
 
     This is efficient for integrands with few sharp features (e.g. small
-    broadening), mainly in 1 or 2 dimensions.
+    broadening), mainly in 1 or 2 dimensions. In 1 dimension, ``gauss=10`` often
+    needs fewer k-points than ``gauss=7``. ``gauss=3`` has fewer k-points in a box
+    (:math:`7^3 = 343` in 3 dimensions, :math:`15^3 = 3375` for ``gauss=7``), so
+    it can halve boxes with a small `max_k`.
 
     The integration domain is the reduced Brillouin zone :math:`]-1/2 ; 1/2]` along
     the integrated directions. The k-point component along the other directions is 0.
@@ -459,15 +532,18 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     nkpt :
        initial number of k-points along each lattice direction, per reciprocal
        lattice vector (as for `MonkhorstPack`). A direction with 0 k-points is not
-       integrated. A scalar is the same value for all 3 directions.
-       The value is rounded up to a multiple of 15 (one box has 15 k-points along a
-       direction). With `trs`, the integrated half of the direction gets half the k-points.
+       integrated. A scalar is the same value for the periodic directions of the
+       parent lattice (``pbc``); the other directions are not integrated.
+       If ``None``, it is :math:`n` (one box along each periodic direction).
+       The value is rounded up to a multiple of :math:`n` (one box has :math:`n`
+       k-points along a direction).
+       With `trs`, the integrated half of the direction gets half the k-points.
        The initial k-points are always integrated, also when they exceed `max_k`.
     max_k :
        a scalar is the maximum number of integrand evaluations for one integration.
        A sequence of 3 values is the maximum k-point density along each lattice
        direction, in k-points per reciprocal lattice vector: a box of width :math:`h`
-       (in reduced units) is not halved along a direction when :math:`15/(h/2)` is
+       (in reduced units) is not halved along a direction when :math:`n/(h/2)` is
        larger than the value of that direction. The box is then halved along the
        direction with the next largest error. The total number is then not limited.
        Values for directions that are not integrated are not used.
@@ -482,6 +558,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
        For a sequence (`~sisl.oplist`) result, the errors and the largest element
        are taken over all elements. Elements with very different magnitudes should
        then be scaled, or use `atol`.
+    gauss :
+       number of Gauss nodes :math:`g` of the Gauss-Kronrod rule, one of 3, 7
+       (QUADPACK ``qk15``) or 10 (QUADPACK ``qk21``). The Kronrod rule has
+       :math:`n = 2g+1` nodes.
 
     Examples
     --------
@@ -505,25 +585,53 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     1000 x 200 grid:
 
     >>> gk = GaussKronrodGrid(H, [15, 15, 0], max_k=[1000, 200, 1])
+
+    A 3D integration with the 7-point Kronrod rule, one box has 343 k-points:
+
+    >>> gk = GaussKronrodGrid(Lattice(1), gauss=3)
+    >>> print(f"{gk.integrate(lambda k: (k**2).sum()):.10f}")
+    0.2500000000
+    >>> len(gk.last_bz())
+    343
     """
 
     def __init__(
         self,
         parent,
-        nkpt: SeqOrScalarInt = 15,
+        nkpt: Optional[SeqOrScalarInt] = None,
         max_k: SeqOrScalarInt = 10000,
         trs: Optional[bool] = None,
         atol: float = 1e-6,
         rtol: float = 1e-6,
+        gauss: int = 7,
     ):
         super().__init__(parent)
         cls = self.__class__.__name__
 
+        if gauss not in _GK_RULES:
+            raise ValueError(
+                f"{cls} requires gauss to be one of {list(_GK_RULES)}, got {gauss}"
+            )
+        self._gauss = gauss
+        self._rule = _GK_RULES[gauss]
+        nx = len(self._rule[0])
+
+        if nkpt is None:
+            nkpt = nx
         nkpt3 = _a.arrayi(nkpt)
         if nkpt3.ndim == 0:
-            nkpt3 = np.repeat(nkpt3, 3)
-            if nkpt3[0] < 1:
+            if nkpt3 < 1:
                 raise ValueError(f"{cls} requires a scalar nkpt >= 1, got {nkpt}")
+            try:
+                pbc = self._parent_lattice().pbc
+            except (AttributeError, ValueError):
+                pbc = np.ones(3, dtype=bool)
+            if not np.any(pbc):
+                raise ValueError(
+                    f"{cls} found no periodic directions for a scalar nkpt; "
+                    "give nkpt for each lattice direction"
+                )
+            nkpt3 = np.where(pbc, nkpt3, 0)
         if nkpt3.shape != (3,) or np.any(nkpt3 < 0) or not np.any(nkpt3 > 0):
             raise ValueError(
                 f"{cls} requires nkpt to be a scalar or 3 values >= 0 "
@@ -562,7 +670,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
 
         # initial number of boxes, from the k-points in the integrated domain
         _, width = self._domain()
-        nbox = np.ceil(nkpt3[self._axes] * width / len(_GK_X) - 1e-12)
+        nbox = np.ceil(nkpt3[self._axes] * width / nx - 1e-12)
         self._n = np.maximum(nbox, 1).astype(int)
 
         if atol < 0 or rtol < 0:
@@ -580,7 +688,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         """Settings shown by `__str__`"""
         return (
             f"nkpt: {self._nkpt_in.tolist()}, max_k: {self._max_k_in.tolist()}, "
-            f"trs: {self.trs}, "
+            f"trs: {self.trs}, gauss: {self._gauss}, "
             f"atol: {self._atol}, rtol: {self._rtol},"
         )
 
@@ -607,9 +715,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     def _box_kw(self, lo: np.ndarray, h: np.ndarray, scale: float):
         """k-points and (Kronrod) weights of one box, the weights are multiplied by `scale`"""
         d = len(lo)
-        nodes = [lo[a] + h[a] * _GK_X for a in range(d)]
+        x, wk, _ = self._rule
+        nodes = [lo[a] + h[a] * x for a in range(d)]
         kd = np.stack([g.ravel() for g in np.meshgrid(*nodes, indexing="ij")], axis=1)
-        return self._k_full(kd), _tensor_weights(_box_w1d(_GK_WK, h, scale))
+        return self._k_full(kd), _tensor_weights(_box_w1d(wk, h, scale))
 
     def _box(self, func, lo: np.ndarray, h: np.ndarray, scale: float):
         """Integrate one box
@@ -618,9 +727,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         Each integrand value is added to the weighted sums at once, it is not stored.
         """
         d = len(lo)
+        x, wk1, wg1 = self._rule
         k, wk = self._box_kw(lo, h, scale)
-        wk1 = _box_w1d(_GK_WK, h, scale)
-        wg1 = _box_w1d(_GK_WG, h, scale)
+        wk1 = _box_w1d(wk1, h, scale)
+        wg1 = _box_w1d(wg1, h, scale)
         # weights of K, of K - G and of K - Q_a for each direction a
         W = [wk, wk - _tensor_weights(wg1)]
         if d > 1:
@@ -634,7 +744,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         for kk, w in zip(k, W):
             r = func(kk)
             if sums is None:
-                sums = _sums_new(r, len(w))
+                sums = _sums_new(r, len(w), len(x))
             _sums_add(sums, r, w)
 
         K = _sums_get(sums, 0)
@@ -650,7 +760,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         """Whether halving `h` along integrated direction `a` keeps the density below `max_k`"""
         if self._max_k_axes is None:
             return True
-        return len(_GK_X) / (h[a] / 2) <= self._max_k_axes[a] * (1 + 1e-12)
+        return len(self._rule[0]) / (h[a] / 2) <= self._max_k_axes[a] * (1 + 1e-12)
 
     def integrate(self, func: Callable) -> Union[np.ndarray, oplist]:
         """Integrate `func` over the Brillouin zone with adaptive Gauss-Kronrod boxes
@@ -694,6 +804,8 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         SislWarning
             when `max_k` stops the integration before the error is below the tolerance.
             The returned value is then the last value.
+            Also when `func` returns a value that is not finite (NaN or inf); the
+            integration then stops at once.
 
         See Also
         --------
@@ -716,7 +828,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         ('oplist', (2, 2))
         """
         d = len(self._axes)
-        nper = len(_GK_X) ** d
+        nper = len(self._rule[0]) ** d
         lo0, width = self._domain()
         scale = 1 / float(np.prod(width))
         h0 = width / self._n
@@ -747,7 +859,10 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         nk = len(boxes) * nper
 
         tol = self._tolerance(value)
-        while err + err_c > tol:
+        while not (err + err_c <= tol and np.isfinite(err + err_c)):
+            if not np.isfinite(err + err_c):
+                self._not_converged(err + err_c, tol, nk, "the integrand is not finite")
+                break
             if len(boxes) == 0 or (
                 self._max_k is not None and nk + 2 * nper > self._max_k
             ):

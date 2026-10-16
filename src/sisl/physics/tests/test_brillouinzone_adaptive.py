@@ -174,6 +174,84 @@ def test_gk_nkpt():
             GaussKronrodGrid(Lattice(1), nkpt)
 
 
+def test_gk_nkpt_periodic():
+    # a scalar nkpt only integrates the periodic directions
+    H = Hamiltonian(geom.graphene())
+    assert GaussKronrodGrid(H)._axes.tolist() == [0, 1]
+    assert GaussKronrodGrid(H, 30, trs=False)._n.tolist() == [2, 2]
+    lattice = Lattice(1)
+    lattice.pbc = [False, True, False]
+    assert GaussKronrodGrid(lattice)._axes.tolist() == [1]
+    # an explicit nkpt is used as given
+    assert GaussKronrodGrid(lattice, [15, 15, 0])._axes.tolist() == [0, 1]
+    lattice.pbc = [False] * 3
+    with pytest.raises(ValueError, match="no periodic"):
+        GaussKronrodGrid(lattice)
+    GaussKronrodGrid(lattice, [15, 0, 0])
+
+
+@pytest.mark.parametrize("gauss", [3, 7, 10])
+def test_gk_rule_constants(gauss):
+    from sisl.physics._brillouinzone_adaptive import _GK_RULES
+
+    x, wk, wg = _GK_RULES[gauss]
+    n = 2 * gauss + 1
+    assert len(x) == n and np.all(np.diff(x) > 0) and 0 < x[0] and x[-1] < 1
+    # the Gauss nodes are the Gauss-Legendre nodes
+    gx, gw = np.polynomial.legendre.leggauss(gauss)
+    assert np.allclose(x[wg != 0], (gx + 1) / 2, rtol=0, atol=1e-15)
+    assert np.allclose(wg[wg != 0], gw / 2, rtol=0, atol=1e-15)
+    # K is exact up to degree 3g+1 (g even) or 3g+2 (g odd), G up to 2g-1
+    deg_k = 3 * gauss + 1 + gauss % 2
+    deg_g = 2 * gauss - 1
+    t = 2 * x - 1
+
+    def err(w, p):
+        return abs(w @ t**p - (1 / (p + 1) if p % 2 == 0 else 0))
+
+    assert max(err(wk, p) for p in range(deg_k + 1)) < 1e-15
+    assert max(err(wg, p) for p in range(deg_g + 1)) < 1e-15
+    # and not exact at the next (even) degree
+    assert err(wk, deg_k + 1) > 1e-13
+    assert err(wg, deg_g + 1) > 1e-13
+
+
+def test_gk_gauss():
+    for gauss in (3, 7, 10):
+        n = 2 * gauss + 1
+        # one box along each periodic direction by default
+        gk = GaussKronrodGrid(Lattice(1), trs=False, gauss=gauss)
+        assert np.all(gk._n == 1)
+        assert f"gauss: {gauss}," in str(gk)
+        assert f"nkpt: {[n] * 3}" in str(gk)
+        # rounded up to a multiple of n
+        gk = GaussKronrodGrid(Lattice(1), [n + 1, 0, 0], trs=False, gauss=gauss)
+        assert gk._n.tolist() == [2]
+        gk.integrate(lambda k: 1.0)
+        assert len(gk.last_bz()) == 2 * n
+        gk2 = pickle.loads(pickle.dumps(gk))
+        assert str(gk2) == str(gk)
+    gk = GaussKronrodGrid(Lattice(1), [1, 1, 1], trs=False, gauss=3)
+    gk.integrate(lambda k: 1.0)
+    assert len(gk.last_bz()) == 7**3
+    for gauss in (1, 5, 15, "7"):
+        with pytest.raises(ValueError, match="gauss"):
+            GaussKronrodGrid(Lattice(1), gauss=gauss)
+
+
+def test_gk_gauss_order():
+    # a smooth integrand needs fewer evaluations with a higher order
+    func, ref = peak(1.5)
+    nk = {}
+    for gauss in (3, 7, 10):
+        gk = GaussKronrodGrid(
+            Lattice(1), [1, 0, 0], atol=1e-13, rtol=0, trs=False, gauss=gauss
+        )
+        assert gk.integrate(func) == pytest.approx(ref, abs=1e-13)
+        nk[gauss] = len(gk.last_bz())
+    assert nk[3] > nk[7] > nk[10]
+
+
 def test_gk_polynomial_exact():
     # G7 is exact up to degree 13, so one box is enough
     gk = GaussKronrodGrid(Lattice(1), nkpt=[15, 0, 0], atol=1e-14, rtol=0)
@@ -282,14 +360,15 @@ def test_gk_reused_output_buffer():
     assert np.allclose(gk.integrate(func), [0.5, 1 / 12, 1], atol=1e-12, rtol=0)
 
 
-def test_gk_compensated_sums():
+@pytest.mark.parametrize("gauss", [7, 10])
+def test_gk_compensated_sums(gauss):
     # the coarse boxes overestimate the peak by orders of magnitude,
     # the running sums must still equal the sum over the final k-points
     def func(k):
         return 1 / (np.sin(np.pi * k[0]) ** 2 + np.sin(np.pi * k[1]) ** 2 / 3 + 1e-6)
 
     gk = GaussKronrodGrid(
-        Lattice(1), [15, 15, 0], atol=1e-14, rtol=0, max_k=3000, trs=False
+        Lattice(1), [1, 1, 0], atol=1e-14, rtol=0, max_k=3000, trs=False, gauss=gauss
     )
     with pytest.warns(SislWarning):
         v = gk.integrate(func)
@@ -415,6 +494,21 @@ def test_gk_max_k_axes_density():
     # boxes are at least 15 / 150 wide, so at most 10 boxes
     assert len(bz) <= 150
     assert bz.weight.sum() == pytest.approx(1)
+
+
+@pytest.mark.parametrize("bad", [np.nan, np.inf])
+@pytest.mark.parametrize("nkpt", [[15, 0, 0], [15, 15, 0]])
+def test_gk_not_finite(bad, nkpt):
+    gk = GaussKronrodGrid(Lattice(1), nkpt=nkpt, atol=1e-10, trs=False)
+
+    def func(k):
+        return np.array([bad if abs(k[0] - 0.2) < 0.05 else 1.0, 1.0])
+
+    with pytest.warns(SislWarning, match="not finite"):
+        v = gk.integrate(func)
+    assert not np.isfinite(v[0])
+    # no splits, only the initial boxes
+    assert len(gk.last_bz()) == 15 ** len(gk._axes)
 
 
 def test_gk_max_k_axes_next_direction():

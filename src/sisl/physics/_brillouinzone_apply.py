@@ -136,11 +136,11 @@ def _pool_procs(pool, size: int):
             except Exception:
                 pass
 
-        # we don't know
-        warn(
-            f"{__module__} could not determine number of CPUs from the pool, expecting 2"
-        )
-        ncpus = 2
+        if ncpus is None:
+            warn(
+                f"{__name__} could not determine number of CPUs from the pool, expecting 2"
+            )
+            ncpus = 2
 
     if "chunksize" not in run:
         if isinstance(nchunk, float):
@@ -339,6 +339,7 @@ class NDArrayApply(BrillouinZoneParentApply):
         unzip = self._attrs.get("zip", self._attrs.get("unzip", False))
 
         def _create_v(nk, v):
+            v = np.asarray(v)
             out = np.empty((nk, *v.shape), dtype=v.dtype)
             out[0] = v
             return out

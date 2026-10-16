@@ -9,10 +9,14 @@ self-energies `~sisl.physics.RealSpaceSE` and `~sisl.physics.RealSpaceSI` accept
 an adaptive ``bz``; the other ``apply`` modes need fixed k-points and raise.
 ``bz.last_bz()`` returns a `~sisl.physics.BrillouinZone` with the k-points and
 weights of the last integration.
-`~sisl.physics.GaussKronrodGrid` refines boxes of a 15-point Gauss-Kronrod rule
+`~sisl.physics.GaussKronrodGrid` refines boxes of a Gauss-Kronrod rule
 where the integrand changes fast, e.g. Green functions with a small broadening.
+``gauss`` selects the rule: 3, 7 (default) or 10 Gauss nodes, with 7, 15 or 21
+k-points along each direction of a box.
 ``nkpt`` is the initial number of k-points along each direction (0 for a direction
-that is not integrated), as for `~sisl.physics.MonkhorstPack`.
+that is not integrated), as for `~sisl.physics.MonkhorstPack`. A scalar ``nkpt``
+only integrates the periodic directions of the parent lattice, and the default is
+one box along each periodic direction.
 ``max_k`` limits the total number of k-points, or (as a sequence) the k-point
 density along each direction. Time-reversal symmetry (``trs``) halves the
 integrated domain, as for `~sisl.physics.MonkhorstPack`.

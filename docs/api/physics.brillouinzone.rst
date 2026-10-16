@@ -185,6 +185,9 @@ raise a `TypeError`. Use `~AdaptiveBrillouinZone.integrate`, or ``bz.apply.avera
 The result is the Brillouin zone average (as for `MonkhorstPack`).
 When ``G`` returns a list of values with different shapes, the result is an `~sisl.oplist`,
 and the convergence includes all values.
+``gauss`` selects the rule of a box (3, 7 or 10 Gauss nodes, with :math:`2g+1` k-points
+along a direction). In 1 dimension, ``gauss=10`` often needs fewer k-points.
+In 3 dimensions, ``gauss=3`` can halve boxes with a smaller ``max_k``.
 ``bz.apply.average`` accepts ``wrap`` as for `BrillouinZone`, and the convergence
 is on the wrapped value. The self-energies `RealSpaceSE` and `RealSpaceSI` accept an
 adaptive Brillouin zone as their ``bz`` option.

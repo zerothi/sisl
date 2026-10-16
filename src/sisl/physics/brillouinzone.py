@@ -159,10 +159,10 @@ from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.messages import SislError, deprecate_argument, info, warn
-from sisl.typing import Coord, SeqOrScalarFloat, SeqOrScalarInt
+from sisl.typing import CellAxes, Coord, SeqOrScalarFloat, SeqOrScalarInt
 from sisl.typing._common import KPoint
 from sisl.utils import batched_indices
-from sisl.utils.mathematics import cart2spher, fnorm
+from sisl.utils.mathematics import fnorm
 from sisl.utils.misc import direction, listify
 
 from .spin import Spin
@@ -304,7 +304,7 @@ class BrillouinZone:
             self._w = _a.onesd(1)
         else:
             self._k = _a.arrayd(k).reshape(-1, 3)
-            self._w = _a.emptyd(len(k))
+            self._w = _a.emptyd(len(self._k))
             if weight is None:
                 weight = 1.0 / len(self._k)
             self._w[:] = weight
@@ -578,7 +578,7 @@ class BrillouinZone:
             N = N_or_dk
         else:
             # Calculate the required number of points
-            N = int(kR**2 * pi / N_or_dk + 0.5)
+            N = int(2 * pi * kR / N_or_dk + 0.5)
             if N < 2:
                 N = 2
                 info(
@@ -603,14 +603,13 @@ class BrillouinZone:
         k[:, 1] = np.sin(radians)
         k[:, 2] = 0.0
 
-        # Now generate the rotation
-        _, theta, phi = cart2spher(k_n)
-        if theta != 0:
-            pv = _a.arrayd([k_n[0], k_n[1], 0])
-            pv /= fnorm(pv)
-            q = Quaternion(phi, pv, rad=True) * Quaternion(theta, [0, 0, 1], rad=True)
+        # Now generate the rotation of the z-axis onto the normal
+        axis = cross3(_a.arrayd([0, 0, 1]), k_n)
+        sin = fnorm(axis)
+        if sin > 1e-12 * fnorm(k_n):
+            q = Quaternion(np.arctan2(sin, k_n[2]), axis / sin, rad=True)
         else:
-            q = Quaternion(0.0, [0, 0, np.sign(k_n[2])], rad=True)
+            q = Quaternion(0.0, [0, 0, 1], rad=True)
 
         # Calculate k-points
         k = q.rotate(k)
@@ -747,6 +746,9 @@ class MonkhorstPack(BrillouinZone):
        If ``None``, it will be true for (un)-polarized calculations.
        For spin configurations higher than or equal to non-collinear, it will
        be false.
+       The reduction removes the :math:`-\mathbf k` points. If the k-points are not
+       symmetric for :math:`\mathbf k\to-\mathbf k` (e.g. a displacement different
+       from 0 and 1/2), time-reversal symmetry is not used.
 
     Examples
     --------
@@ -803,26 +805,31 @@ class MonkhorstPack(BrillouinZone):
 
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt).astype(np.int32)
-        if np.any(Dn) == 0:
+        if np.any(Dn <= 0):
             raise ValueError(
                 f"{self.__class__.__name__} *must* be initialized with "
-                "diagonal elements different from 0."
+                "diagonal elements larger than 0."
             )
 
         i_trs = -1
         if trs:
-            # Figure out which direction to TRS
-            nmax = 0
+            # the reduction requires that each direction is symmetric for k -> -k
             for i in (0, 1, 2):
-                if displacement[i] in (0.0, 0.5) and Dn[i] > nmax:
-                    nmax = Dn[i]
-                    i_trs = i
-            if nmax == 1:
-                i_trs = -1
-            if i_trs == -1:
-                # If we still haven't decided (say for weird displacements)
-                # simply take the one with the maximum number of k-points.
-                i_trs = np.argmax(Dn)
+                k = self.grid(Dn[i], displacement[i], size[i], centered)[0]
+                if not np.allclose(
+                    k,
+                    np.sort(self.in_primitive(-k)),
+                    rtol=0,
+                    atol=size[i] / Dn[i] * 1e-3,
+                ):
+                    trs = False
+            if trs:
+                i_trs = int(np.argmax(Dn))
+            else:
+                info(
+                    f"{self.__class__.__name__} does not use time-reversal symmetry, "
+                    "the k-points are not symmetric for k -> -k (displacement)."
+                )
 
         # Calculate k-points and weights along all directions
         kw = [
@@ -917,7 +924,7 @@ class MonkhorstPack(BrillouinZone):
         """String representation of `MonkhorstPack`"""
         p = self._parent_lattice()
         return (
-            "{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[0]:.5f}], trs: {trs},"
+            "{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[2]:.5f}], trs: {trs},"
             "\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.5f} {disp[1]:.5f} {disp[2]:.5f}],"
             "\n {lattice}\n}}"
         ).format(
@@ -1241,7 +1248,7 @@ class MonkhorstPack(BrillouinZone):
             k_int = mp._size / k_vol
             if not np.allclose(np.rint(k_int), k_int):
                 raise SislError(
-                    f"{self.__class__.__name__}.reduce could not replace k-point, BZ "
+                    f"{self.__class__.__name__}.replace could not replace k-point, BZ "
                     "volume replaced is not equivalent to the inherent k-point volume."
                 )
 
@@ -1274,7 +1281,7 @@ class MonkhorstPack(BrillouinZone):
 
         if len(idx) == 0:
             raise SislError(
-                f"{self.__class__.__name__}.reduce found no k-points to replace. "
+                f"{self.__class__.__name__}.replace found no k-points to replace. "
                 f"Searched with precision: {dk.ravel()}"
             )
 
@@ -1311,7 +1318,7 @@ class MonkhorstPack(BrillouinZone):
             weight_factor = 2.0
             if self._trs < 0:
                 info(
-                    f"{self.__class__.__name__}.reduce assumes that the replaced k-point has double weights."
+                    f"{self.__class__.__name__}.replace assumes that the replaced k-point has double weights."
                 )
         else:
             # print("k-point to replace: ", k.ravel())
@@ -1328,7 +1335,7 @@ class MonkhorstPack(BrillouinZone):
             # print(total_weight, replace_weight)
             # print(mp)
             raise SislError(
-                f"{self.__class__.__name__}.reduce found inconsistent replacement weights "
+                f"{self.__class__.__name__}.replace found inconsistent replacement weights "
                 f"self={total_weight} vs. mp={replace_weight}. "
                 f"Replacement indices: {idx}."
             )
@@ -1370,6 +1377,8 @@ class BandStructure(BrillouinZone):
        If it is an array_like input it must have length one
        less than `point`, in this case the total number of points
        will be ``sum(divisions) + 1`` due to the end-point constraint.
+       The division of a segment over a discontinuity is not used (it is set to 1),
+       the segment has no k-points between its two points.
     names : array_like of str
        the associated names of the points on the Brillouin Zone path
     jump_dk: float or array_like, optional
@@ -1532,6 +1541,8 @@ class BandStructure(BrillouinZone):
             )
 
         self.divisions = _a.arrayi(divisions).ravel()
+        # a segment over a discontinuity only has its first point
+        self.divisions[jump_idx - 1] = 1
 
         if names is None:
             self.names = "ABCDEFGHIJKLMNOPQRSTUVXYZ"[: len(self.points)]
@@ -1606,7 +1617,7 @@ class BandStructure(BrillouinZone):
         >>> data = np.zeros([len(bs), 10])
         >>> data_with_jump = bs.insert_jump(data)
         >>> assert data_with_jump.shape == (len(bs)+1, 10)
-        >>> np.all(data_with_jump[2] == np.nan)
+        >>> np.all(np.isnan(data_with_jump[2]))
         True
         """
         # quick return if nothing needs changed
