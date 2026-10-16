@@ -15,8 +15,7 @@ import numpy.typing as npt
 import sisl._array as _a
 from sisl._internal import set_module
 from sisl.messages import warn
-from sisl.typing import CellAxes, SeqOrScalarInt
-from sisl.utils.misc import direction, listify
+from sisl.typing import SeqOrScalarInt
 
 from .brillouinzone import BrillouinZone
 from .spin import Spin
@@ -33,87 +32,26 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
     ``len(bz)`` raise a `TypeError`. This also makes ``bz.apply`` fail, use
     `integrate` instead.
 
-    The integration domain is the reduced Brillouin zone :math:`]-1/2 ; 1/2]` along
-    the sampled `axes`. The weights sum to 1, so the integral is equal to the
-    Brillouin zone average, as for `MonkhorstPack`.
+    The integral is the Brillouin zone average (the weights sum to 1), as for
+    `MonkhorstPack`.
 
-    With time-reversal symmetry (`trs`), only :math:`[0 ; 1/2]` along the first of the
-    `axes` is integrated, and the weights are doubled. As for `MonkhorstPack`, the
-    result is only correct when :math:`f(\mathbf k)` and :math:`f(-\mathbf k)` have the
-    same integral, e.g. a Green function symmetrized as
-    :math:`(\mathbf G + \mathbf G^T)/2` after the integration.
+    The base class only stores the `parent`. Each sub-class defines its own
+    parameters (directions, limits, tolerances).
 
     Parameters
     ----------
     parent : object or array-like
        An object with associated ``parent.cell`` and ``parent.rcell`` or
        an array of floats which may be turned into a `Lattice`
-    axes :
-       the lattice directions that are integrated. The k-point component
-       along the other directions is 0.
-    max_k :
-       a scalar is the maximum number of integrand evaluations for one integration.
-       A sequence (one value for each of the `axes`) is the maximum k-point density
-       along each axis, in k-points per reciprocal lattice vector (as the
-       ``nkpt`` argument of `MonkhorstPack`). The total number is then not limited.
-    trs :
-       whether time-reversal symmetry is used. If ``None``, it is true for
-       (un)-polarized calculations, and false for non-colinear and higher spin
-       configurations (as for `MonkhorstPack`).
-    atol :
-       absolute tolerance of the integral (largest absolute element error)
-    rtol :
-       relative tolerance of the integral, relative to the largest absolute element
 
     See Also
     --------
     GaussKronrodGrid : adaptive Gauss-Kronrod cubature
     """
 
-    def __init__(
-        self,
-        parent,
-        axes: CellAxes = (0, 1, 2),
-        max_k: SeqOrScalarInt = 10000,
-        trs: Optional[bool] = None,
-        atol: float = 1e-6,
-        rtol: float = 1e-6,
-    ):
+    def __init__(self, parent):
         self.set_parent(parent)
         self._bz_attr = ("", None)
-        iaxes = [direction(axis) for axis in listify(axes)]
-        if len(iaxes) == 0 or len(set(iaxes)) != len(iaxes):
-            raise ValueError(
-                f"{self.__class__.__name__} requires unique axes, got {iaxes}"
-            )
-        self._axes = _a.arrayi(sorted(iaxes))
-        if atol < 0 or rtol < 0:
-            raise ValueError(f"{self.__class__.__name__} requires atol, rtol >= 0")
-        self._atol = atol
-        self._rtol = rtol
-
-        nk = _a.arrayi(max_k)
-        if np.any(nk < 1):
-            raise ValueError(f"{self.__class__.__name__} requires max_k >= 1")
-        if nk.ndim == 0:
-            self._max_k = int(nk)
-            self._max_k_axes = None
-        elif nk.shape == self._axes.shape:
-            self._max_k = None
-            self._max_k_axes = nk
-        else:
-            raise ValueError(
-                f"{self.__class__.__name__} requires max_k to be a scalar or have "
-                f"one value per axes ({len(self._axes)}), got {nk.tolist()}"
-            )
-
-        if trs is None:
-            trs = True
-            try:
-                trs = parent.spin <= Spin("polarized")
-            except AttributeError:
-                pass
-        self._trs = int(self._axes[0]) if trs else -1
 
     def _undefined(self, what: str):
         return TypeError(
@@ -137,46 +75,12 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
     def __bool__(self) -> bool:
         return True
 
-    @property
-    def axes(self) -> np.ndarray:
-        """Lattice directions that are integrated"""
-        return self._axes
-
-    @property
-    def trs(self) -> bool:
-        """Whether time-reversal symmetry is used"""
-        return self._trs >= 0
-
-    def _domain(self) -> tuple[np.ndarray, np.ndarray]:
-        """Lower bound and width of the integrated domain along `axes`"""
-        lo = np.full(len(self._axes), -0.5)
-        width = np.ones(len(self._axes))
-        if self._trs >= 0:
-            i = np.flatnonzero(self._axes == self._trs)[0]
-            lo[i] = 0.0
-            width[i] = 0.5
-        return lo, width
-
-    def _max_k_str(self) -> str:
-        if self._max_k_axes is None:
-            return str(self._max_k)
-        return str(self._max_k_axes.tolist())
-
-    def _tolerance(self, value: npt.ArrayLike) -> float:
-        """Requested absolute tolerance for the integral `value`"""
-        return max(self._atol, self._rtol * float(np.max(np.abs(value))))
-
-    def _k_full(self, k: np.ndarray) -> np.ndarray:
-        """Convert k-points along `axes` to 3D reduced k-points"""
-        kfull = _a.zerosd([len(k), 3])
-        kfull[:, self._axes] = k
-        return kfull
-
-    def _not_converged(self, err: float, tol: float, nk: int) -> None:
+    def _not_converged(self, err: float, tol: float, nk: int, limit: str) -> None:
+        """Warn that the integration stopped at `limit` before reaching `tol`"""
         warn(
             f"{self.__class__.__name__}.integrate did not converge: "
             f"error estimate {err:.3e} > tolerance {tol:.3e} using {nk} k-points "
-            f"(max_k={self._max_k_str()})"
+            f"({limit})"
         )
 
     @abstractmethod
@@ -203,14 +107,13 @@ class AdaptiveBrillouinZone(BrillouinZone, metaclass=ABCMeta):
             the realized k-points and weights, only if `ret_bz` is true
         """
 
+    def _str_attrs(self) -> str:
+        """Attributes shown by `__str__`, sub-classes extend this"""
+        return ""
+
     def __str__(self) -> str:
         parent = str(self._parent_lattice()).replace("\n", "\n ")
-        return (
-            f"{self.__class__.__name__}{{axes: {self._axes.tolist()}, "
-            f"max_k: {self._max_k_str()}, trs: {self.trs}, "
-            f"atol: {self._atol}, rtol: {self._rtol},\n "
-            f"{parent}\n}}"
-        )
+        return f"{self.__class__.__name__}{{{self._str_attrs()}\n {parent}\n}}"
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -291,9 +194,9 @@ def _maxabs(a) -> float:
 class GaussKronrodGrid(AdaptiveBrillouinZone):
     r"""Adaptive Gauss-Kronrod cubature of the Brillouin zone
 
-    The sampled Brillouin zone is split in boxes. Each box is integrated with
+    The integrated Brillouin zone is split in boxes. Each box is integrated with
     a tensor product of the 15-point Kronrod rule (7-point Gauss embedded).
-    A box uses :math:`15^d` k-points for :math:`d` sampled `axes`.
+    A box uses :math:`15^d` k-points for :math:`d` integrated directions.
     The error of a box is the largest absolute element of the difference between
     the Kronrod and the Gauss results. The box with the largest error is
     halved along the direction with the largest error, until the summed error
@@ -302,66 +205,149 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
     This is efficient for integrands with few sharp features (e.g. small
     broadening), mainly in 1 or 2 dimensions.
 
+    The integration domain is the reduced Brillouin zone :math:`]-1/2 ; 1/2]` along
+    the integrated directions. The k-point component along the other directions is 0.
+
+    With time-reversal symmetry (`trs`), only :math:`[0 ; 1/2]` along the first
+    integrated direction is integrated, and the weights are doubled. As for
+    `MonkhorstPack`, the result is only correct when :math:`f(\mathbf k)` and
+    :math:`f(-\mathbf k)` have the same integral, e.g. a Green function symmetrized
+    as :math:`(\mathbf G + \mathbf G^T)/2` after the integration.
+
     Parameters
     ----------
     parent : object or array-like
        An object with associated ``parent.cell`` and ``parent.rcell`` or
        an array of floats which may be turned into a `Lattice`
-    axes :
-       the lattice directions that are integrated
     n :
-       initial number of boxes along each of the sampled `axes`.
+       initial number of boxes along each lattice direction (as the ``nkpt``
+       argument of `MonkhorstPack`). A direction with 0 boxes is not integrated.
+       A scalar is the same value for all 3 directions.
        The initial boxes are always integrated, also when they exceed `max_k`.
     max_k :
-       a scalar is the maximum number of integrand evaluations.
-       A sequence (one value for each of the `axes`) is the maximum k-point density
-       along each axis: a box of width :math:`h` (in reduced units) is not halved along
-       an axis when :math:`15/(h/2)` is larger than the value of that axis.
-       The box is then halved along the axis with the next largest error.
+       a scalar is the maximum number of integrand evaluations for one integration.
+       A sequence of 3 values is the maximum k-point density along each lattice
+       direction, in k-points per reciprocal lattice vector: a box of width :math:`h`
+       (in reduced units) is not halved along a direction when :math:`15/(h/2)` is
+       larger than the value of that direction. The box is then halved along the
+       direction with the next largest error. The total number is then not limited.
+       Values for directions that are not integrated are not used.
     trs :
-       whether time-reversal symmetry is used, see `AdaptiveBrillouinZone`.
+       whether time-reversal symmetry is used. If ``None``, it is true for
+       (un)-polarized calculations, and false for non-colinear and higher spin
+       configurations (as for `MonkhorstPack`).
     atol :
-       absolute tolerance of the integral
+       absolute tolerance of the integral (largest absolute element error)
     rtol :
-       relative tolerance of the integral
+       relative tolerance of the integral, relative to the largest absolute element
 
     Examples
     --------
+    Integrate along the first lattice direction only:
+
     >>> H = si.Hamiltonian(...)
-    >>> gk = GaussKronrodGrid(H, axes=0, atol=1e-8)
+    >>> gk = GaussKronrodGrid(H, [1, 0, 0], atol=1e-8)
     >>> def G(k):
     ...     return np.linalg.inv((E + 1j * eta) * H.Sk(k, format="array") - H.Hk(k, format="array"))
     >>> Gavg, bz = gk.integrate(G, ret_bz=True)
     >>> len(bz)  # the number of k-points used
 
-    Limit the k-point density to that of a 1000 x 200 grid:
+    Integrate the first two directions, and limit the k-point density to that of a
+    1000 x 200 grid:
 
-    >>> gk = GaussKronrodGrid(H, axes=[0, 1], max_k=[1000, 200])
+    >>> gk = GaussKronrodGrid(H, [1, 1, 0], max_k=[1000, 200, 1])
     """
 
     def __init__(
         self,
         parent,
-        axes: CellAxes = (0, 1, 2),
         n: SeqOrScalarInt = 1,
         max_k: SeqOrScalarInt = 10000,
         trs: Optional[bool] = None,
         atol: float = 1e-6,
         rtol: float = 1e-6,
     ):
-        super().__init__(parent, axes=axes, max_k=max_k, trs=trs, atol=atol, rtol=rtol)
-        nbox = _a.arrayi(n).ravel()
-        if nbox.size == 1:
-            nbox = np.repeat(nbox, len(self._axes))
-        if nbox.size != len(self._axes) or np.any(nbox < 1):
-            raise ValueError(
-                f"{self.__class__.__name__} requires n >= 1 for each of the axes"
-            )
-        self._n = nbox
+        super().__init__(parent)
+        cls = self.__class__.__name__
 
-    def __str__(self) -> str:
-        s = super().__str__()
-        return s.replace(", max_k:", f", n: {self._n.tolist()}, max_k:", 1)
+        n3 = _a.arrayi(n)
+        if n3.ndim == 0:
+            n3 = np.repeat(n3, 3)
+            if n3[0] < 1:
+                raise ValueError(f"{cls} requires a scalar n >= 1, got {n}")
+        if n3.shape != (3,) or np.any(n3 < 0) or not np.any(n3 > 0):
+            raise ValueError(
+                f"{cls} requires n to be a scalar or 3 values >= 0 "
+                f"(at least one > 0), got {n}"
+            )
+        self._axes = np.flatnonzero(n3 > 0)
+        self._n = n3[self._axes]
+
+        nk = _a.arrayi(max_k)
+        if nk.ndim == 0:
+            if nk < 1:
+                raise ValueError(f"{cls} requires max_k >= 1, got {max_k}")
+            self._max_k = int(nk)
+            self._max_k_axes = None
+        elif nk.shape == (3,):
+            if np.any(nk[self._axes] < 1):
+                raise ValueError(
+                    f"{cls} requires max_k >= 1 along the integrated directions, "
+                    f"got {max_k}"
+                )
+            self._max_k = None
+            self._max_k_axes = nk[self._axes]
+        else:
+            raise ValueError(
+                f"{cls} requires max_k to be a scalar or 3 values, got {max_k}"
+            )
+        self._max_k_in = nk
+
+        if trs is None:
+            trs = True
+            try:
+                trs = parent.spin <= Spin("polarized")
+            except AttributeError:
+                pass
+        self._trs = int(self._axes[0]) if trs else -1
+
+        if atol < 0 or rtol < 0:
+            raise ValueError(f"{cls} requires atol, rtol >= 0")
+        self._atol = atol
+        self._rtol = rtol
+
+    @property
+    def trs(self) -> bool:
+        """Whether time-reversal symmetry is used"""
+        return self._trs >= 0
+
+    def _str_attrs(self) -> str:
+        n3 = np.zeros(3, dtype=int)
+        n3[self._axes] = self._n
+        return (
+            f"n: {n3.tolist()}, max_k: {self._max_k_in.tolist()}, trs: {self.trs}, "
+            f"atol: {self._atol}, rtol: {self._rtol},"
+        )
+
+    def _domain(self) -> tuple[np.ndarray, np.ndarray]:
+        """Lower bound and width of the integrated domain along the integrated directions"""
+        lo = np.full(len(self._axes), -0.5)
+        width = np.ones(len(self._axes))
+        if self._trs >= 0:
+            i = np.flatnonzero(self._axes == self._trs)[0]
+            lo[i] = 0.0
+            width[i] = 0.5
+        return lo, width
+
+    def _tolerance(self, value: npt.ArrayLike) -> float:
+        """Requested absolute tolerance for the integral `value`"""
+        return max(self._atol, self._rtol * float(np.max(np.abs(value))))
+
+    def _k_full(self, k: np.ndarray) -> np.ndarray:
+        """Convert k-points along the integrated directions to 3D reduced k-points"""
+        kfull = _a.zerosd([len(k), 3])
+        kfull[:, self._axes] = k
+        return kfull
 
     def _box(self, func, lo: np.ndarray, h: np.ndarray, scale: float):
         """Integrate one box
@@ -397,7 +383,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
         return k, w.ravel(), K, err, order
 
     def _can_split(self, h: np.ndarray, a: int) -> bool:
-        """Whether halving `h` along axis `a` keeps the density below `max_k`"""
+        """Whether halving `h` along integrated direction `a` keeps the density below `max_k`"""
         if self._max_k_axes is None:
             return True
         return len(_GK_X) / (h[a] / 2) <= self._max_k_axes[a] * (1 + 1e-12)
@@ -432,7 +418,7 @@ class GaussKronrodGrid(AdaptiveBrillouinZone):
             if len(boxes) == 0 or (
                 self._max_k is not None and nk + 2 * nper > self._max_k
             ):
-                self._not_converged(err, tol, nk)
+                self._not_converged(err, tol, nk, f"max_k={self._max_k_in.tolist()}")
                 break
             box = heapq.heappop(boxes)
             _, _, lo, h, *_, order = box

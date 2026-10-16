@@ -107,24 +107,35 @@ At Γ, sisl applies no phase.
   `ret_bz=True` returns a plain `BrillouinZone` with the k-points and weights that were used.
   Use it with `apply` when you need more quantities on the same grid.
 - The weights sum to 1, as for `MonkhorstPack`. The result is the Brillouin zone average.
+- `AdaptiveBrillouinZone.__init__` takes only `parent`.
+  Other adaptive grids can need other arguments, so the directions, limits, tolerances and `trs` are in the sub-class.
+  The base class has only the helpers that do not depend on these arguments:
+  `_not_converged` (the warning) and `_str_attrs` (the attributes that `__str__` shows).
+- Each sub-class must work with only `parent` (all other arguments have defaults).
+  The common tests are parametrized over the sub-classes, and call `cls(parent)`.
+
+`GaussKronrodGrid`:
+
+- `n` has one value for each lattice direction (scalar or `(3,)`), as `nkpt` of `MonkhorstPack`.
+  `n[a]` is the initial number of boxes along `a`. `n[a] == 0` means that `a` is not integrated (`k_a = 0`).
+  We merged the old `axes` argument into `n`, because the two arguments had a 1-1 correspondence.
+  `_axes` (the integrated directions) and `_n` (their boxes) are derived from `n`.
 - The error of an array result is its largest absolute element.
   The tolerance is `max(atol, rtol * max|I|)`.
 - When `max_k` stops the integration, `integrate` warns and returns the last value.
 - A scalar `max_k` is the total number of integrand evaluations (`_max_k`).
-  A sequence is a k-point density for each of the `axes` (`_max_k_axes`), as `nkpt` of `MonkhorstPack`.
-  An adaptive grid has no fixed number of k-points along an axis. Thus a density is the only well-defined limit for each axis.
+  A `(3,)` sequence is a k-point density for each lattice direction (`_max_k_axes` keeps the integrated directions).
+  An adaptive grid has no fixed number of k-points along a direction. Thus a density is the only well-defined limit for each direction.
   A sequence does not limit the total, but the densities limit it to approximately `prod(max_k)`.
-- `trs` follows `MonkhorstPack`: the default comes from `parent.spin`, and `_trs` is the axis index or -1.
+- `trs` follows `MonkhorstPack`: the default comes from `parent.spin`, and `_trs` is the direction index or -1.
   The self-energies read `bz._trs >= 0`, so do not rename it.
-- With TRS, `_domain()` gives `[0, 1/2]` along the first of the `axes`, and the weights are scaled to sum to 1.
+- With TRS, `_domain()` gives `[0, 1/2]` along the first integrated direction, and the weights are scaled to sum to 1.
   This is the same contract as `MonkhorstPack`: the caller must symmetrize the result (for example `(G + G.T) / 2`).
   An odd integrand gives `2 * integral(0, 1/2)`, not 0. A test checks this.
 
-`GaussKronrodGrid`:
-
 - It uses the G7-K15 rule of QUADPACK (`qk15`). The tests check the polynomial degree of the constants.
   Other rule orders need the Kronrod nodes, and sisl does not compute them.
-- A box uses the tensor product rule, with `15**d` points for `d` axes. Use it in 1 or 2 dimensions.
+- A box uses the tensor product rule, with `15**d` points for `d` integrated directions. Use it in 1 or 2 dimensions.
 - The error of a box is `|K - G|` with the full Gauss tensor rule. This is the error of G7.
   It is larger than the error of K15 (often by orders of magnitude), so the result is more accurate than the tolerance.
   We do not use the QUADPACK scaling `(200 |K - G| / resasc)**1.5`, because it can underestimate the error.
