@@ -805,10 +805,10 @@ class MonkhorstPack(BrillouinZone):
 
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt).astype(np.int32)
-        if np.any(Dn) == 0:
+        if np.any(Dn <= 0):
             raise ValueError(
                 f"{self.__class__.__name__} *must* be initialized with "
-                "diagonal elements different from 0."
+                "diagonal elements larger than 0."
             )
 
         i_trs = -1

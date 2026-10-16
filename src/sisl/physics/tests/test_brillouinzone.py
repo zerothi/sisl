@@ -352,6 +352,11 @@ class TestMonkhorstPack:
         with pytest.raises(SislError):
             bz.eigh(wrap=lambda eig: eig[0])
 
+    @pytest.mark.parametrize("nkpt", [[10, 0, 1], [0, 0, 0], [2, -1, 1], 0])
+    def test_init_no_kpoints(self, setup, nkpt):
+        with pytest.raises(ValueError, match="larger than 0"):
+            MonkhorstPack(setup.s1, nkpt)
+
     def test_init_simple(self, setup):
         bz = MonkhorstPack(setup.s1, [2] * 3, trs=False)
         assert len(bz) == 8
