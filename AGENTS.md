@@ -42,9 +42,9 @@ see [15 · Public documentation](techs/15-public-docs.md).
 - **Few strong classes.** Prefer a small generalization over many subclasses —
   [02 · Concepts](techs/02-concepts.md#few-strong-classes).
 - **Ask first:** Cython ports, fixes to slow idioms, new required dependencies,
-  public API changes.
+  public API changes — [16 · Agents](techs/16-agents.md#ask-first).
 - **Stage explicitly.** Never `git add -A` / `git add .`; untracked directories are
-  personal scratch.
+  personal scratch — [16 · Agents](techs/16-agents.md#stage-explicitly).
 
 
 ## Quick commands
@@ -59,8 +59,6 @@ pytest src/sisl/_core/tests/test_geometry.py -k rotate
 pytest -m "not slow"
 ```
 
-`_x.py` and `_x.pyx` companions are distinct modules: check which one is imported.
-
 Details: [10 · Build](techs/10-build.md), [11 · Testing](techs/11-testing.md),
 [13 · Conventions](techs/13-conventions.md) (license header, typing, dependencies,
 pre-commit, changelog fragments in `changes/`).
@@ -68,7 +66,15 @@ pre-commit, changelog fragments in `changes/`).
 
 ## Agent rules
 
-Mark agent commits only with the `ai` trailer (defined in `.gitconfig`; load it once
-with `git config include.path ../.gitconfig`), never with `Co-authored-by` or other
-trailers in the message:
-`git commit ... --trailer ai=<agent>:<model>[:<effort>]`, e.g. `ai=claude-code:claude-opus-5-5`.
+[16 · Agents](techs/16-agents.md) holds the rules for agents only, with their reasons.
+Read it before your first change. In short:
+
+- **Ask first** and **stage explicitly** (above).
+- **Commit trailer.** Mark agent commits only with the `ai` trailer (load it once with
+  `git config include.path ../.gitconfig`), never with `Co-authored-by` or other trailers:
+  `git commit ... --trailer ai=<agent>:<model>[:<effort>]`, e.g. `ai=claude-code:claude-opus-5-5`.
+- **Find the module that runs.** `_x.py` and `_x.pyx` companions are distinct modules:
+  check which one is imported.
+- **Report what you did not run**, and why.
+
+When you change a rule in 16, change this summary in the same commit.
