@@ -110,6 +110,16 @@ Each test adds to the CI time on all of them.
 The rules in [11 · What a new test must do](11-testing.md#what-a-new-test-must-do) still apply.
 A fast test that does not check the behavior has no value.
 
+## Time tests with a maximum of 2 agents
+
+When you measure test timings, run a maximum of 2 agents at the same time.
+This rule also applies when you change tests because of their timings, for example to add a `slow` mark.
+If you need more agents, ask the maintainer first.
+
+- The typical test computer has performance cores and efficiency cores.
+  With more agents, the system puts tests on the efficiency cores, and the timings change.
+- Timings from a loaded computer are not correct. Then a decision from them, for example a `slow` mark, is also not correct.
+
 ## Report what you did not run
 
 Follow the order of checks in [14 · Verifying a change](14-verifying-a-change.md).

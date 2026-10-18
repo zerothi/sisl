@@ -80,6 +80,8 @@ Read it before your first change. In short:
   `git commit ... --trailer ai=<agent>:<model>[:<effort>]`, e.g. `ai=claude-code:claude-opus-5-5`.
 - **Fast tests, no redundant tests.** CI runs each test many times. Use the smallest system,
   extend or parametrize an existing test before adding one, and mark slow tests `slow`.
+- **Time tests with 2 agents or fewer.** When you measure test timings, or change tests because of them,
+  run a maximum of 2 agents at the same time, or ask first. Power and efficiency cores skew the timings.
 - **Find the module that runs.** `_x.py` and `_x.pyx` companions are distinct modules:
   check which one is imported.
 - **Report what you did not run**, and why.
