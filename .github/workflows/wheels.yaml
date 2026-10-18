@@ -218,6 +218,7 @@ jobs:
             --progress-bar=off \
             --index-url https://test.pypi.org/simple/ \
             --extra-index-url https://pypi.org/simple/ \
+            --prefer-binary \
             "sisl[test,viz]==${{ env.SISL_VERSION }}" \
             "numpy==2.1.*" "scipy==1.15.*" "xarray==2024.3.*"
 
@@ -228,6 +229,7 @@ jobs:
             --progress-bar=off \
             --index-url https://test.pypi.org/simple/ \
             --extra-index-url https://pypi.org/simple/ \
+            --prefer-binary \
             "sisl[test,viz]==${{ env.SISL_VERSION }}"
 
       - name: sisl debug info
