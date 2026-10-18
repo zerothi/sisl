@@ -1,4 +1,0 @@
-Added `~sisl.io.siesta.fdfSileSiesta.block_get` to read key-value lines in blocks
-
-The values are converted in the same way as `~sisl.io.siesta.fdfSileSiesta.get`.
-fdf lists, e.g. ``Label [1 -- 4, 6]``, are now returned as integer arrays.

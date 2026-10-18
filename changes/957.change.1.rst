@@ -1,4 +1,0 @@
-Faster element assignment and retrieval in sparse matrices
-
-Setting elements one at a time, e.g. ``H[i, j] = value``, is roughly
-2.5--3 times faster, and retrieving single elements is also faster.

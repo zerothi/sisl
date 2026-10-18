@@ -1,7 +1,0 @@
-Added `~sisl.physics.MonkhorstPack.unpack_trs` to expand TRS reduced data to the full Brillouin zone
-
-``mp_full, data_full = mp.unpack_trs(data, axis=0)`` returns the grid without
-time-reversal symmetry and a copy of ``data`` that matches its k-points.
-Use ``weighted=True`` for data that is multiplied by the k-point weights, and
-``conjugate=True`` for data that is complex conjugated at :math:`-\mathbf k`
-(e.g. eigenstates).

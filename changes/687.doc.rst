@@ -1,6 +1,0 @@
-Tutorial and reference for atom categories
-
-A new tutorial, "Selecting atoms with categories", introduces the atom categories
-step by step, from a single category to geometry changes and saturation.
-The reference page :ref:`geom-indexing` lists all categories, their keywords and operators,
-and shows how to write a new category.

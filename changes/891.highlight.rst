@@ -1,1 +1,0 @@
-* Adaptive Brillouin zone integration with `~sisl.physics.GaussKronrodGrid`, which puts k-points where the integrand changes fast (e.g. Green functions with a small broadening)

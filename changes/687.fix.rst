@@ -1,4 +1,0 @@
-Category selection on a subset of atoms returned wrong indices
-
-Selecting a category within a subset of atoms (e.g. ``geometry._sanitize_atoms(AtomZ(7), [2, 3])``)
-returned the positions in the subset, and not the atom indices.

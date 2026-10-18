@@ -1,0 +1,478 @@
+sisl 0.20.0 Release Notes
+*************************
+
+Released on 2026-10-18.
+
+
+Highlights
+==========
+
+- * Adaptive Brillouin zone integration with `~sisl.physics.GaussKronrodGrid`, which puts k-points where the integrand changes fast (e.g. Green functions with a small broadening)
+
+  (:pull:`891`)
+
+
+
+New features
+============
+
+- `~sisl.geom.saturate` adds atoms to missing bonds
+
+  ``saturate(geometry, [(selector, Saturate("H", bond=1.09)), ...])`` adds an atom
+  for each missing bond of the selected atoms.
+  The selectors are atom categories, so different environments get different
+  atoms, e.g. hydrogen on carbon edges and fluorine on boron edges.
+  The first rule that selects an atom is used.
+  `~sisl.geom.Saturate` places the atoms in linear, trigonal planar or tetrahedral directions.
+
+  (:pull:`202`)
+
+
+- Lenient construction of atom categories
+
+  `~sisl.geom.AtomZ` accepts symbols and `~sisl.Atom` objects, e.g. ``AtomZ("C")``.
+  `~sisl.geom.AtomCategory` accepts the aliases ``species=``/``element=`` (for ``Z=``)
+  and ``neighbours=``, and ``True`` as a value (``AtomCategory(odd=True)``).
+  An unknown keyword now lists close matches and all valid keywords.
+  Sub-classes declare their keywords with class arguments,
+  e.g. ``class AtomCoordination(AtomCategory, key="coordination", aliases=("cn",))``.
+
+  (:pull:`687`)
+
+
+- ``mask`` method for categories, and much faster atom categories
+
+  ``category.mask(geometry)`` returns a boolean array with one value per atom.
+  The atom categories are now vectorized, and the parts of a composite category
+  share one neighbor search. Selecting atoms with `~sisl.geom.AtomNeighbors`
+  is more than 100 times faster for a thousand atoms.
+
+  (:pull:`687`)
+
+
+- Added `~sisl.physics.MonkhorstPack.unpack_trs` to expand TRS reduced data to the full Brillouin zone
+
+  ``mp_full, data_full = mp.unpack_trs(data, axis=0)`` returns the grid without
+  time-reversal symmetry and a copy of ``data`` that matches its k-points.
+  Use ``weighted=True`` for data that is multiplied by the k-point weights, and
+  ``conjugate=True`` for data that is complex conjugated at :math:`-\mathbf k`
+  (e.g. eigenstates).
+
+  (:pull:`886`)
+
+
+- Adaptive Brillouin zone integration with `~sisl.physics.GaussKronrodGrid`
+
+  `~sisl.physics.AdaptiveBrillouinZone` is the base class of Brillouin zones that
+  select their k-points from the integrand. Integrate with
+  ``bz.integrate(func)``, where ``func(k)`` returns a scalar, an array, or a
+  sequence of these (integrated element by element, returned as `~sisl.oplist`).
+  ``bz.apply.average`` integrates parent methods (with ``wrap``), so the
+  self-energies `~sisl.physics.RealSpaceSE` and `~sisl.physics.RealSpaceSI` accept
+  an adaptive ``bz``; the other ``apply`` modes need fixed k-points and raise.
+  ``bz.last_bz()`` returns a `~sisl.physics.BrillouinZone` with the k-points and
+  weights of the last integration.
+  `~sisl.physics.GaussKronrodGrid` refines boxes of a Gauss-Kronrod rule
+  where the integrand changes fast, e.g. Green functions with a small broadening.
+  ``gauss`` selects the rule: 3, 7 (default) or 10 Gauss nodes, with 7, 15 or 21
+  k-points along each direction of a box.
+  ``nkpt`` is the initial number of k-points along each direction (0 for a direction
+  that is not integrated), as for `~sisl.physics.MonkhorstPack`. A scalar ``nkpt``
+  only integrates the periodic directions of the parent lattice, and the default is
+  one box along each periodic direction.
+  ``max_k`` limits the total number of k-points, or (as a sequence) the k-point
+  density along each direction. Time-reversal symmetry (``trs``) halves the
+  integrated domain, as for `~sisl.physics.MonkhorstPack`.
+
+  (:pull:`891`)
+
+
+- `~sisl.SparseCSR` supports both ``int32`` and ``int64`` indices
+
+  The index arrays (``ptr``, ``ncol`` and ``col``) always share the same
+  integer data-type. It is chosen automatically from the matrix dimensions and
+  number of elements, so small matrices use ``int32``, while matrices
+  too large for ``int32`` use ``int64``. The index arrays are promoted to
+  ``int64`` when the sparse pattern grows beyond the ``int32`` range.
+  A specific data-type can be requested with ``SparseCSR(..., idtype=np.int64)``.
+
+  Fixes :issue:`902`.
+
+  (:pull:`957`)
+
+
+- Added `~sisl.io.siesta.fdfSileSiesta.block_get` to read key-value lines in blocks
+
+  The values are converted in the same way as `~sisl.io.siesta.fdfSileSiesta.get`.
+  fdf lists, e.g. ``Label [1 -- 4, 6]``, are now returned as integer arrays.
+
+  (:pull:`1024`)
+
+
+- Added ``indices`` to `~sisl.physics.Bloch` to only calculate a sub-matrix of the unfolded matrix
+
+  ``indices`` is either an array (``M[np.ix_(indices, indices)]``) or a tuple
+  ``(rows, cols)`` (``M[np.ix_(rows, cols)]``) of indices in the unfolded matrix.
+  Only the requested elements are calculated and stored, e.g. the edges of a large
+  Bloch expansion.
+
+  `~sisl.physics.RealSpaceSE.self_energy` and `~sisl.physics.RealSpaceSI.self_energy`
+  with ``coupling=True`` now only calculate the required Green function elements,
+  which greatly reduces the memory requirements for large Bloch expansions
+  (e.g. graphene expanded 100x100 peaks at 0.4 GB instead of more than 25.6 GB).
+  The ``green`` methods gained the ``indices`` argument.
+
+  (:pull:`1027`)
+
+
+- Reworked the Green function calculation
+
+  A complete re-write makes it more durable, it
+  was a bit fragile in the way the details were
+  layed out.
+
+
+
+Changes and improvements
+========================
+
+- Category construction errors are no longer hidden
+
+  Calling a category with wrong arguments raises the real `TypeError`.
+  Before, ``AtomZ()`` returned ``None``, and a `TypeError` inside a category's
+  ``__init__`` was reported as "found no matches". ``AtomCategory()`` without
+  keywords raises a `TypeError`. A string passed to `~sisl.geom.AtomZ` is now
+  read as a symbol, and an unknown symbol raises a `ValueError`.
+
+  (:pull:`687`)
+
+
+- Faster element assignment and retrieval in sparse matrices
+
+  Setting elements one at a time, e.g. ``H[i, j] = value``, is roughly
+  2.5--3 times faster, and retrieving single elements is also faster.
+
+  (:pull:`957`)
+
+
+- Changed internal ``scipy.sparse.*_matrix`` to ``*_array``
+
+  This is necessary to further the usage of scipy which
+  now encourages the use of ``*_array``.
+
+  There are some missing features using the array-like
+  interface, but they should be easy to circumvent
+  until full compatibility is shipped in scipy.
+
+  (:pull:`957`)
+
+
+- Distributions are now agnostic of the object they distribute
+
+  The distribution classes moved to `sisl.mpi`, and were renamed:
+  ``Partition`` is now `sisl.mpi.Distribution`, ``BlockCyclicPartition`` is now
+  `sisl.mpi.BlockCyclicDistribution`.
+  A distribution holds only its communicator and the indices it distributes,
+  so the same distribution can be re-used on any object of the same length.
+  Calling it, ``dist(obj, ...)``, forwards to ``obj.__sisl_distribute__(dist, ...)``,
+  which lets the object decide what distributing it means.
+  The communicator is a keyword-only argument defaulting to
+  `sisl.mpi.get_comm`, so ``BlockCyclicDistribution(n)`` is enough for basic
+  distributions.
+
+
+
+Bugfixes
+========
+
+- Category selection on a subset of atoms returned wrong indices
+
+  Selecting a category within a subset of atoms (e.g. ``geometry._sanitize_atoms(AtomZ(7), [2, 3])``)
+  returned the positions in the subset, and not the atom indices.
+
+  (:pull:`687`)
+
+
+- `~sisl.geom.AtomNeighbors` with a callable ``R`` that returns a single radius
+
+  The neighbor count failed with a `TypeError`. It now counts the atoms within the radius,
+  including the atom itself, as documented.
+
+  (:pull:`687`)
+
+
+- `NeighborFinder` no longer misses neighbors for large cutoff radii
+
+  When the cutoff radius required bins bigger than the unit cell, the binning
+  was done on an auxiliary tiled geometry that was constructed without a
+  lattice. `~sisl.Geometry` then invented one from the bounding box of the
+  coordinates, so the bins were assigned in a different fractional frame than
+  the one used when querying, and neighbors were silently dropped (or the setup
+  crashed with an ``IndexError``). The supercell index of the tiled lattice was
+  also discarded when mapping the pairs back to the original geometry.
+
+  Additionally, the minimum bin size for skewed cells is now derived from the
+  distance between the lattice planes instead of the pairwise angles between
+  lattice vectors, which was too small for genuinely triclinic cells, and
+  `NeighborFinder.find_close` now handles coordinates outside the unit cell.
+
+  (:pull:`1016`)
+
+
+- Orthogonal overlap matrices no longer emit a ``SparseEfficiencyWarning``
+
+  ``Sk`` of orthogonal matrices (e.g. `~sisl.Hamiltonian.Sk`) created the
+  identity matrix by changing the sparsity structure of an empty matrix.
+
+  (:pull:`1024`)
+
+
+- `~sisl.physics.SelfEnergy` now raises an `AttributeError` for missing attributes
+
+  Previously any missing attribute silently returned ``None``.
+
+  (:pull:`1024`)
+
+
+- Fixed `Grid.append`, `AndersonMixer`, `iter_shape`, `size_to_num` and `Orbital.equal`
+
+  `~sisl.Grid.append` now copies the data of both grids; before it returned zeros.
+  `~sisl.mixing.AndersonMixer` now keeps one history step and does Anderson mixing;
+  before it silently did linear mixing. Its results therefore change.
+  `~sisl.utils.misc.iter_shape` now yields all indices as tuples, also for 1D shapes.
+  `~sisl.utils.misc.size_to_num` now converts numbers (in MB) to the requested unit.
+  `Orbital.equal` and `AtomicOrbital.equal` now compare a string against the orbital name.
+  `tbtavncSileTBtrans.write_tbtav` now k-averages variables where ``nkpt`` is not the
+  first dimension; before it raised a `NameError`.
+
+
+- Fixed a user pool in `BrillouinZone.apply`
+
+  ``bz.apply.renew(pool=pool)`` with a pool object raised a `NameError`. It now uses the
+  number of CPUs of the pool, and warns only when it cannot find that number.
+
+
+- Fixed explicit `BandStructure` divisions over a discontinuity
+
+  A `~sisl.physics.BandStructure` with a list of ``divisions`` and a discontinuity
+  (``None`` in ``points``) created k-points between the two points of the
+  discontinuity. The division of that segment is now set to 1, as for an integer
+  ``divisions``.
+
+
+- Fixed the circle plane of `BrillouinZone.param_circle`
+
+  `~sisl.physics.BrillouinZone.param_circle` now creates the circle perpendicular to
+  ``normal``. Before, the circle was in a wrong plane for normals not along the
+  third Cartesian direction.
+
+
+- Fixed the number of points of `BrillouinZone.param_circle` for a discretization length
+
+  `~sisl.physics.BrillouinZone.param_circle` with a float ``N_or_dk`` now uses the
+  circumference to get the number of points. Before, it used the area of the circle,
+  which gave too few points for radii below :math:`2` 1/Ang.
+
+
+- Fixed the weights of a `BrillouinZone` with a single k-point as a flat list
+
+  ``BrillouinZone(parent, [kx, ky, kz])`` now has one weight. Before, it had 3 weights
+  for the single k-point.
+
+
+- Fixed time-reversal symmetry of a displaced `MonkhorstPack`
+
+  A `~sisl.physics.MonkhorstPack` with ``trs=True`` and a displacement different from
+  0 and 1/2 gave wrong Brillouin zone averages. It now uses time-reversal symmetry only
+  when the k-points are symmetric for :math:`\mathbf k\to-\mathbf k`.
+
+
+- `BrillouinZone.apply.array` accepts scalar values
+
+  ``bz.apply.array`` now accepts methods (or ``wrap`` functions) that return a Python
+  scalar. Before, it raised an `AttributeError`.
+
+
+- `GaussKronrodGrid.integrate` warns for an integrand that is not finite
+
+  `~sisl.physics.GaussKronrodGrid.integrate` now warns and stops when the integrand
+  returns NaN or inf. Before, it returned the NaN as a converged value.
+
+
+- `MonkhorstPack` raises a `ValueError` for directions without k-points
+
+  ``MonkhorstPack(parent, [10, 0, 1])`` now raises a `ValueError`. Before, it returned a
+  grid without k-points (and a division by zero warning), unless all directions were 0.
+
+
+
+Documentation
+=============
+
+- Tutorial and reference for atom categories
+
+  A new tutorial, "Selecting atoms with categories", introduces the atom categories
+  step by step, from a single category to geometry changes and saturation.
+  The reference page :ref:`geom-indexing` lists all categories, their keywords and operators,
+  and shows how to write a new category.
+
+  (:pull:`687`)
+
+
+- Documented adaptive Brillouin zone integration
+
+  The Brillouin zone reference has a new section, "Adaptive integration". It
+  explains when an adaptive grid is useful, why ``len(bz)``, ``bz.k`` and the
+  ``bz.apply`` modes other than ``average`` are not available, and shows how to
+  average a Green function with `~sisl.physics.GaussKronrodGrid`.
+
+  (:pull:`891`)
+
+
+- Corrected doc-strings of orbitals, shapes, mixers, `NeighborFinder` and range parsing
+
+  The orbital classes now show the real spherical harmonics that the code uses.
+  `hexagonal`, `goldene`, `AtomEven` and `AndersonMixer` now report their
+  public module, and `hcp` is annotated to return a `~sisl.Geometry`.
+
+
+- Merged the basic tutorials into notebooks
+
+  The old text tutorials on geometries, supercells and Hamiltonians are replaced.
+  A new notebook, "From a geometry to a Hamiltonian", explains supercells, matrix elements,
+  `~sisl.Geometry.find_nsc` and `~sisl.physics.Hamiltonian.construct`.
+  The geometry quickstart now shows how to create a geometry from coordinates.
+  The notebook tutorials have corrected text, and the anomalous Hall conductivity
+  tutorial no longer needs files that another tutorial creates.
+
+
+Toolboxes
+=========
+
+New features
+------------
+
+- Added ``sisl_toolbox.btd.permute`` for bandwidth reducing permutation tables
+
+  The Cython routines implement (reverse) Cuthill-McKee, Gibbs-Poole-Stockmeyer,
+  generalized Gibbs-Poole-Stockmeyer and electrode rooted orderings on symmetric
+  graphs, as well as a local refinement that applies to all of them.
+  ``reduce_bandwidth`` takes a `~sisl.SparseCSR` or a scipy sparse
+  matrix/array, folds the supercell columns into the unit cell, symmetrizes
+  the pattern, and returns the permutation table ``perm[new] = old`` for the
+  requested method. All routines work with ``int32`` and ``int64`` indices,
+  and return arrays with the index data-type of the input.
+
+  ``sisl_toolbox.btd.btd_partition`` partitions the permuted matrix into the
+  block-tridiagonal matrix of minimal cost (``speed``, ``memory`` or
+  ``speed-diagonal`` models), and returns the block sizes together with the
+  permutation table (sorted within each block).
+
+  (:pull:`1024`)
+
+
+
+Changes and improvements
+------------------------
+
+- Refactored the electrode self-energies and Green function of ``sisl_toolbox.btd``
+
+  ``PivotSelfEnergy`` and ``DownfoldSelfEnergy`` are replaced by ``Electrode``
+  (abstract base class), ``BlochElectrode`` and ``DownfoldElectrode``.
+  ``DownfoldElectrode`` takes any electrode (e.g. another downfolded electrode),
+  the Hamiltonian and the downfolding orbitals/blocks explicitly, and has no
+  knowledge of the device region. ``RealSpaceElectrode`` handles electrodes with
+  multiple semi-infinite directions, from a ``RealSpaceSE``/``RealSpaceSI``
+  or a GF file.
+  ``DeviceGreen`` takes the electrodes as ``(electrode, orbitals)`` pairs and
+  handles all permutations into the device region. Its ``permute`` argument is a
+  ``PermuteBTD``, a permutation table, or a ``btd_partition`` method; a TBtrans
+  output file is no longer accepted.
+  ``DeviceGreen.from_tbt`` creates the Green function from the regions and
+  permutation tables of a TBtrans output file and the electrode Hamiltonians.
+  ``DeviceGreen.from_fdf`` now only reads the fdf file (and the Hamiltonian
+  files it refers to, relative to the fdf file), and calculates the downfolding
+  regions and permutation tables. It no longer accepts ``use_tbt_se``.
+  Electrodes can be read from fdf files with ``Electrode.from_fdf``, which
+  returns the electrode class matching the electrode block.
+  ``TBT.Atoms.Device`` defaults to all atoms not in the electrodes nor in the
+  buffer, and may contain electrode atoms: electrodes fully in the device region
+  are not downfolded, electrodes partially in the device region are partially
+  downfolded (only their atoms outside the device region). ``DownfoldElectrode``
+  and ``downfold_partition`` accept electrodes partially in the last block (device
+  region), the electrode self-energy on those orbitals is added to the downfolded
+  self-energy.
+  ``DeviceGreen`` electrodes may be given as ``(electrode, orbitals, bulk)``,
+  where ``bulk`` uses the electrode Hamiltonian in the device region.
+  ``btd_partition`` accepts ``dense`` blocks (e.g. electrode orbitals), which
+  are guaranteed to span at most 2 neighboring blocks.
+  ``DeviceGreen.transmission`` and ``DeviceGreen.scattering_matrix`` accept
+  ``**kwargs`` (e.g. ``spin``).
+  ``Electrode.from_fdf`` and ``DeviceGreen.from_fdf`` accept ``use_gf`` (default
+  false) to read the self-energies from the ``GF`` files of the electrode blocks,
+  which is required for real-space electrodes (e.g. ``semi-inf-direction ab``).
+  Without chemical potentials and bias, TBtrans electrodes are all at 0 (as TBtrans).
+  ``Electrode.from_fdf`` returns a ``DownfoldElectrode`` for electrodes not in the
+  device region (``downfold=False`` returns the electrode itself).
+  ``downfold_partition`` finds the downfolding regions (and their BTD blocks) of
+  electrodes. ``btd_partition`` and ``downfold_partition`` are agnostic to atoms
+  and orbitals, they partition the rows of the passed matrix (``H.toSparseAtom()``
+  for atoms).
+  ``DeviceGreen`` electrode indices and ``permute`` (arrays or ``PermuteBTD``)
+  are atoms, or ``{"atoms": idx}`` / ``{"orbitals": idx}``; atomic partitions
+  are expanded to orbitals. ``DownfoldElectrode(electrode, H, elec, down)`` uses
+  the same index convention, ``down`` is a ``PermuteBTD`` (explicit blocks) or
+  the indices of the downfolding region (order and blocks found automatically). Method strings accept the TBtrans ``atom+``/``orb+``
+  prefixes and default to atoms, as do ``TBT.BTD.Pivot.Device`` and
+  ``TBT.BTD.Pivot.Elec[s]`` in ``from_fdf``. ``Electrode.orbs`` holds the device orbitals of an
+  electrode's self-energy, and ``DeviceGreen`` accepts such electrodes without
+  explicit indices.
+
+  Fixed spin (non-colinear) expansion of downfolded self-energies, caching of
+  downfolded self-energies and ``DeviceGreen`` quantities with different
+  ``spin``/``dtype`` arguments, and the spin expansion of ``DeviceGreen`` when
+  the Hamiltonian is larger than the device region. Eigenchannels now use the
+  ``spin`` of the scattering states. The ``delta-Ef`` and ``V-fraction``
+  electrode block options were never read from the fdf file, and a ``bulk false``
+  electrode block option was read as true. Self-energies from GF files were
+  returned as the bulk self-energy (:math:`E\mathbf S - \mathbf H - \boldsymbol\Sigma`)
+  instead of :math:`\boldsymbol\Sigma`.
+  The electrode ``name`` is an optional keyword-only argument, e.g.
+  ``BlochElectrode(se, bloch, name="Left")``. Unnamed electrodes are referenced
+  in ``DeviceGreen`` by their index (or the electrode object), names are matched
+  case-insensitively and must be unique. ``DeviceGreen(..., permute="electrode=<name|index>")``
+  starts the BTD partitioning from that electrode (defaults to the first).
+
+  (:pull:`1024`)
+
+
+
+Bugfixes
+--------
+
+- Easier and safer use of ``sisl_toolbox.btd`` directly from Python
+
+  ``DeviceGreen(..., eta=None)`` crashed on the first calculation, ``eta`` now
+  defaults to the smallest electrode ``eta`` divided by 10, as documented.
+  ``DeviceGreen`` and ``DownfoldElectrode`` remove the couplings of ``H`` along
+  the semi-infinite directions of the electrodes (on a copy), previously such
+  couplings silently gave wrong results.
+  ``DeviceGreen`` and ``DownfoldElectrode`` warn when an electrode does not seem
+  to be placed correctly: a wrong semi-infinite direction, an electrode not at the
+  edge of the region, or orbitals ordered differently than the electrode.
+  ``DownfoldElectrode`` no longer emits ``SparseEfficiencyWarning``, and exposes
+  the ``eta`` of its electrode.
+
+  (:pull:`1024`)
+
+
+
+Documentation
+-------------
+
+- Added a pure-Python quick start for ``sisl_toolbox.btd``
+
+  Covers electrodes, semi-infinite directions, electrode placement, Bloch
+  expansions, k-point integration and downfolding, without TBtrans.
+
+  (:pull:`1024`)

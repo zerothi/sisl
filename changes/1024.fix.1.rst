@@ -1,4 +1,0 @@
-Orthogonal overlap matrices no longer emit a ``SparseEfficiencyWarning``
-
-``Sk`` of orthogonal matrices (e.g. `~sisl.Hamiltonian.Sk`) created the
-identity matrix by changing the sparsity structure of an empty matrix.

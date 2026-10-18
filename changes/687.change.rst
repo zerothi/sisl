@@ -1,7 +1,0 @@
-Category construction errors are no longer hidden
-
-Calling a category with wrong arguments raises the real `TypeError`.
-Before, ``AtomZ()`` returned ``None``, and a `TypeError` inside a category's
-``__init__`` was reported as "found no matches". ``AtomCategory()`` without
-keywords raises a `TypeError`. A string passed to `~sisl.geom.AtomZ` is now
-read as a symbol, and an unknown symbol raises a `ValueError`.
