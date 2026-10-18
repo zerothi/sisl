@@ -8,6 +8,7 @@ from typing import Optional, Union
 
 import numpy as np
 
+import sisl._array as _a
 from sisl import Geometry
 from sisl._internal import set_module
 from sisl.typing import AtomsIndex
@@ -755,7 +756,7 @@ class NeighborFinder:
 
         # Undo the wrapping of the search coordinates, in the binning lattice.
         if np.any(wrap_isc):
-            neighbor_pairs[:, 2:] += np.repeat(
+            neighbor_pairs[:, 2:] += _a.repeat(
                 wrap_isc, np.diff(split_ind, prepend=0), axis=0
             )
 

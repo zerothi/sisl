@@ -7,7 +7,7 @@ from numbers import Integral
 from typing import Literal, Optional
 
 import numpy as np
-from numpy import add, dot, logical_and, repeat, subtract, unique
+from numpy import add, dot, logical_and, subtract, unique
 from scipy.sparse import csr_array
 from scipy.sparse import hstack as ss_hstack
 from scipy.sparse import tril, triu
@@ -760,7 +760,7 @@ class DensityMatrix(_densitymatrix):
         # 1. create a logical index for the matrix elements
         #    that is true for ia-ia interaction and false
         #    otherwise
-        idx = repeat(_a.arangei(geom.no), csr.ncol)
+        idx = _a.repeat(_a.arangei(geom.no), csr.ncol)
         aidx = geom.o2a(idx)
 
         # Sparse matrix indices for data

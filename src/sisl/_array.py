@@ -96,6 +96,36 @@ def array_arange(start, end=None, n=None, dtype=int64):
     return cumsum(a, dtype=dtype)
 
 
+def _repeat_intp(a, repeats, axis=None):
+    """`numpy.repeat` which accepts `repeats` of any integer data-type
+
+    `numpy.repeat` requires `repeats` to be safely castable to `numpy.intp`.
+    On 32-bit platforms (e.g. pyodide) this rejects ``int64`` counts.
+
+    Parameters
+    ----------
+    a : array_like
+       input array
+    repeats : array_like of int
+       the number of repetitions for each element
+    axis : int, optional
+       the axis along which to repeat values
+
+    Examples
+    --------
+    >>> _repeat_intp([1, 2], np.array([2, 1], dtype=np.int64))
+    array([1, 1, 2])
+    """
+    return np.repeat(a, asarray(repeats).astype(np.intp, copy=False), axis=axis)
+
+
+if np.dtype(np.intp).itemsize >= 8:
+    repeat = np.repeat
+else:
+    repeat = _repeat_intp
+__all__ += ["repeat"]
+
+
 # Create all partial objects for creating arrays
 array_arangei = _partial(array_arange, dtype=int32)
 array_arangel = _partial(array_arange, dtype=int64)

@@ -11,7 +11,7 @@ import numpy as np
 import pytest
 import scipy as sc
 
-from sisl._array import array_arange
+from sisl._array import _repeat_intp, array_arange
 from sisl._core.sparse import *
 from sisl._core.sparse import indices
 
@@ -129,6 +129,13 @@ def test_idtype_reserve_promotes():
     csr = SparseCSR((10, 10), nnzpr=1)
     csr._reserve_index(2**31)
     _assert_idtype(csr, np.int64)
+
+
+@pytest.mark.parametrize("idtype", [np.int32, np.int64])
+def test_repeat_intp(idtype):
+    # the 32-bit platform path of _a.repeat, also on 64-bit platforms
+    out = _repeat_intp([1, 2], np.array([2, 1], dtype=idtype))
+    assert np.array_equal(out, [1, 1, 2])
 
 
 def test_idtype_retained():

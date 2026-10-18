@@ -20,7 +20,6 @@ from numpy import (
     int32,
     intersect1d,
     lexsort,
-    repeat,
     searchsorted,
     tile,
     unique,
@@ -1366,7 +1365,7 @@ class SparseAtom(_SparseGeometry):
         # Vectorize over all stored elements in one call.
         # `Rij` returns element-wise vectors for equal-length array inputs.
         idx = array_arange(ptr[:-1], n=ncol)
-        rows = repeat(_a.arangei(self.shape[0]), ncol)
+        rows = _a.repeat(_a.arangei(self.shape[0]), ncol)
         R._csr._D[idx, :] = geom.Rij(rows, col[idx])
 
         return R
@@ -1816,7 +1815,7 @@ class SparseOrbital(_SparseGeometry):
             # Vectorize over all stored elements in one call.
             # `oRij` returns element-wise vectors for equal-length array inputs.
             idx = array_arange(ptr[:-1], n=ncol)
-            rows = repeat(_a.arangei(self.shape[0]), ncol)
+            rows = _a.repeat(_a.arangei(self.shape[0]), ncol)
             R._csr._D[idx, :] = geom.oRij(rows, col[idx])
 
         else:
