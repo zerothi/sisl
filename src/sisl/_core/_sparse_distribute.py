@@ -42,6 +42,7 @@ from typing import Optional
 
 import numpy as np
 
+import sisl._array as _a
 from sisl._array import array_arange
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.mpi._distribute import Distribution, DistributionState
@@ -99,7 +100,7 @@ def _stored(csr):
     idx = array_arange(csr.ptr[:-1], n=csr.ncol)
     # array_arange concatenates the rows in order, so repeating each row index
     # ncol times lines up element for element
-    rows = np.repeat(np.arange(csr.shape[0], dtype=idx.dtype), csr.ncol)
+    rows = _a.repeat(np.arange(csr.shape[0], dtype=idx.dtype), csr.ncol)
     return rows, csr.col[idx], csr._D[idx]
 
 

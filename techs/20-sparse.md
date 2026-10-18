@@ -52,6 +52,12 @@ All setters use `_as_index`.
 When a value does not fit in `int32`, all three arrays change to `int64`.
 The Cython fused type `int_sp_st` (`_core/_dtypes.pxd`) matches this.
 
+Use `_a.repeat`, not `numpy.repeat`, when the counts are `ncol` (or other index arrays).
+`numpy.repeat` casts the counts to `intp` with the `safe` rule.
+On a 32-bit platform (pyodide) `intp` is `int32`, thus `int64` counts fail.
+`_a.repeat` casts the counts without a check. The cast cannot overflow:
+each count is not larger than the result length, and the result length must fit in `intp`.
+
 ### Row index
 
 The internal row methods (`_extend`, `_get`) accept only one scalar row.

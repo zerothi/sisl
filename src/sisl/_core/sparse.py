@@ -32,7 +32,6 @@ from numpy import (
     isscalar,
     lexsort,
     ndarray,
-    repeat,
     setdiff1d,
     split,
     take,
@@ -144,7 +143,7 @@ def _to_coo(csr, data: bool = True, rows=None):
             D = D[idx]
         cols = col[idx]
     idx = (ncol > 0).nonzero()[0]
-    rows = repeat(idx, ncol[idx])
+    rows = _a.repeat(idx, ncol[idx])
 
     if data:
         return rows, cols, D

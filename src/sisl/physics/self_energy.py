@@ -71,7 +71,7 @@ def _real_space_coupling_orbitals(P0, atoms) -> dict:
     #    non-zero elements in the columns of `orbs` (folded to the unit-cell)
     csr = P0._csr
     no = P0.no
-    rows = np.repeat(_a.arangei(no), csr.ncol)
+    rows = _a.repeat(_a.arangei(no), csr.ncol)
     cols = csr.col[_a.array_arange(csr.ptr[:-1], n=csr.ncol)] % no
     corbs = np.setdiff1d(rows[np.isin(cols, orbs)], orbs)
 
