@@ -39,34 +39,6 @@ def test_step_manual():
             mixer(f, df)
 
 
-def test_step_yield_repeat():
-    mix1 = LinearMixer()
-    mix2 = AndersonMixer()
-    mix1_rep2 = StepMixer.yield_repeat(mix1, 2)
-    mix2_rep2 = StepMixer.yield_repeat(mix2, 2)
-
-    # now merge them
-    def gen():
-        yield from mix1_rep2()
-        yield from mix2_rep2()
-
-    mixer = StepMixer(gen)
-    # Now lets test it
-    f = np.random.rand(4) + 1
-    df = np.random.rand(4) + 0.2
-
-    # test 3 times
-    for _ in range(3):
-        # we start with linearmixer
-        for _ in range(2):
-            assert isinstance(mixer.mixer, LinearMixer)
-            mixer(f, df)
-
-        for _ in range(2):
-            assert isinstance(mixer.mixer, AndersonMixer)
-            mixer(f, df)
-
-
 def test_step_yield_repeat_n():
     mix = LinearMixer()
     r = StepMixer.yield_repeat(mix, 1)

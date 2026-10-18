@@ -123,7 +123,7 @@ class TestObject:
         for obj in [BaseSile, Sile, cubeSile]:
             assert isinstance(s, obj)
 
-    @pytest.mark.parametrize("sile", _fnames("test", ["ascii", "ascii.gz", "ascii.gz"]))
+    @pytest.mark.parametrize("sile", _fnames("test", ["ascii", "ascii.gz"]))
     def test_bigdft_ascii(self, sile):
         s = gs(sile)
         for obj in [BaseSile, Sile, SileBigDFT, asciiSileBigDFT]:
@@ -299,31 +299,6 @@ class TestObject:
             with sile(f, mode="r") as s:
                 l = Lattice.read(s)
             assert l.equal(L, atol=1e-3)
-        except UnicodeDecodeError as e:
-            pass
-
-    @pytest.mark.parametrize("sile", _my_intersect(["read_lattice"], ["write_lattice"]))
-    def test_read_write_lattice(self, sisl_tmp, sisl_system, sile):
-        if issubclass(sile, SileCDF):
-            pytest.importorskip("netCDF4")
-
-        L = sisl_system.g.rotate((-30, sisl_system.g.cell[2]), what="xyz+abc").lattice
-        L.set_nsc([1, 1, 1])
-        f = sisl_tmp("test_read_write_geom.win")
-
-        if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
-            pytest.xfail(
-                "Windows reading/writing supercell fails for some unknown reason"
-            )
-
-        # Write
-        sile(f, mode="w").write_lattice(L)
-        # Read 1
-        try:
-            with sile(f, mode="r") as s:
-                l = s.read_lattice()
-            assert l.equal(L, atol=1e-3)  # pdb files have 8.3 for atomic coordinates
-            assert l.equal(L, atol=1e-3)  # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
 

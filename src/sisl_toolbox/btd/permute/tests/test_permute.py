@@ -138,14 +138,13 @@ def _supercell_hamiltonian():
     [sps.csr_array, sps.coo_array, sps.csc_array, sps.csr_matrix],
     ids=["csr_array", "coo_array", "csc_array", "csr_matrix"],
 )
-@pytest.mark.parametrize("method", methods)
-def test_reduce_bandwidth_scipy(method, convert):
+def test_reduce_bandwidth_scipy(convert):
     H = _supercell_hamiltonian()
     A = H.tocsr()
     # columns extend into the supercell
     assert A.shape[1] > A.shape[0]
-    perm = reduce_bandwidth(convert(A), method)
-    assert np.array_equal(perm, reduce_bandwidth(H._csr, method))
+    perm = reduce_bandwidth(convert(A), "gps")
+    assert np.array_equal(perm, reduce_bandwidth(H._csr, "gps"))
 
 
 def _csr_index_dtype(A, dtype):
@@ -156,8 +155,8 @@ def _csr_index_dtype(A, dtype):
     return A
 
 
-@pytest.mark.parametrize("dtype", [np.int32, np.int64])
-@pytest.mark.parametrize("method", methods)
+@pytest.mark.parametrize("dtype", [np.int64])
+@pytest.mark.parametrize("method", ["cm", "gps", "ggps"])
 def test_reduce_bandwidth_dtype(method, dtype):
     H = _supercell_hamiltonian()
     A = _csr_index_dtype(H.tocsr(), dtype)

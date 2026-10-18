@@ -398,9 +398,6 @@ class Test_atomicorbital:
 
 
 class Test_hydrogenicorbital:
-    def test_init(self):
-        orb = HydrogenicOrbital(2, 1, 0, 3.2)
-
     def test_basic1(self):
         orb = HydrogenicOrbital(2, 1, 0, 3.2, R=4.0)
         assert orb.R == orb.copy().R

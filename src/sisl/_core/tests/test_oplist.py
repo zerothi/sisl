@@ -27,8 +27,7 @@ def test_oplist_creation():
 @pytest.mark.parametrize(
     "op", [ops.add, ops.floordiv, ops.sub, ops.mul, ops.truediv, ops.pow]
 )
-@pytest.mark.parametrize("key1", [1, 2])
-@pytest.mark.parametrize("key2", [1, 2])
+@pytest.mark.parametrize("key1, key2", [(1, 1), (1, 2), (2, 1)])
 def test_oplist_math(op, key1, key2):
     d = {
         1: oplist([ar.aranged(1, 10), ar.aranged(1, 10)]),

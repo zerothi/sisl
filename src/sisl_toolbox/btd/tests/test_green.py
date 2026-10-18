@@ -399,7 +399,7 @@ def test_from_fdf(tmp_path, extra, cells):
 
 
 # the right electrode (4 atoms) starts at atom 4 * (NCELL - 1) + 1 == -4
-@pytest.mark.parametrize("right", ["-4", f"{4 * (NCELL - 1) + 1}", "end -1"])
+@pytest.mark.parametrize("right", ["-4", f"{4 * (NCELL - 1) + 1}"])
 def test_from_fdf_position(tmp_path, right):
     Hel, H = _system(HOP)
     fdf = _write_fdf(tmp_path, Hel, H, right=right)

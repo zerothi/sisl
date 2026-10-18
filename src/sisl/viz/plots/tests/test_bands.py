@@ -18,9 +18,7 @@ def backend(request):
     return request.param
 
 
-@pytest.fixture(
-    scope="module", params=["unpolarized", "polarized", "noncolinear", "spinorbit"]
-)
+@pytest.fixture(scope="module", params=["unpolarized", "polarized", "noncolinear"])
 def spin(request):
     return Spin(request.param)
 

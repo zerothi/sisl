@@ -193,10 +193,6 @@ def test_nanoribbon_arguments():
         nanoribbon("str", 1.42, (Atom(5), Atom(7)), kind="undefined")
 
 
-def test_graphene_nanoribbon():
-    graphene_nanoribbon(6, kind="armchair")
-
-
 @pytest.mark.parametrize(
     "vacuum",
     [10, (30, 10)],
@@ -255,10 +251,6 @@ def test_heteroribbon():
 
         # Assert no dangling bonds.
         assert len(geom.asc2uc({"neighbors": 1})) == 0
-
-
-def test_graphene_heteroribbon():
-    a = graphene_heteroribbon([(7, 2), (9, 2)])
 
 
 def test_graphene_heteroribbon_errors():

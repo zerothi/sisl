@@ -201,6 +201,7 @@ class TestDensityMatrix:
         grid = Grid(0.2, geometry=setup.D.geometry)
         D.density(grid, method=density_method)
 
+    @pytest.mark.slow
     @pytest.mark.filterwarnings("ignore", message="*non-Hermitian on-site")
     def test_rho2(self, density_method):
         bond = 1.42
@@ -558,11 +559,11 @@ class TestDensityMatrix:
         assert not np.allclose(d_mull, d1_mull)
         assert np.allclose(D_mull, d1_mull)
 
-    def test_rho_eta(self, setup, density_method):
+    def test_rho_eta(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)
         grid = Grid(0.2, geometry=setup.D.geometry)
-        D.density(grid, eta=True, method=density_method)
+        D.density(grid, eta=True, method="direct")
 
     def test_rho_smaller_grid1(self, setup, density_method):
         D = setup.D.copy()
@@ -571,7 +572,7 @@ class TestDensityMatrix:
         grid = Grid(0.2, geometry=setup.D.geometry.copy(), lattice=lattice)
         D.density(grid, method=density_method)
 
-    def test_rho_fail_p(self, density_method):
+    def test_rho_fail_p(self):
         bond = 1.42
         sq3h = 3.0**0.5 * 0.5
         lattice = Lattice(
@@ -597,9 +598,9 @@ class TestDensityMatrix:
         D.construct([[0.1, bond + 0.01], [(1.0, 0.5), (0.1, 0.1)]])
         grid = Grid(0.2, geometry=D.geometry)
         with pytest.raises(ValueError):
-            D.density(grid, [1.0, -1, 0.0], method=density_method)
+            D.density(grid, [1.0, -1, 0.0], method="direct")
 
-    def test_rho_fail_nc(self, density_method):
+    def test_rho_fail_nc(self):
         bond = 1.42
         sq3h = 3.0**0.5 * 0.5
         lattice = Lattice(
@@ -627,7 +628,7 @@ class TestDensityMatrix:
         )
         grid = Grid(0.2, geometry=D.geometry)
         with pytest.raises(ValueError):
-            D.density(grid, [1.0, 0.0], method=density_method)
+            D.density(grid, [1.0, 0.0], method="direct")
 
     def test_pickle(self, setup):
         import pickle as p

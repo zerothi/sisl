@@ -45,7 +45,7 @@ def test_sparse_orbital_symmetric(n0, n1, n2):
     assert s.nnz == nnz
 
 
-@pytest.mark.parametrize("n0", [1, 3])
+@pytest.mark.parametrize("n0", [1, pytest.param(3, marks=pytest.mark.slow)])
 @pytest.mark.parametrize("n1", [1, 4])
 @pytest.mark.parametrize("n2", [1, 2])
 @pytest.mark.parametrize("axis", [0, 1])
@@ -84,7 +84,7 @@ def test_sparse_orbital_append(n0, n1, n2, axis):
         assert np.allclose(s._csr._D, sout._csr._D)
 
 
-@pytest.mark.parametrize("n0", [1, 3])
+@pytest.mark.parametrize("n0", [1, pytest.param(3, marks=pytest.mark.slow)])
 @pytest.mark.parametrize("n1", [1, 4])
 @pytest.mark.parametrize("n2", [1, 2])
 @pytest.mark.parametrize("axis", [1, 2])
@@ -332,6 +332,7 @@ def test_sparse_orbital_replace_species_warn():
         sp.replace(1, spN, 1)
 
 
+@pytest.mark.slow
 def test_sparse_orbital_replace_hole():
     """Create a big graphene flake remove a hole (1 orbital system)"""
     g = graphene(orthogonal=True)

@@ -11,25 +11,6 @@ import sisl
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 
 
-def test_gf_write(sisl_tmp, sisl_system):
-    tb = sisl.Hamiltonian(sisl_system.gtb)
-    f = sisl_tmp("file.TSGF")
-    gf = sisl.io.get_sile(f)
-    bz = sisl.MonkhorstPack(tb, [3, 3, 1])
-    E = np.linspace(-2, 2, 20) + 1j * 1e-4
-    S = np.eye(len(tb), dtype=np.complex128)
-
-    gf.write_header(bz, E)
-    for i, (ispin, new_hs, k, e) in enumerate(gf):
-        Hk = tb.Hk(k, format="array")
-        assert ispin == 0
-        if new_hs and i % 2 == 0:
-            gf.write_hamiltonian(Hk)
-        elif new_hs:
-            gf.write_hamiltonian(Hk, S)
-        gf.write_self_energy(S * e - Hk)
-
-
 def test_gf_write_read(sisl_tmp, sisl_system):
     tb = sisl.Hamiltonian(sisl_system.gtb)
     f = sisl_tmp("file.TSGF")

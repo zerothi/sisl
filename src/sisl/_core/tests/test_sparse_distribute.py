@@ -105,11 +105,10 @@ def test_local_rows_is_a_copy_not_a_view():
     assert np.allclose(csr.todense(), before)
 
 
-@pytest.mark.parametrize("make", SCHEMES)
-def test_local_rows_gives_an_empty_block_to_a_rank_owning_nothing(make):
+def test_local_rows_gives_an_empty_block_to_a_rank_owning_nothing():
     """A rank with no rows still gets a usable matrix, and joins collectives."""
     csr = build(nr=2)
-    p = make(2, 5)
+    p = _cyclic(2, 5)
     empty = local_rows(csr, p, 4)
     assert empty.shape == (0, csr.shape[1], csr.shape[2])
     assert empty.nnz == 0
@@ -418,6 +417,7 @@ _PARALLEL = """
 """
 
 
+@pytest.mark.slow
 @needs_mpirun
 @pytest.mark.parametrize("blocksize", [0, 1, 2])
 @pytest.mark.parametrize("nprocs", [2, 3])

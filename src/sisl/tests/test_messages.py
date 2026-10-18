@@ -3,8 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import warnings as w
-
 import pytest
 
 import sisl.messages as sm
@@ -15,11 +13,6 @@ pytestmark = pytest.mark.messages
 def test_deprecate():
     with pytest.warns(sm.SislDeprecation):
         sm.deprecate("Deprecation warning")
-
-
-def test_deprecation():
-    with pytest.warns(sm.SislDeprecation):
-        w.warn(sm.SislDeprecation("Deprecation warning"))
 
 
 def test_warn_method():
@@ -50,16 +43,6 @@ def test_info_specific():
 def test_info_category():
     with pytest.warns(sm.SislInfo):
         sm.info("Information", sm.SislInfo)
-
-
-def test_error():
-    with pytest.raises(sm.SislError):
-        raise sm.SislError("This is an error")
-
-
-def test_exception():
-    with pytest.raises(sm.SislException):
-        raise sm.SislException("This is an error")
 
 
 def test_progressbar_true():

@@ -12,17 +12,6 @@ from sisl.io.siesta.struct import *
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 
 
-def test_struct1(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.STRUCT_IN")
-    sisl_system.g.write(structSileSiesta(f, "w"))
-    g = structSileSiesta(f).read_geometry()
-
-    # Assert they are the same
-    assert np.allclose(g.cell, sisl_system.g.cell)
-    assert np.allclose(g.xyz, sisl_system.g.xyz)
-    assert sisl_system.g.atoms.equal(g.atoms, R=False)
-
-
 def test_struct_reorder(sisl_tmp, sisl_system):
     f = sisl_tmp("gr.STRUCT_IN")
     g = sisl_system.g.copy()

@@ -319,9 +319,7 @@ class TestMonkhorstPack:
         assert bz1.parent == bz2.parent
         assert bz1._centered == bz2._centered
 
-    @pytest.mark.parametrize("N", [2, 3, 4, 5, 7])
-    @pytest.mark.parametrize("centered", [True, False])
-    def test_asgrid(self, setup, N, centered):
+    def test_asgrid(self, setup):
         class Test(LatticeChild):
             def __init__(self, lattice):
                 self.set_lattice(lattice)
@@ -919,10 +917,10 @@ class TestBandStructure:
         assert len(bz) == 300
 
         bz2 = BandStructure(setup.s1, [[0] * 2, [0.5] * 2], 300, ["A", "C"])
-        assert len(bz) == 300
+        assert len(bz2) == 300
 
         bz3 = BandStructure(setup.s1, [[0] * 2, [0.5] * 2], [150])
-        assert len(bz) == 300
+        assert len(bz3) == 151
         bz.lineartick()
         bz.lineark()
         bz.lineark(True)

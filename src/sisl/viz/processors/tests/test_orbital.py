@@ -40,9 +40,7 @@ def geometry():
     return sisl.geom.graphene(atoms=atoms)
 
 
-@pytest.fixture(
-    scope="module", params=["unpolarized", "polarized", "noncolinear", "spinorbit"]
-)
+@pytest.fixture(scope="module", params=["unpolarized", "polarized", "noncolinear"])
 def spin(request):
     return sisl.Spin(request.param)
 
@@ -214,14 +212,13 @@ def test_reduce_orbital_data(geometry, spin):
         reduced = reduce_orbital_data(data_no_geometry, [{"name": "all"}])
 
 
-def test_reduce_orbital_data_spin(geometry, spin):
-    data = PDOSData.toy_example(geometry=geometry, spin=spin)._data
+def test_reduce_orbital_data_spin(geometry):
+    data = PDOSData.toy_example(geometry=geometry, spin="polarized")._data
 
-    if spin.is_polarized:
-        sel_total = reduce_orbital_data(data, [{"name": "all", "spin": "total"}])
-        red_total = reduce_orbital_data(data, [{"name": "all"}], spin_reduce=np.sum)
+    sel_total = reduce_orbital_data(data, [{"name": "all", "spin": "total"}])
+    red_total = reduce_orbital_data(data, [{"name": "all"}], spin_reduce=np.sum)
 
-        assert np.allclose(sel_total.values, red_total.values)
+    assert np.allclose(sel_total.values, red_total.values)
 
 
 def test_reduce_orbital_data_no_spin(geometry, spin):

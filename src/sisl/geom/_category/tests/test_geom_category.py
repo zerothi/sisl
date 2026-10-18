@@ -18,6 +18,7 @@ def test_geom_category_kw_and_call():
     cat1 = AtomCategory.kw(odd={})
     cat2 = AtomCategory(odd={})
     assert cat1 == cat2
+    AtomCategory.kw(fx=(2, None))
 
 
 def test_geom_category():

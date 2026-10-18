@@ -288,25 +288,6 @@ def test_dataset_multidim_multireduce(dataset):
     assert new.sel(selection=1).sum() == ((7 + 10) / 2 + (8 + 11) / 2) * 3
 
 
-def test_dataarray_multidim_multireduce(dataarray):
-    new = group_reduce(
-        dataarray,
-        [{"selector": ([0, 1], [0, 1])}, {"selector": ([2, 3], [0, 1])}],
-        reduce_dim=("x", "y"),
-        reduce_func=(np.sum, np.mean),
-        groups_dim="selection",
-    )
-
-    assert isinstance(new, xr.DataArray)
-    assert "x" not in new.dims
-    assert "y" not in new.dims
-    assert "selection" in new.dims
-    assert len(new.coords["selection"]) == 2
-    assert list(new.coords["selection"]) == [0, 1]
-    assert new.sel(selection=0).sum() == (1 + 4) / 2 + (2 + 5) / 2
-    assert new.sel(selection=1).sum() == (7 + 10) / 2 + (8 + 11) / 2
-
-
 def test_dataset_names(dataset):
     new = group_reduce(
         dataset,

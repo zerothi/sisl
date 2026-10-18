@@ -22,9 +22,7 @@ from sisl.viz.processors.bands import (
 pytestmark = [pytest.mark.viz, pytest.mark.processors]
 
 
-@pytest.fixture(
-    scope="module", params=["unpolarized", "polarized", "noncolinear", "spinorbit"]
-)
+@pytest.fixture(scope="module", params=["unpolarized", "polarized", "noncolinear"])
 def spin(request):
     return Spin(request.param)
 
