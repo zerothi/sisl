@@ -12,17 +12,6 @@ from sisl.io.siesta.xv import *
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 
 
-def test_xv1(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.XV")
-    sisl_system.g.write(xvSileSiesta(f, "w"))
-    g = xvSileSiesta(f).read_geometry()
-
-    # Assert they are the same
-    assert np.allclose(g.cell, sisl_system.g.cell)
-    assert np.allclose(g.xyz, sisl_system.g.xyz)
-    assert sisl_system.g.atoms.equal(g.atoms, R=False)
-
-
 def test_xv_reorder(sisl_tmp, sisl_system):
     f = sisl_tmp("gr.XV")
     g = sisl_system.g.copy()

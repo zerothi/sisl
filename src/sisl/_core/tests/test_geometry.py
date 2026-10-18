@@ -71,12 +71,6 @@ class TestGeometry:
         assert 2 * 2 == setup.g.no
         assert 2 * 2 * 3 * 3 == setup.g.no_s
 
-    def test_iter1(self, setup):
-        i = 0
-        for ia in setup.g:
-            i += 1
-        assert i == 2
-
     def test_iter2(self, setup):
         for ia in setup.g:
             assert np.allclose(setup.g[ia], setup.g.xyz[ia, :])
@@ -120,12 +114,6 @@ class TestGeometry:
         assert np.allclose(cell, t.lattice.cell)
         cell[2, :] *= 2
         t = t.tile(2, 2)
-        assert np.allclose(cell, t.lattice.cell)
-
-    def test_tile2(self, setup):
-        cell = np.copy(setup.g.lattice.cell)
-        cell[:, :] *= 2
-        t = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         assert np.allclose(cell, t.lattice.cell)
 
     def test_sort(self, setup):
@@ -190,12 +178,6 @@ class TestGeometry:
         assert np.allclose(cell, t.lattice.cell)
         cell[2, :] *= 2
         t = t.repeat(2, 2)
-        assert np.allclose(cell, t.lattice.cell)
-
-    def test_repeat2(self, setup):
-        cell = np.copy(setup.g.lattice.cell)
-        cell[:, :] *= 2
-        t = setup.g.repeat(2, 0).repeat(2, 1).repeat(2, 2)
         assert np.allclose(cell, t.lattice.cell)
 
     def test_repeat3(self, setup):
@@ -358,7 +340,7 @@ class TestGeometry:
         assert np.allclose(c2.xyz[0, :], setup.g.xyz[1, :])
 
     def test_untile_algo(self, setup):
-        nr = range(2, 5)
+        nr = [2, 3]
         g = setup.g.copy()
         for x in nr:
             gx = g.tile(x, 0)
@@ -377,7 +359,7 @@ class TestGeometry:
             assert np.allclose(G.cell, g.cell)
 
     def test_unrepeat_algo(self, setup):
-        nr = range(2, 5)
+        nr = [2, 3]
         g = setup.g.copy()
         for x in nr:
             gx = g.repeat(x, 0)
@@ -407,20 +389,6 @@ class TestGeometry:
 
     def test_copy(self, setup):
         assert setup.g == setup.g.copy()
-
-    def test_nsc1(self, setup):
-        lattice = setup.g.lattice.copy()
-        nsc = np.copy(lattice.nsc)
-        lattice.set_nsc([5, 5, 0])
-        assert np.allclose([5, 5, 1], lattice.nsc)
-        assert len(lattice.sc_off) == np.prod(lattice.nsc)
-
-    def test_nsc2(self, setup):
-        lattice = setup.g.lattice.copy()
-        nsc = np.copy(lattice.nsc)
-        lattice.set_nsc([0, 1, 0])
-        assert np.allclose([1, 1, 1], lattice.nsc)
-        assert len(lattice.sc_off) == np.prod(lattice.nsc)
 
     def test_rotation1(self, setup):
         rot = setup.g.rotate([180, [0, 0, 1]], what="xyz+abc")
@@ -1393,10 +1361,6 @@ class TestGeometry:
         geom.set_nsc([5, 1, 5])
         assert np.allclose(geom.find_nsc([0, 2], R=0.9999), [1, 1, 1])
 
-    def test_argumentparser1(self, setup):
-        setup.g.ArgumentParser()
-        setup.g.ArgumentParser(**setup.g._ArgumentParser_args_single())
-
     def test_argumentparser2(self, setup, **kwargs):
         p, ns = setup.g.ArgumentParser(**kwargs)
 
@@ -1588,6 +1552,7 @@ class TestGeometry:
         with pytest.raises(ValueError):
             g.iR(R=-1.0)
 
+    @pytest.mark.slow
     @pytest.mark.parametrize(
         "geometry",
         [

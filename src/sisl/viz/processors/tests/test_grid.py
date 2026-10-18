@@ -125,7 +125,7 @@ def test_transform_grid_cell(grid, skewed):
 def test_orthogonalize_grid(grid, interp, skewed):
     ort_grid = orthogonalize_grid(grid, interp=(interp, interp, interp))
 
-    assert ort_grid.shape == (10, 10, 10) if interp == 1 else (20, 20, 20)
+    assert ort_grid.shape == ((10, 10, 10) if interp == 1 else (20, 20, 20))
     assert ort_grid.lattice.is_cartesian()
 
     if not skewed:
@@ -152,7 +152,7 @@ def test_orthogonalize_grid_if_needed(grid, skewed, interp):
         grid, axes=["x", "y"], interp=(interp, interp, interp)
     )
 
-    assert ort_grid.shape == (10, 10, 10) if interp == 1 else (20, 20, 20)
+    assert ort_grid.shape == ((20, 20, 20) if skewed and interp == 2 else (10, 10, 10))
     assert ort_grid.lattice.is_cartesian()
 
     if not skewed:
@@ -171,7 +171,7 @@ def test_orthogonalize_grid_if_needed(grid, skewed, interp):
         grid, axes=["z"], interp=(interp, interp, interp)
     )
 
-    assert ort_grid.shape == (10, 10, 10) if interp == 1 else (20, 20, 20)
+    assert ort_grid.shape == (10, 10, 10)
 
     if skewed:
         assert not ort_grid.lattice.is_cartesian()
@@ -362,6 +362,7 @@ def test_get_isos(grid, skewed):
 
     # we cast to the real value, to bypass scikit-images problems
     # scikit-image only allows float data-types
+    grid = grid.copy()
     grid.grid = grid.grid.real
 
     # Test isocontours (2D)

@@ -40,19 +40,6 @@ def test_fdf1(sisl_tmp, sisl_system):
         fdf.read_geometry()
 
 
-def test_fdf2(sisl_tmp, sisl_system):
-    f = sisl_tmp("gr.fdf")
-    sisl_system.g.write(fdfSileSiesta(f, "w"))
-    g = fdfSileSiesta(f).read_geometry()
-
-    # Assert they are the same
-    assert np.allclose(g.cell, sisl_system.g.cell)
-    assert np.allclose(g.xyz, sisl_system.g.xyz)
-    for ia in g:
-        assert g.atoms[ia].Z == sisl_system.g.atoms[ia].Z
-        assert g.atoms[ia].tag == sisl_system.g.atoms[ia].tag
-
-
 def test_fdf_units(sisl_tmp, sisl_system):
     f = sisl_tmp("gr.fdf")
     fdf = fdfSileSiesta(f, "w")

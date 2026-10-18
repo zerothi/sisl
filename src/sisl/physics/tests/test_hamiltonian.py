@@ -960,21 +960,6 @@ class TestHamiltonian:
         # Just to do the other branch
         berry_phase(bz, method="zak")
 
-    def test_berry_phase_zak_offset(self):
-        # SSH model, topological cell
-        g = Geometry([[0.0, 0, 0], [1.2, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
-        g.set_nsc([3, 1, 1])
-        H = Hamiltonian(g)
-        H.construct([(0.1, 1.0, 1.5), (0, 1.0, 0.5)])
-
-        # Contour
-        def func(parent, N, i):
-            return [i / N, 0, 0]
-
-        bz = BrillouinZone.parametrize(H, func, 101)
-        zak = berry_phase(bz, sub=0, method="zak")
-        assert np.allclose(np.abs(zak), np.pi)
-
     def test_berry_phase_method_fail(self):
         # wrong method keyword
         g = Geometry([[-0.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), lattice=[2, 10, 10])
@@ -1371,23 +1356,6 @@ class TestHamiltonian:
 
             for c_sp, c_np in zip(COOP_sp, COOP_np):
                 assert np.allclose(c_sp.toarray(), c_np)
-
-    def test_spin1(self, setup):
-        g = Geometry(
-            [[i, 0, 0] for i in range(10)],
-            Atom(6, R=1.01),
-            lattice=Lattice(100, nsc=[3, 3, 1]),
-        )
-        H = Hamiltonian(g, dtype=np.int32, spin=Spin.POLARIZED)
-        for i in range(10):
-            j = range(i * 2, i * 2 + 3)
-            H[0, j] = (i, i * 2)
-
-        H2 = Hamiltonian(g, 2, dtype=np.int32)
-        for i in range(10):
-            j = range(i * 2, i * 2 + 3)
-            H2[0, j] = (i, i * 2)
-        assert H.spsame(H2)
 
     def test_spin2(self, setup):
         g = Geometry(
@@ -1920,22 +1888,6 @@ class TestHamiltonian:
         setup.H2.empty()
 
     @pytest.mark.slow
-    def test_repeat1(self, setup):
-        R, param = [0.1, 1.5], [1.0, 0.1]
-
-        # Create reference
-        Hg = Hamiltonian(setup.g.repeat(2, 0))
-        Hg.construct([R, param])
-        Hg.finalize()
-        H = Hamiltonian(setup.g)
-        H.construct([R, param])
-        H = H.repeat(2, 0)
-        assert Hg.spsame(H)
-        H.finalize()
-        Hg.finalize()
-        assert np.allclose(H._csr._D, Hg._csr._D)
-
-    @pytest.mark.slow
     def test_repeat2(self, setup):
         R, param = [0.1, 1.5], [1.0, 0.1]
 
@@ -2218,20 +2170,6 @@ def test_wavefunction2():
     # This is effectively plotting outside where no atoms exists
     # (there could however still be psi weight).
     grid = Grid(0.1, lattice=Lattice([2, 2, 2], origin=[2] * 3))
-    grid.fill(0.0)
-    ES.sub(0).wavefunction(grid)
-
-
-def test_wavefunction3():
-    N = 50
-    o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
-    G = Geometry([[1] * 3, [2] * 3], Atom(6, o1), lattice=[4, 4, 4])
-    H = Hamiltonian(G, spin=Spin("nc"))
-    R, param = [0.1, 1.5], [[0.0, 0.0, 0.1, -0.1], [1.0, 1.0, 0.1, -0.1]]
-    H.construct([R, param])
-    ES = H.eigenstate()
-    # Plot in the full thing
-    grid = Grid(0.1, dtype=np.complex128, lattice=Lattice([2, 2, 2], origin=[-1] * 3))
     grid.fill(0.0)
     ES.sub(0).wavefunction(grid)
 

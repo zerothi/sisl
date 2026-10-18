@@ -76,14 +76,17 @@ def test_vh_final(fname, name, sisl_files):
         assert np.allclose(df.values, q)
 
 
-@pytest.mark.parametrize("fname", ("md", "pol_md", ("ancient", "pol_md"), "nc_md"))
-@pytest.mark.parametrize("name", ("voronoi", "Hirshfeld", "mulliken"))
+@pytest.mark.parametrize(
+    "name, fname",
+    [
+        (name, fname)
+        for fname in ("md", "pol_md", ("ancient", "pol_md"), "nc_md")
+        for name in ("voronoi", "Hirshfeld", "mulliken")
+        if not (isinstance(fname, tuple) and name == "mulliken")
+    ],
+)
 def test_vhm_md(name, fname, sisl_files):
     if isinstance(fname, tuple):
-        if name == "mulliken":
-            # we don't have this in the test, so simply return
-            # (this isn't a test after all)
-            return
         f = sisl_files("siesta", "ancient", f"voronoi_hirshfeld_4.1_{fname[1]}.out")
     else:
         f = sisl_files("siesta", "charges", fname, "RUN.out")
@@ -103,7 +106,7 @@ def test_vhm_md(name, fname, sisl_files):
     for iscf in [-1, Opt.ALL]:
         # space to not match MD/SCF charges
         with pytest.raises(SileError, match=" SCF charges"):
-            out.read_charge(name, iscf=-1)
+            out.read_charge(name, iscf=iscf)
 
     if with_pandas():
         df = out.read_charge(name, imd=Opt.ALL, as_dataframe=True)

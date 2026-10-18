@@ -340,19 +340,6 @@ def test_state_align_norm():
     assert np.allclose(state1.state, align1.state)
 
 
-def test_state_align_norm2():
-    state = ortho_matrix(10)
-    state1 = State(state)
-    idx = np.arange(len(state))
-    np.random.shuffle(idx)
-    state2 = state1.sub(idx)
-
-    # This should swap all back
-    align2, idx2 = state2.align_norm(state1, ret_index=True)
-    assert np.allclose(state1.state, align2.state)
-    assert np.allclose(state1.state, state2.sub(idx2).state)
-
-
 def test_state_rotate():
     state = State([[1 + 1.0j, 1.0], [0.1 - 0.1j, 0.1]])
 

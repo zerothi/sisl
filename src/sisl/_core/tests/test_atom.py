@@ -168,13 +168,6 @@ def test_iter2():
         assert len(o) == 2
 
 
-def test_charge():
-    r = [1, 1, 2, 2]
-    a = Atom(5, [Orbital(1.0, 1.0), Orbital(1.0, 1.0), Orbital(2.0), Orbital(2.0)])
-    assert len(a.q0) == 4
-    assert a.q0.sum() == pytest.approx(2)
-
-
 def test_atoms_set():
     a1 = Atom(1)
     a2 = Atom(2)

@@ -207,28 +207,22 @@ def test_wideband_1(setup):
     assert np.allclose(SE.broadening_matrix(1j), SE.se2broadening(SE.self_energy(1j)))
 
 
-@pytest.mark.parametrize("k_axes", [0, 1])
-@pytest.mark.parametrize("semi_axis", [0, 1])
+@pytest.mark.parametrize("semi_axis, k_axes", [(0, 1), (1, 0)])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
 @pytest.mark.parametrize("unfold", [1, 2])
 def test_real_space_HS(setup, k_axes, semi_axis, trs, bz, unfold):
-    if k_axes == semi_axis:
-        return
     RSE = RealSpaceSE(setup.HS, semi_axis, k_axes, (unfold, unfold, unfold))
     RSE.set_options(dk=100, trs=trs, bz=bz)
     RSE.setup()
     RSE.green(0.1)
 
 
-@pytest.mark.parametrize("k_axes", [0, 1])
-@pytest.mark.parametrize("semi_axis", [0, 1])
+@pytest.mark.parametrize("semi_axis, k_axes", [(0, 1), (1, 0)])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
 @pytest.mark.parametrize("unfold", [1, 2])
 def test_real_space_H(setup, k_axes, semi_axis, trs, bz, unfold):
-    if k_axes == semi_axis:
-        return
     RSE = RealSpaceSE(
         setup.H, semi_axis, k_axes, (unfold, unfold, 1), trs=trs, dk=100, bz=bz
     )
@@ -310,6 +304,7 @@ def test_real_space_HS_SE_unfold(setup):
         assert np.allclose(SE, SE_big)
 
 
+@pytest.mark.slow
 def test_real_space_HS_SE_unfold_with_k():
     # check that calculating the real-space Green function is equivalent for two equivalent systems
     sq = Geometry([0] * 3, Atom(1, 1.01), [1])

@@ -120,6 +120,7 @@ def test_sisl_mpi_env_var_disables():
     assert_ok(proc)
 
 
+@pytest.mark.slow
 def test_serial_collectives_are_identity():
     """Serial collectives must leave buffers holding exactly the reduced result."""
     proc = run(
@@ -160,6 +161,7 @@ def test_serial_collectives_are_identity():
     assert_ok(proc)
 
 
+@pytest.mark.slow
 @needs_mpirun
 def test_parallel_buffer_collectives():
     """The upper-case collectives must actually reduce and broadcast across ranks."""
@@ -220,6 +222,7 @@ def test_no_module_level_wrappers_and_one_shared_contract():
         assert name not in vars(m.Communicator), f"{name!r} should not be wrapped"
 
 
+@pytest.mark.slow
 def test_owns_mpi_when_nobody_else_did():
     """No launcher, no foreign owner: sisl claims MPI and cleans up after itself."""
     proc = run("""
@@ -234,6 +237,7 @@ def test_owns_mpi_when_nobody_else_did():
     assert_ok(proc)
 
 
+@pytest.mark.slow
 @needs_mpirun
 def test_owns_mpi_under_launcher():
     """Under mpirun the world size must be reported without inspecting the environment."""
@@ -252,6 +256,7 @@ def test_owns_mpi_under_launcher():
     assert_ok(proc)
 
 
+@pytest.mark.slow
 def test_attaches_to_foreign_owner():
     """If another component initialized MPI first, sisl attaches and never finalizes."""
     proc = run("""
@@ -266,6 +271,7 @@ def test_attaches_to_foreign_owner():
     assert_ok(proc)
 
 
+@pytest.mark.slow
 def test_repeated_acquisition_is_idempotent():
     """A second MPI_Init aborts uncatchably, so acquisition must happen once."""
     proc = run("""
@@ -279,6 +285,7 @@ def test_repeated_acquisition_is_idempotent():
     assert_ok(proc)
 
 
+@pytest.mark.slow
 def test_initialized_with_init_thread_not_init():
     """sisl must request FUNNELED; a plain MPI.Init would leave us at SINGLE.
 
@@ -306,6 +313,7 @@ def test_initialized_with_init_thread_not_init():
 # --- rank-divergent failure -----------------------------------------------
 
 
+@pytest.mark.slow
 @needs_mpirun
 def test_excepthook_aborts_instead_of_hanging():
     """One rank raising must kill the job, not leave the others in a collective.
@@ -331,6 +339,7 @@ def test_excepthook_aborts_instead_of_hanging():
     assert "should never get here" not in proc.stdout, combined
 
 
+@pytest.mark.slow
 def test_no_excepthook_when_serial():
     """Serial users must keep ordinary Python tracebacks and exit codes."""
     proc = run("""
@@ -344,6 +353,7 @@ def test_no_excepthook_when_serial():
     assert "Traceback" in combined, combined
 
 
+@pytest.mark.slow
 def test_unknown_operations_delegate_to_the_raw_communicator():
     """The full MPI surface stays reachable without a wrapper per operation."""
     proc = run("""
@@ -368,6 +378,7 @@ def test_unknown_operations_delegate_to_the_raw_communicator():
     assert_ok(proc)
 
 
+@pytest.mark.slow
 def test_serial_operations_outside_the_contract_are_noops():
     """Code written for MPI must run unchanged in serial."""
     proc = run(

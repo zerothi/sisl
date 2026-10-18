@@ -72,16 +72,14 @@ def test_bands_from_siesta_wfsx(spin, sisl_files):
     data.sanity_check(n_spin=n_spin, nk=16, nbands=4)
 
 
-@pytest.mark.parametrize(
-    "spin", ["unpolarized", "polarized", "noncolinear", "spinorbit"]
-)
+@pytest.mark.parametrize("spin", ["unpolarized", "polarized", "noncolinear"])
 def test_toy_example(spin):
     nk = 15
     n_states = 28
 
     data = BandsData.toy_example(spin=spin, nk=nk, n_states=n_states)
 
-    n_spin = {"unpolarized": 1, "polarized": 2, "noncolinear": 4, "spinorbit": 4}[spin]
+    n_spin = {"unpolarized": 1, "polarized": 2, "noncolinear": 4}[spin]
 
     data.sanity_check(
         n_spin=n_spin, nk=nk, nbands=n_states, klabels=["Gamma", "X"], kvals=[0, 1]

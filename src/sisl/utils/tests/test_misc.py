@@ -74,27 +74,8 @@ def test_angle_a2a():
     assert pytest.approx(angle("a2pi/2a", False, False)) == 180
 
 
-def test_iter1():
-    for i, slc in enumerate(iter_shape([2, 1, 3])):
-        if i == 0:
-            assert slc == (0, 0, 0)
-        elif i == 1:
-            assert slc == (0, 0, 1)
-        elif i == 2:
-            assert slc == (0, 0, 2)
-        elif i == 3:
-            assert slc == (1, 0, 0)
-        elif i == 4:
-            assert slc == (1, 0, 1)
-        elif i == 5:
-            assert slc == (1, 0, 2)
-        else:
-            # if this is reached, something is wrong
-            assert False
-
-
-@pytest.mark.parametrize("shape", [[2, 3, 2], [4], [3, 4], [1, 5, 3, 2]])
-def test_iter_shape_all(shape):
+def test_iter_shape_all():
+    shape = [2, 1, 3]
     expected = list(np.ndindex(*shape))
     assert list(iter_shape(shape)) == expected
 

@@ -65,6 +65,9 @@ class TestLattice:
         assert setup.lattice.sc_index([0, 0, 0]) == 0
         for s in range(setup.lattice.n_s):
             assert setup.lattice.sc_index(setup.lattice.sc_off[s, :]) == s
+        lattice = Lattice([1] * 3, nsc=[3, 5, 7])
+        for s in range(lattice.n_s):
+            assert s == lattice.sc_index(lattice.sc_off[s])
         arng = np.arange(setup.lattice.n_s)
         np.random.seed(42)
         np.random.shuffle(arng)
@@ -135,19 +138,6 @@ class TestLattice:
         assert np.allclose(-rot.cell, setup.lattice.cell)
 
         rot = rot.rotate([180, [0, 0, 1]])
-        rot.cell[2, 2] *= -1
-        assert np.allclose(rot.cell, setup.lattice.cell)
-
-    def test_rotation2(self, setup):
-        rot = setup.lattice.rotate([180, setup.lattice.cell[2, :]])
-        rot.cell[2, 2] *= -1
-        assert np.allclose(-rot.cell, setup.lattice.cell)
-
-        rot = setup.lattice.rotate([m.pi, setup.lattice.cell[2, :]], rad=True)
-        rot.cell[2, 2] *= -1
-        assert np.allclose(-rot.cell, setup.lattice.cell)
-
-        rot = rot.rotate([180, setup.lattice.cell[2]])
         rot.cell[2, 2] *= -1
         assert np.allclose(rot.cell, setup.lattice.cell)
 
@@ -290,17 +280,10 @@ class TestLattice:
             t2 = tmp2.lattice.add_vacuum(10, i)
             assert tmp1.cell[i, i] + 10 == t2.cell[i, i]
 
-    def test_creation3(self, setup):
-        with pytest.raises(ValueError):
-            setup.lattice.tocell([3, 6])
-
-    def test_creation4(self, setup):
-        with pytest.raises(ValueError):
-            setup.lattice.tocell([3, 4, 5, 6])
-
-    def test_creation5(self, setup):
-        with pytest.raises(ValueError):
-            setup.lattice.tocell([3, 4, 5, 6, 7, 6, 7])
+    def test_creation_fail(self, setup):
+        for cell in ([3, 6], [3, 4, 5, 6], [3, 4, 5, 6, 7, 6, 7]):
+            with pytest.raises(ValueError):
+                setup.lattice.tocell(cell)
 
     def test_creation_rotate(self, setup):
         # cell parameters
@@ -330,9 +313,6 @@ class TestLattice:
         rcell = lin.inv(setup.lattice.cell) * 2.0 * np.pi
         assert np.allclose(rcell.T, setup.lattice.rcell)
         assert np.allclose(rcell.T / (2 * np.pi), setup.lattice.icell)
-
-    def test_icell(self, setup):
-        assert np.allclose(setup.lattice.rcell, setup.lattice.icell * 2 * np.pi)
 
     def test_center1(self, setup):
         assert np.allclose(
@@ -400,21 +380,6 @@ class TestLattice:
         assert np.allclose(
             lattice.tile(3, 0).tile(3, 1).tile(3, 2).cell, (lattice * 3).cell
         )
-
-    def test_tile_multiply_non_orthogonal(self):
-        lattice = graphene(orthogonal=False).lattice
-        assert np.allclose(
-            lattice.tile(3, 0).tile(2, 1).tile(4, 2).cell, (lattice * (3, 2, 4)).cell
-        )
-        assert np.allclose(lattice.tile(3, 0).tile(2, 1).cell, (lattice * [3, 2]).cell)
-        assert np.allclose(
-            lattice.tile(3, 0).tile(3, 1).tile(3, 2).cell, (lattice * 3).cell
-        )
-
-    def test_angle1(self, setup):
-        g = graphene(orthogonal=True)
-        gbig = g.repeat(40, 0).repeat(40, 1)
-        assert g.lattice.angle(0, 1) == 90
 
     def test_angle2(self, setup):
         lattice = Lattice([1, 1, 1])
@@ -528,12 +493,6 @@ def test_fortran_contiguous():
     abc = np.zeros([3, 3], order="F")
     latt = Lattice(abc)
     assert latt.cell.flags.c_contiguous
-
-
-def test_lattice_indices():
-    lattice = Lattice([1] * 3, nsc=[3, 5, 7])
-    for i in range(lattice.n_s):
-        assert i == lattice.sc_index(lattice.sc_off[i])
 
 
 def test_supercell_warn():

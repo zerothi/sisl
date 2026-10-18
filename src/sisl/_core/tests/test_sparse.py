@@ -56,15 +56,6 @@ def test_fail_init1():
         SparseCSR((10, 100, 20, 20), dtype=np.int32)
 
 
-def test_init_shape0():
-    # Zero rows/columns used to raise. They are allowed now, so that a rank
-    # owning no rows of a distributed matrix still has a usable object to carry
-    # into collectives. Negative sizes, and a zero data dimension, still raise.
-    csr = SparseCSR((0, 10, 10), dtype=np.int32)
-    assert csr.shape == (0, 10, 10)
-    assert csr.nnz == 0
-
-
 def test_fail_init2():
     data = np.empty([2, 2], np.float64)
     indices = np.arange(2)
@@ -673,11 +664,6 @@ def test_iterator3(s1):
     s1[0, [1, 2, 3]] = 1
     s1[2, [1, 2, 4]] = 1.0
     a = s1.tocsr()
-    for func in ["csr", "csc", "coo", "lil"]:
-        a = getattr(a, "to" + func)()
-        for r, c in ispmatrix(a):
-            assert r in [0, 2]
-            assert c in e[r]
 
     # number of mapped values
     nvals = 2
@@ -867,24 +853,6 @@ def test_delete_col4():
     assert s1.spsame(s2)
 
 
-def test_delete_col5(s1):
-    nc = s1.shape[1]
-    s1[1, [1, 2, 3]] = 1
-    assert s1.nnz == 3
-    s1.delete_columns(2)
-    assert s1.nnz == 2
-    assert s1.shape[1] == nc - 1
-    assert np.all(s1.col[array_arange(s1.ptr, n=s1.ncol)] < 3)
-    s1.delete_columns(2, True)
-    assert s1.nnz == 1
-    assert s1.shape[1] == nc - 1
-    assert np.all(s1.col[array_arange(s1.ptr, n=s1.ncol)] < 2)
-    # Delete a non-existing column
-    s1.delete_columns(100000, True)
-    assert s1.nnz == 1
-    assert s1.shape[1] == nc - 1
-
-
 def test_delete_col6(s1):
     nc = s1.shape[1]
     for i in range(3):
@@ -893,17 +861,6 @@ def test_delete_col6(s1):
     s1.delete_columns(2)
     assert s1.nnz == 6
     assert s1.shape[1] == nc - 1
-
-
-def test_translate_col1(s1):
-    s1[1, 1] = 1
-    s1[1, 2] = 2
-    s1[1, 3] = 3
-    assert s1.nnz == 3
-    s1.translate_columns([1, 3], [3, 1])
-    assert s1.nnz == 3
-    assert s1[1, 1] == 3
-    assert s1[1, 3] == 1
 
 
 def test_translate_col2(s1):

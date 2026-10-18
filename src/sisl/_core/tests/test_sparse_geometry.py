@@ -52,11 +52,6 @@ class TestSparseAtom:
         assert setup.s1.nnz == 1
         setup.s1.empty()
 
-    def test_create2(self, setup):
-        setup.s1[0, [1, 2, 3], (1, 1, 1)] = 1
-        assert setup.s1[0, 2, (1, 1, 1)] == 1
-        setup.s1.empty()
-
     def test_create3(self, setup):
         setup.s2[0, [1, 2, 3], (1, 1, 1)] = [1, 2]
         assert np.allclose(setup.s2[0, 2, (1, 1, 1)], [1, 2])
@@ -310,7 +305,6 @@ class TestSparseAtom:
 
     def test_tile2(self, setup):
         setup.s1.construct([[0.1, 1.5], [1, 2]])
-        setup.s1.finalize()
         s1 = setup.s1.tile(2, 0).tile(2, 1)
         s2 = SparseAtom(setup.g * [2, 2, 1])
         s2.construct([[0.1, 1.5], [1, 2]])
@@ -318,6 +312,7 @@ class TestSparseAtom:
         s1.finalize()
         s2.finalize()
         assert np.allclose(s1._csr._D, s2._csr._D)
+        setup.s1.finalize()
         s2 = s2.untile(2, 1).untile(2, 0)
         assert setup.s1.spsame(s2)
         s2.finalize()

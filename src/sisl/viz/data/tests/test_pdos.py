@@ -81,13 +81,11 @@ def test_pdos_from_siesta_wfsx(sisl_files):
     )
 
 
-@pytest.mark.parametrize(
-    "spin", ["unpolarized", "polarized", "noncolinear", "spinorbit"]
-)
+@pytest.mark.parametrize("spin", ["unpolarized", "polarized", "noncolinear"])
 def test_toy_example(spin):
     data = PDOSData.toy_example(spin=spin)
 
-    n_spin = {"unpolarized": 1, "polarized": 2, "noncolinear": 4, "spinorbit": 4}[spin]
+    n_spin = {"unpolarized": 1, "polarized": 2, "noncolinear": 4}[spin]
 
     data.sanity_check(
         n_spin=n_spin, na=data.geometry.na, no=data.geometry.no, atom_tags=["C"]

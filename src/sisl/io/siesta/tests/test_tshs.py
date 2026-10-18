@@ -44,6 +44,7 @@ def test_tshs_si_pdos_dtypes_eigs(sisl_files, sisl_tmp):
         else:
             assert np.allclose(eigs, HS.eigh(k), atol=1e-5)
 
+    pytest.importorskip("netCDF4")
     f = sisl_tmp("tmp.TSHS")
     fnc = sisl_tmp("tmp.nc")
     for HS in data:
@@ -124,6 +125,7 @@ def test_tshs_soc_pt2_xx_dtypes(sisl_files, sisl_tmp):
         else:
             assert np.allclose(eigs, HS.eigh(k), atol=1e-5)
 
+    pytest.importorskip("netCDF4")
     f = sisl_tmp("tmp.TSHS")
     fnc = sisl_tmp("tmp.nc")
     for HS in data:

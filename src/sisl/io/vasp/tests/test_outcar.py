@@ -41,13 +41,6 @@ def test_diamond_outcar_cputime(sisl_files):
     assert f.info.completed()
 
 
-def test_diamond_outcar_completed(sisl_files):
-    f = sisl_files("vasp", "diamond", "OUTCAR")
-    f = outcarSileVASP(f)
-
-    assert f.info.completed()
-
-
 def test_diamond_outcar_trajectory(sisl_files):
     f = sisl_files("vasp", "diamond", "OUTCAR")
     f = outcarSileVASP(f)
