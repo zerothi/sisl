@@ -897,6 +897,11 @@ class RealSpaceSE(SelfEnergy):
         }
         self.setup(**options)
 
+    @property
+    def bz(self) -> BrillouinZone:
+        """The Brillouin zone attached to the self-energy"""
+        return self._options["bz"]
+
     def __len__(self) -> int:
         r"""Dimension of the self-energy"""
         return len(self.parent) * np.prod(self._unfold)
@@ -1592,6 +1597,11 @@ class RealSpaceSI(SelfEnergy):
             "bz": None,
         }
         self.setup(**options)
+
+    @property
+    def bz(self) -> BrillouinZone:
+        """The Brillouin zone attached to the self-energy"""
+        return self._options["bz"]
 
     def __len__(self) -> int:
         r"""Dimension of the self-energy"""
