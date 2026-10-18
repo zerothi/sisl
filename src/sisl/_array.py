@@ -96,7 +96,7 @@ def array_arange(start, end=None, n=None, dtype=int64):
     return cumsum(a, dtype=dtype)
 
 
-def repeat(a, repeats, axis=None):
+def _repeat_intp(a, repeats, axis=None):
     """`numpy.repeat` which accepts `repeats` of any integer data-type
 
     `numpy.repeat` requires `repeats` to be safely castable to `numpy.intp`.
@@ -113,12 +113,16 @@ def repeat(a, repeats, axis=None):
 
     Examples
     --------
-    >>> repeat([1, 2], np.array([2, 1], dtype=np.int64))
+    >>> _repeat_intp([1, 2], np.array([2, 1], dtype=np.int64))
     array([1, 1, 2])
     """
     return np.repeat(a, asarray(repeats).astype(np.intp, copy=False), axis=axis)
 
 
+if np.dtype(np.intp).itemsize >= 8:
+    repeat = np.repeat
+else:
+    repeat = _repeat_intp
 __all__ += ["repeat"]
 
 

@@ -57,6 +57,8 @@ Use `_a.repeat`, not `numpy.repeat`, when the counts are `ncol` (or other index 
 On a 32-bit platform (pyodide) `intp` is `int32`, thus `int64` counts fail.
 `_a.repeat` casts the counts without a check. The cast cannot overflow:
 each count is not larger than the result length, and the result length must fit in `intp`.
+When `intp` has 64 bits, `_a.repeat` is `numpy.repeat`. Thus 64-bit platforms do not pay for the cast.
+`test_repeat_intp` tests the 32-bit path on all platforms.
 
 ### Row index
 
