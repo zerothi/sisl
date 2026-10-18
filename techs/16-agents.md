@@ -120,6 +120,15 @@ If you need more agents, ask the maintainer first.
   With more agents, the system puts tests on the efficiency cores, and the timings change.
 - Timings from a loaded computer are not correct. Then a decision from them, for example a `slow` mark, is also not correct.
 
+When you measure test timings, set each environment variable that controls the number of threads to 1:
+
+```bash
+SISL_NUM_PROCS=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 pytest --durations=0 ...
+```
+
+The CI systems have few threads. A test that is fast with many threads can be slow in the CI.
+The CI sets the same variables, see `.github/workflows/test.yaml`.
+
 ## Report what you did not run
 
 Follow the order of checks in [14 · Verifying a change](14-verifying-a-change.md).

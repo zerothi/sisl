@@ -82,6 +82,8 @@ Read it before your first change. In short:
   extend or parametrize an existing test before adding one, and mark slow tests `slow`.
 - **Time tests with 2 agents or fewer.** When you measure test timings, or change tests because of them,
   run a maximum of 2 agents at the same time, or ask first. Power and efficiency cores skew the timings.
+  Set the thread variables (`SISL_NUM_PROCS`, `OMP_NUM_THREADS`, `OPENBLAS_NUM_THREADS`, `MKL_NUM_THREADS`)
+  to 1: CI systems have few threads.
 - **Find the module that runs.** `_x.py` and `_x.pyx` companions are distinct modules:
   check which one is imported.
 - **Report what you did not run**, and why.
