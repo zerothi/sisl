@@ -110,6 +110,8 @@ if "iframe" in plotly_renderer:
 import plotly.io as pio
 
 pio.renderers.default = plotly_renderer
+if "PLOTLY_RENDERER" not in os.environ:
+    os.environ["PLOTLY_RENDERER"] = plotly_renderer
 
 # General information about the project.
 project = "sisl"
