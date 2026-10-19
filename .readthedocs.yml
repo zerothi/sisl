@@ -17,14 +17,11 @@ build:
   jobs:
     pre_install:
       - ./.readthedocs-pre_install.sh
-
-python:
-  install:
-    - method: pip
-      path: .
-      extra_requirements:
-        - test
-        # the docs group is moved to the pre-install.sh script
+    # Overrides python.install: the config has no env-var key.
+    # There is no need for an optimized build... Just do it quickly!
+    # the docs group is moved to the pre-install.sh script
+    install:
+      - SKBUILD_CMAKE_BUILD_TYPE=Debug python -m pip install --upgrade-strategy only-if-needed --no-cache-dir ".[test]"
 
 sphinx:
   configuration: docs/conf.py
