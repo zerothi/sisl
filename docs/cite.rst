@@ -20,20 +20,8 @@ Citing basic usage
 ------------------
 
 If you are *only* using sisl as a post-processing tool and/or tight-binding calculations
-you should cite this (Zenodo DOI):
-
-.. code-block:: bibtex
-
-    @software{zerothi_sisl,
-      author       = {Papior, Nick},
-      title        = {sisl: v<fill-version>},
-      year         = {2024},
-      doi          = {10.5281/zenodo.597181},
-      url          = {https://doi.org/10.5281/zenodo.597181}
-    }
-
-
-The `sgeom`, `sgrid` or `sdata` commands all print-out the above information in a suitable format:
+you should cite it according to the commands which provide the citation in a suitable
+format:
 
 .. code-block:: console
 
@@ -41,7 +29,7 @@ The `sgeom`, `sgrid` or `sdata` commands all print-out the above information in 
     sgrid --cite
     sdata --cite
 
-which fill in the version for you, all yield the same output.
+all yield the same output.
 
 
 .. _citing-transport:
