@@ -243,7 +243,7 @@ docs = [
     "ipykernel",
     "ipywidgets",
     "jupyterlab-widgets",
-    "kaleido",
+    "kaleido>=1.0.0",
     "pytz",
     # Visualizing nodes
     "networkx",

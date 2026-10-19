@@ -21,7 +21,7 @@ build:
     # There is no need for an optimized build... Just do it quickly!
     # the docs group is moved to the pre-install.sh script
     install:
-      - SKBUILD_CMAKE_BUILD_TYPE=Debug python -m pip install --upgrade-strategy only-if-needed --no-cache-dir ".[test]"
+      - SKBUILD_CMAKE_BUILD_TYPE=Debug python -m pip install --upgrade-strategy only-if-needed --no-cache-dir .
 
 sphinx:
   configuration: docs/conf.py
