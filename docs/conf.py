@@ -94,23 +94,22 @@ if on_rtd:
 # Let the builder decide what it should built.
 # This can be a pure HTML (for interaction), but that tends
 # to blow up file-sizes which isn't really suitable for
-# RTD.
-# For now, we retain the PNG as default.
-# This will limit the interaction, but
-# will make loading the page much faster!
+# RTD. Don't use `notebook` as that embeds js for every figure (~6MB per figure).
+# Instead if using `notebook_connected` it will embed a link to the plotly.js
+# code, and cache it *once*. This will embed data directly in the plotly data
+# structures of JS. Which is OK.
+# For now, we retain the PNG as default, however, it can be rather costly
+# because of conversions of plotly figures to png requiring chrome backends.
 plotly_renderer = "png"
-plotly_renderer = os.environ.get("_SISL_DOC_PLOTLY", plotly_renderer)
+plotly_renderer = os.environ.get("PLOTLY_RENDERER", plotly_renderer)
 
 if "iframe" in plotly_renderer:
     raise RuntimeError("sisl: is not compatible with plotly renderering in iframes")
 
-# Store the renderer
+# Store the renderer as the default, probably not needed, but forcing it!
 import plotly.io as pio
 
 pio.renderers.default = plotly_renderer
-if "PLOTLY_RENDERER" not in os.environ:
-    os.environ["PLOTLY_RENDERER"] = plotly_renderer
-
 
 # General information about the project.
 project = "sisl"
