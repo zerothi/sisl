@@ -94,23 +94,24 @@ if on_rtd:
 # Let the builder decide what it should built.
 # This can be a pure HTML (for interaction), but that tends
 # to blow up file-sizes which isn't really suitable for
-# RTD.
-# For now, we retain the PNG as default.
-# This will limit the interaction, but
-# will make loading the page much faster!
+# RTD. Don't use `notebook` as that embeds js for every figure (~6MB per figure).
+# Instead if using `notebook_connected` it will embed a link to the plotly.js
+# code, and cache it *once*. This will embed data directly in the plotly data
+# structures of JS. Which is OK.
+# For now, we retain the PNG as default, however, it can be rather costly
+# because of conversions of plotly figures to png requiring chrome backends.
 plotly_renderer = "png"
-plotly_renderer = os.environ.get("_SISL_DOC_PLOTLY", plotly_renderer)
+plotly_renderer = os.environ.get("PLOTLY_RENDERER", plotly_renderer)
 
 if "iframe" in plotly_renderer:
     raise RuntimeError("sisl: is not compatible with plotly renderering in iframes")
 
-# Store the renderer
+# Store the renderer as the default, probably not needed, but forcing it!
 import plotly.io as pio
 
 pio.renderers.default = plotly_renderer
 if "PLOTLY_RENDERER" not in os.environ:
     os.environ["PLOTLY_RENDERER"] = plotly_renderer
-
 
 # General information about the project.
 project = "sisl"
@@ -599,6 +600,15 @@ pybtex.plugin.register_plugin("pybtex.style.formatting", "rev_year", RevYearPlai
 
 # Tell nbsphinx to wait, at least X seconds for each cell
 nbsphinx_timeout = 30
+
+# Start one kaleido server (chrome) in each notebook kernel.
+# See techs/15-public-docs.md (Plotly figures in notebooks).
+_mathjax = pathlib.Path(sys.prefix) / "share" / "kaleido" / "tex-svg.min.js"
+_mathjax = (_mathjax.as_uri(), "utf-8") if _mathjax.is_file() else False
+nbsphinx_execute_arguments = [
+    "--IPKernelApp.exec_lines=import kaleido; "
+    f"kaleido.start_sync_server(mathjax={_mathjax!r}, timeout=30, silence_warnings=True)"
+]
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""
