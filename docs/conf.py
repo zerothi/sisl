@@ -599,6 +599,15 @@ pybtex.plugin.register_plugin("pybtex.style.formatting", "rev_year", RevYearPlai
 # Tell nbsphinx to wait, at least X seconds for each cell
 nbsphinx_timeout = 30
 
+# Start one kaleido server (chrome) in each notebook kernel.
+# See techs/15-public-docs.md (Plotly figures in notebooks).
+_mathjax = pathlib.Path(sys.prefix) / "share" / "kaleido" / "tex-svg.min.js"
+_mathjax = (_mathjax.as_uri(), "utf-8") if _mathjax.is_file() else False
+nbsphinx_execute_arguments = [
+    "--IPKernelApp.exec_lines=import kaleido; "
+    f"kaleido.start_sync_server(mathjax={_mathjax!r}, timeout=30, silence_warnings=True)"
+]
+
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""
 {% set docname = "docs/" + env.doc2path(env.docname, base=None)|string %}

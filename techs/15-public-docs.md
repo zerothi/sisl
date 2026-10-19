@@ -86,6 +86,28 @@ They stay in the source files. See [02 · Documentation is in the file](02-conce
 - A notebook in `tutorials/` or `visualization/` runs when Sphinx builds.
   It must run without external files that are not in the `files` submodule.
 
+## Plotly figures in notebooks
+
+`PLOTLY_RENDERER` selects the renderer (default `png` in `docs/conf.py`).
+The `png` renderer uses kaleido. Kaleido uses a headless chrome.
+
+- Without a kaleido server, each figure starts a new chrome (approximately 2 s).
+- Each new chrome loads MathJax from a CDN. A dropped connection stops the page load for minutes.
+- The kaleido `timeout` is for the render only. It is not for the page load.
+
+Thus, `docs/conf.py` starts one kaleido server in each notebook kernel
+(`nbsphinx_execute_arguments`, `IPKernelApp.exec_lines`).
+A server in the Sphinx process is not used: the kernels are other processes.
+
+- `.readthedocs-pre_install.sh` keeps MathJax 3.2.2 in `<venv>/share/kaleido/tex-svg.min.js`.
+- Give MathJax as `(file_uri, "utf-8")`. Without the charset, LaTeX text is not shown, and no error occurs.
+- If the file is missing, MathJax is off (`mathjax=False`). LaTeX text then shows as raw `$...$`.
+  Do not use the CDN: it can stop the build.
+
+The `notebook_connected` renderer does not use chrome.
+It links plotly.js from the CDN. Each figure keeps only its data (approximately 10-40 KiB).
+Do not use the `notebook` renderer: it puts a copy of plotly.js (approximately 4.7 MB) in each page.
+
 ## Build and check
 
 The steps are in `docs/dev/index.rst` (Contribute to the docs). In short:
