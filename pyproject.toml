@@ -226,8 +226,19 @@ sphinx = [
     "sphinxext-rediraffe",
 ]
 
+analysis = [
+    "netCDF4",
+    "tqdm>=4.36.0",
+    "nodify",
+    "dill >= 0.3.2",
+    "pathos",
+    "scikit-image",
+    "plotly",
+    "matplotlib",
+    "ase",
+]
+
 docs = [
-    "plotly", # won't work with 6.0 or 6.1, it creates too many things.
     "importlib-metadata",
     "ipykernel",
     "ipywidgets",
@@ -240,6 +251,7 @@ docs = [
     "pybtex",
     "pandoc",
     {include-group = "sphinx"},
+    {include-group = "analysis"},
 ]
 
 

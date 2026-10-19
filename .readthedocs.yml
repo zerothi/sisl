@@ -23,8 +23,6 @@ python:
     - method: pip
       path: .
       extra_requirements:
-        - analysis
-        - viz
         - test
         # the docs group is moved to the pre-install.sh script
 
