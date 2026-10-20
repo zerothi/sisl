@@ -269,15 +269,6 @@ def sisl_system():
     return d
 
 
-@pytest.fixture(scope="function")
-def sisl_importskip():
-    def importorskip(*modules):
-        for module in modules:
-            pytest.importorskip(f"{module}")
-
-    return importorskip
-
-
 @cache
 def _importable(module: str) -> bool:
     try:
