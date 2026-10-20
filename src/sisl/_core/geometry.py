@@ -3677,7 +3677,7 @@ class Geometry(
                 def func(lst):
                     # We don't need keepdims=False, because an array of size 1
                     # can be broadcasted to a single element.
-                    return mode(lst)[0]
+                    return mode(lst, keepdims=True)[0]
 
             else:
                 try:
