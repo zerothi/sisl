@@ -1,4 +1,0 @@
-[trailer "ai"]
-    key = Assisted-by
-    # If multiple same value trailers are added, only retain one.
-    ifExists=addIfDifferent
