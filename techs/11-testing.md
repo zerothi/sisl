@@ -36,6 +36,33 @@ Many tests use files from the separate repository
 
 A green run without `SISL_FILES_TESTS` does not test the IO code. Do not report it as a full pass.
 
+## Optional modules
+
+Some tests need a module that is not always available,
+for example `netCDF4` or the Fortran module `sisl.io.siesta._siesta`.
+Use the decorator `sisl_requires` from `sisl.conftest`:
+
+```python
+from sisl.conftest import sisl_requires
+
+@sisl_requires("sisl.io.siesta._siesta")
+def test_fortran():
+    ...
+
+# skip all tests in a module
+pytestmark = sisl_requires("netCDF4")
+```
+
+- `pytest.importorskip` at module level skips all tests in the module.
+  `sisl_requires` skips only the decorated test or class.
+- `sisl_requires` imports the module, and does not use only `importlib.util.find_spec`.
+  An extension that is on disk but does not load (for example, a missing `libgfortran`)
+  makes the import fail. Then `sisl.io.siesta.sile` uses the stub, and the test must skip.
+- The result of the import is cached. Each module is imported a maximum of one time.
+- Inside a test body, the fixture `sisl_importskip` does the same.
+- A test that uses a Fortran Sile without `sisl_requires` becomes `xfail`
+  when the Fortran sources are not built. See [50 · Siesta and Fortran](50-io.md#siesta-and-fortran).
+
 ## Parallelism
 
 Set `SISL_NUM_PROCS=1` when you debug. This stops the parallel execution.

@@ -6,7 +6,8 @@ from __future__ import annotations
 """ Global sisl fixtures """
 import logging
 import os
-from functools import partial
+from functools import cache, partial
+from importlib import import_module
 from pathlib import Path
 
 import numpy as np
@@ -275,6 +276,40 @@ def sisl_importskip():
             pytest.importorskip(f"{module}")
 
     return importorskip
+
+
+@cache
+def _importable(module: str) -> bool:
+    try:
+        import_module(module)
+    except ImportError:
+        return False
+    return True
+
+
+def sisl_requires(*modules: str):
+    """Decorator that skips a test, or a test class, if a module cannot be imported
+
+    Contrary to `pytest.importorskip` this only skips the decorated test,
+    and not the full test module.
+    It may also be assigned to ``pytestmark`` to skip all tests in a module.
+
+    Parameters
+    ----------
+    *modules :
+        fully qualified module names that the test requires
+
+    Examples
+    --------
+    >>> from sisl.conftest import sisl_requires
+    >>> @sisl_requires("sisl.io.siesta._siesta")
+    ... def test_fortran():
+    ...     ...
+    """
+    missing = [module for module in modules if not _importable(module)]
+    return pytest.mark.skipif(
+        bool(missing), reason=f"requires module(s): {', '.join(missing)}"
+    )
 
 
 collect_ignore = []
