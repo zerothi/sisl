@@ -6,8 +6,13 @@ from __future__ import annotations
 import pytest
 
 import sisl
+from sisl.conftest import sisl_requires
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta]
+pytestmark = [
+    pytest.mark.io,
+    pytest.mark.siesta,
+    sisl_requires("sisl.io.siesta._siesta"),
+]
 
 
 def test_wfsx_read(sisl_files):

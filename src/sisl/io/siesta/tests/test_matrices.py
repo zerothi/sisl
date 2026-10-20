@@ -7,18 +7,26 @@ import numpy as np
 import pytest
 
 import sisl
+from sisl.conftest import sisl_requires
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta]
+pytestmark = [
+    pytest.mark.io,
+    pytest.mark.siesta,
+]
 
-listify = sisl.utils.listify
+_fortran = sisl_requires("sisl.io.siesta._siesta")
 
 
 @pytest.mark.parametrize("sort", [True, False])
 @pytest.mark.parametrize(
     "matrix,ext",
-    (map(lambda x: ("Hamiltonian", x), ["nc", "TSHS"]) | listify)
-    + (map(lambda x: ("DensityMatrix", x), ["nc", "DM"]) | listify)
-    + (map(lambda x: ("EnergyDensityMatrix", x), ["nc"]) | listify),
+    [
+        ("Hamiltonian", "nc"),
+        pytest.param("Hamiltonian", "TSHS", marks=_fortran),
+        ("DensityMatrix", "nc"),
+        pytest.param("DensityMatrix", "DM", marks=_fortran),
+        ("EnergyDensityMatrix", "nc"),
+    ],
 )
 @pytest.mark.parametrize("read_dtype", [np.float64, np.complex128])
 @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex128])
@@ -66,9 +74,13 @@ def test_non_colinear(sisl_tmp, sort, matrix, ext, dtype, read_dtype):
 @pytest.mark.parametrize("sort", [True, False])
 @pytest.mark.parametrize(
     "matrix,ext",
-    (map(lambda x: ("Hamiltonian", x), ["nc", "TSHS"]) | listify)
-    + (map(lambda x: ("DensityMatrix", x), ["nc", "DM"]) | listify)
-    + (map(lambda x: ("EnergyDensityMatrix", x), ["nc"]) | listify),
+    [
+        ("Hamiltonian", "nc"),
+        pytest.param("Hamiltonian", "TSHS", marks=_fortran),
+        ("DensityMatrix", "nc"),
+        pytest.param("DensityMatrix", "DM", marks=_fortran),
+        ("EnergyDensityMatrix", "nc"),
+    ],
 )
 @pytest.mark.parametrize("read_dtype", [np.float64, np.complex128])
 @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex128])

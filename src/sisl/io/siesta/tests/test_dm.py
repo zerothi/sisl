@@ -10,8 +10,13 @@ import numpy as np
 import pytest
 
 import sisl
+from sisl.conftest import sisl_requires
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta]
+pytestmark = [
+    pytest.mark.io,
+    pytest.mark.siesta,
+    sisl_requires("sisl.io.siesta._siesta"),
+]
 
 
 def test_dm_si_pdos_kgrid(sisl_files):
