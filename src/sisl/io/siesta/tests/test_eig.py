@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 
 import sisl
+from sisl.conftest import sisl_requires
 from sisl.io.siesta.eig import *
 from sisl.io.siesta.fdf import *
 
@@ -77,6 +78,7 @@ def test_soc_pt2_xx_eig(sisl_files):
     assert np.all(eig.shape == (1, 1, 76))
 
 
+@sisl_requires("sisl.io.siesta._siesta")
 def test_soc_pt2_xx_eig_fermi_level(sisl_files):
     f = sisl_files("siesta", "Pt2_soc", "Pt2_xx.EIG")
     ef = eigSileSiesta(f).read_fermi_level()

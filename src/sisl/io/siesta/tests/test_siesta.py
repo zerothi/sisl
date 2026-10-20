@@ -15,11 +15,14 @@ from sisl import (
     Geometry,
     Hamiltonian,
 )
+from sisl.conftest import sisl_requires
 from sisl.io.siesta import *
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta]
-
-netCDF4 = pytest.importorskip("netCDF4")
+pytestmark = [
+    pytest.mark.io,
+    pytest.mark.siesta,
+    sisl_requires("netCDF4"),
+]
 
 
 def test_nc1(sisl_tmp, sisl_system):
@@ -162,6 +165,7 @@ def test_nc_density_matrix(sisl_tmp, sisl_system):
 
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@sisl_requires("sisl.io.siesta._siesta")
 def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
     H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin("SO"))
     H1.construct(
@@ -190,6 +194,7 @@ def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
 
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@sisl_requires("sisl.io.siesta._siesta")
 def test_nc_DM_spin_orbit_nc2dm2nc(sisl_tmp):
     DM1 = DensityMatrix(sisl.geom.graphene(), orthogonal=False, spin=sisl.Spin("SO"))
     DM1.construct(

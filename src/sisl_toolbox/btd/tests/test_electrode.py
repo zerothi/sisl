@@ -8,7 +8,7 @@ import pytest
 import scipy.sparse as ssp
 
 import sisl as si
-from sisl.conftest import sisl_importskip
+from sisl.conftest import sisl_requires
 from sisl_toolbox.btd import (
     BlochElectrode,
     DeviceGreen,
@@ -203,6 +203,7 @@ def test_real_space_self_energy():
     )
 
 
+@sisl_requires("sisl.io.siesta._siesta")
 def test_real_space_gf(tmp_path):
     se = _real_space_se()
     Hc = se.real_space_coupling()
@@ -220,6 +221,7 @@ def test_real_space_gf(tmp_path):
     assert ssp.issparse(elec.bulk_matrix(E[0], format="csr"))
 
 
+@sisl_requires("sisl.io.siesta._siesta")
 def test_bloch_gf(tmp_path):
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel = _electrode(hop, orthogonal=False)
@@ -559,9 +561,9 @@ def test_device_green_downfold_overlap():
         DeviceGreen(H, [outer, other], device)
 
 
+@sisl_requires("netCDF4")
 @pytest.mark.parametrize("prefix", ["TBT", "TS"])
-def test_electrode_from_fdf(tmp_path, prefix, sisl_importskip):
-    sisl_importskip("netCDF4")
+def test_electrode_from_fdf(tmp_path, prefix):
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel = _electrode(hop)
     Hel.write(tmp_path / "elec.nc")
@@ -607,6 +609,7 @@ def test_device_green_unknown_electrode():
         G.transmission(0.3, "Middle", "Right")
 
 
+@sisl_requires("netCDF4")
 @pytest.mark.parametrize(
     "semi_inf, error",
     [
@@ -619,8 +622,7 @@ def test_device_green_unknown_electrode():
         ("-x", ValueError),
     ],
 )
-def test_electrode_from_fdf_semi_inf(tmp_path, semi_inf, error, sisl_importskip):
-    sisl_importskip("netCDF4")
+def test_electrode_from_fdf_semi_inf(tmp_path, semi_inf, error):
     Hel = _electrode(np.array([[-1.0, -0.2], [-0.2, -0.7]]))
     Hel.write(tmp_path / "elec.nc")
     fdf = tmp_path / "RUN.fdf"
@@ -634,9 +636,9 @@ def test_electrode_from_fdf_semi_inf(tmp_path, semi_inf, error, sisl_importskip)
         Electrode.from_fdf(fdf, "Left", mu=0.0, downfold=False)
 
 
+@sisl_requires("netCDF4", "sisl.io.siesta._siesta")
 @pytest.mark.parametrize("use_gf", [True, False])
-def test_electrode_from_fdf_gf(tmp_path, use_gf, sisl_importskip):
-    sisl_importskip("netCDF4")
+def test_electrode_from_fdf_gf(tmp_path, use_gf):
     hop = np.array([[-1.0, -0.2], [-0.2, -0.7]])
     Hel = _electrode(hop)
     Hel.write(tmp_path / "elec.nc")
