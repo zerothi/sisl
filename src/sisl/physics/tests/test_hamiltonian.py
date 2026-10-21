@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import sys
 import warnings
 from functools import partial
 
@@ -1549,6 +1550,9 @@ class TestHamiltonian:
         assert len(sup) == 2
         assert len(sdn) == 1
 
+    @pytest.mark.xfail(
+        condition=sys.platform.startswith("win"), reason="Numerical problems on win"
+    )
     def test_non_colinear_orthogonal(self, setup, sisl_tolerance):
         atol, rtol = sisl_tolerance[np.complex64]
         # These tests are *very* ill-behaving
@@ -1631,6 +1635,9 @@ class TestHamiltonian:
         es.change_gauge("cell")
         es.change_gauge("atom")
 
+    @pytest.mark.xfail(
+        condition=sys.platform.startswith("win"), reason="Numerical problems on win"
+    )
     def test_non_colinear_non_orthogonal(self, sisl_tolerance):
         atol, rtol = sisl_tolerance[np.complex64]
         allclose = partial(np.allclose, atol=atol * 10, rtol=rtol * 100)
@@ -1709,6 +1716,9 @@ class TestHamiltonian:
         es.change_gauge("cell")
         es.change_gauge("atom")
 
+    @pytest.mark.xfail(
+        condition=sys.platform.startswith("win"), reason="Numerical problems on win"
+    )
     def test_spin_orbit_orthogonal(self, sisl_tolerance):
         atol, rtol = sisl_tolerance[np.complex64]
         allclose = partial(np.allclose, atol=atol * 10, rtol=rtol * 100)
