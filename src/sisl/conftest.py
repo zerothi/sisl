@@ -6,8 +6,11 @@ from __future__ import annotations
 """ Global sisl fixtures """
 import logging
 import os
+import re
+import warnings
 from functools import cache, partial
 from importlib import import_module
+from itertools import count
 from pathlib import Path
 
 import numpy as np
@@ -68,8 +71,12 @@ def sisl_tmp(request, tmp_path_factory):
         sisl_tmp.file(file, dir_name='sisl')
         sisl_tmp.dir('sisl')
 
+    Each test has its own folder, ``<basetemp>/<package>/<test-name><N>``.
+    Another `dir_name` is a sub-folder of it.
     The scope of the `sisl_tmp` fixture is at a function level to
     clean up after each function.
+    A path that cannot be removed (e.g. a file that is still open on Windows)
+    emits a `UserWarning`.
     """
     global __file__
     # The test file is in a tests/test_<name>.py,
@@ -84,58 +91,62 @@ def sisl_tmp(request, tmp_path_factory):
 
     class FileFactory:
         def __init__(self):
-            self.base = tmp_path_factory.getbasetemp()
-            self.dirs = [self.base]
-            self.files = []
+            self.package = tmp_path_factory.getbasetemp() / path.replace(
+                os.path.sep, "-"
+            )
+            self.package.mkdir(exist_ok=True)
+            name = re.sub(r"\W", "_", request.node.name)[:30]
+            for n in count():
+                self.root = self.package / f"{name}{n}"
+                try:
+                    self.root.mkdir()
+                    break
+                except FileExistsError:
+                    pass
+            self.dirs = []
 
         def dir(self, name=path):
-            # Make name a path
-            D = Path(name.replace(os.path.sep, "-"))
-            if not (self.base / D).is_dir():
-                # tmp_path_factory.mktemp returns pathlib.Path
-                self.dirs.append(tmp_path_factory.mktemp(str(D), numbered=False))
-
-            return self.dirs[-1]
+            if name == path:
+                D = self.root
+            else:
+                D = self.root / name.replace(os.path.sep, "-")
+            if D not in self.dirs:
+                D.mkdir(exist_ok=True)
+                self.dirs.append(D)
+            return D
 
         def file(self, name, dir_name=path):
-            # self.base *is* a pathlib
-            D = self.base / dir_name.replace(os.path.sep, "-")
-            if D in self.dirs:
-                i = self.dirs.index(D)
-            else:
-                self.dir(dir_name)
-                i = -1
-            self.files.append(self.dirs[i] / name)
-            return str(self.files[-1])
+            return str(self.dir(dir_name) / name)
 
         def getbase(self):
-            return self.dirs[-1]
+            return self.dirs[-1] if self.dirs else self.dir()
 
         def __call__(self, name, dir_name=path):
             """Shorthand for self.file"""
             return self.file(name, dir_name)
 
         def teardown(self):
-            while len(self.files) > 0:
-                # Do each removal separately
-                f = self.files.pop()
-                if f.is_file():
-                    try:
-                        f.close()
-                    except Exception:
-                        pass
-                    try:
-                        f.unlink()
-                    except Exception:
-                        pass
-            while len(self.dirs) > 0:
-                # Do each removal separately (from back of directory)
-                d = self.dirs.pop()
-                if d.is_dir():
-                    try:
-                        d.rmdir()
-                    except Exception:
-                        pass
+            failed = []
+            # reverse order removes children before their parent
+            for p in sorted(self.root.rglob("*"), reverse=True) + [self.root]:
+                try:
+                    if p.is_dir() and not p.is_symlink():
+                        p.rmdir()
+                    else:
+                        p.unlink()
+                except OSError:
+                    failed.append(p)
+            try:
+                # other tests can still have folders here
+                self.package.rmdir()
+            except OSError:
+                pass
+            # a folder fails when a file in it fails, so report only the files
+            failed = [p for p in failed if not p.is_dir()] or failed
+            if failed:
+                warnings.warn(
+                    f"sisl_tmp could not remove (still open?): {', '.join(map(str, failed))}"
+                )
 
     ff = FileFactory()
     request.addfinalizer(ff.teardown)

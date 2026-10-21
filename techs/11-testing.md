@@ -63,6 +63,21 @@ pytestmark = sisl_requires("netCDF4")
 - A test that uses a Fortran Sile without `sisl_requires` becomes `xfail`
   when the Fortran sources are not built. See [50 · Siesta and Fortran](50-io.md#siesta-and-fortran).
 
+## Temporary files
+
+Use the fixture `sisl_tmp` for files that a test writes.
+Each test gets its own folder: `<basetemp>/<package>/<test-name><N>`, for example
+`sisl-io-siesta/test_geom_order0`.
+
+- Do not share a folder between tests. Many readers also read other files in the same folder.
+  For example, `fdfSileSiesta.read_basis` reads `siesta.nc` first, if it exists.
+  A file from a different test then changes the result.
+- On Windows, a file that is open cannot be removed.
+  Thus a file handle that is not closed leaves the file in the folder.
+- The teardown removes the folder of the test.
+  If it cannot remove a file, it emits a `UserWarning` with the file name.
+  Do not ignore this warning. It shows a file handle that is not closed.
+
 ## Parallelism
 
 Set `SISL_NUM_PROCS=1` when you debug. This stops the parallel execution.
