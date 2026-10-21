@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-from scipy.sparse import SparseEfficiencyWarning
 
 import sisl
 from sisl import (
@@ -27,7 +26,7 @@ from sisl import (
 pytestmark = [
     pytest.mark.physics,
     pytest.mark.self_energy,
-    pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning),
+    pytest.mark.filterwarnings("ignore::scipy.sparse.SparseEfficiencyWarning"),
 ]
 
 

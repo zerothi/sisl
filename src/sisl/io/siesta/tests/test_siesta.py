@@ -164,7 +164,7 @@ def test_nc_density_matrix(sisl_tmp, sisl_system):
     assert sisl_system.g.atoms.equal(ndm.atoms, R=False)
 
 
-@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@pytest.mark.filterwarnings("ignore:.*is NOT Hermitian for on-site")
 @sisl_requires("sisl.io.siesta._siesta")
 def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
     H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin("SO"))
@@ -193,7 +193,7 @@ def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
     assert np.allclose(H1._csr._D, H3._csr._D)
 
 
-@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
+@pytest.mark.filterwarnings("ignore:.*is NOT Hermitian for on-site")
 @sisl_requires("sisl.io.siesta._siesta")
 def test_nc_DM_spin_orbit_nc2dm2nc(sisl_tmp):
     DM1 = DensityMatrix(sisl.geom.graphene(), orthogonal=False, spin=sisl.Spin("SO"))

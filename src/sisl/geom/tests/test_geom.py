@@ -55,7 +55,7 @@ def test_basic():
 
 @pytest.mark.parametrize(
     "func, orthogonal, vacuum",
-    itertools.product([graphene, goldene], [True, False], [10, 20]),
+    list(itertools.product([graphene, goldene], [True, False], [10, 20])),
 )
 def test_flat(func, orthogonal, vacuum):
     a = func(orthogonal=orthogonal, vacuum=vacuum)
@@ -225,7 +225,7 @@ def test_cgnr(vacuum):
 
 @pytest.mark.parametrize(
     "W, invert_first",
-    itertools.product(range(3, 20), [True, False]),
+    list(itertools.product(range(3, 20), [True, False])),
 )
 def test_heteroribbon_one_unit(W, invert_first):
     # Check that all ribbon widths are properly cut into one unit

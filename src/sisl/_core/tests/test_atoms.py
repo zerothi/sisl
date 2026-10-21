@@ -76,7 +76,7 @@ def test_set1():
     assert atom[1] == Atom("Au")
 
 
-@pytest.mark.filterwarnings("ignore", message="*Replacing atom")
+@pytest.mark.filterwarnings("ignore:.*Replacing atom")
 def test_set2():
     # Add new atoms to the set
     atom = Atoms(["C", "C"])
@@ -111,8 +111,8 @@ def test_set3():
     assert len(atom.atom) == 2
 
 
-@pytest.mark.filterwarnings("ignore", message="*Substituting atom")
-@pytest.mark.filterwarnings("ignore", message="*Replacing atom")
+@pytest.mark.filterwarnings("ignore:.*Substituting atom")
+@pytest.mark.filterwarnings("ignore:.*Replacing atom")
 def test_replace2():
     # Add new atoms to the set
     atom = Atoms(["C"] * 10 + ["B"] * 2)

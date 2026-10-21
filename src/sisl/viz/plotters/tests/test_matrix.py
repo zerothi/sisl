@@ -31,7 +31,7 @@ def test_draw_matrix_separators_empty():
 
 @pytest.mark.parametrize(
     "draw_supercells,separator_mode",
-    itertools.product([True, False], ["atoms", "orbitals", "supercells"]),
+    list(itertools.product([True, False], ["atoms", "orbitals", "supercells"])),
 )
 def test_draw_matrix_separators(draw_supercells, separator_mode):
     C = sisl.Atom(

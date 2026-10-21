@@ -18,7 +18,7 @@ pytestmark = [
     pytest.mark.io,
     pytest.mark.siesta,
     pytest.mark.fdf,
-    pytest.mark.filterwarnings("ignore", message="*number of supercells"),
+    pytest.mark.filterwarnings("ignore:.*number of supercells"),
 ]
 
 
@@ -417,6 +417,7 @@ def test_dry_read(sisl_tmp):
         "grid": dict(name="rho"),
     }
 
+    assert np.allclose(fdf.read_lattice_nsc(), (1, 1, 1))
     with pytest.warns(SislWarning):
         assert np.allclose(fdf.read_lattice_nsc(), (1, 1, 1))
     read_methods.remove("read_lattice_nsc")

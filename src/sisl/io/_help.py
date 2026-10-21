@@ -161,7 +161,6 @@ def _fill_basis_empty(sp: np.ndarray, basis: list[Atom], start_Z=1000) -> Atoms:
         # Hence we extract the species list, and specifies
         # it as the *only* basis option.
         only_basis = True
-        n_species = max(n_species, len(basis.atom))
         basis = basis.atom
     else:
         # it *can* be the correct basis, in case there are more basis
