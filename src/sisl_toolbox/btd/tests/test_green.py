@@ -618,6 +618,7 @@ def test_device_green_no_orbs():
         DeviceGreen(H, [(elec, [0, 1])], np.arange(H.no))
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize("method", ["svd:gamma", "svd:A", "eig"])
 @pytest.mark.parametrize("orthogonal", [True, False])
 def test_scattering_state(method, orthogonal):
@@ -821,6 +822,7 @@ def test_placement_skewed_lattice():
         DeviceGreen(H, elecs("+A"))
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize("herm", [True, False])
 @pytest.mark.parametrize("method", ["column", "propagate"])
 def test_block_matrix_formats(method, herm):
