@@ -70,6 +70,8 @@ Make `Geometry.rotate` keep the dtype of the coordinates.
 - `test_rotate_dtype` fails before the fix.
 ```
 
+`.github/PULL_REQUEST_TEMPLATE.md` has this form. It also tells the rules for AI-assisted code.
+
 Reason: the maintainer reads many merge requests. A short description is fast to review.
 
 ## Keep the history
