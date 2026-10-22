@@ -72,6 +72,8 @@ Make `Geometry.rotate` keep the dtype of the coordinates.
 
 `.github/PULL_REQUEST_TEMPLATE.md` has this form. It also tells the rules for AI-assisted code.
 
+The contributor is responsible for all code in the merge request, also for code that an AI tool wrote.
+
 Reason: the maintainer reads many merge requests. A short description is fast to review.
 
 ## Keep the history

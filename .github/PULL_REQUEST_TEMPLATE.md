@@ -26,7 +26,11 @@ A bug fix names the test that shows the correct and the incorrect behavior.
  -->
 
 <!--
-AI-assisted code is welcome. You are responsible for each line you submit.
+AI-assisted code is welcome.
+
+NOTE: you, the contributor, are responsible for all code you contribute,
+also code that an AI tool wrote. "The AI wrote it" is not an excuse for
+bugs, wrong results, copied code or a license problem.
 
 - Let the agent read AGENTS.md first. It points to the rules in techs/.
 - Keep the code lean: only the code that the change needs.
