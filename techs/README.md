@@ -67,7 +67,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 | [dev-04 · Conventions](dev-04-conventions.md) | Headers, typing, style, changelog. |
 | [dev-05 · Verifying a change](dev-05-verifying-a-change.md) | The order of checks before you commit. |
 | [dev-06 · Public documentation](dev-06-public-docs.md) | How to write in `docs/`: structure, style, doc-strings, RST. |
-| [dev-07 · Git workflow](dev-07-git.md) | Worktrees, small commits, commit messages, history. |
+| [dev-07 · Git workflow](dev-07-git.md) | Worktrees, small commits, commit messages, merge request description, history. |
 | [dev-08 · Debugging](dev-08-debugging.md) | Reproduce, make it repeatable, rule out the environment, find the cause, do not hide it. |
 | [dev-09 · Review](dev-09-review.md) | Reference `main`, read before you run, what to check, unrelated code, trojan horses, report. |
 | [dev-10 · Security](dev-10-security.md) | No URL lookups, no code from data, dependency sources, automatic code, secrets, trojan horse signs. |

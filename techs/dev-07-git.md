@@ -46,6 +46,32 @@ The maintainer can take some commits and not others.
 - In the body, tell why. Do not repeat the diff.
   Name the `techs/` chapter if the decision is there.
 
+## Merge request description
+
+A merge request description is lean, brief and to the point.
+It has these paragraphs, in this order:
+
+1. **Overview.** Tell the solution in one short paragraph. One line is sufficient.
+2. **Problem.** If the merge request solves a problem, tell the problem in one short paragraph.
+   Link the issue, for example `Closes #123`.
+3. **Details.** Tell the important changes and decisions. Keep it lean.
+   Do not repeat the diff or the commit messages. Link to the `techs/` chapter of a decision.
+
+A bug fix has a test that shows the correct and the incorrect behavior.
+The test fails before the fix. See [dev-02 · What a new test must do](dev-02-testing.md#what-a-new-test-must-do).
+Name the test in the details.
+
+```markdown
+Make `Geometry.rotate` keep the dtype of the coordinates.
+
+`rotate` changed `float32` coordinates to `float64`. Closes #123.
+
+- Rotate with a matrix of the dtype of `xyz`.
+- `test_rotate_dtype` fails before the fix.
+```
+
+Reason: the maintainer reads many merge requests. A short description is fast to review.
+
 ## Keep the history
 
 - The maintainer merges into `main`.

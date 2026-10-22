@@ -48,6 +48,8 @@ Check the change against the rules of the chapters that own the changed files.
 - **Dependencies.** A new required dependency has the approval of the maintainer.
   See [dev-04 · Dependencies](dev-04-conventions.md#dependencies).
 - **Security.** The change follows [dev-10 · Security](dev-10-security.md).
+- **Description.** The merge request description follows
+  [dev-07 · Merge request description](dev-07-git.md#merge-request-description).
 
 ## No code unrelated to sisl
 
