@@ -1,4 +1,4 @@
-# 60 · Visualization
+# sisl-50 · Visualization
 
 Owns: `src/sisl/viz/*`, `src/sisl/_lazy_viz.py`, `src/sisl/_nodify.py`
 

@@ -8,6 +8,7 @@ Warn only: always exits 0. Rules are in techs/README.md#ownership.
 Usage:
     python tools/techs_check.py          # staged changes (pre-commit)
     python tools/techs_check.py --all    # coverage report for all tracked files
+    python tools/techs_check.py --owner PATH...  # owning chapter of each path
 """
 
 from __future__ import annotations
@@ -62,8 +63,21 @@ def checked(path: str) -> bool:
     return not any(fnmatchcase(path, s) for s in SKIP)
 
 
+def repo_path(path: str) -> str:
+    p = Path(path).resolve()
+    return p.relative_to(ROOT).as_posix() if p.is_relative_to(ROOT) else path
+
+
 def main(argv: list[str]) -> int:
     owners = read_owners()
+
+    if "--owner" in argv:
+        for f in argv[argv.index("--owner") + 1 :]:
+            f = repo_path(f)
+            chapters = owner_of(f, owners) if checked(f) else []
+            print(f"{f}: {' or '.join(chapters) if chapters else 'no chapter'}")
+        return 0
+
     tracked = git("ls-files")
 
     for chapter, patterns in owners.items():

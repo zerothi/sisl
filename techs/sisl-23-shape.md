@@ -1,4 +1,4 @@
-# 33 · Shapes
+# sisl-23 · Shapes
 
 Owns: `src/sisl/shape/*`
 

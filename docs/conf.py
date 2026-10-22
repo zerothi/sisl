@@ -602,7 +602,7 @@ pybtex.plugin.register_plugin("pybtex.style.formatting", "rev_year", RevYearPlai
 nbsphinx_timeout = 30
 
 # Start one kaleido server (chrome) in each notebook kernel.
-# See techs/15-public-docs.md (Plotly figures in notebooks).
+# See techs/dev-06-public-docs.md (Plotly figures in notebooks).
 _mathjax = pathlib.Path(sys.prefix) / "share" / "kaleido" / "tex-svg.min.js"
 _mathjax = (_mathjax.as_uri(), "utf-8") if _mathjax.is_file() else False
 nbsphinx_execute_arguments = [

@@ -1,4 +1,4 @@
-# 80 · Utilities
+# sisl-70 · Utilities
 
 Owns: `src/sisl/utils/*`, `src/sisl/_lib/_argparse.py`
 
@@ -58,7 +58,7 @@ Parses index ranges from strings. The CLI and some Siles use it.
 
 - **Angle convention: `theta` is the azimuthal angle in the xy plane from x. `phi` is the polar angle from z.**
   This is the opposite of the ISO physics convention. `cart2spher`, `spher2cart` and the orbitals use it.
-  See [31 · Spherical harmonics](31-orbitals.md#spherical-harmonics).
+  See [sisl-21 · Spherical harmonics](sisl-21-orbitals.md#spherical-harmonics).
 - `cart2spher` uses `eps = 1e-16` for `r = 0`. At the origin, `phi = 0`.
   `cos_phi=True` returns `cos(phi)` without `arccos`. With `maxR` it also returns indices (only for 2-D input).
 - `spherical_harm` multiplies by `(-1)**m` (Condon-Shortley phase).
@@ -117,7 +117,7 @@ Other details:
 
 `find_implementation` is a copy of the MRO resolution of `functools.singledispatch` (PSF license).
 It selects the registered class that is the best match for a type.
-Only `_dispatcher.py` uses it (`new` and `to`). See [30 · Conversion](30-geometry.md#conversion-new-and-to).
+Only `_dispatcher.py` uses it (`new` and `to`). See [sisl-20 · Conversion](sisl-20-geometry.md#conversion-new-and-to).
 
 ## Known defects
 

@@ -1,4 +1,4 @@
-# 50 · IO
+# sisl-40 · IO
 
 Owns: `src/sisl/io/*`
 
@@ -67,7 +67,7 @@ Follow `io/xyz.py`:
 2. Implement `read_<thing>` and `write_<thing>`. Decorate them with `@sile_fh_open()` or `@SileBinder()`.
 3. Call `add_sile("<ext>", <cls>, ...)` at the end of the module.
 4. Import the module in the `__init__.py` of the package.
-5. Add tests. Put test files in `sisl-files`. See [11 · External test files](11-testing.md#external-test-files).
+5. Add tests. Put test files in `sisl-files`. See [dev-02 · External test files](dev-02-testing.md#external-test-files).
 
 ## Siesta and Fortran
 

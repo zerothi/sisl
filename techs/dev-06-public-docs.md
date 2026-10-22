@@ -1,4 +1,4 @@
-# 15 · Public documentation
+# dev-06 · Public documentation
 
 Owns: `docs/*`
 
@@ -27,7 +27,7 @@ The toctrees in `docs/index.rst` set the sections. Put a new page in the section
 
 - API pages in `api/` list the public names with `autosummary` and `:toctree: generated/`.
   Do not edit `api/generated/`. Sphinx writes it.
-- Release notes come from fragments in `changes/`. See [13 · Conventions](13-conventions.md#changelog).
+- Release notes come from fragments in `changes/`. See [dev-04 · Conventions](dev-04-conventions.md#changelog).
 - Add a new page to a toctree. Else Sphinx warns and the reader cannot find the page.
 
 ## Writing style
@@ -44,7 +44,7 @@ The toctrees in `docs/index.rst` set the sections. Put a new page in the section
 ## Doc-strings
 
 Doc-strings are part of `docs/`. Sphinx reads them for the API reference.
-They stay in the source files. See [02 · Documentation is in the file](02-concepts.md#documentation-is-in-the-file).
+They stay in the source files. See [overview-01 · Documentation is in the file](overview-01-concepts.md#documentation-is-in-the-file).
 
 - Use the numpy style. `docs/conf.py` sets `napoleon_numpy_docstring = True`.
 - Write the first line as a short summary.

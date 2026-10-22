@@ -25,5 +25,5 @@ CLAUDE.local.md
 Thumbs.db
 ehtumbs.db
 
-# git worktrees (see techs/16-agents.md)
+# git worktrees (see techs/dev-07-git.md)
 /wt/

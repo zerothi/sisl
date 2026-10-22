@@ -1,4 +1,4 @@
-# 12 · Performance
+# dev-03 · Performance
 
 Owns: `benchmarks/*`
 
@@ -11,7 +11,7 @@ Users work with matrices that have millions of non-zero elements.
 - Measure before and after. Do not guess.
 - Keep the measurement short and to the point.
   Report the size of the system and the times.
-- Do not measure with a `Debug` build. See [10 · Build](10-build.md#cmake-options).
+- Do not measure with a `Debug` build. See [dev-01 · Build](dev-01-build.md#cmake-options).
 
 ## Slow idioms
 
@@ -32,7 +32,7 @@ The maintainer must guide the port. Do not start it alone.
 
 - Look at the Cython annotations first (`-DWITH_ANNOTATE=ON`).
 - Use fused types for dtypes. Look at the existing `.pxd` files in `src/sisl/_core/`.
-- After a change to a `.pxd`, read [10 · Stale Cython builds](10-build.md#stale-cython-builds).
+- After a change to a `.pxd`, read [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds).
 
 ## Benchmarks
 

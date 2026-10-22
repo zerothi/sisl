@@ -1,4 +1,4 @@
-# 70 · Mixing
+# sisl-60 · Mixing
 
 Owns: `src/sisl/mixing/*`
 

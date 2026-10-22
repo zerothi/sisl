@@ -1,4 +1,4 @@
-# 13 · Conventions
+# dev-04 · Conventions
 
 Owns: `.pre-commit-config.yaml`, `.LICENSE_header`, `tools/add_header.sh`, `changes/README.rst`, `src/sisl/typing/*`, `src/sisl/messages.py`
 
@@ -47,3 +47,4 @@ towncrier assembles the fragments into the release notes.
 - A public name needs a deprecation before you remove or change it.
   Use `deprecate`, `deprecate_argument` or `deprecation` from `src/sisl/messages.py`.
   Give `from_version` and `remove_version`.
+  When the name goes away is in [release-04 · Deprecations](release-04-deprecations.md).

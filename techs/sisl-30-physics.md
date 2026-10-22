@@ -1,4 +1,4 @@
-# 40 · Physics
+# sisl-30 · Physics
 
 Owns: `src/sisl/physics/*`, `src/sisl/constant.py`, `src/sisl/unit/*`, `src/sisl/_core/oplist.py`
 
@@ -13,7 +13,7 @@ Paths are relative to `src/sisl/`.
 | `DynamicalMatrix` | `SparseOrbitalBZ` | `physics/dynamicalmatrix.py` |
 | `Overlap` | `SparseOrbitalBZ` | `physics/overlap.py` |
 
-For the storage and the overlap index (`S_idx`), see [20 · Spin, overlap and dtype](20-sparse.md#spin-overlap-and-dtype).
+For the storage and the overlap index (`S_idx`), see [sisl-10 · Spin, overlap and dtype](sisl-10-sparse.md#spin-overlap-and-dtype).
 
 ## Method selection in `_reset`
 
@@ -64,7 +64,7 @@ At Γ, sisl applies no phase.
 `Spin` (`physics/spin.py`) has the kinds `UNPOLARIZED`, `POLARIZED`, `NONCOLINEAR`, `SPINORBIT`, `NAMBU`.
 
 - The kinds are ordered. You can compare them with `<`.
-- `size(dtype)` depends on the dtype. See [20 · Spin, overlap and dtype](20-sparse.md#spin-overlap-and-dtype).
+- `size(dtype)` depends on the dtype. See [sisl-10 · Spin, overlap and dtype](sisl-10-sparse.md#spin-overlap-and-dtype).
 - `spinor` is 1, 2, or 4 (Nambu).
 - `io/siesta/_help.py:_mat_siesta2sisl` converts the Siesta spin layout to the sisl layout.
 

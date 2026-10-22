@@ -1,4 +1,4 @@
-# 101 · BTD
+# toolbox-10 · BTD
 
 Owns: `src/sisl_toolbox/btd/*`
 
@@ -102,4 +102,4 @@ It replaces `BlockMatrix`.
 
 - The root `CMakeLists.txt` adds `src/sisl_toolbox/btd/permute` as a subdirectory.
 - `add_cython_library` adds `-I <project>/src`. Thus `cimport sisl._core...` works from outside `sisl`.
-- A stale installed `sisl` can supply an old `.pxd`. See [10 · Stale Cython builds](10-build.md#stale-cython-builds).
+- A stale installed `sisl` can supply an old `.pxd`. See [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds).

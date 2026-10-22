@@ -1,4 +1,4 @@
-# 11 · Testing
+# dev-02 · Testing
 
 Owns: `*conftest.py`, `src/sisl/_environ.py`
 
@@ -61,7 +61,7 @@ pytestmark = sisl_requires("netCDF4")
 - The result of the import is cached. Each module is imported a maximum of one time.
 - Inside a test body, the fixture `sisl_importskip` does the same.
 - A test that uses a Fortran Sile without `sisl_requires` becomes `xfail`
-  when the Fortran sources are not built. See [50 · Siesta and Fortran](50-io.md#siesta-and-fortran).
+  when the Fortran sources are not built. See [sisl-40 · Siesta and Fortran](sisl-40-io.md#siesta-and-fortran).
 
 ## Temporary files
 
@@ -83,9 +83,39 @@ Each test gets its own folder: `<basetemp>/<package>/<test-name><N>`, for exampl
 Set `SISL_NUM_PROCS=1` when you debug. This stops the parallel execution.
 The tox configuration does this.
 
+## Keep tests fast
+
+The CI runs each test on many platforms and Python versions.
+Each test adds to the CI time on all of them.
+
+- Make each test fast. Use the smallest geometry, basis, `nsc` and k-point set that shows the behavior.
+- Do not write a test that checks the same code path as an existing test.
+  Read the tests of the module before you add a test.
+  Extend an existing test, or add a case to its `pytest.mark.parametrize`.
+- Parametrize only the arguments that select a different code path, for example a dtype or a spin type.
+  Do not parametrize over values that run the same code.
+- Mark a test that cannot be fast with `slow`. See [Markers](#markers).
+- Do not test numpy, scipy or other dependencies. Test the sisl code.
+
+A fast test that does not check the behavior has no value.
+
+## Measure test timings
+
+Set each environment variable that controls the number of threads to 1:
+
+```bash
+SISL_NUM_PROCS=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 pytest --durations=0 ...
+```
+
+- The CI systems have few threads. A test that is fast with many threads can be slow in the CI.
+  `.github/workflows/test.yaml` sets `SISL_NUM_PROCS` and `OMP_NUM_THREADS` to 1.
+- Measure on a computer without other load. Timings from a loaded computer are not correct.
+  Then a decision from them, for example a `slow` mark, is also not correct.
+- A computer with performance cores and efficiency cores gives different timings under load.
+
 ## What a new test must do
 
 - A bug fix has a test that fails before the fix.
 - A new feature has tests for the normal case and for the edge cases.
 - Compare floating point results with a tolerance that matches the dtype.
-- A performance-critical change has a regression test. See [12 · Performance](12-performance.md).
+- A performance-critical change has a regression test. See [dev-03 · Performance](dev-03-performance.md).

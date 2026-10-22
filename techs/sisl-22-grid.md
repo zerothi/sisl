@@ -1,4 +1,4 @@
-# 32 · Grid
+# sisl-22 · Grid
 
 Owns: `src/sisl/_core/grid.py`, `src/sisl/_core/_ufuncs_grid.py`, `src/sisl/_sparse_grid*`
 
@@ -27,7 +27,7 @@ Paths are relative to `src/sisl/`.
 
 ## Boundary conditions
 
-The boundary conditions are on `Lattice` (issue #626). See [30 · Boundary conditions](30-geometry.md#boundary-conditions).
+The boundary conditions are on `Lattice` (issue #626). See [sisl-20 · Boundary conditions](sisl-20-geometry.md#boundary-conditions).
 `Grid.PERIODIC` and similar names, the `bc=` argument and `set_bc` are deprecated.
 
 ### Poisson

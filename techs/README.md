@@ -34,44 +34,95 @@ The remaining 5% is for formulas, tables and code that STE cannot express.
 
 ## Chapters
 
-| # | Chapter | Topic |
-|---|---|---|
-| 01 | [Welcome](01-welcome.md) | Orientation. Where things are. |
-| 02 | [Concepts](02-concepts.md) | The principles that all other chapters assume. |
-| 10 | [Build](10-build.md) | scikit-build-core, CMake, Cython, f2py. |
-| 11 | [Testing](11-testing.md) | pytest, external test files, markers. |
-| 12 | [Performance](12-performance.md) | Regression tests, benchmarks, Cython ports. |
-| 13 | [Conventions](13-conventions.md) | Headers, typing, style, changelog. |
-| 14 | [Verifying a change](14-verifying-a-change.md) | The order of checks before you commit. |
-| 15 | [Public documentation](15-public-docs.md) | How to write in `docs/`: structure, style, doc-strings, RST. |
-| 16 | [Agents](16-agents.md) | Rules for agents only: ask first, staging, commit trailer, tests, reports. |
-| 20 | [Sparse matrices](20-sparse.md) | `SparseCSR` and the sparse geometry classes. |
-| 30 | [Geometry](30-geometry.md) | `Lattice`, `Geometry`, supercells, dispatch. |
-| 31 | [Orbitals](31-orbitals.md) | Orbital classes, cutoff, radial functions, spherical harmonics. |
-| 32 | [Grid](32-grid.md) | `Grid`, Poisson, filling from physics, sparse grids. |
-| 33 | [Shapes](33-shape.md) | `Shape` contract, composites, tolerance. |
-| 34 | [Geometry factories](34-geom.md) | `sisl.geom`: factories, composites, `NeighborFinder`, categories. |
-| 40 | [Physics](40-physics.md) | Hamiltonians, spin, Brillouin zones, states. |
-| 50 | [IO](50-io.md) | Siles and file formats. |
-| 60 | [Visualization](60-viz.md) | `sisl.viz`: lazy loading, nodify plots, backends. |
-| 70 | [Mixing](70-mixing.md) | `sisl.mixing`: SCF mixers, history, DIIS. |
-| 80 | [Utilities](80-utils.md) | `sisl.utils`: ranges, math conventions, CLI machinery. |
-| 100 | [Toolbox](100-toolbox.md) | `sisl_toolbox`: namespace package, CLI, subpackages. |
-| 101 | [BTD](101-btd.md) | `sisl_toolbox.btd`: `DeviceGreen`, electrodes, partitioning. |
+The chapters are in segments. A file name is `<segment>-<NN>-<topic>.md`.
+A segment can have an entry chapter `<segment>-welcome.md`.
+
+### overview: the technical documentation
+
+| Chapter | Topic |
+|---|---|
+| [overview · Welcome](overview-welcome.md) | Orientation. Where things are. |
+| [overview-01 · Concepts](overview-01-concepts.md) | The principles that all other chapters assume. |
+
+### agent: agents only
+
+| Chapter | Topic |
+|---|---|
+| [agent · Welcome](agent-welcome.md) | Entry for agents. The chapter for each task. The agent rules win over tool defaults. |
+| [agent-01 · Harness](agent-01-harness.md) | How to work in a session. Ask first, git, reports. |
+| [agent-02 · Git workflow](agent-02-git.md) | The agent part of git: worktree folder, staging, trailer, history before a report, push. |
+| [agent-03 · Parallel agents and builds](agent-03-parallel.md) | One worktree each, the sisl that runs, own build, shared state, test timings. |
+| [agent-04 · Implement](agent-04-implement.md) | Rules to implement, fix and test code. |
+| [agent-05 · Debugging](agent-05-debugging.md) | The agent part of debugging: scratch files, ask first, report the cause. |
+| [agent-06 · Review](agent-06-review.md) | The agent part of review: report, do not fix; read before you run; report what was not done. |
+| [agent-07 · Security](agent-07-security.md) | The agent part of security: URL lookups need a human, ask first for automatic code, check your own commits. |
+
+### dev: how to build, test and keep the code
+
+| Chapter | Topic |
+|---|---|
+| [dev-01 · Build](dev-01-build.md) | scikit-build-core, CMake, Cython, f2py. |
+| [dev-02 · Testing](dev-02-testing.md) | pytest, external test files, markers. |
+| [dev-03 · Performance](dev-03-performance.md) | Regression tests, benchmarks, Cython ports. |
+| [dev-04 · Conventions](dev-04-conventions.md) | Headers, typing, style, changelog. |
+| [dev-05 · Verifying a change](dev-05-verifying-a-change.md) | The order of checks before you commit. |
+| [dev-06 · Public documentation](dev-06-public-docs.md) | How to write in `docs/`: structure, style, doc-strings, RST. |
+| [dev-07 · Git workflow](dev-07-git.md) | Worktrees, small commits, commit messages, history. |
+| [dev-08 · Debugging](dev-08-debugging.md) | Reproduce, make it repeatable, rule out the environment, find the cause, do not hide it. |
+| [dev-09 · Review](dev-09-review.md) | Reference `main`, read before you run, what to check, unrelated code, trojan horses, report. |
+| [dev-10 · Security](dev-10-security.md) | No URL lookups, no code from data, dependency sources, automatic code, secrets, trojan horse signs. |
+
+### sisl: the code in `src/sisl/`
+
+| Chapter | Topic |
+|---|---|
+| [sisl-10 · Sparse matrices](sisl-10-sparse.md) | `SparseCSR` and the sparse geometry classes. |
+| [sisl-20 · Geometry](sisl-20-geometry.md) | `Lattice`, `Geometry`, supercells, dispatch. |
+| [sisl-21 · Orbitals](sisl-21-orbitals.md) | Orbital classes, cutoff, radial functions, spherical harmonics. |
+| [sisl-22 · Grid](sisl-22-grid.md) | `Grid`, Poisson, filling from physics, sparse grids. |
+| [sisl-23 · Shapes](sisl-23-shape.md) | `Shape` contract, composites, tolerance. |
+| [sisl-24 · Geometry factories](sisl-24-geom.md) | `sisl.geom`: factories, composites, `NeighborFinder`, categories. |
+| [sisl-30 · Physics](sisl-30-physics.md) | Hamiltonians, spin, Brillouin zones, states. |
+| [sisl-40 · IO](sisl-40-io.md) | Siles and file formats. |
+| [sisl-50 · Visualization](sisl-50-viz.md) | `sisl.viz`: lazy loading, nodify plots, backends. |
+| [sisl-60 · Mixing](sisl-60-mixing.md) | `sisl.mixing`: SCF mixers, history, DIIS. |
+| [sisl-70 · Utilities](sisl-70-utils.md) | `sisl.utils`: ranges, math conventions, CLI machinery. |
+
+### release: versions, release, CI and deprecations
+
+| Chapter | Topic |
+|---|---|
+| [release-01 · Versioning](release-01-versioning.md) | `setuptools_scm`, tags, `fallback_version`, `CITATION.cff`. |
+| [release-02 · Release process](release-02-process.md) | The decisions behind `DEPLOY.md`: release commit, release notes, publish, stale parts. |
+| [release-03 · CI](release-03-ci.md) | GitHub workflows, the wheel and publish sequence, rules for a change. |
+| [release-04 · Deprecations](release-04-deprecations.md) | When a deprecated name goes away. Overdue deprecations. |
+
+### toolbox: the code in `src/sisl_toolbox/`
+
+| Chapter | Topic |
+|---|---|
+| [toolbox · Welcome](toolbox-welcome.md) | `sisl_toolbox`: namespace package, CLI, subpackages. |
+| [toolbox-10 · BTD](toolbox-10-btd.md) | `sisl_toolbox.btd`: `DeviceGreen`, electrodes, partitioning. |
 
 ## How to add or change a chapter
 
-- Numbers are in groups:
-  - `0x`: orientation.
-  - `1x`: code development (build, test, performance, conventions, verification, public documentation, agents).
-  - `20`–`99`: one group of ten for each code area of `sisl` (sparse, geometry, physics, IO, viz, mixing, utils).
-  - `100` and higher: namespace packages next to `sisl` (`100`: `sisl_toolbox`). The next package gets `110`.
-    Chapters on subpackages increment from the package number (`101`: `sisl_toolbox.btd`).
-- Put a new chapter in the group of its topic. A new code area of `sisl` gets the next free group of ten below `100`.
+- Name a chapter `<segment>-<NN>-<topic>.md`. Use two digits for `NN`.
+  The title is `# <segment>-<NN> · <Title>`. A link text starts with the same `<segment>-<NN> ·`.
+- The segments:
+  - `overview`: orientation in the technical documentation.
+  - `agent`: rules for agents only. Numbers increment: `01`, `02`, ...
+  - `dev`: how to build, test, measure, verify and document. Numbers increment: `01`, `02`, ...
+  - `sisl`: the code in `src/sisl/` only. One group of ten for each code area
+    (`10` sparse, `20` geometry, `30` physics, ...). A sub-chapter increments from its area (`21`: orbitals).
+    A new code area gets the next free group of ten.
+  - `release`: versions, the release process, CI and the life of deprecations. Numbers increment: `01`, `02`, ...
+  - `toolbox`: the code in `src/sisl_toolbox/` only. One group of ten for each subpackage (`10`: `btd`).
+- A new segment needs the approval of the maintainer. A namespace package next to `sisl` gets its own segment.
+- Put a new chapter in the segment of its topic.
 - One chapter owns one topic. Do not write the same decision in two chapters. Link to it.
 - Use stable heading names. Other files link to headings with anchors.
 - When you remove a code comment that explains a decision, move the text here in the same commit.
-  See [02 · Code carries little prose](02-concepts.md#code-carries-little-prose).
+  See [overview-01 · Code carries little prose](overview-01-concepts.md#code-carries-little-prose).
 - Update the table above when you add a chapter.
 
 ## Ownership
@@ -79,14 +130,14 @@ The remaining 5% is for formulas, tables and code that STE cannot express.
 A chapter that documents code starts with an `Owns:` line. It lists glob patterns of the files it owns:
 
 ```markdown
-# 20 · Sparse matrices
+# sisl-10 · Sparse matrices
 
 Owns: `src/sisl/_core/sparse.py`, `src/sisl/_core/_sparse*`
 ```
 
 - `*` also matches `/`. Thus `src/sisl/io/*` matches all files below `src/sisl/io/`.
 - When many patterns match a file, the most specific pattern wins: the longest text before the first wildcard.
-  Thus `src/sisl/physics/sparse.py` (20) wins over `src/sisl/physics/*` (40).
+  Thus `src/sisl/physics/sparse.py` (sisl-10) wins over `src/sisl/physics/*` (sisl-30).
 - Files in `tests/` folders have no owner.
 - When you add a chapter or move a file, update the `Owns:` lines.
 
@@ -96,5 +147,8 @@ Owns: `src/sisl/_core/sparse.py`, `src/sisl/_core/_sparse*`
   Read the chapter. Correct it if the change makes it wrong. If it is still correct, do nothing.
 - It names staged files below `src/` that no chapter owns.
 - It names `Owns:` patterns that match no tracked file (for example after a rename).
+
+`python tools/techs_check.py --owner <path>...` names the owning chapter of each path.
+Use it before you change a file.
 
 `python tools/techs_check.py --all` lists all files below `src/` that no chapter owns.

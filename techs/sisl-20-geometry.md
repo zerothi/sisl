@@ -1,4 +1,4 @@
-# 30 · Geometry
+# sisl-20 · Geometry
 
 Owns: `src/sisl/_core/lattice.py`, `src/sisl/_core/geometry.py`, `src/sisl/_core/atom.py`, `src/sisl/_core/_ufuncs_lattice.py`, `src/sisl/_core/_ufuncs_geometry.py`, `src/sisl/_core/_ufuncs_atom.py`, `src/sisl/_dispatcher.py`, `src/sisl/_dispatch_class.py`, `src/sisl/_ufuncs.py`, `src/sisl/_namedindex.py`, `src/sisl/_category.py`, `src/sisl/_core/_lattice.pyx`, `src/sisl/_core/periodictable.py`, `src/sisl/_core/quaternion.py`
 
@@ -13,8 +13,8 @@ Paths are relative to `src/sisl/`.
 | `Geometry` | `_core/geometry.py` | `xyz` (shape `(na, 3)`), `Atoms`, `NamedIndex`, `Lattice`. |
 | `Atom` | `_core/atom.py` | `Z`, mass, tag and a list of `Orbital`. |
 | `Atoms` | `_core/atom.py` | Unique species and one species index for each atom. |
-| `Orbital` | `_core/orbital.py` | Range `R` and an optional radial function. See [31 · Orbitals](31-orbitals.md). |
-| `Grid` | `_core/grid.py` | Values on a grid. It has an optional `Geometry`. See [32 · Grid](32-grid.md). |
+| `Orbital` | `_core/orbital.py` | Range `R` and an optional radial function. See [sisl-21 · Orbitals](sisl-21-orbitals.md). |
+| `Grid` | `_core/grid.py` | Values on a grid. It has an optional `Geometry`. See [sisl-22 · Grid](sisl-22-grid.md). |
 
 - `Lattice` and `Orbital` use `__slots__`. You cannot add attributes at run time.
 - `SuperCell` is a deprecated name for `Lattice`.
@@ -45,7 +45,7 @@ Paths are relative to `src/sisl/`.
   Thus `geom[:-1]` gives unit-cell atoms, and `geom[0:2 * na]` reaches into the supercell.
 - The Cartesian offset of a supercell is `isc @ cell`.
 - To change `nsc` of a sparse matrix, use `set_nsc` on the matrix.
-  See [20 · Supercell columns](20-sparse.md#supercell-columns).
+  See [sisl-10 · Supercell columns](sisl-10-sparse.md#supercell-columns).
 - `find_nsc` limits the images with the distance between the lattice planes, `1 / |icell[i]|`.
   Do not use the length of the lattice vector: in a skewed cell an image along two
   lattice vectors can be nearer than the length of one vector.
@@ -105,10 +105,10 @@ def tile(geometry: Geometry, reps: int, axis: int) -> Geometry:
   Then it converts the result back with `.to(type(obj))`, unless `ret_sisl=True`.
 
 Use this pattern for new operations on a core class.
-Do not add a subclass for it. See [02 · Few strong classes](02-concepts.md#few-strong-classes).
+Do not add a subclass for it. See [overview-01 · Few strong classes](overview-01-concepts.md#few-strong-classes).
 
 The functions in `geom/` (`graphene`, `fcc`, ...) are factories.
-They are not methods. See [34 · Geometry factories](34-geom.md).
+They are not methods. See [sisl-24 · Geometry factories](sisl-24-geom.md).
 
 ## Named indices
 
@@ -152,4 +152,4 @@ They are not methods. See [34 · Geometry factories](34-geom.md).
 - `categorize` stays for compatibility. Do not use it in new code: it makes one object for each atom.
 - Geometry indexing accepts a category or a `dict`. It uses `mask`.
   `_sanitize_atoms(category, atoms)` returns the indices in `atoms` that are in the category.
-- A `Shape` used as an index selects only atoms in the unit cell. See [33 · Shapes](33-shape.md).
+- A `Shape` used as an index selects only atoms in the unit cell. See [sisl-23 · Shapes](sisl-23-shape.md).

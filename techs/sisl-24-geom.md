@@ -1,4 +1,4 @@
-# 34 · Geometry factories
+# sisl-24 · Geometry factories
 
 Owns: `src/sisl/geom/*`
 
@@ -89,7 +89,7 @@ See `heteroribbon` in `nanoribbon.py`.
 
 ## Atom categories
 
-`_category/` holds the atom categories. See [30 · Categories](30-geometry.md#categories) for the system.
+`_category/` holds the atom categories. See [sisl-20 · Categories](sisl-20-geometry.md#categories) for the system.
 
 | File | Categories |
 |---|---|

@@ -1,4 +1,4 @@
-# 02 · Concepts
+# overview-01 · Concepts
 
 These principles apply to all code in sisl.
 The other chapters assume them.
@@ -36,14 +36,14 @@ sisl is a physics code. Results must be exact to numerical precision.
 ## Performance is a requirement
 
 Users run sisl on large systems. Slow code blocks their work.
-See [12 · Performance](12-performance.md).
+See [dev-03 · Performance](dev-03-performance.md).
 
 ## Few strong classes
 
 - Prefer a small number of strong classes that are easy to extend.
 - If a small generalization covers many cases, use it. Do not add many subclasses.
 - Register new functionality on the existing classes.
-  See [30 · Geometry](30-geometry.md) for the dispatch pattern.
+  See [sisl-20 · Geometry](sisl-20-geometry.md) for the dispatch pattern.
 
 ## End-users guide the design
 

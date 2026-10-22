@@ -1,4 +1,4 @@
-# 100 · Toolbox
+# toolbox · Welcome
 
 Owns: `src/sisl_toolbox/*`
 
@@ -33,7 +33,7 @@ The console script is `stoolbox` (`cli/_cli.py:stoolbox_cli`).
 
 | Subpackage | Purpose | Chapter |
 |---|---|---|
-| `btd` | Block-tridiagonal Green functions for N-electrode NEGF. | [101 · BTD](101-btd.md) |
+| `btd` | Block-tridiagonal Green functions for N-electrode NEGF. | [toolbox-10 · BTD](toolbox-10-btd.md) |
 | `negf` | `NEGF`, `Electrode`, `ChemicalPotential` from fdf/files. Work in progress (not in git). | — |
 | `siesta.atom` | `AtomInput` for ATOM pseudopotential input. `atom-plot` CLI. | — |
 | `siesta.minimizer` | Basis and pseudopotential optimization with `scipy.optimize`. YAML configuration. | — |

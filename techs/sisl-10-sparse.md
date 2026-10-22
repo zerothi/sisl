@@ -1,4 +1,4 @@
-# 20 · Sparse matrices
+# sisl-10 · Sparse matrices
 
 Owns: `src/sisl/_core/sparse.py`, `src/sisl/_core/_sparse*`, `src/sisl/_core/sparse_geometry.py`, `src/sisl/_core/_ufuncs_sparse*`, `src/sisl/_core/_dtypes.p*`, `src/sisl/_indices.p*`, `src/sisl/physics/sparse.py`, `src/sisl/physics/_matrix_*`, `src/sisl/physics/_phase.p*`
 

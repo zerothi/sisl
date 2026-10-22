@@ -1,4 +1,4 @@
-# 10 · Build
+# dev-01 · Build
 
 Owns: `CMakeLists.txt`, `*/CMakeLists.txt`, `pyproject.toml`, `tools/build_tools/*`
 
@@ -25,7 +25,7 @@ Give options through `SKBUILD_CMAKE_ARGS`, separated by `;`.
 
 | Option | Effect |
 |---|---|
-| `-DWITH_FORTRAN=OFF` | Do not build the Fortran extensions. The Siesta binary Siles then raise `MissingFortranSileError`. See [50 · Siesta and Fortran](50-io.md#siesta-and-fortran). |
+| `-DWITH_FORTRAN=OFF` | Do not build the Fortran extensions. The Siesta binary Siles then raise `MissingFortranSileError`. See [sisl-40 · Siesta and Fortran](sisl-40-io.md#siesta-and-fortran). |
 | `-DWITH_COVERAGE=ON` | Build Cython with coverage support. |
 | `-DWITH_ANNOTATE=ON` | Write Cython HTML annotations. Use them to find Python calls in hot loops. |
 | `-DWITH_LINE_DIRECTIVES=ON` | Add line directives to the generated C code. |
@@ -52,3 +52,31 @@ The build can complete without errors and still use old code.
 - Check: look at `func.__signatures__` of the fused `def` function.
 
 The CMake minimum version is in `CMakeLists.txt`. Use a CMake that is new enough.
+
+## Editable installs and worktrees
+
+An editable install binds `import sisl` to one source tree.
+A git worktree does not change this binding. Check it before you evaluate or test:
+
+```bash
+python -c "import sisl; print(sisl.__file__)"
+```
+
+- If the path is not below your source tree, your evaluations and tests run different code.
+- `pytest` in such a tree stops with an `ImportPathMismatchError` for `sisl.conftest`.
+- A pass in such a tree does not test your change.
+
+To test a worktree, build it in a separate virtual environment outside the repository:
+
+```bash
+python -m venv --system-site-packages <env>
+<env>/bin/python -m pip install -e . --no-build-isolation -Cbuild-dir=build-editable
+<env>/bin/python -c "import sisl; print(sisl.__file__)"
+```
+
+- `--system-site-packages` gives the build its dependencies, for example `numpy`.
+- `-Cbuild-dir=build-editable` is relative to the source tree. Thus each tree has its own build folder.
+  Do not let two source trees use one build folder.
+- An entry for sisl in `PYTHONPATH` wins over the virtual environment. Check the path after the install.
+- Do not install a worktree into an environment that other people or processes use.
+  That changes the code that they run.
