@@ -136,8 +136,14 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
 - **Find the module that runs.** `_x.py` and `_x.pyx` companions are distinct modules:
   check which one is imported.
 - **Keep the code safe** ([dev-10](techs/dev-10-security.md), [agent-07](techs/agent-07-security.md)).
+- **Lean code.** Write only the code the task needs: no unneeded options, abstractions,
+  checks or copies of sisl functions. Read your diff and remove what is not needed.
 - **Fast tests, no redundant tests.** CI runs each test many times. Use the smallest system,
   extend or parametrize an existing test before adding one, and mark slow tests `slow`.
+- **When the code is complete:** ask the maintainer if it is complete, then review the branch
+  ([agent-06](techs/agent-06-review.md)), then ask to write the merge request description
+  ([dev-07](techs/dev-07-git.md#merge-request-description)): overview line, problem,
+  lean details; a bug fix names its test that fails before the fix.
 
 [agent-05 · Debugging](techs/agent-05-debugging.md), extends
 [dev-08 · Debugging](techs/dev-08-debugging.md) — find the cause:

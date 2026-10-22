@@ -20,6 +20,7 @@ change `AGENTS.md` in the same commit.
 | Implement, fix, refactor or test code | [agent-04 · Implement](agent-04-implement.md). |
 | Find the cause of a bug, a failing test or a wrong result | [agent-05 · Debugging](agent-05-debugging.md). |
 | Review a change, a branch or a pull request | [agent-06 · Review](agent-06-review.md). |
+| Write a merge request description | [dev-07 · Merge request description](dev-07-git.md#merge-request-description). |
 | Add a dependency, touch CI, hooks or build files, or handle files and data from outside | [agent-07 · Security](agent-07-security.md). |
 | Write in `techs/` or `docs/` | [README · Writing rules](README.md#writing-rules), [dev-06 · Public documentation](dev-06-public-docs.md). |
 

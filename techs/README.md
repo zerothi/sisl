@@ -52,7 +52,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 | [agent-01 · Harness](agent-01-harness.md) | How to work in a session. Ask first, git, reports. |
 | [agent-02 · Git workflow](agent-02-git.md) | The agent part of git: worktree folder, staging, trailer, history before a report, push. |
 | [agent-03 · Parallel agents and builds](agent-03-parallel.md) | One worktree each, the sisl that runs, own build, shared state, test timings. |
-| [agent-04 · Implement](agent-04-implement.md) | Rules to implement, fix and test code. |
+| [agent-04 · Implement](agent-04-implement.md) | Rules to implement, fix and test code. Lean code. Review and merge request when the code is complete. |
 | [agent-05 · Debugging](agent-05-debugging.md) | The agent part of debugging: scratch files, ask first, report the cause. |
 | [agent-06 · Review](agent-06-review.md) | The agent part of review: report, do not fix; read before you run; report what was not done. |
 | [agent-07 · Security](agent-07-security.md) | The agent part of security: URL lookups need a human, ask first for automatic code, check your own commits. |
