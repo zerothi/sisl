@@ -41,6 +41,30 @@ git commit ... --trailer "Assisted-by: claude-code:claude-opus-5-5"
 One trailer format makes agent commits easy to find in the history:
 `git log --grep='^Assisted-by:'`.
 
+## User prompts in the message
+
+Put the user prompts that caused the commit in the message body, before the trailer.
+Copy each prompt without change, as a quote below a `Prompt:` line.
+
+```text
+techs: add rule for user prompts in commits
+
+Prompt:
+> add agent rule.
+>
+> Always store the user-prompts in the commit messages to
+> enable transparency.
+
+Assisted-by: claude-code:claude-opus-5-5
+```
+
+If more prompts caused the commit, put each prompt in the message, in the order of the session.
+Replace secrets, user names, host names and absolute paths with `<...>`,
+as [agent-07 · Security](agent-07-security.md) tells.
+
+The prompts make the work of an agent transparent.
+A reviewer can compare the request with the change.
+
 ## Keep the history
 
 Follow [dev-07 · Keep the history](dev-07-git.md#keep-the-history). In addition:
