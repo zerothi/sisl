@@ -111,6 +111,8 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
   `Co-authored-by` or other trailers:
   `git commit ... --trailer "Assisted-by: <agent>:<model>[:<effort>]"`,
   e.g. `Assisted-by: claude-code:claude-opus-5-5`.
+- **User prompts.** Copy the user prompts that caused the commit into the message body,
+  as a quote below a `Prompt:` line. Replace secrets and local data with `<...>`.
 - **Keep the history.** Do not merge into `main`, force-push, or rewrite commits you reported.
 - **Do not push** unless a human tells you to. Commit locally and report the branch.
 

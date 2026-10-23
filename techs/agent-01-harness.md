@@ -21,7 +21,7 @@ Tell what you want to change and why. Then wait for the answer.
 
 ## Use git as agent-02 tells
 
-Worktrees, commits, staging, the commit trailer and pushes have their own rules.
+Worktrees, commits, staging, the commit trailer, the user prompts and pushes have their own rules.
 See [agent-02 · Git workflow](agent-02-git.md).
 
 ## Report what you did not run
