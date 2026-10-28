@@ -9,6 +9,7 @@ They are for developers and agents.
 |---|---|
 | [`sym.py`](#sym) | Where is a function or a class, and what is its source? |
 | [`envcheck.py`](#envcheck) | Is the sisl that runs the sisl of this source tree? |
+| [`t.py`](#t) | Do the tests pass? |
 
 ## Why the scripts exist
 
@@ -69,6 +70,35 @@ Each line starts with `ok`, `note`, `skip` or `FAIL`. One `FAIL` gives exit code
 - For each `PATH`, the script names its module, the file that the module loads from, and whether `import sisl` loads it.
   It does the same for each companion: a `.py` or `.pyx` file with the same name without a leading `_`.
   See [dev-01 · `.py` and `.pyx` companions](dev-01-build.md#py-and-pyx-companions).
+
+## t
+
+```bash
+python tools/dev/t.py src/sisl/_core/tests/test_geometry.py -k rotate
+python tools/dev/t.py --durations=0 src/sisl/physics/tests/test_hamiltonian.py
+```
+
+The script runs `pytest -q -p no:cacheprovider --tb=short` with the arguments that you give.
+It sets `SISL_NUM_PROCS`, `OMP_NUM_THREADS`, `OPENBLAS_NUM_THREADS` and `MKL_NUM_THREADS` to 1.
+It replaces values from your shell, because the CI uses 1 thread.
+See [dev-02 · Measure test timings](dev-02-testing.md#measure-test-timings).
+The exit code is the exit code of `pytest`.
+
+The report keeps:
+
+- The result line, for example `23 passed, 3 xfailed, 29 warnings in 0.72s`.
+- For each failure and error: the frames in the tree, all `E` lines up to 20, and 5 lines of each captured output.
+  Frames outside the tree are removed, for example frames in `numpy`.
+- A maximum of 10 failures. The summary names the others.
+- The short test summary. The `XFAIL` lines are grouped by reason, with a count.
+  Thus `XFAIL [3] ... requires env(SISL_FILES_TESTS) ...` tells that these tests did not run.
+
+The report removes the warnings summary. It removes the durations, unless you give `--durations`.
+When `pytest` stops early (exit codes 2, 3 and 4), the script prints all of the output.
+Examples are an error at collection and a usage error.
+For the full output, run `pytest` directly.
+
+The `-p no:cacheprovider` option stops `pytest` from writing `.pytest_cache` into the tree.
 
 ## Rules for the scripts
 

@@ -12,7 +12,7 @@ Do not run the full build and test suite to find out if a small change works.
    Use a small system (for example `sisl.geom.graphene()`).
    Compare the result with a known value.
 2. **Targeted tests.** Run the tests of the changed module.
-   `pytest src/sisl/<module>/tests/test_<x>.py -k <name>`
+   `python tools/dev/t.py src/sisl/<module>/tests/test_<x>.py -k <name>`
 3. **Rebuild.** Do this only if you changed a `.pyx`, `.pxd` or Fortran file.
    Then do steps 1 and 2 again. See [dev-01 · Build](dev-01-build.md).
 4. **Wider tests.** Run the tests of the package and its users.

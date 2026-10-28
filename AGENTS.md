@@ -80,7 +80,8 @@ python -m pip install -e . --no-build-isolation -Cbuild-dir=build-editable
 # Tests (set SISL_FILES_TESTS for IO tests, SISL_NUM_PROCS=1 when debugging)
 pytest src/sisl/_core/tests/test_geometry.py -k rotate
 pytest -m "not slow"
-# Code tools: environment check, symbol outline/source
+# Code tools: short test report (1 thread), environment check, symbol outline/source
+python tools/dev/t.py src/sisl/_core/tests/test_geometry.py -k rotate
 python tools/dev/envcheck.py [path...]
 python tools/dev/sym.py <file> [Class.method] [--sig]
 ```
