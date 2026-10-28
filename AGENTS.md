@@ -80,9 +80,12 @@ python -m pip install -e . --no-build-isolation -Cbuild-dir=build-editable
 # Tests (set SISL_FILES_TESTS for IO tests, SISL_NUM_PROCS=1 when debugging)
 pytest src/sisl/_core/tests/test_geometry.py -k rotate
 pytest -m "not slow"
+# Code tools: symbol outline/source
+python tools/dev/sym.py <file> [Class.method] [--sig]
 ```
 
 Details: [dev-01 · Build](techs/dev-01-build.md), [dev-02 · Testing](techs/dev-02-testing.md),
+[dev-11 · Code tools](techs/dev-11-code-tools.md),
 [dev-04 · Conventions](techs/dev-04-conventions.md) (license header, typing, dependencies,
 pre-commit, changelog fragments in `changes/`).
 
@@ -135,6 +138,8 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
 
 - **Read the owning chapter** of each file before you change it:
   `python tools/techs_check.py --owner <path>...`.
+- **Read only the code you need.** Outline first, then one symbol:
+  `python tools/dev/sym.py <file> [Class.method] [--sig]`. No `cat` or guessed `sed -n` ranges.
 - **Find the module that runs.** `_x.py` and `_x.pyx` companions are distinct modules:
   check which one is imported.
 - **Keep the code safe** ([dev-10](techs/dev-10-security.md), [agent-07](techs/agent-07-security.md)).

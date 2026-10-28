@@ -71,6 +71,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 | [dev-08 · Debugging](dev-08-debugging.md) | Reproduce, make it repeatable, rule out the environment, find the cause, do not hide it. |
 | [dev-09 · Review](dev-09-review.md) | Reference `main`, read before you run, what to check, unrelated code, trojan horses, report. |
 | [dev-10 · Security](dev-10-security.md) | No URL lookups, no code from data, dependency sources, automatic code, secrets, trojan horse signs. |
+| [dev-11 · Code tools](dev-11-code-tools.md) | `tools/dev/`: symbol outlines and source. |
 
 ### sisl: the code in `src/sisl/`
 
