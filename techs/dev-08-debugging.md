@@ -30,7 +30,7 @@ Before you suspect the logic, make sure that the code you read is the code that 
   See [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds).
 - An IO problem can need `SISL_FILES_TESTS`. See [dev-02 · External test files](dev-02-testing.md#external-test-files).
 
-`python tools/dev/envcheck.py <path>...` checks these four points.
+`python tools/dev/envcheck.py <path>...` checks these points. It does not check stale Fortran builds.
 See [dev-11 · envcheck](dev-11-code-tools.md#envcheck).
 
 ## Find the cause

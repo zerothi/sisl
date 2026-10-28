@@ -62,8 +62,8 @@ Each line starts with `ok`, `note`, `skip` or `FAIL`. One `FAIL` gives exit code
 | Check | `FAIL` when |
 |---|---|
 | `sisl` and `sisl_toolbox` import path | No folder of the package is below `src/` of the tree. See [dev-01 · Editable installs and worktrees](dev-01-build.md#editable-installs-and-worktrees). |
-| `PYTHONPATH` | An entry other than `src/` has a `sisl` or `sisl_toolbox` folder. See [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds). |
-| Stale builds | A compiled module is older than its `.pyx`, or older than a `.pxd` that it `cimport`s, also through other `.pxd` files. See [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds). |
+| `PYTHONPATH` | An entry other than `src/` has a `sisl` folder, or a `sisl_toolbox` folder with a subpackage of `src/sisl_toolbox`. See [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds). |
+| Stale builds | A compiled module is older than its `.pyx`, or older than a `.pxd` that it `cimport`s, also through other `.pxd` files. The script does not check the Fortran sources. See [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds). |
 | `SISL_FILES_TESTS` | The variable is set, but it is not a folder. If it is not set, a `note` tells that the IO tests xfail. |
 
 - When `sisl` is from a different tree, the script skips the stale build check.
@@ -72,9 +72,14 @@ Each line starts with `ok`, `note`, `skip` or `FAIL`. One `FAIL` gives exit code
   Thus the stale build check compares times, not folders.
 - `sisl_toolbox` is a namespace package. Other packages can add folders to it.
   Thus one folder below `src/` is sufficient.
-- For each `PATH`, the script names its module, the file that the module loads from, and whether `import sisl` loads it.
+  In `PYTHONPATH`, only a `sisl_toolbox` folder with a subpackage of `src/sisl_toolbox` fails.
+- For each `PATH`, the script names its module and the file that the module loads from.
+  It also tells if `import sisl` loads the module. It looks at the modules directly after `import sisl`.
   It does the same for each companion: a `.py` or `.pyx` file with the same name without a leading `_`.
   See [dev-01 · `.py` and `.pyx` companions](dev-01-build.md#py-and-pyx-companions).
+- A `PATH` that is not below `src/` gives a `FAIL` line. A directory outside a git tree also gives a `FAIL` line.
+- The Fortran sources compile to f2py modules. No general rule maps a source file to its module.
+  Thus the script does not check stale Fortran builds.
 
 ## t
 
@@ -111,3 +116,7 @@ The `-p no:cacheprovider` option stops `pytest` from writing `.pytest_cache` int
 - Print only the answer. Limit the output of each part, and tell what the script removed.
 - Do not change files. The scripts only read and report.
 - Do not read from the network. See [dev-10 · Security](dev-10-security.md).
+- Use `subprocess` only with a fixed list of arguments and no shell.
+  `envcheck.py` runs `git` to find the tree and its `.pyx` files. `t.py` runs `pytest`.
+- `envcheck.py` imports `sisl`, and finds the modules of the tree with `importlib.util.find_spec`.
+  This runs the `__init__.py` files of the packages, as `import sisl` does.
