@@ -19,7 +19,6 @@ In addition:
 - Before you evaluate or test, run `<env>/bin/python tools/dev/envcheck.py` in your worktree.
   A `FAIL` can mean that your tests do not test your code. Correct it, or report it.
   See [dev-11 · envcheck](dev-11-code-tools.md#envcheck).
-
 - The shared environment is the environment of the maintainer and the other agents.
   Never install your worktree into it.
 - A build takes minutes and much CPU. If you cannot build, tell the maintainer.

@@ -35,6 +35,19 @@ CIMPORT = re.compile(
 )
 
 
+def git_root() -> Path | None:
+    """The git top-level of the current directory."""
+    git = ["git", "rev-parse", "--show-toplevel"]
+    try:
+        return Path(
+            subprocess.run(
+                git, capture_output=True, text=True, check=True
+            ).stdout.strip()
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
 def module_name(src: Path, path: Path) -> str:
     parts = list(path.resolve().relative_to(src).with_suffix("").parts)
     if parts[-1] == "__init__":
@@ -184,13 +197,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("paths", nargs="*", type=Path, help="source files below src/")
     args = p.parse_args(argv)
 
-    try:
-        git = ["git", "rev-parse", "--show-toplevel"]
-        root = subprocess.run(git, capture_output=True, text=True, check=True)
-    except (OSError, subprocess.CalledProcessError):
+    root = git_root()
+    if root is None:
         print("FAIL  the current directory is not in a git tree")
         return 1
-    root = Path(root.stdout.strip())
     src = root / "src"
     imports, sisl_ok, loaded = check_import(src)
     out = [f"note  python {sys.executable}", *imports]

@@ -97,13 +97,21 @@ The exit code is the exit code of `pytest`.
 The report keeps:
 
 - The result line, for example `23 passed, 3 xfailed, 29 warnings in 0.72s`.
+  The script reads it from the standard output of `pytest`.
+- The output before the first section, without the progress lines.
+  For example the output of `-s`, the tests of `--co` and the headers of `-v`.
 - For each failure and error: the frames in the tree, all `E` lines up to 20, and 5 lines of each captured output.
+  A frame is in the tree when its path, from the current directory, is below the git top-level.
   Frames outside the tree are removed, for example frames in `numpy`.
+  A `(removed: ...)` line counts the removed frames and lines.
 - A maximum of 10 failures. The summary names the others.
 - The short test summary. The `XFAIL` lines are grouped by reason, with a count.
   Thus `XFAIL [3] ... requires env(SISL_FILES_TESTS) ...` tells that these tests did not run.
+  A line of more than 300 characters ends with `...`.
+- The last 20 lines of the standard error, after the result line.
 
 The report removes the warnings summary. It removes the durations, unless you give `--durations`.
+A last `(removed: ...)` line names the removed sections.
 When `pytest` stops early (exit codes 2, 3 and 4), the script prints all of the output.
 Examples are an error at collection and a usage error.
 For the full output, run `pytest` directly.
