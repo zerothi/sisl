@@ -150,6 +150,8 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
 [agent-05 · Debugging](techs/agent-05-debugging.md), extends
 [dev-08 · Debugging](techs/dev-08-debugging.md) — find the cause:
 
+- **When a test fails**, in any run: find why, do not assume. If the physics in the test
+  is incorrect, ask the maintainer. Do not change code to pass the test without a correct physics test.
 - **Reproduce first** with the smallest system, and compare with a known value.
   Keep the script outside the repository.
 - **Make it repeatable:** thread variables to 1, fixed seeds, run the test alone.
