@@ -119,6 +119,8 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
 - **User prompts.** Copy the user prompts that caused the commit into the message body,
   as a quote below a `Prompt:` line. Replace secrets and local data with `<...>`.
 - **Keep the history.** Do not merge into `main`, force-push, or rewrite commits you reported.
+- **Merge** only when a human tells you to, with `git merge --no-ff`. The merge message
+  needs no `Assisted-by` trailer and no user prompt.
 - **Do not push** unless a human tells you to. Commit locally and report the branch.
 
 [agent-03 · Parallel agents and builds](techs/agent-03-parallel.md), with
