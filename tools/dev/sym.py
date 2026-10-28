@@ -24,10 +24,9 @@ from pathlib import Path
 
 MAX_LINES = 300
 HEAD = re.compile(
-    r"^(\s*)(?:async\s+)?(?:(?:def|class)\s+(\w+)|(?:cdef|cpdef)\s+(?:class\s+)?[^=(]*?(\w+)\s*[(:])"
+    r"^(\s*)(?:async\s+)?(?:(?:def|class)\s+(\w+)"
+    r"|(?:cdef|cpdef)\s+(?:class\s+)?(?:\([^)]*\)\s*)?[^=(]*?(\w+)\s*[(:])"
 )
-TRIPLE = re.compile(r"\"\"\"|'''")
-STRING = re.compile(r"\"[^\"]*\"|'[^']*'")
 
 
 @dataclass
@@ -35,11 +34,36 @@ class Symbol:
     qual: str
     kind: str
     start: int  # first line, with decorators (0-based)
-    head: int  # line of the def/class keyword
     head_end: int  # last line of the signature
     end: int  # last line of the body
     depth: int
     decorators: str
+
+
+def scan(line: str, quote: str | None = None) -> tuple[str, str | None]:
+    """The code of `line` without strings and comments, and the open triple quote at its end."""
+    code, i = [], 0
+    while i < len(line):
+        if quote:
+            j = line.find(quote, i)
+            while j > 0 and (len(line[:j]) - len(line[:j].rstrip("\\"))) % 2:
+                j = line.find(quote, j + 1)
+            if j < 0:
+                break
+            i, quote = j + 3, None
+        elif line[i] == "#":
+            break
+        elif line.startswith(('"""', "'''"), i):
+            i, quote = i + 3, line[i : i + 3]
+        elif line[i] in "\"'":
+            j = i + 1
+            while j < len(line) and line[j] != line[i]:
+                j += 2 if line[j] == "\\" else 1
+            i = j + 1
+        else:
+            code.append(line[i])
+            i += 1
+    return "".join(code), quote
 
 
 def in_string(lines: list[str]) -> list[bool]:
@@ -47,13 +71,7 @@ def in_string(lines: list[str]) -> list[bool]:
     out, quote = [], None
     for line in lines:
         out.append(quote is not None)
-        if quote is None and line.lstrip().startswith("#"):
-            continue
-        for m in TRIPLE.finditer(line):
-            if quote is None:
-                quote = m.group()
-            elif m.group() == quote:
-                quote = None
+        quote = scan(line, quote)[1]
     return out
 
 
@@ -62,7 +80,7 @@ def indent(line: str) -> int:
 
 
 def code(line: str) -> str:
-    return STRING.sub("", line).split("#")[0].strip()
+    return scan(line)[0].strip()
 
 
 def head_end(lines: list[str], i: int) -> int:
@@ -80,7 +98,7 @@ def decorator_start(lines: list[str], instr: list[bool], i: int, ind: int) -> in
     j = i - 1
     while j >= 0:
         line = lines[j]
-        if instr[j]:
+        if instr[j] or line.lstrip().startswith("#"):
             pass
         elif indent(line) == ind and line.lstrip().startswith("@"):
             start = j
@@ -112,15 +130,14 @@ def parse(lines: list[str]) -> list[Symbol]:
                 elif c and not c.startswith("#"):
                     break
         start = decorator_start(lines, instr, i, ind)
-        decorators = " ".join(lines[start:i]).split()
-        decorators = re.sub(
-            r"\(\s|,?\s\)", lambda m: m.group().strip(" ,"), " ".join(decorators)
-        )
-        decorators = re.sub(r"@cython\.\w+\([^)]*\)\s*", "", decorators).strip()
+        decorators = [d for d in lines[start:i] if not d.lstrip().startswith("#")]
+        decorators = " ".join(" ".join(decorators).split())
+        decorators = re.sub(r"\(\s", "(", re.sub(r",?\s\)", ")", decorators))
+        decorators = re.sub(r"@cython\.\w+(\([^)]*\))?\s*", "", decorators).strip()
         while stack and stack[-1].end < i:
             stack.pop()
         qual = f"{stack[-1].qual}.{name}" if stack else name
-        sym = Symbol(qual, kind, start, i, h, end, len(stack), decorators)
+        sym = Symbol(qual, kind, start, h, end, len(stack), decorators)
         symbols.append(sym)
         stack.append(sym)
     return symbols
@@ -171,6 +188,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     g.add_argument("--full", action="store_true", help=f"no limit of {MAX_LINES} lines")
     args = p.parse_args(argv)
+    if not args.names and (args.sig or args.outline or args.full):
+        p.error("--sig, --outline and --full need a NAME")
 
     lines = args.file.read_text().splitlines()
     symbols = parse(lines)
