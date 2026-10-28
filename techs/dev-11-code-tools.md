@@ -8,6 +8,7 @@ They are for developers and agents.
 | Script | Question |
 |---|---|
 | [`sym.py`](#sym) | Where is a function or a class, and what is its source? |
+| [`envcheck.py`](#envcheck) | Is the sisl that runs the sisl of this source tree? |
 
 ## Why the scripts exist
 
@@ -40,6 +41,34 @@ Python's `ast` cannot read Cython. One parser for all three file types keeps the
 The parser uses the indentation, the brackets of the signature and the triple-quoted strings.
 It finds `def`, `class`, `cdef`, `cpdef` and `cdef class`. It does not find `cdef` variables.
 For all `.py` files below `src/`, it gives the same names and line ranges as `ast`.
+
+## envcheck
+
+```bash
+python tools/dev/envcheck.py           # import path, PYTHONPATH, stale builds, test variables
+python tools/dev/envcheck.py PATH...   # also: the module that runs for each source file
+```
+
+The source tree is the git top-level of the current directory.
+Run the script with the Python that runs your tests, for example `<env>/bin/python`.
+Each line starts with `ok`, `note`, `skip` or `FAIL`. One `FAIL` gives exit code 1.
+
+| Check | `FAIL` when |
+|---|---|
+| `sisl` and `sisl_toolbox` import path | No folder of the package is below `src/` of the tree. See [dev-01 · Editable installs and worktrees](dev-01-build.md#editable-installs-and-worktrees). |
+| `PYTHONPATH` | An entry other than `src/` has a `sisl` or `sisl_toolbox` folder. See [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds). |
+| Stale builds | A compiled module is older than its `.pyx`, or older than a `.pxd` that it `cimport`s, also through other `.pxd` files. See [dev-01 · Stale Cython builds](dev-01-build.md#stale-cython-builds). |
+| `SISL_FILES_TESTS` | The variable is set, but it is not a folder. If it is not set, a `note` tells that the IO tests xfail. |
+
+- When `sisl` is from a different tree, the script skips the stale build check.
+  The compiled modules of a different tree tell nothing about this tree.
+- An editable install loads the `.py` files from `src/` and the compiled modules from `site-packages`.
+  Thus the stale build check compares times, not folders.
+- `sisl_toolbox` is a namespace package. Other packages can add folders to it.
+  Thus one folder below `src/` is sufficient.
+- For each `PATH`, the script names its module, the file that the module loads from, and whether `import sisl` loads it.
+  It does the same for each companion: a `.py` or `.pyx` file with the same name without a leading `_`.
+  See [dev-01 · `.py` and `.pyx` companions](dev-01-build.md#py-and-pyx-companions).
 
 ## Rules for the scripts
 

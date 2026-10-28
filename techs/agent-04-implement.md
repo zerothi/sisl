@@ -32,7 +32,8 @@ Reason: each line that you read costs context. Large reads push out the rules an
 
 ## Find the module that runs
 
-Before you change a `.py` or a `.pyx` file, find the module that the code imports.
+Before you change a `.py` or a `.pyx` file, find the module that the code imports:
+`python tools/dev/envcheck.py <path>`.
 See [dev-01 · `.py` and `.pyx` companions](dev-01-build.md#py-and-pyx-companions).
 
 ## Write lean code

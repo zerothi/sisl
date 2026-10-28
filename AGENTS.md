@@ -80,7 +80,8 @@ python -m pip install -e . --no-build-isolation -Cbuild-dir=build-editable
 # Tests (set SISL_FILES_TESTS for IO tests, SISL_NUM_PROCS=1 when debugging)
 pytest src/sisl/_core/tests/test_geometry.py -k rotate
 pytest -m "not slow"
-# Code tools: symbol outline/source
+# Code tools: environment check, symbol outline/source
+python tools/dev/envcheck.py [path...]
 python tools/dev/sym.py <file> [Class.method] [--sig]
 ```
 
@@ -124,7 +125,7 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
 
 - **One agent, one worktree.** Do not change files in the main checkout.
 - **Find the sisl that runs.** An editable install binds `import sisl` to one tree:
-  check `sisl.__file__` before you test. A pass of other code is not a pass.
+  run `<env>/bin/python tools/dev/envcheck.py` before you test. A pass of other code is not a pass.
 - **Build in your own environment** (a virtual environment outside the repository).
   Never install a worktree into the shared environment.
 - **No `git stash`** (shared by all worktrees). Scratch files go outside the repository.
@@ -141,7 +142,7 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
 - **Read only the code you need.** Outline first, then one symbol:
   `python tools/dev/sym.py <file> [Class.method] [--sig]`. No `cat` or guessed `sed -n` ranges.
 - **Find the module that runs.** `_x.py` and `_x.pyx` companions are distinct modules:
-  check which one is imported.
+  check which one is imported: `python tools/dev/envcheck.py <path>`.
 - **Keep the code safe** ([dev-10](techs/dev-10-security.md), [agent-07](techs/agent-07-security.md)).
 - **Lean code.** Write only the code the task needs: no unneeded options, abstractions,
   checks or copies of sisl functions. Read your diff and remove what is not needed.
