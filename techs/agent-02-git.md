@@ -69,10 +69,23 @@ A reviewer can compare the request with the change.
 
 Follow [dev-07 · Keep the history](dev-07-git.md#keep-the-history). In addition:
 
-- Do not merge into `main`.
+- Do not merge into `main`, unless a human tells you to merge. Then follow [Merge](#merge).
 - You can amend, reorder or squash your own commits only before you report them.
   After you report a commit, do not rewrite it. Add a new commit.
 - Do not use `git reset --hard` on a branch that you did not make.
+
+## Merge
+
+Merge only when a human tells you to merge.
+
+- Use `git merge --no-ff <branch>`. The merge commit must stay in the history.
+- The merge message does not need the `Assisted-by` trailer. `git merge` has no `--trailer` option.
+- The merge message does not need the user prompts.
+
+A merge commit keeps the commits of a branch together. The maintainer can find, review or revert
+the full branch with one commit.
+The prompt for a merge is usually short and gives no context. The commits of the branch keep their
+trailers and prompts.
 
 ## Do not push
 
