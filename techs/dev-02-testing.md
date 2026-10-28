@@ -16,7 +16,12 @@ pytest src/sisl/physics/tests/test_hamiltonian.py
 pytest src/sisl/_core/tests/test_geometry.py -k rotate
 # Do not run slow tests
 pytest -m "not slow"
+# Short report, 1 thread
+python tools/dev/t.py src/sisl/_core/tests/test_geometry.py -k rotate
 ```
+
+`tools/dev/t.py` gives the same arguments to `pytest`. It removes the noise from the output.
+See [dev-11 · t](dev-11-code-tools.md#t).
 
 ## Markers
 
@@ -105,6 +110,8 @@ Set each environment variable that controls the number of threads to 1:
 
 ```bash
 SISL_NUM_PROCS=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 pytest --durations=0 ...
+# the same
+python tools/dev/t.py --durations=0 ...
 ```
 
 - The CI systems have few threads. A test that is fast with many threads can be slow in the CI.

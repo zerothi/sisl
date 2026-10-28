@@ -38,6 +38,8 @@ Some modules exist as a `.py` file and as a `.pyx` file with a similar name
 (for example `_sparse.py` and `_sparse.pyx`).
 They are different modules.
 Before you change one, find which one the code imports.
+`python tools/dev/envcheck.py <path>` names the module of a file and of its companions, and the file that each module loads.
+See [dev-11 · envcheck](dev-11-code-tools.md#envcheck).
 
 ## Stale Cython builds
 
@@ -50,6 +52,8 @@ The build can complete without errors and still use old code.
   This affects modules outside `sisl` that `cimport` from `sisl._core`, for example `sisl_toolbox`.
 - Symptom: a fused function lacks a specialization. The error at run time is "No matching signature found".
 - Check: look at `func.__signatures__` of the fused `def` function.
+- `python tools/dev/envcheck.py` names the `PYTHONPATH` entries that have a sisl.
+  It also names the compiled modules that are older than their `.pyx` or the `.pxd` files that they `cimport`.
 
 The CMake minimum version is in `CMakeLists.txt`. Use a CMake that is new enough.
 
@@ -60,6 +64,8 @@ A git worktree does not change this binding. Check it before you evaluate or tes
 
 ```bash
 python -c "import sisl; print(sisl.__file__)"
+# or: this check, and the checks of PYTHONPATH and stale builds
+python tools/dev/envcheck.py
 ```
 
 - If the path is not below your source tree, your evaluations and tests run different code.

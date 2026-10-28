@@ -15,9 +15,25 @@ python tools/techs_check.py --owner <path>...
 See [README · Ownership](README.md#ownership).
 The chapter tells the decisions that your change must keep.
 
+## Read only the code that you need
+
+Read the outline of a file before you read its source. Then read only the symbols that you need:
+
+```bash
+python tools/dev/sym.py <file>                 # outline with line ranges
+python tools/dev/sym.py <file> Class.method    # source of one symbol
+python tools/dev/sym.py <file> name --sig      # signature and doc-string
+```
+
+Do not read a file with `cat`, or with `sed -n` and a guessed line range, to find one function.
+See [dev-11 · sym](dev-11-code-tools.md#sym).
+
+Reason: each line that you read costs context. Large reads push out the rules and the task.
+
 ## Find the module that runs
 
-Before you change a `.py` or a `.pyx` file, find the module that the code imports.
+Before you change a `.py` or a `.pyx` file, find the module that the code imports:
+`python tools/dev/envcheck.py <path>`.
 See [dev-01 · `.py` and `.pyx` companions](dev-01-build.md#py-and-pyx-companions).
 
 ## Write lean code
