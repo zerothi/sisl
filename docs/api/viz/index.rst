@@ -1,8 +1,8 @@
 .. _viz:
 
-=============
-Visualization
-=============
+==========================
+Visualization (`sisl.viz`)
+==========================
 
 .. module:: sisl.viz
 
