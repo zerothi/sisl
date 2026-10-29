@@ -120,6 +120,14 @@ The script `tools/logo/make_sisl_icon.py` makes the SVG files. Do not change the
   At 32 px, the hexagons are too small to see.
 - Each colour has a contrast of 3:1 or more on its background (white, or `#1e1e1e`).
 
+`docs/conf.py` uses the logo as follows:
+
+- `html_logo` is `sisl-icon-dark-512.svg`. `logo_only` hides the project name, because the logo shows it.
+- `style_nav_header_background` is `#343131`, the colour of the sidebar.
+  On the default blue header (`#2980b9`), the potential curve has too little contrast.
+- `html_favicon` is `sisl-icon-light-32.png`.
+  Its curves show on light and dark browser tabs. The "s" of the dark variant does not show on a light tab.
+
 Make the files again after a change to the script:
 
 ```bash

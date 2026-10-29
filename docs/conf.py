@@ -437,6 +437,14 @@ if html_theme == "furo":
         "source_branch": "main",
         "source_directory": "docs/",
     }
+else:
+    html_theme_options = {
+        "logo_only": True,
+        "style_nav_header_background": "#343131",
+    }
+
+html_logo = "_static/logo/sisl-icon-dark-512.svg"
+html_favicon = "_static/logo/sisl-icon-light-32.png"
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
