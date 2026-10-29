@@ -59,6 +59,20 @@ Assisted-by: claude-code:claude-opus-5-5
 ```
 
 If more prompts caused the commit, put each prompt in the message, in the order of the session.
+Use one `Prompt:` line for all prompts. Between two prompts, put one empty line, without `>`.
+In one prompt, an empty line is `>`. Thus the reader sees where each prompt starts.
+
+```text
+Prompt:
+> I want to ....
+>
+> Do it.
+
+> Change step 2 by ...
+
+> commit
+```
+
 Replace secrets, user names, host names and absolute paths with `<...>`,
 as [agent-07 · Security](agent-07-security.md) tells.
 

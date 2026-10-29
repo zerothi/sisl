@@ -117,7 +117,8 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
   `git commit ... --trailer "Assisted-by: <agent>:<model>[:<effort>]"`,
   e.g. `Assisted-by: claude-code:claude-opus-5-5`.
 - **User prompts.** Copy the user prompts that caused the commit into the message body,
-  as a quote below a `Prompt:` line. Replace secrets and local data with `<...>`.
+  as a quote below a `Prompt:` line. Separate prompts with one empty line, without `>`.
+  Replace secrets and local data with `<...>`.
 - **Keep the history.** Do not merge into `main`, force-push, or rewrite commits you reported.
 - **Merge** only when a human tells you to, with `git merge --no-ff`. The merge message
   needs no `Assisted-by` trailer and no user prompt.
