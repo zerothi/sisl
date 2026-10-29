@@ -1,6 +1,6 @@
 # dev-06 · Public documentation
 
-Owns: `docs/*`
+Owns: `docs/*`, `tools/logo/*`
 
 `docs/` is the public guide of sisl. Sphinx makes it from reStructuredText (RST), notebooks and doc-strings.
 The readers are end-users (master and PhD students) and agents.
@@ -107,6 +107,56 @@ A server in the Sphinx process is not used: the kernels are other processes.
 The `notebook_connected` renderer does not use chrome.
 It links plotly.js from the CDN. Each figure keeps only its data (approximately 10-40 KiB).
 Do not use the `notebook` renderer: it puts a copy of plotly.js (approximately 4.7 MB) in each page.
+
+## Logo
+
+The logo files are in `docs/_static/logo/`.
+The script `tools/logo/make_sisl_icon.py` makes the SVG files. Do not change the SVG files by hand.
+
+- `sisl-icon-light-*` is for light backgrounds. `sisl-icon-dark-*` is for dark backgrounds.
+- The 512 px icon shows "sisl" as atoms and bonds of hexagons.
+  The letters are between the bonding orbital and the double-well potential of a dimer.
+- The 32 px icon shows only the letter "s" of the Orbitron font.
+  At 32 px, the hexagons are too small to see.
+- Each colour has a contrast of 3:1 or more on its background (white, or `#1e1e1e`).
+
+`docs/conf.py` uses the logo as follows:
+
+- `html_logo` is `sisl-icon-dark-512.svg`. `logo_only` hides the project name, because the logo shows it.
+- `style_nav_header_background` is `#343131`, the colour of the sidebar.
+  On the default blue header (`#2980b9`), the potential curve has too little contrast.
+- `html_favicon` is `sisl-icon-light-32.png`.
+  Its curves show on light and dark browser tabs. The "s" of the dark variant does not show on a light tab.
+
+Make the files again after a change to the script:
+
+```bash
+python tools/logo/make_sisl_icon.py <path>/Orbitron.ttf docs/_static/logo
+cd docs/_static/logo
+for f in sisl-icon-*-32.svg; do rsvg-convert -w 32 -h 32 "$f" -o "${f%.svg}.png"; done
+for f in sisl-icon-*-512.svg; do rsvg-convert -w 512 -h 512 "$f" -o "${f%.svg}.png"; done
+```
+
+The script needs `fontTools`. It is not a dependency of sisl.
+
+### Font and licenses
+
+- The font is the variable font `Orbitron[wght].ttf` (weight 900) from
+  [google/fonts](https://github.com/google/fonts/tree/main/ofl/orbitron).
+  The file that made the logo has the SHA-256 `f42db2dd16e642258e35782916eceb1dcdbea06fb958d77ad71dc5963587e8fd`.
+- Orbitron is by Matt McInerney. Its license is the SIL Open Font License, Version 1.1 (OFL).
+- The repository does not contain the font file. A font file is binary, and a copy of it needs the OFL text.
+- The 32 px SVG files contain the outline of one glyph. The OFL permits this use in a logo.
+  A comment in these files names the font and its license.
+- The logo files have the license of sisl (MPL-2.0). A comment in each SVG file tells this.
+
+### Fixed values in the script
+
+- The centre of the first "s" (`136.399, 247.5`) and the distance to the second "s" (11 lattice steps)
+  are fixed. They come from a fit of a hexagon lattice to the Orbitron letters.
+  The design was then changed by eye. Thus the script does not do the fit again.
+- `letters` scales the word to the largest size that is 8 units or more from the two curves.
+  Then it centres the word between the curves.
 
 ## Build and check
 
