@@ -81,7 +81,8 @@ A reviewer can compare the request with the change.
 
 ## Sources in the message
 
-After each prompt, list the sources that you read for it, one line each.
+After each prompt, list the sources that you read for it, one line each,
+from the most important to the least important.
 The number in brackets is the importance for the decision, from 1 (supplementary) to 10 (the basis).
 
 ```text
@@ -89,11 +90,11 @@ Prompt:
 > Please read doi:10.1234/abc and implement the method
 
 DOI[10]: 10.1234/abc
-URL[3]: https://www.example.org/page
 FILE[4]: <path>
  author: <author>
  date: <document date>
  description: <small paragraph of file content/topic>
+URL[3]: https://www.example.org/page
 ```
 
 - `DOI` if the document has a DOI. `https://doi.org/<DOI>` must open the document.
