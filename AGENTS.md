@@ -119,6 +119,8 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
 - **User prompts.** Copy the user prompts that caused the commit into the message body,
   as a quote below a `Prompt:` line. Separate prompts with one empty line, without `>`.
   Replace secrets and local data with `<...>`.
+- **Sources.** After each prompt, list the sources read for it, with importance 1-10:
+  `DOI[10]: <doi>`, `URL[7]: <url>` or `FILE[4]: <path>` (+ author, date, description).
 - **Keep the history.** Do not merge into `main`, force-push, or rewrite commits you reported.
 - **Merge** only when a human tells you to, with `git merge --no-ff`. The merge message
   needs no `Assisted-by` trailer and no user prompt.

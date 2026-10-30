@@ -79,6 +79,29 @@ as [agent-07 · Security](agent-07-security.md) tells.
 The prompts make the work of an agent transparent.
 A reviewer can compare the request with the change.
 
+## Sources in the message
+
+After each prompt, list the sources that you read for it, one line each.
+The number in brackets is the importance for the decision, from 1 (supplementary) to 10 (the basis).
+
+```text
+Prompt:
+> Please read doi:10.1234/abc and implement the method
+
+DOI[10]: 10.1234/abc
+URL[3]: https://www.example.org/page
+FILE[4]: <path>
+ author: <author>
+ date: <document date>
+ description: <small paragraph of file content/topic>
+```
+
+- `DOI` if the document has a DOI. `https://doi.org/<DOI>` must open the document.
+- `URL` for an online document without a DOI.
+- `FILE` for user material without a DOI. Use a relative path.
+
+A reviewer can then find the basis of a decision, and read the most important source first.
+
 ## Keep the history
 
 Follow [dev-07 · Keep the history](dev-07-git.md#keep-the-history). In addition:
