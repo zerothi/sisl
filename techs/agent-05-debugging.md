@@ -1,16 +1,8 @@
 # agent-05 · Debugging
 
-This chapter is for agents only. Human developers can skip it.
-It gives the rules for an agent that finds the cause of a bug, a failing test or a wrong result.
-Read [agent · Welcome](agent-welcome.md) and [agent-01 · Harness](agent-01-harness.md) first.
-When you fix the bug, [agent-04 · Implement](agent-04-implement.md) also applies.
-
-Follow [dev-08 · Debugging](dev-08-debugging.md). This chapter adds the rules for agents.
-
-## Scratch files
-
-Put the reproduction script and other scratch files outside the repository.
-See [agent-03 · Shared state](agent-03-parallel.md#shared-state).
+For agents that find the cause of a bug, a failing test or a wrong result.
+Extends [dev-08 · Debugging](dev-08-debugging.md). When you fix the bug, [agent-04 · Implement](agent-04-implement.md) also applies.
+Put scratch files outside the repository ([agent-03 · Shared state](agent-03-parallel.md#shared-state)).
 
 ## When a test fails
 
@@ -25,9 +17,9 @@ A change that only makes the test pass can hide an incorrect result.
 
 ## Ask first
 
-If the cause is a decision in `techs/`, or a fix needs a change of the public API, ask the maintainer.
-See [agent-01 · Ask first](agent-01-harness.md#ask-first).
-Do not add `xfail` or `skip` to get a green run. Ask first.
+Ask the maintainer ([agent-01 · Ask first](agent-01-harness.md#ask-first)) if the cause is a decision in `techs/`,
+or if a fix needs a change of the public API.
+Do not add `xfail` or `skip` to get a green run.
 
 ## Report the cause
 

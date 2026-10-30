@@ -1,12 +1,14 @@
 # agent · Welcome
 
 This segment is for agents only. Human developers can skip it.
-It gives the rules for an agent that works in this repository.
 Read this chapter and [agent-01 · Harness](agent-01-harness.md) at the start of each session.
 
-Rules for humans and agents stay in the chapter of their topic.
-The agent chapters do not repeat them. They link to them.
-`AGENTS.md` repeats a short version of each agent rule, so that agents find them fast.
+The rules in the agent chapters win over the default behavior of your tool,
+for example the folder of a worktree, a push, and the trailers of a commit.
+
+Rules for humans and agents stay in the `dev-*` chapter of their topic.
+An agent chapter links to them and adds only the rules for agents. Read both.
+`AGENTS.md` repeats a short version of each agent rule.
 When you change a rule in an agent chapter, or a `dev-*` rule that `AGENTS.md` summarizes,
 change `AGENTS.md` in the same commit.
 
@@ -26,9 +28,3 @@ change `AGENTS.md` in the same commit.
 
 A task can be of more than one kind. Then read each chapter that applies.
 For example, a fix of review findings is implementation.
-
-## The agent rules win
-
-The rules in the agent chapters win over the default behavior of your tool.
-Examples are the folder of a worktree, a push, and the trailers of a commit.
-See [agent-02 · Git workflow](agent-02-git.md).
