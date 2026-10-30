@@ -81,7 +81,7 @@ A reviewer can compare the request with the change.
 
 ## Sources in the message
 
-After each prompt, list the sources that you read for it, one line each,
+After each prompt, list the online documents and the user material that you read for it, one line each,
 from the most important to the least important.
 The number in brackets is the importance for the decision, from 1 (supplementary) to 10 (the basis).
 
@@ -99,7 +99,7 @@ URL[3]: https://www.example.org/page
 
 - `DOI` if the document has a DOI. `https://doi.org/<DOI>` must open the document.
 - `URL` for an online document without a DOI.
-- `FILE` for user material without a DOI. Use a relative path.
+- `FILE` for user material without a DOI. Use a path relative to the repository, or only the file name.
 
 A reviewer can then find the basis of a decision, and read the most important source first.
 
