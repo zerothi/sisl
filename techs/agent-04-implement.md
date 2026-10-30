@@ -1,7 +1,7 @@
 # agent-04 · Implement
 
 For agents that implement, fix, refactor or test code.
-Also follow [agent-03](agent-03-parallel.md) to test, and [agent-07 · Security](agent-07-security.md) for each change.
+Follow [agent-07 · Security](agent-07-security.md) for each change.
 
 ## Read the owning chapter
 
@@ -44,6 +44,9 @@ and each line costs time to read, test and keep.
 
 ## Tests and verification
 
+Before you evaluate or test, check that `import sisl` loads the code of your worktree
+([agent-03 · Test the code of your worktree](agent-03-parallel.md#test-the-code-of-your-worktree)).
+To measure test timings, follow [agent-03 · Time tests](agent-03-parallel.md#time-tests-with-a-maximum-of-2-agents).
 Follow [dev-02 · Keep tests fast](dev-02-testing.md#keep-tests-fast),
 [dev-02 · What a new test must do](dev-02-testing.md#what-a-new-test-must-do)
 and the order of checks in [dev-05 · Verifying a change](dev-05-verifying-a-change.md).

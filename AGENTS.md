@@ -10,6 +10,14 @@ portability, a stable API and few dependencies matter.
 - `src/sisl_toolbox/` holds a toolbox (namespace package) which other
   packages may extend.
 
+## Agents: read first
+
+The agent chapters are mandatory and win over the defaults of your tool.
+Each session, read [agent · Welcome](techs/agent-welcome.md) and
+[agent-01 · Harness](techs/agent-01-harness.md).
+Before a task, read the agent chapter that the [agent rules](#agent-rules) name for that task,
+and the `dev-*` chapter that it extends. The summary does not replace the chapters.
+
 [`techs/`](techs/README.md) is the **technical documentation**: the internal reference for
 code decisions, and the only internal prose maintained by hand. Start with
 [overview · Welcome](techs/overview-welcome.md) and [overview-01 · Concepts](techs/overview-01-concepts.md).
@@ -19,14 +27,6 @@ sources of a decision below it ([sources](techs/README.md#sources)).
 
 [`docs/`](docs/index.rst) is the PUBLIC guide (Sphinx RST). Write there only when a change
 affects end-user capabilities or usage. Keep it lean — [dev-06](techs/dev-06-public-docs.md).
-
-## Agents: read first
-
-The agent chapters are mandatory and win over the defaults of your tool.
-Each session, read [agent · Welcome](techs/agent-welcome.md) and
-[agent-01 · Harness](techs/agent-01-harness.md). Before a task, read each chapter that
-[below](#agent-rules) names for it, and the `dev-*` chapter it extends.
-The summary below does not replace the chapters.
 
 ## Rules that cost the most when broken
 
@@ -78,11 +78,13 @@ pre-commit, changelog fragments in `changes/`).
 
 - **Worktrees** only in `<repo-root>/wt/<branch-name>`: `git worktree add -b <branch-name> wt/<branch-name>`.
 - **Small commits**, each a working step that passes pre-commit and its targeted tests.
-  Keep moves and renames apart from changes of behavior.
+  Do not make one large commit at the end. Keep moves and renames apart from changes of behavior.
 - **Messages:** `<area>: <imperative summary>`, at most 72 characters; the body tells why.
-- **Stage explicitly.** Never `git add -A` / `git add .`. Do not touch untracked files you did not make.
-- **Trailer:** only one `Assisted-by: <agent>:<model>[:<effort>]` (`--trailer`), never `Co-authored-by`.
-- **Prompts:** quote the user prompts that caused the commit below one `Prompt:` line;
+- **Stage explicitly.** Never `git add -A` / `git add .`: untracked files are personal scratch.
+  Do not touch untracked files you did not make.
+- **Trailer:** only one, `--trailer "Assisted-by: <agent>:<model>[:<effort>]"`,
+  e.g. `Assisted-by: claude-code:claude-opus-5-5`. Never `Co-authored-by` or other trailers.
+- **Prompts:** quote each user prompt that caused the commit, without change, below one `Prompt:` line;
   one empty line without `>` between prompts; secrets and local data become `<...>`.
 - **Sources:** after each prompt, the online documents and user material read for it,
   by importance 10..1: `DOI[10]: <doi>`, `URL[7]: <url>`, `FILE[4]: <path>` (+ author, date, description).
@@ -94,12 +96,14 @@ pre-commit, changelog fragments in `changes/`).
 with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 
 - **One agent, one worktree.** Do not change files in the main checkout.
-- **Find the sisl that runs:** `<env>/bin/python tools/dev/envcheck.py` before you test.
-  A pass of other code is not a pass.
-- **Own environment** outside the repository. Never install a worktree into the shared one.
+- **Find the sisl that runs.** An editable install binds `import sisl` to one tree:
+  run `<env>/bin/python tools/dev/envcheck.py` before you test. A pass of other code is not a pass.
+- **Build in your own environment** (a virtual environment outside the repository).
+  Never install a worktree into the shared environment.
 - **No `git stash`** (shared by all worktrees). Scratch files go outside the repository.
 - **Time tests with 2 agents or fewer** (also to change tests because of timings), or ask first.
-  Set `SISL_NUM_PROCS`, `OMP_NUM_THREADS`, `OPENBLAS_NUM_THREADS`, `MKL_NUM_THREADS` to 1.
+  Power and efficiency cores skew the timings. Set `SISL_NUM_PROCS`, `OMP_NUM_THREADS`,
+  `OPENBLAS_NUM_THREADS`, `MKL_NUM_THREADS` to 1: CI systems have few threads.
 
 **Implement, fix, refactor, test** — [agent-04](techs/agent-04-implement.md), with [dev-02](techs/dev-02-testing.md):
 
@@ -109,7 +113,7 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 - **Find the module that runs:** `_x.py` and `_x.pyx` are distinct; `python tools/dev/envcheck.py <path>`.
 - **Lean code:** no unneeded options, abstractions, checks or copies of sisl functions.
   Read your diff and remove what is not needed.
-- **Fast tests, no redundant tests:** smallest system; extend or parametrize an existing test; mark slow tests `slow`.
+- **Fast tests, no redundant tests:** CI runs each test many times. Smallest system; extend or parametrize an existing test; mark slow tests `slow`.
 - **When complete:** ask the maintainer if it is complete, then review the branch ([agent-06](techs/agent-06-review.md)),
   then ask to write the [merge request description](techs/dev-07-git.md#merge-request-description):
   overview line, problem, lean details; a bug fix names its test that fails before the fix.
@@ -122,15 +126,18 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 - **Make it repeatable:** thread variables to 1, fixed seeds, the test alone.
 - **Rule out the environment:** the sisl that runs, `.py` vs `.pyx`, stale builds, `SISL_FILES_TESTS`.
 - **Find the cause**, not the symptom; `git bisect` against `main`; read the owning chapter.
-- **Do not hide it:** no larger tolerances, `xfail`, `skip`, broad `except` or weaker asserts.
+- **Do not hide it:** no larger tolerances, `xfail`, `skip`, broad `except` or weaker asserts,
+  unless the maintainer agrees.
 - **The reproduction becomes the test** that fails before the fix, in the same commit as the fix.
 
 **Review** — [agent-06](techs/agent-06-review.md), extends [dev-09](techs/dev-09-review.md):
 
-- **Compare with `main`** (`git diff main...HEAD`), and review each commit in `main..HEAD`.
+- **Compare with `main`** (`git diff main...HEAD`) unless told otherwise, and review
+  each commit in `main..HEAD`, not only the final diff.
 - **Read before you run:** changes to `conftest.py`, build files, pre-commit hooks and `tools/`.
 - **No code unrelated to sisl:** report scratch files, tool configuration, copied, generated or unexplained code.
-- **No trojan horses:** examine every commit, also merges (`git log -p --remerge-diff`).
+- **No trojan horses:** examine every commit, also merges (`git log -p --remerge-diff`), for the
+  [signs](techs/dev-10-security.md#signs-of-a-trojan-horse). Report each sign first.
 - **Report, do not fix**, unless the maintainer tells you to. Never rewrite history.
 
 **Dependencies, CI, hooks, build files, outside data, and each review** — [agent-07](techs/agent-07-security.md),

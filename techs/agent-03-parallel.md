@@ -14,7 +14,8 @@ The main checkout belongs to the maintainer. Do not change files there, unless t
   A `FAIL` can mean that your tests do not test your code. Correct it, or report it.
   See [dev-11 · envcheck](dev-11-code-tools.md#envcheck).
 - Never install your worktree into the shared environment of the maintainer and the other agents.
-- If you cannot build, tell the maintainer, and report that the tests did not run.
+- A build takes minutes and much CPU. If you cannot build, tell the maintainer,
+  and report that the tests did not run.
 
 ## Shared state
 
@@ -26,5 +27,5 @@ The main checkout belongs to the maintainer. Do not change files there, unless t
 
 When you measure test timings, or change tests because of them (for example a `slow` mark),
 run a maximum of 2 agents at the same time. If you need more, ask the maintainer first.
-More load makes the timings incorrect.
+More load makes the timings incorrect, and power and efficiency cores skew them.
 Measure as [dev-02 · Measure test timings](dev-02-testing.md#measure-test-timings) tells.

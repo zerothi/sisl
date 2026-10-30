@@ -17,7 +17,8 @@ Do not collect the work of a full task in one commit.
 
 Stage each file by its name: `git add <path>`. Do not use `git add -A` or `git add .`.
 Do not change, move or delete untracked files that you did not make.
-The maintainer keeps personal scratch files as untracked files in the checkout.
+The maintainer keeps personal scratch files and folders as untracked files in the checkout.
+A broad `git add` puts them in the commit.
 
 ## Commit trailer
 
@@ -32,7 +33,7 @@ git commit ... --trailer "Assisted-by: claude-code:claude-opus-5-5"
 
 ## User prompts in the message
 
-Copy the user prompts that caused the commit into the message body, before the trailer,
+Copy each user prompt that caused the commit into the message body without change, before the trailer,
 as a quote below one `Prompt:` line, in the order of the session.
 Between two prompts, put one empty line without `>`. In one prompt, an empty line is `>`.
 Replace secrets, user names, host names and absolute paths with `<...>` ([agent-07](agent-07-security.md)).
@@ -83,8 +84,9 @@ Follow [dev-07 · Keep the history](dev-07-git.md#keep-the-history). In addition
 ## Merge
 
 Merge only when a human tells you to, with `git merge --no-ff <branch>`.
-The merge commit keeps the branch together: the maintainer can review or revert it as one commit.
-The merge message needs no `Assisted-by` trailer and no user prompts.
+The merge commit must stay in the history.
+It keeps the branch together: the maintainer can review or revert it as one commit.
+The merge message needs no `Assisted-by` trailer (`git merge` has no `--trailer` option) and no user prompts.
 The commits of the branch keep them.
 
 ## Do not push

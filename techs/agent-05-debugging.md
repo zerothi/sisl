@@ -19,7 +19,7 @@ A change that only makes the test pass can hide an incorrect result.
 
 Ask the maintainer ([agent-01 · Ask first](agent-01-harness.md#ask-first)) if the cause is a decision in `techs/`,
 or if a fix needs a change of the public API.
-Do not add `xfail` or `skip` to get a green run.
+Do not add `xfail` or `skip` to get a green run. Ask first.
 
 ## Report the cause
 
