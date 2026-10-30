@@ -32,6 +32,20 @@ Write 95% in ASD-STE100 (Simplified Technical English):
 
 The remaining 5% is for formulas, tables and code that STE cannot express.
 
+## Sources
+
+When a decision uses a source, list it below the decision, one line each,
+from the most important to the least important.
+Use the format of [agent-02 · Sources in the message](agent-02-git.md#sources-in-the-message):
+
+```text
+Sources:
+DOI[10]: 10.1234/abc
+URL[3]: https://www.example.org/page
+```
+
+In `docs/`, cite with `docs/references.bib`, as [dev-06 · Writing style](dev-06-public-docs.md#writing-style) tells.
+
 ## Chapters
 
 The chapters are in segments. A file name is `<segment>-<NN>-<topic>.md`.

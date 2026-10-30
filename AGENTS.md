@@ -39,6 +39,7 @@ repo maintains by hand. Read [overview · Welcome](techs/overview-welcome.md) fo
 and [overview-01 · Concepts](techs/overview-01-concepts.md) for the ideas everything else assumes.
 Write there when you choose between alternatives, or when you remove an explaining
 comment. Write in 95% ASD-STE100 — see [techs/README.md](techs/README.md#writing-rules).
+List the sources of a decision below it — see [techs/README.md](techs/README.md#sources).
 
 [`docs/`](docs/index.rst) is the PUBLIC guide (Sphinx RST), for end-users and
 agents alike. Write there only when a change affects end-user capabilities or
