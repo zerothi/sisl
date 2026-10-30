@@ -39,6 +39,7 @@ repo maintains by hand. Read [overview · Welcome](techs/overview-welcome.md) fo
 and [overview-01 · Concepts](techs/overview-01-concepts.md) for the ideas everything else assumes.
 Write there when you choose between alternatives, or when you remove an explaining
 comment. Write in 95% ASD-STE100 — see [techs/README.md](techs/README.md#writing-rules).
+List the sources of a decision below it — see [techs/README.md](techs/README.md#sources).
 
 [`docs/`](docs/index.rst) is the PUBLIC guide (Sphinx RST), for end-users and
 agents alike. Write there only when a change affects end-user capabilities or
@@ -119,6 +120,8 @@ The `dev-*` chapter that each one extends holds the rules for everyone. In short
 - **User prompts.** Copy the user prompts that caused the commit into the message body,
   as a quote below a `Prompt:` line. Separate prompts with one empty line, without `>`.
   Replace secrets and local data with `<...>`.
+- **Sources.** After each prompt, list the online documents and user material read for it, by importance 1-10 (highest first):
+  `DOI[10]: <doi>`, `URL[7]: <url>` or `FILE[4]: <path>` (+ author, date, description).
 - **Keep the history.** Do not merge into `main`, force-push, or rewrite commits you reported.
 - **Merge** only when a human tells you to, with `git merge --no-ff`. The merge message
   needs no `Assisted-by` trailer and no user prompt.

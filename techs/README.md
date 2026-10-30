@@ -32,6 +32,20 @@ Write 95% in ASD-STE100 (Simplified Technical English):
 
 The remaining 5% is for formulas, tables and code that STE cannot express.
 
+## Sources
+
+When a decision uses a source, list it below the decision, one line each,
+from the most important to the least important.
+Use the format of [agent-02 · Sources in the message](agent-02-git.md#sources-in-the-message):
+
+```text
+Sources:
+DOI[10]: 10.1234/abc
+URL[3]: https://www.example.org/page
+```
+
+In `docs/`, cite with `docs/references.bib`, as [dev-06 · Writing style](dev-06-public-docs.md#writing-style) tells.
+
 ## Chapters
 
 The chapters are in segments. A file name is `<segment>-<NN>-<topic>.md`.
@@ -50,7 +64,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 |---|---|
 | [agent · Welcome](agent-welcome.md) | Entry for agents. The chapter for each task. The agent rules win over tool defaults. |
 | [agent-01 · Harness](agent-01-harness.md) | How to work in a session. Ask first, git, reports. |
-| [agent-02 · Git workflow](agent-02-git.md) | The agent part of git: worktree folder, staging, trailer, history before a report, push. |
+| [agent-02 · Git workflow](agent-02-git.md) | The agent part of git: worktree folder, staging, trailer, prompts and sources in the message, history before a report, push. |
 | [agent-03 · Parallel agents and builds](agent-03-parallel.md) | One worktree each, the sisl that runs, own build, shared state, test timings. |
 | [agent-04 · Implement](agent-04-implement.md) | Rules to implement, fix and test code. Lean code. Review and merge request when the code is complete. |
 | [agent-05 · Debugging](agent-05-debugging.md) | The agent part of debugging: scratch files, ask first, report the cause. |
