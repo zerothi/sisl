@@ -59,10 +59,13 @@ pytest -m "not slow"
 python tools/dev/t.py src/sisl/_core/tests/test_geometry.py -k rotate
 python tools/dev/envcheck.py [path...]
 python tools/dev/sym.py <file> [Class.method] [--sig]
+# GitHub conversations (no credentials; stored in gh/): sync once, then read items
+python tools/gh.py sync
+python tools/gh.py issue <N>   # or: pr <N>, discussion <N> (needs GITHUB_TOKEN)
 ```
 
 Details: [dev-01 · Build](techs/dev-01-build.md), [dev-02 · Testing](techs/dev-02-testing.md),
-[dev-11 · Code tools](techs/dev-11-code-tools.md),
+[dev-11 · Code tools](techs/dev-11-code-tools.md), [dev-12 · GitHub archive](techs/dev-12-gh-archive.md),
 [dev-04 · Conventions](techs/dev-04-conventions.md) (license header, typing, dependencies,
 pre-commit, changelog fragments in `changes/`).
 
