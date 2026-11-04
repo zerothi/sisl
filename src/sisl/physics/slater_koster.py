@@ -154,6 +154,7 @@ class SlaterKoster:
     Notes
     -----
     Only pairs inside the supercell of `H` (`~sisl.Geometry.nsc`) get matrix elements.
+    Create `H` with an ``nnzpr`` that holds all elements of a row: a row that grows is slow.
 
     The first call creates the neighbor list and all matrix elements of `H`.
     Each call writes the rows of the atom `ia`. The other rows are kept until all atoms
