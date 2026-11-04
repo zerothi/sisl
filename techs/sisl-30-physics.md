@@ -341,8 +341,12 @@ A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors
 - `_neighbor_pairs` is also the neighbor count for `nnzpr` in the toolbox.
 - Pairs outside `nsc` of `H` are removed. This is the same as `Geometry.close` in `construct`.
 - Elements that are zero (out of the range of each integral) are not stored.
-- In a non-orthogonal `H`, an atom without parameters (its tag is not in the model) gets the on-site overlap 1,
-  and `_elements` warns. Without it, `S` is singular. The user decides if the atom is a mistake.
+- Missing parameters give no element and one warning for each kind: atoms without parameters
+  (their tag is not in the model), shells without an on-site energy, and shell pairs in range without hopping
+  (or overlap, if the model has overlap). A missing pair is listed once, in one direction.
+  An integral of 0 sets no element and gives no warning. Thus a model can tell that an element is 0 on purpose.
+  Only some of σ, π, δ for a shell pair is not missing.
+- In a non-orthogonal `H`, an atom without parameters gets the on-site overlap 1. Without it, `S` is singular.
 
 Sources:
 DOI[10]: 10.1103/PhysRev.94.1498

@@ -139,8 +139,12 @@ class Vogl1983Dispatch(ReferenceDispatch):
                 (ssa, pc): {"sigma": sp * Vssa_pc},
             },
         }
+        # the paper sets the s*-s and s*-s* integrals to 0
+        zero = {"sigma": 0.0}
+        hopping[(a, c)].update({(sa, ssc): zero, (ssa, ssc): zero})
         if a != c:
             # an element has V(sc,pa) == V(sa,pc): the reverse key gives it
+            hopping[(a, c)][(ssa, sc)] = zero
             hopping[(c, a)] = {
                 (sc, pa): {"sigma": sp * Vsc_pa},
                 (ssc, pa): {"sigma": sp * Vpa_ssc},

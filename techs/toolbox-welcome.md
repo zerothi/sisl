@@ -61,6 +61,7 @@ One class holds all references, also for different elements ([overview-01 · Few
 - Table A has `⟨p_a|H|s_c⟩ = -V(pa,sc) g1`. Thus `V(sc,pa)` is the s of the cation at the origin and the p of the anion along `+z`:
   the key `(cation, anion), (s, p)`. The same holds for `s*`.
 - The `s*` orbital is the `(n+1)s` shell, with `n` the period of the element.
+- The `s*`-`s` and `s*`-`s*` integrals are 0 in the paper (note 15). They are given as 0, thus `SlaterKoster` does not warn.
 - The range is the middle between the first and the second neighbor of the bond length of Table 2.
 - ZnTe `E(s,c)` is `-0.9350`. The scan reads `0.9350`, but the sum rule `E(s,a) + E(s,c) = Γ1v + Γ1c`
   (eq. 10) and `V(s,s)` of Table 1 (eq. 9) both give `-0.9350`. All other rows obey both rules.

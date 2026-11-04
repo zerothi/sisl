@@ -169,3 +169,17 @@ def test_sk_errors():
     with pytest.warns(sisl.SislWarning, match="'X'"):
         H.construct(sk)
     assert np.allclose(H.Sk(format="array").diagonal(), 1)
+
+    sp = [sisl.AtomicOrbital("1s", R=1.0), sisl.AtomicOrbital("2pzZ1", R=1.0)]
+    geom = sisl.Geometry([0, 0, 0], sisl.Atom(1, sp, tag="H"), lattice=[1, 10, 10])
+    geom.set_nsc([3, 1, 1])
+    sk = sisl.SlaterKoster(
+        {("H", "H"): {("1s", "1s"): {"sigma": -1.0}, ("2p", "2p"): {"pi": 0}}},
+        onsite={"H": {"1s": 0.0}},
+        R=1.0,
+    )
+    with pytest.warns(sisl.SislWarning) as record:
+        sisl.Hamiltonian(geom).construct(sk)
+    msg = [str(w.message) for w in record]
+    assert len(msg) == 2
+    assert "(H, H): (1sZ1, 2pZ1)" in msg[1] and "H: 2pZ1" in msg[0]

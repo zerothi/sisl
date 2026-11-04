@@ -93,6 +93,11 @@ def _shell(label: str) -> tuple[int, int, int, bool]:
     return int(n), l, int(zeta or 1), P is not None
 
 
+def _label(shell: tuple[int, int, int, bool]) -> str:
+    n, l, zeta, P = shell
+    return f"{n}{'spd'[l]}Z{zeta}{'P' if P else ''}"
+
+
 def _integral(V, R: float | None) -> tuple[Callable, float]:
     """Convert one integral to ``(func(r), range)``; `func` is 0 beyond the range"""
     if isinstance(V, Real):
@@ -154,7 +159,8 @@ class SlaterKoster:
     for the usual models).
     The key ``(B, A)``, ``(b, a)`` gets :math:`(-1)^{l_a+l_b}V_{ab\mu}`; do not give both.
 
-    Parameters that are missing give no matrix element.
+    Parameters that are missing give no matrix element, and a warning.
+    Give an integral as 0 to set no matrix element without a warning.
 
     Parameters
     ----------
@@ -300,12 +306,21 @@ class SlaterKoster:
         rows, cols = [np.empty(0, np.int64)], [np.empty(0, np.int64)]
         Hv, Sv = [np.empty(0)], [np.empty(0)]
 
-        missing = [atom for atom in atoms.atom if atom.tag not in self._tags]
-        if missing and not H.orthogonal:
+        name = self.__class__.__name__
+        missing = [atom.tag for atom in atoms.atom if atom.tag not in self._tags]
+        if missing:
             warn(
-                f"{self.__class__.__name__} has no parameters for the atoms with tags "
-                f"{[atom.tag for atom in missing]}; their on-site overlap is 1"
+                f"{name} has no parameters for the atoms with tags {missing}"
+                + ("" if H.orthogonal else "; their on-site overlap is 1")
             )
+        missing = [
+            f"{tags[isp]}: {_label(key)}"
+            for isp, sh in enumerate(shells)
+            for key in sh
+            if key not in self._onsite.get(tags[isp], {})
+        ]
+        if missing:
+            warn(f"{name} has no on-site energy for {'; '.join(missing)}")
         for isp, sh in enumerate(shells):
             onsite = self._onsite.get(tags[isp], {})
             ia = (species == isp).nonzero()[0]
@@ -328,11 +343,21 @@ class SlaterKoster:
         Ioff = firsto[I]
         Joff = firsto[J] + geometry.lattice.sc_index(isc) * geometry.no
         pair = species[I] * atoms.nspecies + species[J]
+        missing = {"hopping": set(), "overlap": set()}
         for ip in np.unique(pair):
             isp, jsp = divmod(ip, atoms.nspecies)
             key = (tags[isp], tags[jsp])
             hop = self._hopping.get(key, {})
             ovl = {} if self._overlap is None else self._overlap.get(key, {})
+            for what, ints in (("hopping", hop), ("overlap", ovl)):
+                if what == "overlap" and self._overlap is None:
+                    continue
+                missing[what].update(
+                    min((key, sa, sb), (key[::-1], sb, sa))
+                    for sa in shells[isp]
+                    for sb in shells[jsp]
+                    if (sa, sb) not in ints
+                )
             idx = (pair == ip).nonzero()[0]
             for sa, sb in hop.keys() | ovl.keys():
                 if sa not in shells[isp] or sb not in shells[jsp]:
@@ -353,6 +378,14 @@ class SlaterKoster:
                 )
                 Hv.append(h[nz])
                 Sv.append(s[nz])
+
+        for what, m in missing.items():
+            if m:
+                m = "; ".join(
+                    f"({A}, {B}): ({_label(a)}, {_label(b)})"
+                    for (A, B), a, b in sorted(m)
+                )
+                warn(f"{name} has no {what} integrals for {m}")
 
         row = np.concatenate(rows)
         order = np.argsort(row, kind="stable")
