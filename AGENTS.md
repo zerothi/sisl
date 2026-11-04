@@ -122,6 +122,15 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
   then ask to write the [merge request description](techs/dev-07-git.md#merge-request-description):
   overview line, problem, lean details; a bug fix names its test that fails before the fix.
 
+**New code and features** — [agent-08](techs/agent-08-ambition.md), with agent-04:
+
+- **Better, not bigger:** raise the outcome (altitude), the standard (depth) or the methods (range);
+  do not add options or side tasks.
+- **Plan first:** goal beyond the goal, the types that apply, what is missing, the outside judge
+  (known value, invariant, convergence, reference output, failing test, benchmark).
+- **Use the expert's methods, not words.** Set a hard target, report true numbers, never invent results.
+- **Ambition raises the standard, not the permissions:** ask first when a step replaces the task.
+
 **Debug** — [agent-05](techs/agent-05-debugging.md), extends [dev-08](techs/dev-08-debugging.md):
 
 - **A failing test**, in any run: find why, do not assume. If its physics is incorrect, ask.

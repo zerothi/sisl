@@ -73,6 +73,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 | [agent-05 · Debugging](agent-05-debugging.md) | The agent part of debugging: scratch files, ask first, report the cause. |
 | [agent-06 · Review](agent-06-review.md) | The agent part of review: report, do not fix; read before you run; report what was not done. |
 | [agent-07 · Security](agent-07-security.md) | The agent part of security: URL lookups need a human, ask first for automatic code, check your own commits. |
+| [agent-08 · Ambition](agent-08-ambition.md) | New code and features: altitude, depth, range, an outside judge. Better, not bigger. |
 
 ### dev: how to build, test and keep the code
 

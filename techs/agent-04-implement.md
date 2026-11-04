@@ -3,6 +3,12 @@
 For agents that implement, fix, refactor or test code.
 Follow [agent-07 · Security](agent-07-security.md) for each change.
 
+## Aim higher for new code
+
+Before you make new code, a new feature or a plan for one, follow [agent-08 · Ambition](agent-08-ambition.md).
+Find the goal beyond the goal and an outside judge. Make the result better, not bigger.
+A small fix or a refactor does not need it.
+
 ## Read the owning chapter
 
 Before you change a file, read the `techs/` chapter that owns it ([README · Ownership](README.md#ownership)).

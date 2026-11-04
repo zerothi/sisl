@@ -20,6 +20,7 @@ change `AGENTS.md` in the same commit.
 | Each branch, worktree or commit | [agent-02 · Git workflow](agent-02-git.md). |
 | Build, test or time tests in a worktree, or work next to other agents | [agent-03 · Parallel agents and builds](agent-03-parallel.md). |
 | Implement, fix, refactor or test code | [agent-04 · Implement](agent-04-implement.md). |
+| Make new code, a new feature or a plan for one | [agent-08 · Ambition](agent-08-ambition.md), with agent-04. |
 | Find the cause of a bug, a failing test or a wrong result | [agent-05 · Debugging](agent-05-debugging.md). |
 | Review a change, a branch or a pull request | [agent-06 · Review](agent-06-review.md). |
 | Write a merge request description | [dev-07 · Merge request description](dev-07-git.md#merge-request-description). |
