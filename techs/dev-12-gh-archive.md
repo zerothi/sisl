@@ -8,6 +8,7 @@ The copy is in the `gh/` folder of the main checkout. Git ignores `gh/`.
 
 ```bash
 python tools/gh.py sync            # all issues, pull requests and their comments
+python tools/gh.py render          # write all files again from gh/raw, without network
 python tools/gh.py issue 123       # print the conversation of issue 123
 python tools/gh.py pr 456          # print the conversation of pull request 456
 python tools/gh.py discussion 7    # needs GITHUB_TOKEN or GH_TOKEN
@@ -46,7 +47,12 @@ Else they print the stored copy without a request.
 
 ## Format
 
-Each item is one Markdown file: `gh/issues/<N>.md`, `gh/pulls/<N>.md` or `gh/discussions/<N>.md`.
+Each item is one Markdown file in `gh/issues/`, `gh/pulls/` or `gh/discussions/`.
+An open item is in `<kind>/<N>.md`. A closed or merged item is in `<kind>/closed/<N>.md`.
+Thus a search of the open items reads only `<kind>/*.md`.
+When an item closes or opens again, the next `sync` or `issue N`/`pr N` moves its file.
+`render` writes all files again from `gh/raw/`, without network.
+Use it after a change of the format or of the folders.
 `gh/raw/<N>.json` keeps the data of the item for the next `sync`. Do not read it.
 `gh/index.tsv` has one line for each item: kind, number, state, last change, author and title.
 

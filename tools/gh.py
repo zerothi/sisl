@@ -7,6 +7,7 @@ Reads the public GitHub API; credentials are optional. Rules are in techs/dev-12
 
 Usage:
     python tools/gh.py sync            # all issues and pull requests (resumes at a rate limit)
+    python tools/gh.py render          # write all files again from gh/raw, without network
     python tools/gh.py issue 123       # print the conversation of issue 123
     python tools/gh.py pr 456          # print the conversation of pull request 456
     python tools/gh.py discussion 7    # needs GITHUB_TOKEN or GH_TOKEN
@@ -35,6 +36,7 @@ EVENTS = {
     "referenced": "referenced by commit",
     "cross-referenced": "mentioned in",
 }
+FOLDERS = {"issue": "issues", "pull": "pulls", "discussion": "discussions"}
 
 
 class RateLimited(Exception):
@@ -111,15 +113,22 @@ class Archive:
 
     def save(self, key: str, d: dict) -> None:
         self.write(self.raw / f"{key}.json", json.dumps(d, separators=(",", ":")))
-        if key.startswith("d"):
-            self.write(self.root / "discussions" / f"{d['n']}.md", render_discussion(d))
-        else:
-            self.write(self.md(d), render(d))
+        path = self.md(d)
+        self.write(path, (render_discussion if key.startswith("d") else render)(d))
+        # an item that changed state moves between <kind>/ and <kind>/closed/
+        folder = self.root / FOLDERS[d["kind"]]
+        for old in (folder / path.name, folder / "closed" / path.name):
+            if old != path:
+                old.unlink(missing_ok=True)
 
     def md(self, d: dict) -> Path:
-        return (
-            self.root / ("pulls" if d["kind"] == "pull" else "issues") / f"{d['n']}.md"
-        )
+        closed = "closed" if d["state"] == "closed" else ""
+        return self.root / FOLDERS[d["kind"]] / closed / f"{d['n']}.md"
+
+    def render(self) -> None:
+        for p in self.raw.glob("*.json"):
+            self.save(p.stem, json.loads(p.read_text()))
+        self.index()
 
     def index(self) -> None:
         rows = []
@@ -381,7 +390,7 @@ pageInfo{hasNextPage endCursor} nodes{number updatedAt}}}}"""
             if not TOKEN:
                 raise SystemExit("discussions need GITHUB_TOKEN or GH_TOKEN")
             self.discussion(n)
-        return (self.root / "discussions" / f"{n}.md").read_text()
+        return self.md(self.load(f"d{n}")).read_text()
 
 
 def comment(d: dict) -> dict:
@@ -515,6 +524,7 @@ def main() -> int:
     )
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("sync")
+    sub.add_parser("render", help="write all files again from gh/raw, without network")
     for cmd in ("issue", "pr", "discussion"):
         s = sub.add_parser(cmd)
         s.add_argument("number", type=int)
@@ -524,6 +534,9 @@ def main() -> int:
     a = Archive(args.out, args.repo)
     if args.cmd == "sync":
         return a.sync()
+    if args.cmd == "render":
+        a.render()
+        return 0
     if args.cmd == "discussion":
         print(a.show_discussion(args.number, args.refresh), end="")
     else:
