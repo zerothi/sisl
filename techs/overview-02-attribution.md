@@ -1,4 +1,4 @@
-# Attribution
+# overview-02 · Attribution
 
 This file lists the outside material that inspired the rules and the workflow in `techs/`.
 It is not the list of the sources of a physics method. Those are in `docs/references.bib`.

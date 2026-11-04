@@ -24,7 +24,7 @@ code decisions, and the only internal prose maintained by hand. Start with
 Write there when you choose between alternatives, or remove an explaining comment.
 Write in 95% ASD-STE100 ([writing rules](techs/README.md#writing-rules)), and list the
 sources of a decision below it ([sources](techs/README.md#sources)).
-List outside material that inspires a rule or the workflow in [attribution](techs/attribution.md).
+List outside material that inspires a rule or the workflow in [overview-02](techs/overview-02-attribution.md).
 
 [`docs/`](docs/index.rst) is the PUBLIC guide (Sphinx RST). Write there only when a change
 affects end-user capabilities or usage. Keep it lean — [dev-06](techs/dev-06-public-docs.md).

@@ -46,7 +46,7 @@ URL[3]: https://www.example.org/page
 
 In `docs/`, cite with `docs/references.bib`, as [dev-06 · Writing style](dev-06-public-docs.md#writing-style) tells.
 
-When outside material inspires a rule or the workflow, also add it to [Attribution](attribution.md).
+When outside material inspires a rule or the workflow, also add it to [overview-02 · Attribution](overview-02-attribution.md).
 
 ## Chapters
 
@@ -59,7 +59,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 |---|---|
 | [overview · Welcome](overview-welcome.md) | Orientation. Where things are. |
 | [overview-01 · Concepts](overview-01-concepts.md) | The principles that all other chapters assume. |
-| [Attribution](attribution.md) | The outside material that inspired the rules and the workflow. |
+| [overview-02 · Attribution](overview-02-attribution.md) | The outside material that inspired the rules and the workflow. |
 
 ### agent: agents only
 

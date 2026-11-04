@@ -2,7 +2,7 @@
 
 For agents that make new code, a new feature or a plan for one.
 Use it with [agent-04 · Implement](agent-04-implement.md). The other agent rules stay in force.
-The ideas come from the be-ambitious skill and its source article ([Attribution](attribution.md)).
+The ideas come from the be-ambitious skill and its source article ([overview-02 · Attribution](overview-02-attribution.md)).
 
 Most agents work at the size of the task that the user typed.
 Aim higher: make the result better, not bigger.
