@@ -22,6 +22,8 @@ Aim higher: make the result better, not bigger.
    A false result is never acceptable.
 5. **Get the access. Do not invent it.** If data, a tool or access is missing, name it.
    Tell what it would make possible. Do not invent a source, a tool or a result.
+   Follow [agent-07 · Security](agent-07-security.md) for data and tools from outside.
+   A new required dependency needs approval ([agent-01 · Ask first](agent-01-harness.md#ask-first)).
 6. **Ambition raises the standard, not the permissions.**
    [agent-01 · Ask first](agent-01-harness.md#ask-first) and [agent-02](agent-02-git.md) stay in force.
 
@@ -84,6 +86,7 @@ Then select the fields and give each a task:
 
 Use the method of each field, not only its words.
 If you can start subagents, give each field one subagent with its method and its tools.
+Follow [agent-03 · Parallel agents and builds](agent-03-parallel.md): one worktree for each agent that changes files.
 
 ## Outside judges in sisl
 
