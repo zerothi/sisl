@@ -1,0 +1,6 @@
+`SlaterKoster` for two-center tight-binding models
+
+`SlaterKoster` gives the Hamiltonian and overlap of a Slater-Koster model with
+s, p and d shells, through ``H.construct(sk)``. An integral is a constant,
+a step function ``(R_list, values)`` or a function of the distance.
+Values can depend on the spin: ``[up, down]`` or a 2x2 spin matrix.
