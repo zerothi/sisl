@@ -113,6 +113,8 @@ def _integral(V, R: float | None) -> tuple[Callable, float]:
     """Convert one integral to ``(func(r), range)``; `func` is 0 beyond the range"""
     if isinstance(V, tuple):
         Rs, Vs = np.asarray(V[0], dtype=np.float64), np.asarray(V[1])
+        if Rs.ndim == 0:
+            Rs, Vs = Rs[None], Vs[None]
         if Rs.ndim != 1 or len(Rs) != len(Vs):
             raise ValueError(
                 f"{SlaterKoster.__name__} needs (R_list, values) of equal length, got {V}"
@@ -247,7 +249,8 @@ class SlaterKoster:
         the integrals, ``hopping[(A, B)][(a, b)][mu]`` with ``mu`` one of
         ``"sigma"``, ``"pi"``, ``"delta"``.
         An integral is a value (constant up to `R`), a tuple ``(R_list, values)``
-        (``values[i]`` for ``R_list[i-1] < r <= R_list[i]``), or a function ``V(r)``
+        (``values[i]`` for ``R_list[i-1] < r <= R_list[i]``; ``(R, value)`` for one range),
+        or a function ``V(r)``
         (up to `R`, it returns a value for each ``r``).
         A value is a scalar, ``[up, down]``, or a 2x2 spin matrix
         ``[[uu, ud], [du, dd]]``, for the spin of `H` (a scalar is the same for both spins).

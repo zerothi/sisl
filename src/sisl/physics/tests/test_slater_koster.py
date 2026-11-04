@@ -194,7 +194,7 @@ def test_sk_spin():
 
     # polarized: [up, down] values
     sk = sisl.SlaterKoster(
-        {("H", "H"): {("1s", "1s"): {"sigma": ((1.6,), ([-1.0, -0.5],))}}},
+        {("H", "H"): {("1s", "1s"): {"sigma": (1.6, [-1.0, -0.5])}}},
         onsite={"H": {"1s": [0.3, -0.3]}},
     )
     H = sisl.Hamiltonian(geom, spin="polarized")
