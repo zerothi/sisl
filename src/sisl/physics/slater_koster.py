@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import re
 from collections.abc import Callable, Mapping
-from numbers import Real
 
 import numpy as np
 
@@ -98,22 +97,102 @@ def _label(shell: tuple[int, int, int, bool]) -> str:
     return f"{n}{'spd'[l]}Z{zeta}{'P' if P else ''}"
 
 
+_SPIN_SHAPES = ((), (2,), (2, 2))
+
+
+def _spin_check(V: np.ndarray, shape: tuple) -> np.ndarray:
+    if V.shape[len(shape) :] not in _SPIN_SHAPES:
+        raise ValueError(
+            f"{SlaterKoster.__name__} values are a scalar, [up, down] or a 2x2 spin "
+            f"matrix, got the shape {V.shape[len(shape):]}"
+        )
+    return V
+
+
 def _integral(V, R: float | None) -> tuple[Callable, float]:
     """Convert one integral to ``(func(r), range)``; `func` is 0 beyond the range"""
-    if isinstance(V, Real):
-        if R is None:
+    if isinstance(V, tuple):
+        Rs, Vs = np.asarray(V[0], dtype=np.float64), np.asarray(V[1])
+        if Rs.ndim != 1 or len(Rs) != len(Vs):
             raise ValueError(
-                f"{SlaterKoster.__name__} needs R for a constant integral ({V})"
+                f"{SlaterKoster.__name__} needs (R_list, values) of equal length, got {V}"
             )
-        V = float(V)
-        return (lambda r: np.where(r <= R, V, 0.0)), R
+        Vs = _spin_check(np.concatenate([Vs, np.zeros_like(Vs[:1])]), Rs.shape)
+        return (lambda r: Vs[np.searchsorted(Rs, r)]), Rs[-1]
+    if R is None:
+        raise ValueError(f"{SlaterKoster.__name__} needs R for {V}")
     if callable(V):
-        if R is None:
-            raise ValueError(f"{SlaterKoster.__name__} needs R for a function integral")
-        return (lambda r: np.where(r <= R, V(r), 0.0)), R
-    Rs, Vs = (np.asarray(x, dtype=np.float64) for x in V)
-    Vs = np.append(Vs, 0.0)
-    return (lambda r: Vs[np.searchsorted(Rs, r)]), Rs[-1]
+        func = V
+    else:
+        V = _spin_check(np.asarray(V), ())
+        func = lambda r: np.broadcast_to(V, r.shape + V.shape)
+
+    def f(r):
+        v = np.asarray(func(r))
+        return np.where((r <= R).reshape(r.shape + (1,) * (v.ndim - 1)), v, 0)
+
+    return f, R
+
+
+def _dagger(v: np.ndarray) -> np.ndarray:
+    """Hermitian conjugate of spin values ``(n, ...)``"""
+    v = np.conj(v)
+    return v.swapaxes(1, 2) if v.ndim == 3 else v
+
+
+def _spin_value(v: np.ndarray, ndim: int) -> np.ndarray:
+    """Spin values ``(n, ...)`` as ``(n,)``, ``(n, 2)`` or ``(n, 2, 2)`` for `ndim` 0, 1, 2"""
+    v = _spin_check(np.asarray(v), v.shape[:1])
+    if v.ndim - 1 > ndim:
+        raise ValueError(
+            f"{SlaterKoster.__name__} got spin values of shape {v.shape[1:]} "
+            "for a matrix with fewer spin components"
+        )
+    if v.ndim == 1 and ndim > 0:
+        v = np.stack([v, v], axis=1)
+    if v.ndim == 2 and ndim == 2:
+        v = v[:, :, None] * np.eye(2)
+    return v
+
+
+def _pack(v: np.ndarray, spin: Spin, dtype) -> np.ndarray:
+    """Spin values ``(n, ...)`` as the ``(n, K)`` components that sisl stores"""
+    cmplx = np.iscomplexobj(np.empty(0, dtype))
+    if spin.kind == Spin.UNPOLARIZED:
+        out = v[:, None]
+    elif spin.kind == Spin.POLARIZED:
+        out = v
+    else:
+        uu, ud, du, dd = v[:, 0, 0], v[:, 0, 1], v[:, 1, 0], v[:, 1, 1]
+        if spin.kind == Spin.NONCOLINEAR:
+            if np.any(du != np.conj(ud)):
+                raise ValueError(
+                    f"{SlaterKoster.__name__}: a non-colinear matrix stores du = conj(ud), "
+                    "use spin-orbit for other spin matrices"
+                )
+            out = [uu, dd, ud] if cmplx else [uu, dd, ud.real, ud.imag]
+        elif cmplx:
+            out = [uu, dd, ud, du]
+        else:
+            out = [
+                uu.real,
+                dd.real,
+                ud.real,
+                ud.imag,
+                uu.imag,
+                dd.imag,
+                du.real,
+                du.imag,
+            ]
+        out = np.stack(out, axis=1)
+    if not cmplx and np.iscomplexobj(out):
+        if np.any(out.imag != 0):
+            raise ValueError(
+                f"{SlaterKoster.__name__} got complex values for a real matrix, "
+                "use a complex dtype"
+            )
+        out = out.real
+    return out
 
 
 def _neighbor_pairs(geometry: Geometry, R: float):
@@ -167,13 +246,16 @@ class SlaterKoster:
     hopping :
         the integrals, ``hopping[(A, B)][(a, b)][mu]`` with ``mu`` one of
         ``"sigma"``, ``"pi"``, ``"delta"``.
-        An integral is a number (constant up to `R`), a tuple ``(R_list, values)``
+        An integral is a value (constant up to `R`), a tuple ``(R_list, values)``
         (``values[i]`` for ``R_list[i-1] < r <= R_list[i]``), or a function ``V(r)``
-        (up to `R`).
+        (up to `R`, it returns a value for each ``r``).
+        A value is a scalar, ``[up, down]``, or a 2x2 spin matrix
+        ``[[uu, ud], [du, dd]]``, for the spin of `H` (a scalar is the same for both spins).
+        The key ``(B, A)``, ``(b, a)`` gets the Hermitian conjugate of a spin matrix.
     onsite :
-        on-site energies, ``onsite[A][a]``.
+        on-site energies, ``onsite[A][a]``, a value as in `hopping` (Hermitian).
     overlap :
-        overlap integrals, in the same form as `hopping`.
+        overlap integrals, in the same form as `hopping`, with scalar values.
         The on-site overlap is 1. If None, the model is orthogonal.
     R :
         the range of the number and function integrals.
@@ -205,7 +287,10 @@ class SlaterKoster:
         R: float | None = None,
     ):
         self._onsite = {
-            A: {_shell(a): E for a, E in shells.items()}
+            A: {
+                _shell(a): self._hermitian(np.asarray(E)[None])[0]
+                for a, E in shells.items()
+            }
             for A, shells in (onsite or {}).items()
         }
         self._R = 0.0
@@ -234,9 +319,17 @@ class SlaterKoster:
                     f, r = _integral(V, R)
                     self._R = max(self._R, r)
                     funcs.append((imu, f))
+                if ((A, B), sa) == ((B, A), sb):
+                    # the pair is its own reverse
+                    funcs = [
+                        (imu, lambda r, f=f: self._hermitian(f(r))) for imu, f in funcs
+                    ]
                 entries = {((A, B), (sa, sb)): funcs}
-                if (sa[1] + sb[1]) % 2:
-                    funcs = [(imu, lambda r, f=f: -f(r)) for imu, f in funcs]
+                sign = (-1) ** (sa[1] + sb[1])
+                funcs = [
+                    (imu, lambda r, f=f, sign=sign: sign * _dagger(f(r)))
+                    for imu, f in funcs
+                ]
                 entries.setdefault(((B, A), (sb, sa)), funcs)
                 for key, s in entries:
                     if s in out.setdefault(key, {}):
@@ -246,6 +339,15 @@ class SlaterKoster:
                         )
                     out[key][s] = entries[key, s]
         return out
+
+    def _hermitian(self, v: np.ndarray) -> np.ndarray:
+        v = _spin_check(np.asarray(v), np.shape(v)[:1])
+        if np.any(v != _dagger(v)):
+            raise ValueError(
+                f"{self.__class__.__name__} needs Hermitian on-site values, and Hermitian "
+                "integrals for a shell with itself"
+            )
+        return v
 
     @property
     def R(self) -> float:
@@ -303,8 +405,10 @@ class SlaterKoster:
                     m.append(orb.m + orb.l)
             shells.append({k: (np.array(o), np.array(m)) for k, (o, m) in sh.items()})
 
+        # spin values are (n,), (n, 2) or (n, 2, 2)
+        ndim = {Spin.UNPOLARIZED: 0, Spin.POLARIZED: 1}.get(H.spin.kind, 2)
         rows, cols = [np.empty(0, np.int64)], [np.empty(0, np.int64)]
-        Hv, Sv = [np.empty(0)], [np.empty(0)]
+        Hv, Sv = [np.zeros((0,) + (2,) * ndim)], [np.empty(0)]
 
         name = self.__class__.__name__
         missing = [atom.tag for atom in atoms.atom if atom.tag not in self._tags]
@@ -333,7 +437,8 @@ class SlaterKoster:
                 io = (firsto[ia, None] + oi).ravel()
                 rows.append(io)
                 cols.append(io)
-                Hv.append(np.full(io.shape, 0.0 if E is None else E))
+                E = np.zeros(()) if E is None else E
+                Hv.append(_spin_value(np.broadcast_to(E, io.shape + E.shape), ndim))
                 Sv.append(np.ones(io.shape))
 
         I, J, isc = _neighbor_pairs(geometry, self.R)
@@ -364,12 +469,16 @@ class SlaterKoster:
                     continue
                 (oi, mi), (oj, mj) = shells[isp][sa], shells[jsp][sb]
                 G = _sk_factors(sa[1], sb[1], d[idx])[:, mi][:, :, mj]
-                h = np.zeros(G.shape[:3])
-                s = np.zeros(G.shape[:3])
-                for out, ints in ((h, hop), (s, ovl)):
-                    for imu, f in ints.get((sa, sb), ()):
-                        out += G[..., imu] * f(r[idx])[:, None, None]
-                nz = (h != 0) | (s != 0)
+                shape = G.shape[:3]
+                h = s = 0
+                for imu, f in hop.get((sa, sb), ()):
+                    v = _spin_value(f(r[idx]), ndim)[:, None, None]
+                    h = h + G[..., imu].reshape(shape + (1,) * ndim) * v
+                for imu, f in ovl.get((sa, sb), ()):
+                    s = s + G[..., imu] * _spin_value(f(r[idx]), 0)[:, None, None]
+                h = np.broadcast_to(h, shape + (2,) * ndim)
+                s = np.broadcast_to(s, shape)
+                nz = (h != 0).reshape(shape + (-1,)).any(-1) | (s != 0)
                 rows.append(
                     np.broadcast_to((Ioff[idx, None] + oi)[:, :, None], G.shape[:3])[nz]
                 )
@@ -390,9 +499,8 @@ class SlaterKoster:
         row = np.concatenate(rows)
         order = np.argsort(row, kind="stable")
         D = np.zeros((len(row), H.dim), dtype=H.dtype)
-        D[:, : 1 if H.spin.kind == Spin.UNPOLARIZED else 2] = np.concatenate(Hv)[
-            :, None
-        ]
+        Hv = _pack(np.concatenate(Hv), H.spin, H.dtype)
+        D[:, : Hv.shape[1]] = Hv
         if not H.orthogonal:
             D[:, H.S_idx] = np.concatenate(Sv)
         ptr = np.searchsorted(row[order], np.arange(geometry.no + 1))

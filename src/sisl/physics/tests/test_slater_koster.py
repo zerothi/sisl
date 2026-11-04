@@ -183,3 +183,67 @@ def test_sk_errors():
     msg = [str(w.message) for w in record]
     assert len(msg) == 2
     assert "(H, H): (1sZ1, 2pZ1)" in msg[1] and "H: 2pZ1" in msg[0]
+
+
+def test_sk_spin():
+    s = sisl.Atom(1, sisl.AtomicOrbital("1s", R=3.0), tag="H")
+    geom = sisl.Geometry([0, 0, 0], s, lattice=[1.5, 10, 10])
+    geom.set_nsc([5, 1, 1])
+    k = 0.15
+    Ek = 0.3 - 2.0 * np.cos(2 * np.pi * k)
+
+    # polarized: [up, down] values
+    sk = sisl.SlaterKoster(
+        {("H", "H"): {("1s", "1s"): {"sigma": ((1.6,), ([-1.0, -0.5],))}}},
+        onsite={"H": {"1s": [0.3, -0.3]}},
+    )
+    H = sisl.Hamiltonian(geom, spin="polarized")
+    H.construct(sk)
+    E = [0.3 - 2.0 * np.cos(2 * np.pi * k), -0.3 - np.cos(2 * np.pi * k)]
+    assert np.allclose([H.eigh(k=[k, 0, 0], spin=i)[0] for i in (0, 1)], E)
+
+    # exchange field b sigma_y, stored as Im(ud)
+    b = 0.4
+    sk = sisl.SlaterKoster(
+        {("H", "H"): {("1s", "1s"): {"sigma": -1.0}}},
+        onsite={"H": {"1s": 0.3 * np.eye(2) + b * sisl.Spin.Y}},
+        R=1.6,
+    )
+    for spin in ("nc", "so"):
+        for dtype in (np.float64, np.complex128):
+            H = sisl.Hamiltonian(geom, spin=spin, dtype=dtype)
+            H.construct(sk)
+            Hk = H.Hk(k=[k, 0, 0], format="array")
+            assert np.allclose(Hk, Ek * np.eye(2) + b * sisl.Spin.Y)
+
+    # dimer with the hopping t + i lam sigma_z: the reverse gets the conjugate
+    A, B = (sisl.Atom(1, sisl.AtomicOrbital("1s", R=2.0), tag=t) for t in "AB")
+    dimer = sisl.Geometry([[0, 0, 0], [1, 0, 0]], [A, B], lattice=[10, 10, 10])
+    t, lam = -1.0, 0.3
+    sk = sisl.SlaterKoster(
+        {("A", "B"): {("1s", "1s"): {"sigma": t * np.eye(2) + 1j * lam * sisl.Spin.Z}}},
+        onsite={"A": {"1s": 0}, "B": {"1s": 0}},
+        R=2.0,
+    )
+    M = t * np.eye(2) + 1j * lam * sisl.Spin.Z
+    ref = np.block([[np.zeros((2, 2)), M], [M.conj().T, np.zeros((2, 2))]])
+    for spin, dtype in (
+        ("so", np.float64),
+        ("so", np.complex128),
+        ("nc", np.complex128),
+    ):
+        H = sisl.Hamiltonian(dimer, spin=spin, dtype=dtype)
+        H.construct(sk)
+        assert np.allclose(H.Hk(format="array"), ref)
+    with pytest.raises(ValueError, match="complex dtype"):
+        sisl.Hamiltonian(dimer, spin="nc").construct(sk)
+    with pytest.raises(ValueError, match="fewer spin"):
+        sisl.Hamiltonian(dimer).construct(sk)
+
+    with pytest.raises(ValueError, match="Hermitian"):
+        sisl.SlaterKoster({}, onsite={"H": {"1s": [[0, 1], [0, 0]]}})
+    sk = sisl.SlaterKoster(
+        {("H", "H"): {("1s", "1s"): {"sigma": [[0, 1], [0, 0]]}}}, R=1.6
+    )
+    with pytest.raises(ValueError, match="Hermitian"):
+        sisl.Hamiltonian(geom, spin="so").construct(sk)

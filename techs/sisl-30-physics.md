@@ -348,6 +348,24 @@ A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors
   Only some of σ, π, δ for a shell pair is not missing.
 - In a non-orthogonal `H`, an atom without parameters gets the on-site overlap 1. Without it, `S` is singular.
 
+### Spin values
+
+- A value is a scalar, `[up, down]` or a 2x2 spin matrix. A `tuple` is always `(R_list, values)`,
+  thus a list of two numbers is `[up, down]` and not a step function.
+- `_spin_value` expands each value to the form of the spin of `H`: `(n,)` unpolarized, `(n, 2)` polarized,
+  `(n, 2, 2)` non-colinear and spin-orbit. A scalar is the same for both spins. A larger form than `H` has raises.
+- `_pack` maps the 2x2 matrix to the stored components ([sisl-10 · Spin, overlap and dtype](sisl-10-sparse.md#spin-overlap-and-dtype)),
+  in the order of `matrix_box_nc_*` and `matrix_box_so_*` (`physics/_matrix_utils.pyx`).
+  Non-colinear stores `du = conj(ud)` for each element. A value that the storage cannot hold raises
+  (for example a complex value in a real `H`). It is never dropped.
+- The reverse key gets `(-1)^(la+lb) M†`. Thus `H` is Hermitian for each spin matrix `M`.
+  On-site values, and a shell pair that is its own reverse, must be Hermitian.
+- The overlap has no spin, thus its values are scalars.
+- The tests compare `H.Hk` with the spin matrices, not only eigenvalues:
+  `σx` and `σy` have the same eigenvalues, thus an eigenvalue test does not find a wrong `Re`/`Im` order.
+- Atomic spin-orbit coupling (λ L·S) couples different m of a shell. A value for each shell pair cannot hold it.
+  It is not implemented (decided by the maintainer: later).
+
 Sources:
 DOI[10]: 10.1103/PhysRev.94.1498
 
