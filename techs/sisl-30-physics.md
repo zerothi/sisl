@@ -300,6 +300,46 @@ Put new physics in a module function. Add a thin method when a state class needs
 
 `__call__` does all three steps. Its `indices` argument makes only a sub-matrix. This saves memory.
 
+## Slater-Koster models
+
+`SlaterKoster` (`physics/slater_koster.py`) is a function for `construct`.
+It is not a sparse matrix class. Thus all sparse classes keep their API.
+
+### Angular factors
+
+`_sk_factors(l1, l2, d)` gives the factors of `V_sigma`, `V_pi`, `V_delta`
+for the unit bond vectors `d`. It does not use the table of Slater and Koster.
+
+- A p orbital is a unit vector. A d orbital is a symmetric traceless 3x3 tensor with Frobenius norm 1.
+  The inner products of these vectors and tensors are equal to the overlaps of the real harmonics.
+- The vectors and tensors (`_P`, `_D`) have the signs of the sisl harmonics (Condon-Shortley phase):
+  p is `(-y, z, -x)`, d is `(xy, -yz, z2, -xz, x2-y2)`.
+- The bond states are made from `d` only: σ is `d` and `3 d dᵀ - 1`; π sums over the plane normal to `d`.
+  Thus the factors need no local frame, and have no special case for `d` along `z`.
+  All factors use `q = dᵀ A d` and `v = A d` of each d tensor `A`. δ is `1 - σ - π`.
+- `l1 > l2` is the transpose of `(l2, l1)`. The sign `(-1)^(l1+l2)` is in the integral, not in the factors.
+
+`test_sk_block_rotation` is the reference. It makes the rotation matrices of the sisl harmonics
+by quadrature of `_rspherical_harm`, and compares `D1 diag(V_|m|) D2ᵀ` with the factors.
+A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors`.
+
+### Assembly
+
+- The first call for an `H` finds all pairs with one `NeighborFinder.find_neighbors()`,
+  and makes all elements in numpy, for each species pair and shell pair.
+  A call for each atom costs 140 µs; one call for 16000 atoms costs 18 ms.
+- Each call writes the rows of the atom `ia`, one `H[io, cols] = data` for each orbital row.
+  The pair form `H[rows, cols]` loops in Python.
+- The cache is removed when all atoms are written. Thus `construct` keeps the memory only while it runs.
+- `NeighborFinder` does not accept atoms outside the unit cell. `_elements` moves each atom into the cell
+  along the periodic directions (`lattice.pbc`), and moves all atoms by one vector along the other directions.
+  The supercell index is then `isc + s_I - s_J`.
+- Pairs outside `nsc` of `H` are removed. This is the same as `Geometry.close` in `construct`.
+- Elements that are zero (out of the range of each integral) are not stored.
+
+Sources:
+DOI[10]: 10.1103/PhysRev.94.1498
+
 ## Units and constants
 
 - The internal units are eV and Å.
