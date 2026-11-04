@@ -126,10 +126,11 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 
 - **Better, not bigger:** raise the outcome (altitude), the standard (depth) or the methods (range);
   do not add options or side tasks.
-- **Plan first:** goal beyond the goal, the types that apply, what is missing, the outside judge
+- **Plan first, then wait:** goal beyond the goal, the types that apply, what is missing, the outside judge
   (known value, invariant, convergence, reference output, failing test, benchmark).
+  The maintainer selects the step; do not implement before the answer.
 - **Use the expert's methods, not words.** Set a hard target, report true numbers, never invent results.
-- **Ambition raises the standard, not the permissions:** ask first when a step replaces the task.
+- **Ambition raises the standard, not the permissions:** the ask-first rules stay in force.
 
 **Debug** — [agent-05](techs/agent-05-debugging.md), extends [dev-08](techs/dev-08-debugging.md):
 

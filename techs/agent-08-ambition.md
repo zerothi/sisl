@@ -39,11 +39,13 @@ Speed (the same work in less time) is not a type here.
 ### Altitude: aim at the outcome
 
 Ask what the user wants to happen next. What is the goal beyond the goal?
-Write three steps, each more ambitious than the last. An example for "fix the wrong band structure of this Hamiltonian":
+Write three steps, each more ambitious than the last. Each step raises the outcome, not the size.
+An example for "add a reader for the Hamiltonian file of code X". The goal beyond the goal: users can trust the data that they read.
 
-1. Fix the case, with a test that fails before the fix.
-2. Find each case of this kind in sisl, and fix the cause, not the symptom.
-3. Make this class of error impossible to miss, for example with a check of a physics invariant in the tests.
+1. Read the file of the user, with a test against values from code X.
+2. Read from the format specification, not from one example file.
+   Raise an error for each variant that the reader does not support.
+3. Make a wrong read impossible to miss: check a physics invariant, for example hermiticity, after each read.
 
 The top step often needs preparation, for example a reference data set or a benchmark.
 Write that preparation in the plan.
@@ -107,12 +109,9 @@ Make the plan as short as the task permits.
 5. The outside judge and what counts as a pass.
 6. The next step: the highest step that you can complete and check with the access that you have.
 
-Then continue as follows:
-
-- If the step only raises the standard of the task, start it.
-- If the step replaces the task, changes the public API, or is in [agent-01 · Ask first](agent-01-harness.md#ask-first),
-  ask the maintainer and wait.
-- If even the first step needs access that you do not have, ask for it and stop.
+Then wait for the answer of the maintainer. Do not implement before the answer.
+The maintainer selects the step, as in [agent-04 · When the code is complete](agent-04-implement.md#when-the-code-is-complete).
+If even the first step needs access that you do not have, ask for it in the plan.
 
 Sources:
 URL[10]: https://github.com/robonuggets/be-ambitious/blob/main/SKILL.md
