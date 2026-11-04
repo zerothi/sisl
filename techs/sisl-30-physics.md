@@ -353,6 +353,8 @@ A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors
 - A value is a scalar, `[up, down]` or a 2x2 spin matrix. A `tuple` is always `(R_list, values)`,
   thus a list of two numbers is `[up, down]` and not a step function.
   A scalar `R_list` is one range: `(R, value)` is `((R,), (value,))`.
+  Each of `values` has its own form, for example `([2.6, 3.1], ([-1.1, -0.9], -0.5))`.
+  `_integral` expands them to the largest form, with the rule of `_spin_value`.
 - `_spin_value` expands each value to the form of the spin of `H`: `(n,)` unpolarized, `(n, 2)` polarized,
   `(n, 2, 2)` non-colinear and spin-orbit. A scalar is the same for both spins. A larger form than `H` has raises.
 - `_pack` maps the 2x2 matrix to the stored components ([sisl-10 · Spin, overlap and dtype](sisl-10-sparse.md#spin-overlap-and-dtype)),

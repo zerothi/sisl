@@ -192,22 +192,22 @@ def test_sk_spin():
     k = 0.15
     Ek = 0.3 - 2.0 * np.cos(2 * np.pi * k)
 
-    # polarized: [up, down] values
+    # polarized: [up, down] values, the second range the same for both spins
     sk = sisl.SlaterKoster(
-        {("H", "H"): {("1s", "1s"): {"sigma": (1.6, [-1.0, -0.5])}}},
+        {("H", "H"): {("1s", "1s"): {"sigma": ([1.6, 3.1], ([-1.0, -0.5], -0.2))}}},
         onsite={"H": {"1s": [0.3, -0.3]}},
     )
     H = sisl.Hamiltonian(geom, spin="polarized")
     H.construct(sk)
-    E = [0.3 - 2.0 * np.cos(2 * np.pi * k), -0.3 - np.cos(2 * np.pi * k)]
+    c1, c2 = np.cos(2 * np.pi * k), np.cos(4 * np.pi * k)
+    E = [0.3 - 2.0 * c1 - 0.4 * c2, -0.3 - c1 - 0.4 * c2]
     assert np.allclose([H.eigh(k=[k, 0, 0], spin=i)[0] for i in (0, 1)], E)
 
     # exchange field b sigma_y, stored as Im(ud)
     b = 0.4
     sk = sisl.SlaterKoster(
-        {("H", "H"): {("1s", "1s"): {"sigma": -1.0}}},
+        {("H", "H"): {("1s", "1s"): {"sigma": (1.6, -1.0)}}},
         onsite={"H": {"1s": 0.3 * np.eye(2) + b * sisl.Spin.Y}},
-        R=1.6,
     )
     for spin in ("nc", "so"):
         for dtype in (np.float64, np.complex128):

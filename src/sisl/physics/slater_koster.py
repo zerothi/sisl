@@ -112,14 +112,19 @@ def _spin_check(V: np.ndarray, shape: tuple) -> np.ndarray:
 def _integral(V, R: float | None) -> tuple[Callable, float]:
     """Convert one integral to ``(func(r), range)``; `func` is 0 beyond the range"""
     if isinstance(V, tuple):
-        Rs, Vs = np.asarray(V[0], dtype=np.float64), np.asarray(V[1])
-        if Rs.ndim == 0:
-            Rs, Vs = Rs[None], Vs[None]
+        Rs = np.asarray(V[0], dtype=np.float64)
+        Vs = [V[1]] if Rs.ndim == 0 else list(V[1])
+        Rs = np.atleast_1d(Rs)
         if Rs.ndim != 1 or len(Rs) != len(Vs):
             raise ValueError(
                 f"{SlaterKoster.__name__} needs (R_list, values) of equal length, got {V}"
             )
-        Vs = _spin_check(np.concatenate([Vs, np.zeros_like(Vs[:1])]), Rs.shape)
+        # each range has its own spin form; expand all to the largest
+        Vs = [_spin_check(np.asarray(v), ()) for v in Vs]
+        ndim = max(v.ndim for v in Vs)
+        Vs = np.concatenate(
+            [_spin_value(v[None], ndim) for v in Vs] + [np.zeros((1,) + (2,) * ndim)]
+        )
         return (lambda r: Vs[np.searchsorted(Rs, r)]), Rs[-1]
     if R is None:
         raise ValueError(f"{SlaterKoster.__name__} needs R for {V}")
@@ -249,7 +254,8 @@ class SlaterKoster:
         the integrals, ``hopping[(A, B)][(a, b)][mu]`` with ``mu`` one of
         ``"sigma"``, ``"pi"``, ``"delta"``.
         An integral is a value (constant up to `R`), a tuple ``(R_list, values)``
-        (``values[i]`` for ``R_list[i-1] < r <= R_list[i]``; ``(R, value)`` for one range),
+        (``values[i]`` for ``R_list[i-1] < r <= R_list[i]``, each a value;
+        ``(R, value)`` for one range),
         or a function ``V(r)``
         (up to `R`, it returns a value for each ``r``).
         A value is a scalar, ``[up, down]``, or a 2x2 spin matrix
