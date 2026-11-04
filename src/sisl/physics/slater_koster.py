@@ -267,14 +267,16 @@ class SlaterKoster:
         overlap integrals, in the same form as `hopping`, with scalar values.
         The on-site overlap is 1. If None, the model is orthogonal.
     R :
-        the range of the number and function integrals.
+        the range of the constant and function integrals.
 
     Examples
     --------
     The :math:`p_z` model of graphene:
 
     >>> C = sisl.Atom(6, sisl.AtomicOrbital("2pzZ1", R=1.5), tag="C")
-    >>> sk = sisl.SlaterKoster({("C", "C"): {("2p", "2p"): {"pi": -2.7}}}, R=1.5)
+    >>> sk = sisl.SlaterKoster(
+    ...     {("C", "C"): {("2p", "2p"): {"pi": (1.5, -2.7)}}}, onsite={"C": {"2p": 0}}
+    ... )
     >>> H = sisl.Hamiltonian(sisl.geom.graphene(atoms=C))
     >>> H.construct(sk)
 
