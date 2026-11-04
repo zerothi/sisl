@@ -27,3 +27,6 @@ ehtumbs.db
 
 # git worktrees (see techs/dev-07-git.md)
 /wt/
+
+# local archive of GitHub conversations (see techs/dev-12-gh-archive.md)
+/gh/

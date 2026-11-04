@@ -86,6 +86,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 | [dev-09 · Review](dev-09-review.md) | Reference `main`, read before you run, what to check, unrelated code, trojan horses, report. |
 | [dev-10 · Security](dev-10-security.md) | No URL lookups, no code from data, dependency sources, automatic code, secrets, trojan horse signs. |
 | [dev-11 · Code tools](dev-11-code-tools.md) | `tools/dev/`: symbol outlines and source, environment check, short test reports. |
+| [dev-12 · GitHub archive](dev-12-gh-archive.md) | `tools/gh.py`: local text copy of the issues, pull requests and discussions. |
 
 ### sisl: the code in `src/sisl/`
 
