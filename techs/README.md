@@ -46,6 +46,8 @@ URL[3]: https://www.example.org/page
 
 In `docs/`, cite with `docs/references.bib`, as [dev-06 · Writing style](dev-06-public-docs.md#writing-style) tells.
 
+When outside material inspires a rule or the workflow, also add it to [overview-02 · Attribution](overview-02-attribution.md).
+
 ## Chapters
 
 The chapters are in segments. A file name is `<segment>-<NN>-<topic>.md`.
@@ -57,6 +59,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 |---|---|
 | [overview · Welcome](overview-welcome.md) | Orientation. Where things are. |
 | [overview-01 · Concepts](overview-01-concepts.md) | The principles that all other chapters assume. |
+| [overview-02 · Attribution](overview-02-attribution.md) | The outside material that inspired the rules and the workflow. |
 
 ### agent: agents only
 
@@ -70,6 +73,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 | [agent-05 · Debugging](agent-05-debugging.md) | The agent part of debugging: scratch files, ask first, report the cause. |
 | [agent-06 · Review](agent-06-review.md) | The agent part of review: report, do not fix; read before you run; report what was not done. |
 | [agent-07 · Security](agent-07-security.md) | The agent part of security: URL lookups need a human, ask first for automatic code, check your own commits. |
+| [agent-08 · Ambition](agent-08-ambition.md) | New code and features: altitude, depth, range, an outside judge. Better, not bigger. |
 
 ### dev: how to build, test and keep the code
 
@@ -125,7 +129,7 @@ A segment can have an entry chapter `<segment>-welcome.md`.
 - Name a chapter `<segment>-<NN>-<topic>.md`. Use two digits for `NN`.
   The title is `# <segment>-<NN> · <Title>`. A link text starts with the same `<segment>-<NN> ·`.
 - The segments:
-  - `overview`: orientation in the technical documentation.
+  - `overview`: orientation in the technical documentation, and its attribution. Numbers increment: `01`, `02`, ...
   - `agent`: rules for agents only. Numbers increment: `01`, `02`, ...
   - `dev`: how to build, test, measure, verify and document. Numbers increment: `01`, `02`, ...
   - `sisl`: the code in `src/sisl/` only. One group of ten for each code area

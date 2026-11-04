@@ -24,6 +24,7 @@ code decisions, and the only internal prose maintained by hand. Start with
 Write there when you choose between alternatives, or remove an explaining comment.
 Write in 95% ASD-STE100 ([writing rules](techs/README.md#writing-rules)), and list the
 sources of a decision below it ([sources](techs/README.md#sources)).
+List outside material that inspires a rule or the workflow in [overview-02](techs/overview-02-attribution.md).
 
 [`docs/`](docs/index.rst) is the PUBLIC guide (Sphinx RST). Write there only when a change
 affects end-user capabilities or usage. Keep it lean — [dev-06](techs/dev-06-public-docs.md).
@@ -120,6 +121,16 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 - **When complete:** ask the maintainer if it is complete, then review the branch ([agent-06](techs/agent-06-review.md)),
   then ask to write the [merge request description](techs/dev-07-git.md#merge-request-description):
   overview line, problem, lean details; a bug fix names its test that fails before the fix.
+
+**New code and features** — [agent-08](techs/agent-08-ambition.md), with agent-04:
+
+- **Better, not bigger:** raise the outcome (altitude), the standard (depth) or the methods (range);
+  do not add options or side tasks.
+- **Plan first, then wait:** goal beyond the goal, the types that apply, what is missing, the outside judge
+  (known value, invariant, convergence, reference output, failing test, benchmark).
+  The maintainer selects the step; do not implement before the answer.
+- **Use the expert's methods, not words.** Set a hard target, report true numbers, never invent results.
+- **Ambition raises the standard, not the permissions:** the ask-first rules stay in force.
 
 **Debug** — [agent-05](techs/agent-05-debugging.md), extends [dev-08](techs/dev-08-debugging.md):
 
