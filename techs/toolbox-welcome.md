@@ -49,7 +49,7 @@ One class holds all references, also for different elements ([overview-01 · Few
 
 - A user `geometry=` gets the atoms of the model by atomic number. An atomic number that the model
   does not have raises `ValueError`. A missing element would otherwise give a Hamiltonian without its rows.
-- `_hamiltonian` gives `nnzpr` from the neighbor count of the geometry (`_neighbor_pairs`).
+- `_hamiltonian` copies the lattice of the user geometry, and gives `nnzpr` from the neighbor count of the geometry (`_neighbor_pairs`).
   A row of `SparseCSR` that grows past `nnzpr` is slow: 63 s against 2.2 s for 16000 Si atoms (Vogl1983).
   The maintainer decided to keep the growth of `SparseCSR`, and to give a larger `nnzpr`.
 

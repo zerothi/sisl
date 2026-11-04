@@ -34,7 +34,7 @@ def _hamiltonian(
     geometry = si.Geometry(
         geometry.xyz,
         [by_Z[Z] for Z in geometry.atoms.Z],
-        lattice=geometry.lattice,
+        lattice=geometry.lattice.copy(),
     )
     # room for all elements of a row, sparse rows grow slowly
     n = np.bincount(_neighbor_pairs(geometry, sk.R)[0], minlength=geometry.na)

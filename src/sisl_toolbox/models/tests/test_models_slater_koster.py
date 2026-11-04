@@ -70,6 +70,8 @@ def test_vogl1983_geometry():
     assert H.geometry.no == 4 * 5
     Hk = H.Hk(k=[0.1, 0.2, 0.3], format="array")
     assert np.allclose(Hk, Hk.T.conj())
+    H.geometry.set_nsc([5, 5, 5])
+    assert np.all(geom.nsc == 3)
     with pytest.raises(ValueError, match="atomic numbers"):
         slater_koster.H.ref.Vogl1983("Si", geometry=geom)
 

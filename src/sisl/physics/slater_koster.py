@@ -11,6 +11,7 @@ import numpy as np
 
 from sisl._core.geometry import Geometry
 from sisl._core.lattice import Lattice
+from sisl._core.orbital import AtomicOrbital
 from sisl._internal import set_module
 from sisl.messages import warn
 
@@ -215,6 +216,10 @@ class SlaterKoster:
                 sa, sb = _shell(a), _shell(b)
                 funcs = []
                 for mu, V in Vmu.items():
+                    if mu not in _MU:
+                        raise ValueError(
+                            f"{self.__class__.__name__} integrals are {_MU}, got {mu!r}"
+                        )
                     imu = _MU.index(mu)
                     if imu > min(sa[1], sb[1]):
                         raise ValueError(
@@ -282,6 +287,11 @@ class SlaterKoster:
             sh = {}
             if atom.tag in self._tags:
                 for io, orb in enumerate(atom):
+                    if not isinstance(orb, AtomicOrbital):
+                        raise TypeError(
+                            f"{self.__class__.__name__} needs AtomicOrbital orbitals, "
+                            f"the atom with tag {atom.tag!r} has {orb.__class__.__name__}"
+                        )
                     o, m = sh.setdefault((orb.n, orb.l, orb.zeta, orb.P), ([], []))
                     o.append(io)
                     m.append(orb.m + orb.l)

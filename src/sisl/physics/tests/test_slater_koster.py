@@ -145,6 +145,13 @@ def test_sk_errors():
         sisl.SlaterKoster({("H", "H"): {("1s", "1s"): {"sigma": 1.0}}})
     with pytest.raises(NotImplementedError):
         sisl.SlaterKoster({("H", "H"): {("4f", "4f"): {"sigma": 1.0}}}, R=1.0)
+    with pytest.raises(ValueError, match="'Pi'"):
+        sisl.SlaterKoster({("H", "H"): {("1s", "1s"): {"Pi": 1.0}}}, R=1.0)
+    plain = sisl.Geometry([0, 0, 0], sisl.Atom(1, R=1.0, tag="H"), lattice=[1, 10, 10])
+    with pytest.raises(TypeError, match="AtomicOrbital"):
+        sisl.Hamiltonian(plain).construct(
+            sisl.SlaterKoster({("H", "H"): {("1s", "1s"): {"sigma": 1.0}}}, R=1.0)
+        )
 
     sk = sisl.SlaterKoster(
         {("H", "H"): {("1s", "1s"): {"sigma": 1.0}}},
