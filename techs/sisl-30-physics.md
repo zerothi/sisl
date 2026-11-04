@@ -364,6 +364,8 @@ A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors
 - The reverse key gets `(-1)^(la+lb) M†`. Thus `H` is Hermitian for each spin matrix `M`.
   On-site values, and a shell pair that is its own reverse, must be Hermitian.
 - The overlap has no spin, thus its values are scalars.
+  The overlap values do not go through the checks of `_pack`. Overlaps are real quantities:
+  a complex overlap in a real `H` gives the `ComplexWarning` of numpy (decided by the maintainer).
 - The tests compare `H.Hk` with the spin matrices, not only eigenvalues:
   `σx` and `σy` have the same eigenvalues, thus an eigenvalue test does not find a wrong `Re`/`Im` order.
 - Atomic spin-orbit coupling (λ L·S) couples different m of a shell. A value for each shell pair cannot hold it.
