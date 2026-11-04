@@ -73,3 +73,21 @@ Sources:
 DOI[10]: 10.1016/0022-3697(83)90064-1
 URL[8]: https://alevi.usc.edu/files/2018/05/Vogl1983-10syajv.pdf
 URL[6]: https://engineering.purdue.edu/gekcogrp/publications/pubs_src/J_2000_1.pdf
+
+### Xu1992
+
+- The paper is behind a paywall. The values come from two copies that cite it and agree:
+  the XTANT-3 input files (all values) and Amara et al. 2009 (all values except the tail).
+  The tail coefficients are only in XTANT-3. They continue the scaling function with its value and slope at `r1`
+  (to 1e-8) and are 0 at `rm`. `test_xu1992` checks this.
+- All four integrals use one scaling function: `V(r) = V(r0) s(r)`, `s(r0) = 1`. `SlaterKoster` sets `V = 0` above `rm = 2.6` Ang.
+- Only the Hamiltonian. The repulsive energy of the paper is for total energies, not for `H`.
+- The sign of `V_spσ` is not stated in the copies. For one element it has no effect:
+  a sign change of all p orbitals changes the sign of all s-p elements and keeps the eigenvalues.
+- No band energies of the paper are available. The default diamond gives a valence width of 23.7 eV and a gap of 6.4 eV.
+
+Sources:
+DOI[10]: 10.1088/0953-8984/4/28/006
+URL[9]: https://raw.githubusercontent.com/N-Medvedev/XTANT-3/main/INPUT_DATA/C/Pettifor/C_C_TB_Hamiltonian_parameters.txt
+URL[7]: https://arxiv.org/pdf/0810.1008
+URL[5]: https://raw.githubusercontent.com/N-Medvedev/XTANT-3/main/Source_files/TB_Pettifor.f90

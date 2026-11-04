@@ -8,7 +8,7 @@ import pytest
 
 import sisl
 from sisl_toolbox.models import slater_koster
-from sisl_toolbox.models._slater_koster import _VOGL1983
+from sisl_toolbox.models._slater_koster import _VOGL1983, _xu1992_scaling
 
 
 def _vogl_bloch(material, kc):
@@ -72,3 +72,19 @@ def test_vogl1983_geometry():
     assert np.allclose(Hk, Hk.T.conj())
     with pytest.raises(ValueError, match="atomic numbers"):
         slater_koster.H.ref.Vogl1983("Si", geometry=geom)
+
+
+def test_xu1992():
+    # the tail continues the scaling with its slope at r1 and is 0 at rm
+    eps = 1e-5
+    s = _xu1992_scaling(np.array([2.45 - eps, 2.45, 2.6]))
+    assert s[0] == pytest.approx(s[1] + 8.1885359517898e-2 * eps, abs=1e-9)
+    assert s[2] == pytest.approx(0, abs=1e-12)
+
+    H = slater_koster.H.ref.Xu1992()
+    # diamond at r0: the first neighbor s-s element is V_sssigma
+    assert H[0, 4] == pytest.approx(-5.0)
+    assert H[0, 0] == -2.99 and H[1, 1] == 3.71
+    geom = sisl.geom.graphene(1.42, sisl.Atom(6))
+    H = slater_koster.H.ref.Xu1992(geometry=geom)
+    assert H.geometry.no == 8

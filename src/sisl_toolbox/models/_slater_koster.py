@@ -157,6 +157,58 @@ SlaterKosterHamiltonian.ref.register("Vogl1983", Vogl1983Dispatch)
 SlaterKosterHamiltonian.ref.register(Vogl1983Dispatch.doi, Vogl1983Dispatch)
 
 
+def _xu1992_scaling(r):
+    """Distance scaling of the hopping of Xu 1992 (1 at r0, 0 at rm)"""
+    r0, n, nc, rc, r1 = 1.536329, 2.0, 6.5, 2.18, 2.45
+    c = (6.7392620074314e-3, -8.1885359517898e-2, 0.1932365259144, 0.354287433238)
+    x = r - r1
+    tail = c[0] + x * (c[1] + x * (c[2] + x * c[3]))
+    with np.errstate(over="ignore", divide="ignore"):
+        gsp = (r0 / r) ** n * np.exp(n * ((r0 / rc) ** nc - (r / rc) ** nc))
+    return np.where(r < r1, gsp, tail)
+
+
+class Xu1992Dispatch(ReferenceDispatch):
+    r"""The orthogonal :math:`sp^3` carbon model of Xu, Wang, Chan and Ho, :doi:`10.1088/0953-8984/4/28/006`"""
+
+    doi = "10.1088/0953-8984/4/28/006"
+
+    def dispatch(self, geometry: Optional[si.Geometry] = None) -> si.Hamiltonian:
+        r"""Orthogonal :math:`sp^3` Hamiltonian of carbon, with hopping up to 2.6 Ang
+
+        Only the Hamiltonian; the repulsive energy of the paper is not included.
+
+        Parameters
+        ----------
+        geometry :
+            the geometry; its carbon atoms get the :math:`2s` and :math:`2p` orbitals.
+            Default is diamond with the bond length 1.536329 Ang.
+        """
+        R = 2.6
+        orbs = [si.AtomicOrbital(n=2, l=0, R=R)]
+        orbs += [si.AtomicOrbital(n=2, l=1, m=m, R=R) for m in (-1, 0, 1)]
+        C = si.Atom(6, orbs, tag="C")
+
+        def V(V0):
+            return lambda r: V0 * _xu1992_scaling(r)
+
+        hopping = {
+            ("C", "C"): {
+                ("2s", "2s"): {"sigma": V(-5.0)},
+                ("2s", "2p"): {"sigma": V(4.7)},
+                ("2p", "2p"): {"sigma": V(5.5), "pi": V(-1.55)},
+            }
+        }
+        sk = si.SlaterKoster(hopping, onsite={"C": {"2s": -2.99, "2p": 3.71}}, R=R)
+        if geometry is None:
+            geometry = si.geom.diamond(4 * 1.536329 / 3**0.5, C)
+        return _hamiltonian(sk, geometry, [C])
+
+
+SlaterKosterHamiltonian.ref.register("Xu1992", Xu1992Dispatch)
+SlaterKosterHamiltonian.ref.register(Xu1992Dispatch.doi, Xu1992Dispatch)
+
+
 slater_koster = si.utils.PropertyDict()
 slater_koster.hamiltonian = SlaterKosterHamiltonian()
 slater_koster.H = slater_koster.hamiltonian
