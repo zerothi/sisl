@@ -336,6 +336,8 @@ A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors
   The supercell index is then `isc + s_I - s_J`.
 - Pairs outside `nsc` of `H` are removed. This is the same as `Geometry.close` in `construct`.
 - Elements that are zero (out of the range of each integral) are not stored.
+- In a non-orthogonal `H`, an atom without parameters (its tag is not in the model) gets the on-site overlap 1,
+  and `_elements` warns. Without it, `S` is singular. The user decides if the atom is a mistake.
 
 Sources:
 DOI[10]: 10.1103/PhysRev.94.1498

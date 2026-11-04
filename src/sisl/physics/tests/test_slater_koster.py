@@ -141,3 +141,10 @@ def test_sk_errors():
         H.construct(sk)
     with pytest.raises(NotImplementedError):
         sisl.Hamiltonian(H.geometry, spin="nambu", orthogonal=False).construct(sk)
+
+    X = sisl.Atom(2, sisl.AtomicOrbital("1s", R=1.0), tag="X")
+    geom = sisl.Geometry([[0, 0, 0], [0.5, 0, 0]], [s, X], lattice=[10, 10, 10])
+    H = sisl.Hamiltonian(geom, orthogonal=False)
+    with pytest.warns(sisl.SislWarning, match="'X'"):
+        H.construct(sk)
+    assert np.allclose(H.Sk(format="array").diagonal(), 1)

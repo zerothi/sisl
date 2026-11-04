@@ -10,6 +10,7 @@ from numbers import Real
 import numpy as np
 
 from sisl._internal import set_module
+from sisl.messages import warn
 
 from .spin import Spin
 
@@ -263,9 +264,17 @@ class SlaterKoster:
         rows, cols = [np.empty(0, np.int64)], [np.empty(0, np.int64)]
         Hv, Sv = [np.empty(0)], [np.empty(0)]
 
+        missing = [atom for atom in atoms.atom if atom.tag not in self._tags]
+        if missing and not H.orthogonal:
+            warn(
+                f"{self.__class__.__name__} has no parameters for the atoms with tags "
+                f"{[atom.tag for atom in missing]}; their on-site overlap is 1"
+            )
         for isp, sh in enumerate(shells):
             onsite = self._onsite.get(tags[isp], {})
             ia = (species == isp).nonzero()[0]
+            if tags[isp] not in self._tags and not H.orthogonal:
+                sh = {None: (np.arange(atoms.atom[isp].no), None)}
             for key, (oi, _) in sh.items():
                 E = onsite.get(key)
                 if E is None and H.orthogonal:
