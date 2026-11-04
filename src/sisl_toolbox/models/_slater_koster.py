@@ -9,7 +9,7 @@ from typing import Optional
 import numpy as np
 
 import sisl as si
-from sisl.geom import NeighborFinder
+from sisl.physics.slater_koster import _neighbor_pairs
 from sisl_toolbox.models._base import BaseModel, ReferenceDispatch
 
 __all__ = ["SlaterKosterHamiltonian", "slater_koster"]
@@ -32,10 +32,12 @@ def _hamiltonian(
             f"the model has no parameters for the atomic numbers {sorted(missing)}"
         )
     geometry = si.Geometry(
-        geometry.xyz, [by_Z[Z] for Z in geometry.atoms.Z], lattice=geometry.lattice
+        geometry.xyz,
+        [by_Z[Z] for Z in geometry.atoms.Z],
+        lattice=geometry.lattice,
     )
     # room for all elements of a row, sparse rows grow slowly
-    n = NeighborFinder(geometry.translate2uc(), R=sk.R).find_neighbors().n_neighbors
+    n = np.bincount(_neighbor_pairs(geometry, sk.R)[0], minlength=geometry.na)
     nnzpr = int(n.max() + 1) * int(geometry.atoms.orbitals.max())
     H = si.Hamiltonian(geometry, nnzpr=nnzpr, orthogonal=sk.orthogonal)
     H.construct(sk)

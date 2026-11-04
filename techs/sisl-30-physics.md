@@ -331,9 +331,14 @@ A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors
 - Each call writes the rows of the atom `ia`, one `H[io, cols] = data` for each orbital row.
   The pair form `H[rows, cols]` loops in Python.
 - The cache is removed when all atoms are written. Thus `construct` keeps the memory only while it runs.
-- `NeighborFinder` does not accept atoms outside the unit cell. `_elements` moves each atom into the cell
-  along the periodic directions (`lattice.pbc`), and moves all atoms by one vector along the other directions.
-  The supercell index is then `isc + s_I - s_J`.
+- `NeighborFinder` does not accept atoms outside the unit cell. `_neighbor_pairs` searches in a copy:
+  - Along a periodic direction (`lattice.pbc`), each atom moves into the cell by `s_I` cells.
+    The supercell index is then `isc + s_I - s_J`.
+  - Along a non-periodic direction, all atoms move by one vector, and the lattice vector becomes
+    an integer times longer, so that all atoms fit. There are no images along it, thus its length has no effect.
+    A molecule can then cross 0 and be longer than the cell.
+  - The matrix elements use the original coordinates.
+- `_neighbor_pairs` is also the neighbor count for `nnzpr` in the toolbox.
 - Pairs outside `nsc` of `H` are removed. This is the same as `Geometry.close` in `construct`.
 - Elements that are zero (out of the range of each integral) are not stored.
 - In a non-orthogonal `H`, an atom without parameters (its tag is not in the model) gets the on-site overlap 1,

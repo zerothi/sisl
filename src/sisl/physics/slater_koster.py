@@ -9,6 +9,8 @@ from numbers import Real
 
 import numpy as np
 
+from sisl._core.geometry import Geometry
+from sisl._core.lattice import Lattice
 from sisl._internal import set_module
 from sisl.messages import warn
 
@@ -106,6 +108,32 @@ def _integral(V, R: float | None) -> tuple[Callable, float]:
     Rs, Vs = (np.asarray(x, dtype=np.float64) for x in V)
     Vs = np.append(Vs, 0.0)
     return (lambda r: Vs[np.searchsorted(Rs, r)]), Rs[-1]
+
+
+def _neighbor_pairs(geometry: Geometry, R: float):
+    """Atom pairs ``(I, J, isc)`` within `R`, inside the supercell of `geometry`"""
+    from sisl.geom import NeighborFinder
+
+    # NeighborFinder needs all atoms in the unit cell: move them into the cell along
+    # the periodic axes, and make the other lattice vectors long enough for all atoms
+    pbc = geometry.lattice.pbc
+    fxyz = geometry.fxyz
+    shift = np.floor(fxyz)
+    lo = fxyz[:, ~pbc].min(axis=0)
+    shift[:, ~pbc] = lo
+    cell = geometry.cell.copy()
+    cell[~pbc] *= (np.floor(fxyz[:, ~pbc].max(axis=0) - lo) + 1)[:, None]
+    lattice = Lattice(
+        cell, nsc=geometry.nsc, boundary_condition=geometry.lattice.boundary_condition
+    )
+    wrapped = Geometry(
+        geometry.xyz - shift @ geometry.cell, geometry.atoms, lattice=lattice
+    )
+    neighs = NeighborFinder(wrapped, R=R).find_neighbors()
+    I, J = neighs.I, neighs.J
+    isc = neighs.isc + np.rint(shift[I] - shift[J]).astype(np.int64)
+    keep = (np.abs(isc) <= geometry.nsc // 2).all(axis=1)
+    return I[keep], J[keep], isc[keep]
 
 
 @set_module("sisl.physics")
@@ -234,8 +262,6 @@ class SlaterKoster:
 
     def _elements(self, H) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """All matrix elements of `H` as a CSR (pointer, column, data)"""
-        from sisl.geom import NeighborFinder
-
         if H.spin.kind == Spin.NAMBU:
             raise NotImplementedError(
                 f"{self.__class__.__name__} does not support Nambu spin"
@@ -285,17 +311,7 @@ class SlaterKoster:
                 Hv.append(np.full(io.shape, 0.0 if E is None else E))
                 Sv.append(np.ones(io.shape))
 
-        # NeighborFinder needs the atoms in the unit cell
-        shift = np.floor(geometry.fxyz)
-        pbc = geometry.lattice.pbc
-        shift[:, ~pbc] = shift[:, ~pbc].min(axis=0)
-        wrapped = geometry.copy()
-        wrapped.xyz = geometry.xyz - shift @ geometry.cell
-        neighs = NeighborFinder(wrapped, R=self.R).find_neighbors()
-        I, J = neighs.I, neighs.J
-        isc = neighs.isc + (shift[I] - shift[J]).astype(np.int64)
-        keep = (np.abs(isc) <= geometry.nsc // 2).all(axis=1)
-        I, J, isc = I[keep], J[keep], isc[keep]
+        I, J, isc = _neighbor_pairs(geometry, self.R)
         d = geometry.xyz[J] + isc @ geometry.cell - geometry.xyz[I]
         r = np.linalg.norm(d, axis=1)
         d /= r[:, None]

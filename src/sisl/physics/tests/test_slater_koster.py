@@ -119,6 +119,20 @@ def test_sk_chain(spin):
     assert H.nnz == 4
 
 
+def test_sk_open_chain():
+    # chain along a non-periodic axis, longer than the cell and starting below 0
+    s = sisl.Atom(1, sisl.AtomicOrbital("1s", R=1.1), tag="H")
+    N = 25
+    geom = sisl.Geometry([[0, 0, z] for z in range(-5, N - 5)], s, lattice=[10, 10, 10])
+    geom.set_nsc([3, 3, 1])
+    geom.lattice.set_boundary_condition(c=sisl.Lattice.BC.UNKNOWN)
+    sk = sisl.SlaterKoster({("H", "H"): {("1s", "1s"): {"sigma": -1.0}}}, R=1.1)
+    H = sisl.Hamiltonian(geom)
+    H.construct(sk)
+    E = -2 * np.cos(np.arange(1, N + 1) * np.pi / (N + 1))
+    assert np.allclose(H.eigh(), np.sort(E))
+
+
 def test_sk_errors():
     s = sisl.Atom(1, sisl.AtomicOrbital("1s", R=1.0), tag="H")
     H = sisl.Hamiltonian(sisl.Geometry([0, 0, 0], s, lattice=[1, 10, 10]))
