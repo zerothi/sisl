@@ -206,7 +206,8 @@ class skfSileDFTB(SileDFTB):
         The tags are the elements and the rest of the name, e.g. ``N_short`` and ``H_short``.
         A file holds the integrals with the lower :math:`l` on its first atom, thus a pair
         of two species needs both files. Integrals of equal :math:`l` must agree in both files.
-        A homonuclear file also gives the on-site energies.
+        A homonuclear file also gives the on-site energies. A tag with a suffix
+        (``N_short``) gets those of ``N-N.skf`` if ``N-N_short.skf`` is not there.
         The model has the overlap integrals, thus it is non-orthogonal.
         The interpolation is that of DFTB+: a polynomial through 8 grid points,
         and a polynomial of 5th order to 0 in 1 Bohr after the last grid point.
@@ -266,7 +267,16 @@ class skfSileDFTB(SileDFTB):
                 )
         tables = {XY: sile._r_table(A == B) for XY, sile in files.items()}
 
-        dist, table, onsite = tables[A, B]
+        dist, table, E = tables[A, B]
+        onsite = {A: E} if A == B else {}
+        # a tag with a suffix gets the on-site energies of X-X.skf, if X-X{rest}.skf is not there
+        for X, e in ((A, eA), (B, eB)):
+            if (
+                X not in onsite
+                and not name(e, e, rest).is_file()
+                and name(e, e, "").is_file()
+            ):
+                onsite[X] = self.__class__(name(e, e, ""))._r_table(True)[2]
         if (B, A) in tables:
             dist2, table2, _ = tables[B, A]
             if dist2 != dist or table2.shape != table.shape:
@@ -298,8 +308,10 @@ class skfSileDFTB(SileDFTB):
                     out.setdefault((X, Y), {})[key] = {
                         mu: lambda r, f=f, i=i: f(r)[..., i] for mu, i in zip(_MU, c)
                     }
-        if onsite is not None:
-            onsite = {A: {label: onsite[l] * _Ha for l, label in ls[A].items()}}
+        onsite = {
+            X: {label: E[l] * _Ha for l, label in ls[X].items()}
+            for X, E in onsite.items()
+        }
         return SlaterKoster(hopping, onsite=onsite, overlap=overlap, R=R)
 
 

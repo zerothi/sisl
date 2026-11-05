@@ -112,6 +112,11 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   Without this rule, `C-Cl.skf` and `Co-C.skf` with only `<Element1>C</Element1>` would be `C-C` files.
 - The tags are the elements with the rest of the name: `N-H_short.skf` gives `N_short` and `H_short`
   (decided by the maintainer). Thus a model of the `_short` files is for atoms with these tags.
+- The on-site energies of a tag with a suffix (`N_short`) come from `N-N_short.skf` if it is there,
+  else from `N-N.skf` (decided by the maintainer). The heteronuclear call adds them only in the second case:
+  else the user reads `N-N_short.skf`, and `merge` would get them twice. Two files with a suffix and
+  one element (`N-H_short.skf`, `N-C_short.skf`) both add `N_short`, and `merge` raises. No set of
+  `dftb-slako` 24-043 has such files (`pbc` has only `N-H_short.skf` and `H-N_short.skf`).
 - The order of `A` and `B` comes from the file name, not from the documentation. DFTB+ uses the file name,
   and the documentation can be wrong: `H-B.skf` of `borg` and five `H-X.skf` of `hyb`, `chalc` and `miomod-nh`
   have the elements of `X-H.skf`; `hyb` `As-As.skf` has `<Element1>Si</Element1>`.

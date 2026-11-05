@@ -301,6 +301,12 @@ def test_skf_default_shells(tmp_path):
         (_shell("1s"), _shell("1s")),
         (_shell("2p"), _shell("1s")),
     }
+    # Y_short gets the on-site energies of Y-Y; X_short those of X-X_short (read it)
+    assert set(sk._onsite) == {"Y_short"}
+    assert np.allclose(sk._onsite["Y_short"][_shell("1s")], -0.3 * _Ha)
+    homo = sisl.get_sile(tmp_path / "X-X_short.skf").read_slater_koster()
+    sk = sisl.SlaterKoster.merge(homo, sk)
+    assert set(sk._onsite) == {"X_short", "Y_short"}
     # given shells win
     sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster(
         {"Y_short": ["2s"]}
