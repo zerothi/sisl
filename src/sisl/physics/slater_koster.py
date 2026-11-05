@@ -8,6 +8,7 @@ from collections.abc import Callable, Mapping
 
 import numpy as np
 
+from sisl._core.atom import Atom, Atoms, _ptbl
 from sisl._core.geometry import Geometry
 from sisl._core.lattice import Lattice
 from sisl._core.orbital import AtomicOrbital
@@ -404,6 +405,46 @@ class SlaterKoster:
     def orthogonal(self) -> bool:
         """Whether the model has no overlap integrals"""
         return self._overlap is None
+
+    @property
+    def atoms(self) -> Atoms:
+        """Atoms of the model, one for each tag, with the orbitals of its shells
+
+        The orbitals of a shell are ``m = -l..l``, and the shells are sorted by
+        ``(n, l, zeta, P)``, as in Siesta. The orbitals have no radial function.
+        Their range `~sisl.Orbital.R` is the largest range of the integrals of the atom:
+        thus ``find_nsc`` gives the supercell that `~sisl.physics.Hamiltonian.construct` needs.
+        The element is the start of the tag, e.g. ``"C_edge"`` is carbon.
+
+        Examples
+        --------
+        >>> geometry = sisl.geom.graphene(atoms=sk.atoms["C"])
+        """
+        atoms = []
+        for tag in sorted(self._tags):
+            shells = set(self._onsite.get(tag, ()))
+            ranges = []
+            for (A, _), pairs in [
+                *self._hopping.items(),
+                *(self._overlap or {}).items(),
+            ]:
+                if A == tag:
+                    shells.update(sa for sa, _ in pairs)
+                    ranges.extend(r for funcs in pairs.values() for *_, r in funcs)
+            R = max(ranges, default=None)
+            symbol = next((tag[:n] for n in (2, 1) if tag[:n] in _ptbl._Z_int), None)
+            if symbol is None:
+                raise ValueError(
+                    f"{self.__class__.__name__}.atoms needs tags that start with "
+                    f"an element symbol, got {tag!r}"
+                )
+            orbitals = [
+                AtomicOrbital(n=n, l=l, m=m, zeta=zeta, P=P, R=R)
+                for n, l, zeta, P in sorted(shells)
+                for m in range(-l, l + 1)
+            ]
+            atoms.append(Atom(symbol, orbitals, tag=tag))
+        return Atoms(atoms)
 
     @classmethod
     def from_hamiltonian(cls, H, atol: float = 0.01) -> SlaterKoster:

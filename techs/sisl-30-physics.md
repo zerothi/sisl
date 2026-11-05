@@ -382,6 +382,22 @@ A model of a material can then come from one source for each species pair, for e
 - A merge of orthogonal and non-orthogonal models raises: `construct` would warn for the pairs without overlap.
 - Each integral keeps its function and its range. `R` is the largest range.
 
+### Atoms of a model
+
+`SlaterKoster.atoms` makes the atoms of the model, thus a user builds a geometry from the model alone.
+
+- One `Atom` for each tag, in sorted order. Its shells are the shells of the tag in the on-site energies,
+  the hopping and the overlap. Each shell has `m = -l..l`, and the shells are sorted by `(n, l, zeta, P)`.
+  This is the order of Siesta: `test_sk_atoms_siesta` compares the atoms of `from_hamiltonian` with the Siesta basis.
+- The orbitals have no radial function. `R` of each orbital is the largest range of the integrals of its atom.
+  This is the bond cutoff of the tight-binding convention of sisl, not the cutoff of a radial function:
+  `find_nsc` (method `atoms`, also in `sisl.geom`) uses `maxR` as the largest distance of two atoms.
+  Thus `find_nsc` gives a supercell that holds all pairs of the model. Half the range (`R1 + R2`) would give
+  a supercell that is too small. Each parsed integral keeps its range, `(imu, func, range)`, for this.
+  A tag without integrals has no range (`R` is not set).
+- The element is the longest start of the tag (2 or 1 characters) that is an element symbol,
+  for example `"C_edge"` is carbon. A tag without an element symbol raises (decided by the maintainer).
+
 ### Extraction from a Hamiltonian
 
 `SlaterKoster.from_hamiltonian` is the inverse of `construct`, as in McMahan and Klepeis (1997).

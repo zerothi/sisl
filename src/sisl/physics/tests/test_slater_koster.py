@@ -351,3 +351,51 @@ def test_sk_merge():
             sisl.SlaterKoster.merge(sk, sisl.SlaterKoster(**dup))
     with pytest.raises(ValueError, match="orthogonal"):
         sisl.SlaterKoster.merge(sk, sisl.SlaterKoster(BB))
+
+
+def test_sk_atoms():
+    sk = sisl.SlaterKoster(
+        {
+            ("C", "C"): {
+                ("2p", "2p"): {"sigma": (2.1, 0.4), "pi": (1.1, -0.2)},
+                ("2s", "2s"): {"sigma": (1.0, 0)},
+                ("2s", "2p"): {"sigma": (1.0, 0)},
+            },
+            ("H_end", "C"): {("1s", "2p"): {"sigma": (1.2, -0.5)}},
+        },
+        onsite={"C": {"2s": -1.0, "2p": 1.0}, "H_end": {"1s": 0.0}},
+    )
+    atoms = sk.atoms
+    assert [(a.tag, a.Z) for a in atoms.atom] == [("C", 6), ("H_end", 1)]
+    C, H = atoms["C"], atoms["H_end"]
+    assert [(o.n, o.l, o.m) for o in C] == [(2, 0, 0)] + [(2, 1, m) for m in (-1, 0, 1)]
+    assert np.allclose(C.R, 2.1) and np.allclose(H.R, 1.2)
+    S = {("H_end", "H_end"): {("1s", "1s"): {"sigma": (1.3, 0.1)}}}
+    assert np.allclose(sisl.SlaterKoster({}, overlap=S).atoms["H_end"].R, 1.3)
+
+    # find_nsc gives the C-C hopping at 2 lattice vectors
+    geom = sisl.geom.sc(1.0, C)
+    assert np.all(geom.nsc == 5)
+    ref = sisl.Geometry(geom.xyz, _atom("C", ["2s", "2p"]), lattice=geom.lattice)
+    H, Href = sisl.Hamiltonian(geom), sisl.Hamiltonian(ref)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        H.construct(sk)
+        Href.construct(sk)
+    k = [0.1, 0.2, 0.3]
+    assert np.allclose(H.Hk(k).toarray(), Href.Hk(k).toarray())
+
+    with pytest.raises(ValueError, match="element symbol"):
+        sisl.SlaterKoster({}, onsite={"X1": {"1s": 0}}).atoms
+
+
+def test_sk_atoms_siesta(sisl_files):
+    H = sisl.get_sile(
+        sisl_files("siesta", "Si_pdos_k", "Si_pdos.fdf")
+    ).read_hamiltonian()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", sisl.SislWarning)
+        sk = sisl.SlaterKoster.from_hamiltonian(H)
+    key = lambda atom: [(o.n, o.l, o.m, o.zeta, o.P) for o in atom]
+    ref = H.geometry.atoms.atom[0]
+    assert key(sk.atoms[ref.tag]) == key(ref)

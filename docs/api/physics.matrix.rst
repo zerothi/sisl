@@ -55,8 +55,7 @@ into one model:
 >>> sk = sisl.SlaterKoster.merge(
 ...     *(sisl.get_sile(f).read_slater_koster() for f in ["O-O.skf", "O-H.skf", "H-H.skf"])
 ... )
->>> O = sisl.Atom(8, [sisl.AtomicOrbital(o, R=5) for o in ["2s", "2py", "2pz", "2px"]], tag="O")
->>> H = sisl.Atom(1, sisl.AtomicOrbital("1s", R=5), tag="H")
+>>> O, H = sk.atoms["O"], sk.atoms["H"]
 >>> water = sisl.Geometry(
 ...     [[0, 0, 0], [0.757, 0.586, 0], [-0.757, 0.586, 0]], [O, H, H], lattice=[10, 10, 10]
 ... )
@@ -70,7 +69,8 @@ array([-24.85, -12.6 , -10.39,  -9.04,  10.2 ,  15.46])
   same pair: read ``N-H_short.skf`` in place of ``N-H.skf``, with ``N-N.skf`` and ``H-H.skf``.
 - **Shells.** By default, the shells of an element are the basis that its homonuclear file
   (``O-O.skf``) documents, here ``2s 2p`` for O and ``1s`` for H. The orbitals of the atoms
-  must have these labels. Use the ``shells`` argument (a shell list for each tag) to select
+  must have these labels: `SlaterKoster.atoms` has the atoms with these orbitals, and a range
+  that gives the supercell of the model. Use the ``shells`` argument (a shell list for each tag) to select
   other shells, or when the folder has no homonuclear file (for example the ``hyb`` set
   has no ``H-H.skf``, thus ``Ga-H.skf`` needs the shells of H):
 
