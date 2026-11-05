@@ -144,7 +144,8 @@ The report has two parts:
 
 A last part names the commits without a `Prompt:` line.
 The script stops at the first trailer line, for example `Assisted-by:`.
-Use it to compare the requests with the change of a branch ([agent-06 · Review](agent-06-review.md)).
+Use it to compare the requests with the change of a branch
+([agent-06 · Compare the requests with the change](agent-06-review.md#compare-the-requests-with-the-change)).
 
 ## Rules for the scripts
 

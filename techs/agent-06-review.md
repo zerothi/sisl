@@ -14,6 +14,17 @@ Read the changes as [dev-09 · Read before you run](dev-09-review.md#read-before
 before you run a test, a build or a hook of the branch.
 If a change is not clear, do not run it. Report it.
 
+## Compare the requests with the change
+
+Read the user prompts and the sources of the commits before you read the diff:
+`python tools/dev/prompts.py main..HEAD` ([dev-11 · prompts](dev-11-code-tools.md#prompts)).
+Then compare them with the change. Report:
+
+- A change that no prompt asks for, for example a side task or an option.
+- A prompt that the change does not do.
+- A decision that cites no source, or a source that the change does not use.
+- A commit of an agent without a `Prompt:` line ([agent-02](agent-02-git.md#user-prompts-in-the-message)).
+
 ## Report the review
 
 Report as [dev-09 · Report the review](dev-09-review.md#report-the-review) tells.
