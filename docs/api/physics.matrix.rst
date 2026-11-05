@@ -66,8 +66,8 @@ into one model:
 array([-24.85, -12.6 , -10.39,  -9.04,  10.2 ,  15.46])
 
 - **Tags.** The atoms are matched by their `~sisl.Atom.tag`, which must be the element
-  of the files (``"O"`` and ``"H"`` above). A suffix in a file name is part of the tags:
-  ``N-H_short.skf`` gives a model for atoms with the tags ``N_short`` and ``H_short``.
+  of the files (``"O"`` and ``"H"`` above). A file with a suffix is another model of the
+  same pair: read ``N-H_short.skf`` in place of ``N-H.skf``, with ``N-N.skf`` and ``H-H.skf``.
 - **Shells.** By default, the shells of an element are the basis that its homonuclear file
   (``O-O.skf``) documents, here ``2s 2p`` for O and ``1s`` for H. The orbitals of the atoms
   must have these labels. Use the ``shells`` argument to select other shells, or when the
@@ -76,7 +76,6 @@ array([-24.85, -12.6 , -10.39,  -9.04,  10.2 ,  15.46])
   >>> sk_OH = sisl.get_sile("O-H.skf").read_slater_koster({"O": ["2s", "2p"], "H": ["1s"]})
 
 - **On-site energies** come from the homonuclear files. Thus read ``O-O.skf`` and ``H-H.skf`` too.
-  A tag with a suffix gets those of ``N-N_short.skf``, or of ``N-N.skf`` if that file is not there.
 - **Documentation.** :meth:`~sisl.io.dftb.skfSileDFTB.read_documentation` returns the XML
   documentation at the end of a file: the author, the elements and the basis of the set.
 - Files with f shells (the extended format, first character ``@``) are not supported.

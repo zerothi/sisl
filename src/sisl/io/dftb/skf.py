@@ -203,11 +203,11 @@ class skfSileDFTB(SileDFTB):
         The elements come from the documentation of the file (`read_documentation`),
         and their order from the file name. The name of ``B-A.skf`` swaps only the
         two elements, e.g. ``N-H_short.skf`` and ``H-N_short.skf``.
-        The tags are the elements and the rest of the name, e.g. ``N_short`` and ``H_short``.
+        The tags are the elements: a file with a suffix (``N-H_short.skf``) is another
+        model of the same pair as ``N-H.skf``.
         A file holds the integrals with the lower :math:`l` on its first atom, thus a pair
         of two species needs both files. Integrals of equal :math:`l` must agree in both files.
-        A homonuclear file also gives the on-site energies. A tag with a suffix
-        (``N_short``) gets those of ``N-N.skf`` if ``N-N_short.skf`` is not there.
+        A homonuclear file also gives the on-site energies.
         The model has the overlap integrals, thus it is non-orthogonal.
         The interpolation is that of DFTB+: a polynomial through 8 grid points,
         and a polynomial of 5th order to 0 in 1 Bohr after the last grid point.
@@ -219,8 +219,8 @@ class skfSileDFTB(SileDFTB):
         shells :
             the shell labels (``<n><l>[Z<zeta>][P]``) of each tag, one for each :math:`l`,
             e.g. ``{"O": ["2s", "2p"], "H": ["1s"]}``. Only these shells get integrals.
-            A tag without shells gets the ``<Basis>`` of the homonuclear file of its element
-            next to this file: ``X-X_short.skf`` for ``A-B_short.skf``, else ``X-X.skf``.
+            A tag without shells gets the ``<Basis>`` of its homonuclear file next to this file:
+            ``X-X_short.skf`` for ``A-B_short.skf``, else ``X-X.skf``.
 
         Examples
         --------
@@ -229,15 +229,12 @@ class skfSileDFTB(SileDFTB):
         ... )
         """
         file = Path(self.file)
-        eA, sep, eB, rest = self._r_pair()
-        A, B = eA + rest, eB + rest
+        A, sep, B, rest = self._r_pair()
         name = lambda X, Y, rest: file.with_name(f"{X}{sep}{Y}{rest}{file.suffix}")
-        other = name(eB, eA, rest)
+        other = name(B, A, rest)
         shells = dict(shells or {})
-        for X, e in {A: eA, B: eB}.items():
-            if X in shells:
-                continue
-            names = list(dict.fromkeys([name(e, e, rest), name(e, e, "")]))
+        for X in {A, B} - shells.keys():
+            names = list(dict.fromkeys([name(X, X, rest), name(X, X, "")]))
             homo = [f for f in names if f.is_file()]
             if not homo:
                 raise ValueError(
@@ -267,16 +264,7 @@ class skfSileDFTB(SileDFTB):
                 )
         tables = {XY: sile._r_table(A == B) for XY, sile in files.items()}
 
-        dist, table, E = tables[A, B]
-        onsite = {A: E} if A == B else {}
-        # a tag with a suffix gets the on-site energies of X-X.skf, if X-X{rest}.skf is not there
-        for X, e in ((A, eA), (B, eB)):
-            if (
-                X not in onsite
-                and not name(e, e, rest).is_file()
-                and name(e, e, "").is_file()
-            ):
-                onsite[X] = self.__class__(name(e, e, ""))._r_table(True)[2]
+        dist, table, onsite = tables[A, B]
         if (B, A) in tables:
             dist2, table2, _ = tables[B, A]
             if dist2 != dist or table2.shape != table.shape:
@@ -308,10 +296,8 @@ class skfSileDFTB(SileDFTB):
                     out.setdefault((X, Y), {})[key] = {
                         mu: lambda r, f=f, i=i: f(r)[..., i] for mu, i in zip(_MU, c)
                     }
-        onsite = {
-            X: {label: E[l] * _Ha for l, label in ls[X].items()}
-            for X, E in onsite.items()
-        }
+        if onsite is not None:
+            onsite = {A: {label: onsite[l] * _Ha for l, label in ls[A].items()}}
         return SlaterKoster(hopping, onsite=onsite, overlap=overlap, R=R)
 
 

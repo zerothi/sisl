@@ -225,27 +225,22 @@ def test_skf_errors(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "name, A, B, rest",
-    [
-        ("{}-{}", "X", "Y", ""),
-        ("{}{}", "Hf", "H", ""),
-        ("{}-{}_short", "C", "Cl", "_short"),
-    ],
+    "name, A, B", [("{}-{}", "X", "Y"), ("{}{}", "Hf", "H"), ("{}-{}_short", "C", "Cl")]
 )
-def test_skf_names(tmp_path, name, A, B, rest):
-    tA, tB = A + rest, B + rest
-    shells = {tA: _SHELLS, tB: _SHELLS}
+def test_skf_names(tmp_path, name, A, B):
+    # a suffix is not part of the tags
+    shells = {A: _SHELLS, B: _SHELLS}
     ab, ba = (tmp_path / f"{name.format(*e)}.skf" for e in ((A, B), (B, A)))
     # the documentation of the partner has the order of the other file
     _write(ab, _scale(), elements=[A, B])
     _write(ba, _scale(-2), elements=[A, B])
     assert f"<Element2>{B}</Element2>" in sisl.get_sile(ab).read_documentation()
     sk = sisl.get_sile(ab).read_slater_koster(shells)
-    assert sk._tags == {tA, tB}
+    assert sk._tags == {A, B}
 
     def same(sk, ref):
         r = np.array([1.1, 2.3])
-        for AB in [(tA, tB), (tB, tA)]:
+        for AB in [(A, B), (B, A)]:
             key = (_shell("1s"), _shell("2p"))
             assert np.allclose(
                 dict(sk._hopping[AB][key])[0](r), dict(ref._hopping[AB][key])[0](r)
@@ -297,23 +292,15 @@ def test_skf_default_shells(tmp_path):
     for name in ["X-Y_short", "Y-X_short"]:
         _write(tmp_path / f"{name}.skf", _scale(), elements="XY", basis=["4f", "4f"])
     sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster()
-    assert set(sk._hopping["X_short", "Y_short"]) == {
+    assert set(sk._hopping["X", "Y"]) == {
         (_shell("1s"), _shell("1s")),
         (_shell("2p"), _shell("1s")),
     }
-    # Y_short gets the on-site energies of Y-Y; X_short those of X-X_short (read it)
-    assert set(sk._onsite) == {"Y_short"}
-    assert np.allclose(sk._onsite["Y_short"][_shell("1s")], -0.3 * _Ha)
-    homo = sisl.get_sile(tmp_path / "X-X_short.skf").read_slater_koster()
-    sk = sisl.SlaterKoster.merge(homo, sk)
-    assert set(sk._onsite) == {"X_short", "Y_short"}
+    # on-site energies only from the homonuclear files
+    assert not sk._onsite
     # given shells win
-    sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster(
-        {"Y_short": ["2s"]}
-    )
-    assert (_shell("1s"), _shell("2s")) in sk._hopping["X_short", "Y_short"]
+    sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster({"Y": ["2s"]})
+    assert (_shell("1s"), _shell("2s")) in sk._hopping["X", "Y"]
     _write(tmp_path / "X-Z_short.skf", _scale(), elements="XZ")
     with pytest.raises(ValueError, match="no Z-Z_short.skf or Z-Z.skf"):
-        sisl.get_sile(tmp_path / "X-Z_short.skf").read_slater_koster(
-            {"X_short": ["1s"]}
-        )
+        sisl.get_sile(tmp_path / "X-Z_short.skf").read_slater_koster({"X": ["1s"]})
