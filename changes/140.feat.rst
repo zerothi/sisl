@@ -4,3 +4,8 @@
 s, p and d shells, through ``H.construct(sk)``. An integral is a constant,
 a step function ``(R_list, values)`` or a function of the distance.
 Values can depend on the spin: ``[up, down]`` or a 2x2 spin matrix.
+
+`SlaterKoster.from_hamiltonian` extracts the two-center integrals from a
+Hamiltonian, for example of Siesta, as in McMahan and Klepeis (1997).
+The integrals of the bonds of each length are a least-squares fit.
+``H - H2`` with ``H2.construct(sk)`` is the part that is not two-center.

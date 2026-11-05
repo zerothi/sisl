@@ -57,6 +57,15 @@ def test_vogl1983_known_values():
     assert np.allclose(
         H.eigh(k=[0.5, 0, 0.5])[[3, 4, 5]], [-2.89, 2.03, 2.38], atol=5e-3
     )
+    # the integrals extracted from H (McMahan 1997) give the Bloch matrix of Table A
+    H2 = sisl.Hamiltonian(H.geometry)
+    H2.construct(sisl.SlaterKoster.from_hamiltonian(H))
+    kc = [0.3, -0.2, 0.7] @ H.geometry.rcell
+    assert np.allclose(
+        H2.eigh(k=[0.3, -0.2, 0.7]),
+        np.linalg.eigvalsh(_vogl_bloch("GaAs", kc)),
+        atol=1e-10,
+    )
     # Klimeck et al. 2000, Table 1: Si conduction band minimum 1.171 eV at 0.731 (2 pi / a) along Delta
     H = slater_koster.H.ref.Vogl1983("Si")
     a = 4 * 2.35 / 3**0.5

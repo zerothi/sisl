@@ -11,6 +11,7 @@ import numpy as np
 from sisl._core.geometry import Geometry
 from sisl._core.lattice import Lattice
 from sisl._core.orbital import AtomicOrbital
+from sisl._core.sparse import _to_coo
 from sisl._internal import set_module
 from sisl.messages import warn
 
@@ -217,6 +218,24 @@ def _pack(v: np.ndarray, spin: Spin, dtype) -> np.ndarray:
     return out
 
 
+def _unpack(v: np.ndarray, spin: Spin) -> np.ndarray:
+    """Inverse of `_pack`: the ``(n, K)`` stored components as spin values"""
+    if spin.kind == Spin.UNPOLARIZED:
+        return v[:, 0]
+    if spin.kind == Spin.POLARIZED:
+        return v
+    if np.iscomplexobj(v):
+        uu, dd, ud = v[:, 0], v[:, 1], v[:, 2]
+        du = v[:, 3] if spin.kind == Spin.SPINORBIT else np.conj(ud)
+    else:
+        uu, dd, ud = v[:, 0], v[:, 1], v[:, 2] + 1j * v[:, 3]
+        du = np.conj(ud)
+        if spin.kind == Spin.SPINORBIT:
+            uu, dd = uu + 1j * v[:, 4], dd + 1j * v[:, 5]
+            du = v[:, 6] + 1j * v[:, 7]
+    return np.stack([np.stack([uu, ud], -1), np.stack([du, dd], -1)], -2)
+
+
 def _neighbor_pairs(geometry: Geometry, R: float):
     """Atom pairs ``(I, J, isc)`` within `R`, inside the supercell of `geometry`"""
     from sisl.geom import NeighborFinder
@@ -384,6 +403,160 @@ class SlaterKoster:
     def orthogonal(self) -> bool:
         """Whether the model has no overlap integrals"""
         return self._overlap is None
+
+    @classmethod
+    def from_hamiltonian(cls, H, atol: float = 0.01) -> SlaterKoster:
+        r"""Two-center integrals that fit the matrix elements of `H` best
+
+        The method of :cite:`McMahan1997`. For each pair of shells, the bonds are
+        sorted by length, and a bond longer than the previous by more than `atol` starts a
+        new group. The integrals of a group are the least-squares fit of the blocks of all its
+        bonds (both directions of a pair of equal shells). For a complete shell this is the
+        projection of each block on the angular factors.
+        The on-site energy of a shell is the mean of its diagonal elements.
+
+        The integrals are step functions: the step between two groups is at the midpoint, and
+        the last group ends `atol` after its longest bond. Thus ``H2.construct(sk)`` on the
+        geometry of `H` gives the two-center part of `H`, and ``H - H2`` is the rest
+        (three-center terms, crystal field, atomic spin-orbit coupling, and the
+        blocks between shells of one atom).
+
+        Parameters
+        ----------
+        H :
+            the Hamiltonian, with `~sisl.AtomicOrbital` orbitals up to :math:`l=2`.
+            Shift the energies to the reference that you want first (`~sisl.Hamiltonian.shift`):
+            with an overlap, a shift :math:`E_0` changes the hopping integrals by
+            :math:`-E_0 S`.
+        atol :
+            the largest difference of two bond lengths in one group (Ang).
+
+        Examples
+        --------
+        >>> sk = sisl.SlaterKoster.from_hamiltonian(H)
+        >>> H2 = H.copy()
+        >>> H2.construct(sk)
+
+        Notes
+        -----
+        When the bonds of a group do not determine all integrals (for example
+        :math:`V_{pp\sigma}` from only :math:`p_z` orbitals in a plane), the integrals
+        are the minimum-norm solution, with a warning.
+        """
+        if H.spin.kind == Spin.NAMBU:
+            raise NotImplementedError(f"{cls.__name__} does not support Nambu spin")
+        geometry = H.geometry
+        atoms = geometry.atoms
+        tags = [atom.tag for atom in atoms.atom]
+        species = atoms.species
+        shells = [_atom_shells(atom) for atom in atoms.atom]
+        for atom, sh in zip(atoms.atom, shells):
+            if any(s[1] > 2 for s in sh):
+                raise NotImplementedError(
+                    f"{cls.__name__} supports shells up to l=2, the atom with tag "
+                    f"{atom.tag!r} has more"
+                )
+        no, na, firsto = geometry.no, geometry.na, geometry.firsto
+        nH = H.dim - (0 if H.orthogonal else 1)
+
+        rows, cols, D = _to_coo(H._csr)
+        rows, cols = rows.astype(np.int64), cols.astype(np.int64)
+        key = rows * H.shape[1] + cols
+        order = np.argsort(key)
+        key, D = key[order], D[order]
+
+        def block(r, c):
+            k = r * H.shape[1] + c
+            i = np.searchsorted(key, k).clip(max=len(key) - 1)
+            return np.where((key[i] == k)[..., None], D[i], 0)
+
+        # unique atom pairs (I, J in the supercell)
+        I = geometry.o2a(rows)
+        Jsc = geometry.o2a(cols % no) + na * (cols // no)
+        pair = np.unique(I * (na * geometry.n_s) + Jsc)
+        I, Jsc = np.divmod(pair, na * geometry.n_s)
+        J, isc = np.divmod(Jsc, na)[::-1]
+        d = (
+            geometry.xyz[J]
+            + geometry.lattice.sc_off[isc] @ geometry.cell
+            - geometry.xyz[I]
+        )
+        r = np.linalg.norm(d, axis=1)
+
+        onsite = {}
+        for ia in I[I == Jsc]:
+            for sa, (oi, _) in shells[species[ia]].items():
+                io = firsto[ia] + oi
+                onsite.setdefault(tags[species[ia]], {}).setdefault(sa, []).append(
+                    block(io, io)[:, :nH]
+                )
+
+        bond = I != Jsc
+        I, J, isc, d, r = I[bond], J[bond], isc[bond], d[bond], r[bond]
+        d /= r[:, None]
+        spair = species[I] * atoms.nspecies + species[J]
+        data = {}
+        for ip in np.unique(spair):
+            isp, jsp = divmod(ip, atoms.nspecies)
+            AB = (tags[isp], tags[jsp])
+            idx = (spair == ip).nonzero()[0]
+            for sa, (oi, mi) in shells[isp].items():
+                for sb, (oj, mj) in shells[jsp].items():
+                    # the reverse direction of the other bonds gives the reverse key
+                    if (AB, sa, sb) > (AB[::-1], sb, sa):
+                        continue
+                    G = _sk_factors(sa[1], sb[1], d[idx])[:, mi][:, :, mj]
+                    io = (firsto[I[idx], None] + oi)[:, :, None]
+                    jo = (firsto[J[idx]] + isc[idx] * no)[:, None, None] + oj
+                    data.setdefault((AB, sa, sb), []).append((r[idx], G, block(io, jo)))
+
+        hopping, overlap, undetermined = {}, {}, []
+        for (AB, sa, sb), parts in data.items():
+            r, G, B = (np.concatenate(x) for x in zip(*parts))
+            order = np.argsort(r, kind="stable")
+            r, G, B = r[order], G[order], B[order]
+            groups = np.split(np.arange(len(r)), np.flatnonzero(np.diff(r) > atol) + 1)
+            V = []
+            for g in groups:
+                Vg, _, rank, _ = np.linalg.lstsq(
+                    G[g].reshape(-1, G.shape[-1]),
+                    B[g].reshape(-1, B.shape[-1]),
+                    rcond=None,
+                )
+                if rank < G.shape[-1]:
+                    undetermined.append(
+                        f"{AB}: ({_label(sa)}, {_label(sb)}) at {r[g[0]]:.4f} Ang"
+                    )
+                V.append(Vg)
+            V = np.stack(V, axis=1)
+            R = [(r[g1[-1]] + r[g2[0]]) / 2 for g1, g2 in zip(groups, groups[1:])]
+            R.append(r[-1] + atol)
+            labels = (_label(sa), _label(sb))
+            VH = np.stack([_unpack(v, H.spin) for v in V[..., :nH]])
+            if (AB, sa) == (AB[::-1], sb):
+                VH = (VH + np.conj(VH if VH.ndim < 4 else VH.swapaxes(-1, -2))) / 2
+            hopping.setdefault(AB, {})[labels] = {
+                _MU[imu]: (R, list(VH[imu])) for imu in range(len(VH))
+            }
+            if not H.orthogonal:
+                overlap.setdefault(AB, {})[labels] = {
+                    _MU[imu]: (R, list(V[imu, :, nH].real)) for imu in range(len(V))
+                }
+
+        if undetermined:
+            warn(
+                f"{cls.__name__} has integrals that H does not determine (minimum-norm "
+                f"values) for {'; '.join(undetermined)}"
+            )
+
+        for sh in onsite.values():
+            for sa, E in sh.items():
+                E = _unpack(np.concatenate(E).mean(0)[None], H.spin)[0]
+                sh[sa] = (E + np.conj(E).T) / 2
+        onsite = {
+            A: {_label(sa): E for sa, E in sh.items()} for A, sh in onsite.items()
+        }
+        return cls(hopping, onsite=onsite, overlap=None if H.orthogonal else overlap)
 
     def __call__(self, H, ia: int, atoms=None, atoms_xyz=None):
         """Set the rows of atom `ia` in `H` (signature of `construct`)"""

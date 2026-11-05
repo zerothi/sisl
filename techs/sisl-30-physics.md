@@ -371,8 +371,33 @@ A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors
 - Atomic spin-orbit coupling (λ L·S) couples different m of a shell. A value for each shell pair cannot hold it.
   It is not implemented (decided by the maintainer: later).
 
+### Extraction from a Hamiltonian
+
+`SlaterKoster.from_hamiltonian` is the inverse of `construct`, as in McMahan and Klepeis (1997).
+It uses `_sk_factors`, thus the signs agree with the forward model by construction.
+
+- For each bond, the factors of σ, π and δ are orthogonal in the Frobenius inner product,
+  with the norms 1, 2 and 2 for all bond directions. Thus for a complete shell the fit is
+  a projection of each block, and the mean of the bonds of one length is the least-squares fit.
+- A shell with only some m (for example only `p_z`) does not give orthogonal factors. Thus the fit is
+  `lstsq` over all blocks of one group of bonds. Integrals that the bonds do not determine get
+  the minimum-norm value and one warning. They have no effect on `H` of that geometry.
+- The atom pairs come from the sparsity pattern of `H`. A block of a pair without stored elements is 0.
+  Thus an integral that is 0 in `H` is 0 in the model, and `construct` gives no missing warning.
+- Only the key `min((A, B, a, b), (B, A, b, a))` is fit. `H` holds the reverse bonds in the other direction.
+  A shell pair that is its own reverse gets both directions, and the Hermitian part of the fit.
+- The fit is linear in the stored components. Thus it works on the packed spin components,
+  and `_unpack` (the inverse of `_pack`) makes the spin values.
+- Bonds are groups of equal length (`atol`): a step function `(R_list, values)`, with steps at the midpoints.
+  A smooth function of `r` is a choice of the user, after the extraction.
+- The on-site energy is the mean of the diagonal. Crystal field, λ L·S and the blocks between two shells
+  of one atom (for example `Z1` and `Z2`) stay in `H - H2`. A model cannot hold them (see above).
+- The overlap of the Siesta Si test (`Si_pdos_k`, SZP) is two-center to a relative error of 6e-10
+  (thus the sign conventions agree). Its Hamiltonian has a relative residual of 0.17 (three-center terms).
+
 Sources:
 DOI[10]: 10.1103/PhysRev.94.1498
+DOI[9]: 10.1103/PhysRevB.56.12250
 
 ## Units and constants
 
