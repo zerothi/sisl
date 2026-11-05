@@ -7,6 +7,7 @@ For agents. Extends [dev-07 · Git workflow](dev-07-git.md): worktrees, small co
 Put each worktree in `<repo-root>/wt/<branch-name>`, as [dev-07 · Worktrees](dev-07-git.md#worktrees) tells.
 Do not use a different folder, for example a folder of your tool.
 Then the maintainer finds each worktree and its branch in one place.
+You can always make a worktree and its branch in `wt/`. You do not have to ask first.
 
 ## Commit in small steps
 
@@ -84,10 +85,19 @@ Follow [dev-07 · Keep the history](dev-07-git.md#keep-the-history). In addition
 ## Merge
 
 Merge only when a human tells you to, with `git merge --no-ff <branch>`.
+Review the branch before you merge new code ([agent-06](agent-06-review.md)).
+Do not merge when the review has findings: report them and wait.
 The merge commit must stay in the history.
 It keeps the branch together: the maintainer can review or revert it as one commit.
 The merge message needs no `Assisted-by` trailer (`git merge` has no `--trailer` option) and no user prompts.
 The commits of the branch keep them.
+
+When the maintainer tells you to remove the branch and the worktree after the merge:
+
+```bash
+git worktree remove wt/<branch-name>
+git branch -d <branch-name>     # -d refuses a branch that is not merged
+```
 
 ## Do not push
 
