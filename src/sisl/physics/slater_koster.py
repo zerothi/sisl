@@ -345,7 +345,7 @@ class SlaterKoster:
         self._cache = None
 
     def _parse(self, integrals: Mapping, R: float | None) -> dict:
-        """Expand both key directions: ``out[(A, B)][(a, b)] = [(imu, func), ...]``"""
+        """Expand both key directions: ``out[(A, B)][(a, b)] = [(imu, func, range), ...]``"""
         out = {}
         for (A, B), shells in integrals.items():
             for (a, b), Vmu in shells.items():
@@ -363,17 +363,18 @@ class SlaterKoster:
                         )
                     f, r = _integral(V, R)
                     self._R = max(self._R, r)
-                    funcs.append((imu, f))
+                    funcs.append((imu, f, r))
                 if ((A, B), sa) == ((B, A), sb):
                     # the pair is its own reverse
                     funcs = [
-                        (imu, lambda r, f=f: self._hermitian(f(r))) for imu, f in funcs
+                        (imu, lambda r, f=f: self._hermitian(f(r)), Rf)
+                        for imu, f, Rf in funcs
                     ]
                 entries = {((A, B), (sa, sb)): funcs}
                 sign = (-1) ** (sa[1] + sb[1])
                 funcs = [
-                    (imu, lambda r, f=f, sign=sign: sign * _dagger(f(r)))
-                    for imu, f in funcs
+                    (imu, lambda r, f=f, sign=sign: sign * _dagger(f(r)), Rf)
+                    for imu, f, Rf in funcs
                 ]
                 entries.setdefault(((B, A), (sb, sa)), funcs)
                 for key, s in entries:
@@ -710,10 +711,10 @@ class SlaterKoster:
                 G = _sk_factors(sa[1], sb[1], d[idx])[:, mi][:, :, mj]
                 shape = G.shape[:3]
                 h = s = 0
-                for imu, f in hop.get((sa, sb), ()):
+                for imu, f, _ in hop.get((sa, sb), ()):
                     v = _spin_value(f(r[idx]), ndim)[:, None, None]
                     h = h + G[..., imu].reshape(shape + (1,) * ndim) * v
-                for imu, f in ovl.get((sa, sb), ()):
+                for imu, f, _ in ovl.get((sa, sb), ()):
                     s = s + G[..., imu] * _spin_value(f(r[idx]), 0)[:, None, None]
                 h = np.broadcast_to(h, shape + (2,) * ndim)
                 s = np.broadcast_to(s, shape)

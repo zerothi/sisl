@@ -141,7 +141,7 @@ def test_skf_columns(tmp_path):
     for (a, b), cols in _SPEC.items():
         key = (_shell(a), _shell(b))
         for ints, unit, h in ((sk._hopping, _Ha, 0), (sk._overlap, 1, 10)):
-            values = {imu: f(r) for imu, f in ints[("X", "X")][key]}
+            values = {imu: f(r) for imu, f, _ in ints[("X", "X")][key]}
             assert sorted(values) == list(range(len(cols)))
             for imu, c in enumerate(cols):
                 assert np.allclose(values[imu], scale[c + h] * p * unit)
@@ -248,9 +248,8 @@ def test_skf_names(tmp_path, name, A, B):
         r = np.array([1.1, 2.3])
         for AB in [(A, B), (B, A)]:
             key = (_shell("1s"), _shell("2p"))
-            assert np.allclose(
-                dict(sk._hopping[AB][key])[0](r), dict(ref._hopping[AB][key])[0](r)
-            )
+            (_, f, _), (_, fref, _) = sk._hopping[AB][key][0], ref._hopping[AB][key][0]
+            assert np.allclose(f(r), fref(r))
 
     same(sk, sisl.get_sile(ba).read_slater_koster(shells))
     # the name alone: without documentation, or without its end
