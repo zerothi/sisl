@@ -399,9 +399,10 @@ A model of a material can then come from one source for each species pair, for e
   of the zero radial function, with a warning. `sisl.geom` runs `find_nsc` only when all atoms have `R > 0`,
   thus a geometry with such an atom keeps the default `nsc`.
 - The element is the full tag if `PeriodicTable` knows it (a symbol, a name or a number),
-  else the start of 2 or 1 letters that is a symbol (decided by the maintainer).
-  For example `"Carbon"`, `"6"` and `"C_edge"` are carbon. Only letters for the start:
-  `PeriodicTable` also knows numbers, and `"12C"` is not magnesium.
+  else the letters at the start (a name), else the first 2 or 1 of these letters (a symbol)
+  (decided by the maintainer). For example `"Carbon"`, `"6"`, `"Carbon_edge"` and `"C_edge"` are carbon:
+  without the letters at the start, `"Carbon_edge"` would be calcium.
+  Only letters for the start: `PeriodicTable` also knows numbers, and `"12C"` is not magnesium.
   A tag without an element raises, also a tag that is not a string (`construct` cannot match it).
 
 ### Extraction from a Hamiltonian

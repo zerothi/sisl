@@ -386,11 +386,11 @@ def test_sk_atoms():
     assert np.allclose(H.Hk(k).toarray(), Href.Hk(k).toarray())
 
     # tags without integrals: the element is the tag or its leading symbol
-    tags = ["Carbon", "6", "C1", "CH3", "Co_x", "Cl"]
+    tags = ["Carbon", "6", "C1", "CH3", "Co_x", "Cl", "Carbon_edge", "Nitrogen1"]
     with warnings.catch_warnings():
         warnings.simplefilter("error")
         atoms = sisl.SlaterKoster({}, onsite={t: {"1s": 0} for t in tags}).atoms
-    assert [atoms[t].symbol for t in tags] == ["C", "C", "C", "C", "Co", "Cl"]
+    assert [atoms[t].symbol for t in tags] == ["C", "C", "C", "C", "Co", "Cl", "C", "N"]
     assert all(np.all(atoms[t].R == 0) for t in tags)
     for tag in ["X1", "12C", 6]:
         with pytest.raises(ValueError, match="element symbol"):

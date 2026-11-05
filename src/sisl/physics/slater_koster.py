@@ -415,8 +415,8 @@ class SlaterKoster:
         Their range `~sisl.Orbital.R` is the largest range of the integrals of the atom:
         thus ``find_nsc`` gives the supercell that `~sisl.physics.Hamiltonian.construct` needs.
         An atom without integrals has the range 0.
-        The element is the tag, or else the element symbol at its start,
-        e.g. ``"Carbon"`` and ``"C_edge"`` are carbon.
+        The element is the tag, or else the element at its start,
+        e.g. ``"Carbon"``, ``"Carbon_edge"`` and ``"C_edge"`` are carbon.
 
         Examples
         --------
@@ -436,12 +436,13 @@ class SlaterKoster:
             R = max(ranges, default=0.0)
             symbol = None
             if isinstance(tag, str):
-                # the full tag may be a name or a number, a start must be a symbol
+                # the full tag may be a name or a number, a start must be letters
+                letters = re.match("[A-Za-z]*", tag)[0]
                 symbol = next(
                     (
                         s
-                        for i, s in enumerate((tag, tag[:2], tag[:1]))
-                        if s in _ptbl._Z_int and (i == 0 or s.isalpha())
+                        for i, s in enumerate((tag, letters, letters[:2], letters[:1]))
+                        if s in _ptbl._Z_int and (i == 0 or s)
                     ),
                     None,
                 )
