@@ -124,7 +124,8 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   `defusedxml` if it is installed, else `xml.etree`. `xml.etree` does not load external entities,
   and expat 2.4.1 and later limits the expansion of entities.
   DFTB+ does not read the documentation, thus XML that does not parse gives a warning, and the reader uses the name.
-  The section starts at `<Documentation>`, thus it has no DOCTYPE. Only `ParseError` can occur, also with `defusedxml`.
+  The section starts at `<Documentation>`, thus it has no DOCTYPE. Thus `xml.etree` and `defusedxml` raise `ParseError`,
+  and `defusedxml` raises `UnicodeEncodeError` for a lone surrogate (a file handle with `errors="surrogateescape"`).
 - `shells` is optional. A tag without shells gets the `<Basis>` `<Shells>` of the homonuclear file of its element
   next to the file: `X{sep}X{rest}.skf`, else `X{sep}X.skf` (`pbc`: `N-H_short.skf` and `N-N.skf`).
   The `<Basis>` of a heteronuclear file is not used: `<Basis atom="1|2">` disagrees with the other files
@@ -133,8 +134,8 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   The homonuclear file has one basis, and it also gives the on-site energies. In `dftb-slako` 24-043,
   where both homonuclear files are there, they agree with the heteronuclear basis in 486 of 488 files.
   The 2 others are `pbc` `Si-O.skf` and `O-Si.skf` (Si `3s 3p 3d`, `Si-Si.skf` has `3s 3p`).
-  An element of a set that extends another set (for example C of `hyb`) has no homonuclear file:
-  the user gives its shells, else the reader raises.
+  Some folders have no homonuclear file of an element (`hyb` has no `H-H.skf`, thus `Ga-H.skf` needs
+  the shells of H): the user gives its shells, else the reader raises.
 - The repulsive energy (polynomial and `Spline`) is not part of `H`. The reader does not read it.
 
 ### Interpolation

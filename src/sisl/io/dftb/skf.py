@@ -121,7 +121,7 @@ class skfSileDFTB(SileDFTB):
             return None
         try:
             return xml_parse(StringIO(doc)).getroot()
-        except ParseError as e:
+        except (ParseError, UnicodeError) as e:
             warn(
                 f"{self.__class__.__name__} could not read the documentation of {self.file}: {e}"
             )
@@ -234,7 +234,9 @@ class skfSileDFTB(SileDFTB):
         name = lambda X, Y, rest: file.with_name(f"{X}{sep}{Y}{rest}{file.suffix}")
         other = name(B, A, rest)
         shells = dict(shells or {})
-        for X in {A, B} - shells.keys():
+        for X in dict.fromkeys((A, B)):
+            if X in shells:
+                continue
             names = list(dict.fromkeys([name(X, X, rest), name(X, X, "")]))
             homo = [f for f in names if f.is_file()]
             if not homo:

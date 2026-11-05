@@ -212,9 +212,13 @@ def test_skf_errors(tmp_path):
         )
     with pytest.raises(ValueError, match="shells of Y"):
         sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster({"X": ["1s"]})
-    (tmp_path / "xy.skf").write_text("")
-    with pytest.raises(ValueError, match="two elements"):
-        sisl.get_sile(tmp_path / "xy.skf").read_slater_koster(shells)
+    # no X-X.skf and no Y-Y.skf: the first element of the name
+    with pytest.raises(ValueError, match="shells of X"):
+        sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster()
+    for name in ["xy", "N1-H2"]:
+        (tmp_path / f"{name}.skf").write_text("")
+        with pytest.raises(ValueError, match="two elements"):
+            sisl.get_sile(tmp_path / f"{name}.skf").read_slater_koster(shells)
     (tmp_path / "X-X.skf").write_text("@ extended\n0.1 30\n")
     with pytest.raises(NotImplementedError):
         sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster(shells)
