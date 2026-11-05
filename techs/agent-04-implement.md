@@ -60,12 +60,19 @@ Then report as [agent-01](agent-01-harness.md#report-what-you-did-not-run) tells
 
 ## When the code is complete
 
-Do these steps in this order. Wait for the answer of the maintainer at each step.
+When you think that the code is complete, ask the maintainer these questions in one message:
 
-1. **Ask if the code is complete.** The maintainer decides when the implementation stops.
-2. **Review the branch** as [agent-06 · Review](agent-06-review.md) tells. Report the findings.
-   Fix them only when the maintainer tells you to.
-   A review of the full change finds problems that the small steps do not show.
-3. **Ask to write the merge request description**
-   ([dev-07](dev-07-git.md#merge-request-description)).
-   Do not push and do not open the merge request ([agent-02](agent-02-git.md#do-not-push)).
+1. **Review?** Review the branch as [agent-06 · Review](agent-06-review.md) tells.
+2. **Merge if the review passes?** Merge into `main` as [agent-02 · Merge](agent-02-git.md#merge) tells.
+3. **Remove the branch and the worktree after the merge?**
+
+The maintainer decides when the implementation stops. Wait for the answer.
+Then do the selected steps in the order of the list:
+
+- A review of the full change finds problems that the small steps do not show.
+  Never merge new code without a review.
+- When the review has findings, report them and stop. Do not merge.
+  Fix them only when the maintainer tells you to. Then review again.
+- When the maintainer does not select the merge, ask to write the merge request description
+  ([dev-07](dev-07-git.md#merge-request-description)).
+  Do not push and do not open the merge request ([agent-02](agent-02-git.md#do-not-push)).

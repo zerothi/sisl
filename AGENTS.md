@@ -83,6 +83,7 @@ pre-commit, changelog fragments in `changes/`).
 **Branch, worktree, commit** — [agent-02](techs/agent-02-git.md), extends [dev-07](techs/dev-07-git.md):
 
 - **Worktrees** only in `<repo-root>/wt/<branch-name>`: `git worktree add -b <branch-name> wt/<branch-name>`.
+  You can always make one there; do not ask first.
 - **Small commits**, each a working step that passes pre-commit and its targeted tests.
   Do not make one large commit at the end. Keep moves and renames apart from changes of behavior.
 - **Messages:** `<area>: <imperative summary>`, at most 72 characters; the body tells why.
@@ -95,7 +96,8 @@ pre-commit, changelog fragments in `changes/`).
 - **Sources:** after each prompt, the online documents and user material read for it,
   by importance 10..1: `DOI[10]: <doi>`, `URL[7]: <url>`, `FILE[4]: <path>` (+ author, date, description).
 - **History:** do not merge into `main`, force-push, or rewrite commits you reported.
-  Merge only when a human tells you to, with `git merge --no-ff` (no trailer, no prompt).
+  Merge only when a human tells you to, with `git merge --no-ff` (no trailer, no prompt),
+  and only after a review without findings.
 - **Do not push** unless a human tells you to. Commit locally and report the branch.
 
 **Build, test, other agents** — [agent-03](techs/agent-03-parallel.md),
@@ -120,8 +122,10 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 - **Lean code:** no unneeded options, abstractions, checks or copies of sisl functions.
   Read your diff and remove what is not needed.
 - **Fast tests, no redundant tests:** CI runs each test many times. Smallest system; extend or parametrize an existing test; mark slow tests `slow`.
-- **When complete:** ask the maintainer if it is complete, then review the branch ([agent-06](techs/agent-06-review.md)),
-  then ask to write the [merge request description](techs/dev-07-git.md#merge-request-description):
+- **When complete:** ask in one message: 1. review the branch ([agent-06](techs/agent-06-review.md))?
+  2. merge if the review passes? 3. remove the branch and the worktree after the merge?
+  Never merge without a review; with findings, report and stop. Without a merge, ask to write the
+  [merge request description](techs/dev-07-git.md#merge-request-description):
   overview line, problem, lean details; a bug fix names its test that fails before the fix.
 
 **New code and features** — [agent-08](techs/agent-08-ambition.md), with agent-04:
