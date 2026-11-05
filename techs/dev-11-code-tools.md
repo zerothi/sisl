@@ -131,7 +131,10 @@ The script reads the `Prompt:` block of each commit message
 ([agent-02 · User prompts in the message](agent-02-git.md#user-prompts-in-the-message)).
 A `REV` with `..` is a range. A different `REV` is one commit.
 It prints the commits from the oldest to the newest, in the order of the `REV` arguments.
-It skips merge commits, because they have no prompts.
+In a range, it skips merge commits, because they have no prompts.
+A merge commit that you give as one `REV` shows with the commits without a `Prompt:` line.
+The `REV` comes after `--end-of-options`. Thus `git log` cannot read a `REV` as an option,
+for example `--output`, which writes a file.
 
 The report has two parts:
 
@@ -141,9 +144,12 @@ The report has two parts:
 2. **Sources.** Each source has its score, its detail lines and the prompts that it follows.
    A source is the same when its kind and its reference are the same.
    When commits give different scores, the line shows all of them, for example `FILE[6/4]`.
+   A source without a score shows `?`, for example `URL[?]`.
 
 A last part names the commits without a `Prompt:` line.
-The script stops at the first trailer line, for example `Assisted-by:`.
+The script ignores the trailer block: the last paragraph, when each line of it is a trailer,
+for example `Assisted-by:`. A line before that block that looks like a trailer does not stop the script.
+Thus a malformed line does not hide the prompts after it.
 Use it to compare the requests with the change of a branch
 ([agent-06 · Compare the requests with the change](agent-06-review.md#compare-the-requests-with-the-change)).
 

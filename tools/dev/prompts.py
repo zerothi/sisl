@@ -18,22 +18,22 @@ import re
 import subprocess
 import sys
 
-SOURCE = re.compile(r"^([A-Z]+)\[(\d+)\]:\s*(.*)$")
+SOURCE = re.compile(r"^([A-Z]+)(?:\[(\d+)\])?:\s*(\S.*)$")
 TRAILER = re.compile(r"^[A-Za-z][\w-]*: ")
 
 
 def commits(revs: list[str]) -> list[tuple[str, str, str]]:
-    """(short hash, subject, body) of the non-merge commits, oldest first."""
+    """(short hash, subject, body) of each commit, oldest first. Ranges skip merges."""
     out = []
     for rev in revs:
-        walk = ["--reverse"] if ".." in rev else ["-1"]
+        walk = ["--no-merges", "--reverse"] if ".." in rev else ["-1"]
         log = subprocess.run(
             [
                 "git",
                 "log",
-                "--no-merges",
                 *walk,
                 "--format=%h%x00%s%x00%b%x1e",
+                "--end-of-options",
                 rev,
                 "--",
             ],
@@ -48,14 +48,20 @@ def commits(revs: list[str]) -> list[tuple[str, str, str]]:
     return list(dict.fromkeys(out))
 
 
-def parse(body: str) -> list[tuple[str, list[tuple[str, int, str, list[str]]]]]:
+def parse(body: str) -> list[tuple[str, list[tuple[str, int | None, str, list[str]]]]]:
     """Prompts after the ``Prompt:`` line, each with its sources (kind, score, ref, detail lines)."""
-    lines = body.splitlines()
-    if "Prompt:" not in lines:
+    lines = body.rstrip().splitlines()
+    start = next((i for i, l in enumerate(lines) if l.rstrip() == "Prompt:"), None)
+    if start is None:
         return []
+    blank = max((i for i, l in enumerate(lines) if not l.strip()), default=start)
+    if blank > start and all(
+        TRAILER.match(l) and not SOURCE.match(l) for l in lines[blank + 1 :]
+    ):
+        lines = lines[:blank]
     prompts = []
     quote = None
-    for line in lines[lines.index("Prompt:") + 1 :]:
+    for line in lines[start + 1 :]:
         if line.startswith(">"):
             if quote is None:
                 quote = []
@@ -65,18 +71,17 @@ def parse(body: str) -> list[tuple[str, list[tuple[str, int, str, list[str]]]]]:
         quote = None
         if m := SOURCE.match(line):
             if prompts:
-                prompts[-1][1].append((m[1], int(m[2]), m[3], []))
+                score = None if m[2] is None else int(m[2])
+                prompts[-1][1].append((m[1], score, m[3], []))
         elif line[:1].isspace() and line.strip() and prompts and prompts[-1][1]:
             prompts[-1][1][-1][3].append(line)
-        elif TRAILER.match(line):
-            break
     return [("\n".join(q), s) for q, s in prompts]
 
 
 def main(revs: list[str]) -> None:
     found = commits(revs or ["main..HEAD"])
     prompts: dict[str, list[str]] = {}  # prompt -> short hashes
-    sources: dict[tuple[str, str], tuple[list[str], set[int], set[int]]] = {}
+    sources: dict[tuple[str, str], tuple[list[str], set[int | None], set[int]]] = {}
     missing = []
     for sha, subject, body in found:
         parsed = parse(body)
@@ -99,7 +104,8 @@ def main(revs: list[str]) -> None:
         print("\n".join(f"> {q}".rstrip() for q in text.splitlines()))
     print("\n2. Sources")
     for (kind, ref), (detail, scores, ps) in sources.items():
-        score = "/".join(map(str, sorted(scores, reverse=True)))
+        known = sorted(scores - {None}, reverse=True)
+        score = "/".join([str(s) for s in known] + ["?"] * (None in scores))
         print(f"{kind}[{score}]: {ref}  ({' '.join(f'P{p}' for p in sorted(ps))})")
         if detail:
             print("\n".join(detail))
