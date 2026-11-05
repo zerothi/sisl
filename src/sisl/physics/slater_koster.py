@@ -441,8 +441,8 @@ class SlaterKoster:
                 symbol = next(
                     (
                         s
-                        for i, s in enumerate((tag, letters, letters[:2], letters[:1]))
-                        if s in _ptbl._Z_int and (i == 0 or s)
+                        for s in (tag, letters, letters[:2], letters[:1])
+                        if s in _ptbl._Z_int
                     ),
                     None,
                 )

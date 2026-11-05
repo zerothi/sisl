@@ -385,7 +385,7 @@ def test_sk_atoms():
     k = [0.1, 0.2, 0.3]
     assert np.allclose(H.Hk(k).toarray(), Href.Hk(k).toarray())
 
-    # tags without integrals: the element is the tag or its leading symbol
+    # tags without integrals: the element is the tag, its leading name or symbol
     tags = ["Carbon", "6", "C1", "CH3", "Co_x", "Cl", "Carbon_edge", "Nitrogen1"]
     with warnings.catch_warnings():
         warnings.simplefilter("error")
