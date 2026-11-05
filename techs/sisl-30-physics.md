@@ -382,6 +382,29 @@ A model of a material can then come from one source for each species pair, for e
 - A merge of orthogonal and non-orthogonal models raises: `construct` would warn for the pairs without overlap.
 - Each integral keeps its function and its range. `R` is the largest range.
 
+### Atoms of a model
+
+`SlaterKoster.atoms` makes the atoms of the model, thus a user builds a geometry from the model alone.
+
+- One `Atom` for each tag, in sorted order. Its shells are the shells of the tag in the on-site energies,
+  the hopping and the overlap. Each shell has `m = -l..l`, and the shells are sorted by `(n, l, zeta, P)`.
+  This is the order of Siesta: `test_sk_atoms_siesta` compares the atoms of `from_hamiltonian` with the Siesta basis.
+- Each shell is one `SphericalOrbital` without a radial function, and `toAtomicOrbital`
+  makes its orbitals with `n`, `zeta` and `P`. Thus the orbitals of a shell share it. `R` of each orbital is the largest range of the integrals of its atom.
+  This is the bond cutoff of the tight-binding convention of sisl, not the cutoff of a radial function:
+  `find_nsc` (method `atoms`, also in `sisl.geom`) uses `maxR` as the largest distance of two atoms.
+  Thus `find_nsc` gives a supercell that holds all pairs of the model. Half the range (`R1 + R2`) would give
+  a supercell that is too small. Each parsed integral keeps its range, `(imu, func, range)`, for this.
+  A tag without integrals has the range 0: `R=None` or `R<0` makes `SphericalOrbital` search a radius
+  of the zero radial function, with a warning. `sisl.geom` runs `find_nsc` only when all atoms have `R > 0`,
+  thus a geometry with such an atom keeps the default `nsc`.
+- The element is the full tag if `PeriodicTable` knows it (a symbol, a name or a number),
+  else the letters at the start (a name), else the first 2 or 1 of these letters (a symbol)
+  (decided by the maintainer). For example `"Carbon"`, `"6"`, `"Carbon_edge"` and `"C_edge"` are carbon:
+  without the letters at the start, `"Carbon_edge"` would be calcium.
+  Only letters for the start: `PeriodicTable` also knows numbers, and `"12C"` is not magnesium.
+  A tag without an element raises, also a tag that is not a string (`construct` cannot match it).
+
 ### Extraction from a Hamiltonian
 
 `SlaterKoster.from_hamiltonian` is the inverse of `construct`, as in McMahan and Klepeis (1997).
