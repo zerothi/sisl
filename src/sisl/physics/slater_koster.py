@@ -11,7 +11,7 @@ import numpy as np
 from sisl._core.atom import Atom, Atoms, _ptbl
 from sisl._core.geometry import Geometry
 from sisl._core.lattice import Lattice
-from sisl._core.orbital import AtomicOrbital
+from sisl._core.orbital import AtomicOrbital, SphericalOrbital
 from sisl._core.sparse import _to_coo
 from sisl._internal import set_module
 from sisl.messages import warn
@@ -439,9 +439,9 @@ class SlaterKoster:
                     f"an element symbol, got {tag!r}"
                 )
             orbitals = [
-                AtomicOrbital(n=n, l=l, m=m, zeta=zeta, P=P, R=R)
+                orb
                 for n, l, zeta, P in sorted(shells)
-                for m in range(-l, l + 1)
+                for orb in SphericalOrbital(l, R=R).toAtomicOrbital(n=n, zeta=zeta, P=P)
             ]
             atoms.append(Atom(symbol, orbitals, tag=tag))
         return Atoms(atoms)
