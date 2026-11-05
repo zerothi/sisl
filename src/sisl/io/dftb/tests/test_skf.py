@@ -8,6 +8,7 @@ import pytest
 
 import sisl
 from sisl.io.dftb.skf import _interpolate
+from sisl.physics.slater_koster import _shell
 
 pytestmark = [pytest.mark.io, pytest.mark.dftb]
 
@@ -15,51 +16,60 @@ pytestmark = [pytest.mark.io, pytest.mark.dftb]
 _Bohr = 0.529177210544
 _Ha = 27.211386245981
 _DIST, _N = 0.1, 29
+_SHELLS = ["1s", "2p", "3d"]
+# the specification: Hdd0 Hdd1 Hdd2 Hpd0 Hpd1 Hpp0 Hpp1 Hsd0 Hsp0 Hss0, then S
+_SPEC = {
+    ("3d", "3d"): (0, 1, 2),
+    ("2p", "3d"): (3, 4),
+    ("2p", "2p"): (5, 6),
+    ("1s", "3d"): (7,),
+    ("1s", "2p"): (8,),
+    ("1s", "1s"): (9,),
+}
 
 
 def _poly(r):
     return 1 + 0.5 * r - 0.1 * r**2 + 0.01 * r**3
 
 
-def _table(sign=1):
-    """Column c is (c + 1) p(r); the columns of unequal l get `sign`"""
-    r = _DIST * np.arange(1, _N + 1)
-    scale = np.tile(np.arange(1.0, 11.0), 2)
+def _scale(sign=1):
+    """Column c is (c + 1) p(r), except Sdd1 = Sdd0; the columns of unequal l get `sign`"""
+    scale = np.arange(1.0, 21.0)
+    scale[11] = scale[10]
     scale[[3, 4, 7, 8, 13, 14, 17, 18]] *= sign
-    T = scale * _poly(r)[:, None]
-    # 3 equal dd columns test the short form n*value
-    T[:, :3] = 0.25
-    return T
+    return scale
 
 
-def _write(path, T, homo=False):
+def _write(path, scale, homo=False):
+    T = scale * _poly(_DIST * np.arange(1, _N + 1))[:, None]
+    fmt = lambda v: " ".join(f"{x:.17e}" for x in v)
     lines = [f"{_DIST}, {_N + 1},2"]
     if homo:
         lines.append("-0.1 -0.2 -0.3, 0.0 0.4 0.4 0.4 0.0 4.0 2.0 T 1 0.3")
     lines.append("12.0, 19*0.0,")
-    lines += ["3*0.25 " + " ".join(f"{v:.17e}" for v in row[3:]) for row in T]
-    lines += [
-        "20*0.0",
-        "Spline",
-        "1 4.0",
-        "1 2 3",
-        "1.0 4.0 0 0 0 0 0 0",
-        "<Documentation>",
-    ]
+    # equal Sdd0 and Sdd1 test the short form n*value
+    lines += [f"{fmt(row[:10])}, 2*{row[10]:.17e} {fmt(row[12:])}" for row in T]
+    lines += ["20*0.0", "Spline", "1 4.0", "1 2 3", "1.0 4.0 0 0 0 0 0 0"]
+    lines.append("<Documentation>")
     path.write_text("\n".join(lines) + "\n")
 
 
 def _dimer(d, tags):
-    atoms = [
-        sisl.Atom(
-            1,
-            [sisl.AtomicOrbital("1s", R=3)]
-            + [sisl.AtomicOrbital(n=2, l=1, m=m, R=3) for m in (-1, 0, 1)],
-            tag=tag,
-        )
-        for tag in tags
-    ]
+    """Two atoms with s, p, d (9 orbitals each), the second at `d`"""
+    orbs = [sisl.AtomicOrbital("1s", R=3)]
+    orbs += [sisl.AtomicOrbital(n=2, l=1, m=m, R=3) for m in range(-1, 2)]
+    orbs += [sisl.AtomicOrbital(n=3, l=2, m=m, R=3) for m in range(-2, 3)]
+    atoms = [sisl.Atom(1, orbs, tag=tag) for tag in tags]
     return sisl.Geometry([[5, 5, 5], np.add(5, d)], atoms, lattice=[20, 20, 20])
+
+
+def _harmonics(d):
+    """sp and sd factors of DFTB+ (sk.F90) with the signs of the sisl harmonics"""
+    l, m, n = d / np.linalg.norm(d)
+    p = np.array([m, n, l]) * [-1, 1, -1]
+    s3 = np.sqrt(3)
+    D = [s3 * l * m, s3 * m * n, (3 * n**2 - 1) / 2, s3 * l * n, s3 / 2 * (l**2 - m**2)]
+    return p, np.array(D) * [1, -1, 1, -1, 1]
 
 
 def test_skf_interpolate():
@@ -87,30 +97,65 @@ def test_skf_interpolate():
     assert np.allclose(f(x * _Bohr)[:, 0], tail, rtol=0, atol=1e-9)
 
 
+def test_skf_stencil():
+    # a coarse grid of sin: each choice of the 8 grid points gives another value
+    dist, n = 0.5, 20
+    f, _ = _interpolate(np.sin(2 * dist * np.arange(1, n + 1))[:, None], dist)
+    x = np.array([0.3, 1.5, 3.7, 9.2, 15.5, 17.9, 19.6])
+    # slakoeqgrid.F90: the last of the 8 points is clip(floor(x) + 4, 8, n)
+    last = np.clip(np.floor(x).astype(int) + 4, 8, n)
+    ref = [
+        np.polynomial.polynomial.polyval(
+            xi - k,
+            np.polynomial.polynomial.polyfit(
+                np.arange(-7, 1.0), np.sin(2 * dist * np.arange(k - 7, k + 1)), 7
+            ),
+        )
+        for xi, k in zip(x, last)
+    ]
+    assert np.allclose(f(x * dist * _Bohr)[:, 0], ref, rtol=0, atol=1e-10)
+
+
+def test_skf_columns(tmp_path):
+    _write(tmp_path / "X-X.skf", _scale(), homo=True)
+    sk = sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster({"X": _SHELLS})
+    r = np.array([0.77, 2.1]) * _Bohr
+    p = _poly(r / _Bohr)
+    scale = _scale()
+    for (a, b), cols in _SPEC.items():
+        key = (_shell(a), _shell(b))
+        for ints, unit, h in ((sk._hopping, _Ha, 0), (sk._overlap, 1, 10)):
+            values = {imu: f(r) for imu, f in ints[("X", "X")][key]}
+            assert sorted(values) == list(range(len(cols)))
+            for imu, c in enumerate(cols):
+                assert np.allclose(values[imu], scale[c + h] * p * unit)
+
+
 def test_skf_homonuclear(tmp_path):
-    T = _table()
-    _write(tmp_path / "X-X.skf", T, homo=True)
-    sk = sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster({"X": ["1s", "2p"]})
+    _write(tmp_path / "X-X.skf", _scale(), homo=True)
+    sk = sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster({"X": _SHELLS})
     assert not sk.orthogonal
     d = np.array([0.3, -0.5, 0.8])
     d *= 1.234 * _Bohr / np.linalg.norm(d)
     H = sisl.Hamiltonian(_dimer(d, "XX"), orthogonal=False)
     H.construct(sk)
     Hk, Sk = H.Hk().toarray(), H.Sk().toarray()
-    assert np.allclose(np.diag(Hk)[:4], np.array([-0.3, -0.2, -0.2, -0.2]) * _Ha)
+    assert np.allclose(np.diag(Hk)[:9], np.repeat([-0.3, -0.2, -0.1], [1, 3, 5]) * _Ha)
     p = _poly(1.234)
-    # DFTB+ <p_2|H|s_1> = (y, z, x) V_sp along d from 1 to 2; sisl p is (-y, z, -x)
-    e = np.array([-d[1], d[2], -d[0]]) / np.linalg.norm(d)
-    assert np.allclose(Hk[0, 4], 10 * p * _Ha)
-    assert np.allclose(Hk[0, 5:8], 9 * p * _Ha * e)
-    assert np.allclose(Sk[0, 5:8], 9 * p * e)
-    assert np.allclose(Hk[1:4, 4], -9 * p * _Ha * e)
+    # DFTB+: <p_2|H|s_1> = (y, z, x) V_sp along d from atom 1 to 2
+    ep, ed = _harmonics(d)
+    assert np.allclose(Hk[0, 9], 10 * p * _Ha)
+    assert np.allclose(Hk[0, 10:13], 9 * p * _Ha * ep)
+    assert np.allclose(Sk[0, 10:13], 19 * p * ep)
+    assert np.allclose(Hk[1:4, 9], -9 * p * _Ha * ep)
+    assert np.allclose(Hk[0, 13:18], 8 * p * _Ha * ed)
+    assert np.allclose(Hk[4:9, 9], 8 * p * _Ha * ed)
 
 
 def test_skf_heteronuclear(tmp_path):
-    _write(tmp_path / "X-Y.skf", _table())
-    _write(tmp_path / "Y-X.skf", _table(-2))
-    shells = {"X": ["1s", "2p"], "Y": ["1s", "2p"]}
+    _write(tmp_path / "X-Y.skf", _scale())
+    _write(tmp_path / "Y-X.skf", _scale(-2))
+    shells = {"X": _SHELLS, "Y": _SHELLS}
     sk = sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster(shells)
     d = np.array([-0.4, 0.2, 0.7])
     d *= 2.5 * _Bohr / np.linalg.norm(d)
@@ -119,11 +164,13 @@ def test_skf_heteronuclear(tmp_path):
         H.construct(sk)
     Hk = H.Hk().toarray()
     p = _poly(2.5) * _Ha
-    e = np.array([-d[1], d[2], -d[0]]) / np.linalg.norm(d)
-    # s of X and p of Y from X-Y, s of Y and p of X from Y-X
-    assert np.allclose(Hk[0, 5:8], 9 * p * e)
-    assert np.allclose(Hk[4, 1:4], -2 * 9 * p * -e)
-    assert np.allclose(Hk[0, 4], 10 * p)
+    ep, ed = _harmonics(d)
+    # the lower l on X from X-Y, the lower l on Y from Y-X (along -d)
+    assert np.allclose(Hk[0, 9], 10 * p)
+    assert np.allclose(Hk[0, 10:13], 9 * p * ep)
+    assert np.allclose(Hk[9, 1:4], -2 * 9 * p * -ep)
+    assert np.allclose(Hk[0, 13:18], 8 * p * ed)
+    assert np.allclose(Hk[9, 4:9], -2 * 8 * p * ed)
 
     # the same model from Y-X.skf
     sk2 = sisl.get_sile(tmp_path / "Y-X.skf").read_slater_koster(shells)
@@ -135,12 +182,12 @@ def test_skf_heteronuclear(tmp_path):
 
 def test_skf_errors(tmp_path):
     shells = {"X": ["1s", "2p"], "Y": ["1s"]}
-    T = _table()
-    _write(tmp_path / "X-Y.skf", T)
+    _write(tmp_path / "X-Y.skf", _scale())
     with pytest.warns(sisl.SislWarning, match="Y-X.skf"):
         sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster(shells)
-    T[:, 9] += 1e-6
-    _write(tmp_path / "Y-X.skf", T)
+    scale = _scale()
+    scale[9] += 1e-6
+    _write(tmp_path / "Y-X.skf", scale)
     with pytest.raises(ValueError, match="equal l"):
         sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster(shells)
     with pytest.raises(ValueError, match="one shell for each l"):

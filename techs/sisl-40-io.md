@@ -121,7 +121,8 @@ The reader uses the default interpolation of DFTB+ (`skEqGridNew`). `OldSKInterp
 
 ### Verification
 
-- `test_skf_*` uses tables of known polynomials: units, columns, orientation, sign, tail.
+- `test_skf_*` uses tables with a different value in each column: units, columns, orientation and sign of `sp` and `sd`, tail.
+  A coarse table of `sin` checks which 8 grid points the interpolation uses.
 - The `H` and `S` of water from DFTB+ (`files/tests/dftb/h2o`, `mio` set) have no coordinates.
   A fit of the positions to `S` gives `H` to 6.7e-16 Ha and `S` to 1.2e-15 (2026-11-05, outside the repository:
   the `mio` files are not in sisl-files).
