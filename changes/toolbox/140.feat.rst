@@ -1,0 +1,6 @@
+Slater-Koster reference Hamiltonians
+
+``sisl_toolbox.models.slater_koster.H.ref`` has the :math:`sp^3s^*` model of
+Vogl, Hjalmarson and Dow (``Vogl1983``, 16 semiconductors) and the carbon model
+of Xu, Wang, Chan and Ho (``Xu1992``). A ``geometry`` argument gets the orbitals
+of the model by atomic number.

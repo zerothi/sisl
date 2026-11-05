@@ -39,6 +39,7 @@ Physical quantites
    Hamiltonian
    DynamicalMatrix
    Overlap
+   SlaterKoster
    SelfEnergy
    WideBandSE
    SemiInfinite
@@ -111,6 +112,7 @@ from .energydensitymatrix import *
 from .hamiltonian import *
 from .overlap import *
 from .self_energy import *
+from .slater_koster import *
 
 # isort: split
 

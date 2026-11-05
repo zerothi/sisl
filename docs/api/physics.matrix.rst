@@ -30,6 +30,17 @@ Matrices
    Overlap
 
 
+Tight-binding models
+--------------------
+
+A tight-binding model from Slater-Koster integrals, used with ``H.construct(sk)``.
+
+.. autosummary::
+   :toctree: generated/
+
+   SlaterKoster
+
+
 Self energies
 -------------
 

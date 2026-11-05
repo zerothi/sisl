@@ -300,6 +300,80 @@ Put new physics in a module function. Add a thin method when a state class needs
 
 `__call__` does all three steps. Its `indices` argument makes only a sub-matrix. This saves memory.
 
+## Slater-Koster models
+
+`SlaterKoster` (`physics/slater_koster.py`) is a function for `construct`.
+It is not a sparse matrix class. Thus all sparse classes keep their API.
+
+### Angular factors
+
+`_sk_factors(l1, l2, d)` gives the factors of `V_sigma`, `V_pi`, `V_delta`
+for the unit bond vectors `d`. It does not use the table of Slater and Koster.
+
+- A p orbital is a unit vector. A d orbital is a symmetric traceless 3x3 tensor with Frobenius norm 1.
+  The inner products of these vectors and tensors are equal to the overlaps of the real harmonics.
+- The vectors and tensors (`_P`, `_D`) have the signs of the sisl harmonics (Condon-Shortley phase):
+  p is `(-y, z, -x)`, d is `(xy, -yz, z2, -xz, x2-y2)`.
+- The bond states are made from `d` only: σ is `d` and `3 d dᵀ - 1`; π sums over the plane normal to `d`.
+  Thus the factors need no local frame, and have no special case for `d` along `z`.
+  All factors use `q = dᵀ A d` and `v = A d` of each d tensor `A`. δ is `1 - σ - π`.
+- `l1 > l2` is the transpose of `(l2, l1)`. The sign `(-1)^(l1+l2)` is in the integral, not in the factors.
+
+`test_sk_block_rotation` is the reference. It makes the rotation matrices of the sisl harmonics
+by quadrature of `_rspherical_harm`, and compares `D1 diag(V_|m|) D2ᵀ` with the factors.
+A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors`.
+
+### Assembly
+
+- The first call for an `H` finds all pairs with one `NeighborFinder.find_neighbors()`,
+  and makes all elements in numpy, for each species pair and shell pair.
+  A call for each atom costs 140 µs; one call for 16000 atoms costs 18 ms.
+- Each call writes the rows of the atom `ia`, one `H[io, cols] = data` for each orbital row.
+  The pair form `H[rows, cols]` loops in Python.
+- The cache is removed when all atoms are written. Thus `construct` keeps the memory only while it runs.
+- `NeighborFinder` does not accept atoms outside the unit cell. `_neighbor_pairs` searches in a copy:
+  - Along a periodic direction (`lattice.pbc`), each atom moves into the cell by `s_I` cells.
+    The supercell index is then `isc + s_I - s_J`.
+  - Along a non-periodic direction, all atoms move by one vector, and the lattice vector becomes
+    an integer times longer, so that all atoms fit. There are no images along it, thus its length has no effect.
+    A molecule can then cross 0 and be longer than the cell.
+  - The matrix elements use the original coordinates.
+- `_neighbor_pairs` is also the neighbor count for `nnzpr` in the toolbox.
+- Pairs outside `nsc` of `H` are removed. This is the same as `Geometry.close` in `construct`.
+- Elements that are zero (out of the range of each integral) are not stored.
+- Missing parameters give no element and one warning for each kind: atoms without parameters
+  (their tag is not in the model), shells without an on-site energy, and shell pairs in range without hopping
+  (or overlap, if the model has overlap). A missing pair is listed once, in one direction.
+  An integral of 0 sets no element and gives no warning. Thus a model can tell that an element is 0 on purpose.
+  Only some of σ, π, δ for a shell pair is not missing.
+- In a non-orthogonal `H`, an atom without parameters gets the on-site overlap 1. Without it, `S` is singular.
+
+### Spin values
+
+- A value is a scalar, `[up, down]` or a 2x2 spin matrix. A `tuple` is always `(R_list, values)`,
+  thus a list of two numbers is `[up, down]` and not a step function.
+  A scalar `R_list` is one range: `(R, value)` is `((R,), (value,))`.
+  Each of `values` has its own form, for example `([2.6, 3.1], ([-1.1, -0.9], -0.5))`.
+  `_integral` expands them to the largest form, with the rule of `_spin_value`.
+- `_spin_value` expands each value to the form of the spin of `H`: `(n,)` unpolarized, `(n, 2)` polarized,
+  `(n, 2, 2)` non-colinear and spin-orbit. A scalar is the same for both spins. A larger form than `H` has raises.
+- `_pack` maps the 2x2 matrix to the stored components ([sisl-10 · Spin, overlap and dtype](sisl-10-sparse.md#spin-overlap-and-dtype)),
+  in the order of `matrix_box_nc_*` and `matrix_box_so_*` (`physics/_matrix_utils.pyx`).
+  Non-colinear stores `du = conj(ud)` for each element. A value that the storage cannot hold raises
+  (for example a complex value in a real `H`). It is never dropped.
+- The reverse key gets `(-1)^(la+lb) M†`. Thus `H` is Hermitian for each spin matrix `M`.
+  On-site values, and a shell pair that is its own reverse, must be Hermitian.
+- The overlap has no spin, thus its values are scalars.
+  The overlap values do not go through the checks of `_pack`. Overlaps are real quantities:
+  a complex overlap in a real `H` gives the `ComplexWarning` of numpy (decided by the maintainer).
+- The tests compare `H.Hk` with the spin matrices, not only eigenvalues:
+  `σx` and `σy` have the same eigenvalues, thus an eigenvalue test does not find a wrong `Re`/`Im` order.
+- Atomic spin-orbit coupling (λ L·S) couples different m of a shell. A value for each shell pair cannot hold it.
+  It is not implemented (decided by the maintainer: later).
+
+Sources:
+DOI[10]: 10.1103/PhysRev.94.1498
+
 ## Units and constants
 
 - The internal units are eV and Å.
