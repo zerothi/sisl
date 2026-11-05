@@ -10,3 +10,4 @@ DFTB+
 
    overrealSileDFTB - overlap matrix file
    hamrealSileDFTB - Hamiltonian matrix file
+   skfSileDFTB - Slater-Koster file
