@@ -48,16 +48,19 @@ _END = np.array(
 )
 
 
-def _floats(line: str) -> list[float]:
+def _floats(line: str, n: int) -> list[float]:
+    """The first `n` values of `line`; DFTB+ ignores the other fields"""
     out = []
     for t in line.replace(",", " ").split():
-        n, _, v = t.rpartition("*")
-        out.extend([float(v)] * int(n or 1))
-    return out
+        if len(out) >= n:
+            break
+        k, _, v = t.rpartition("*")
+        out.extend([float(v)] * int(k or 1))
+    return out[:n]
 
 
 def _interpolate(table: np.ndarray, dist: float):
-    """Interpolation of DFTB+ of `table` (row ``k`` at ``(k+1) dist`` Bohr) as a function of r (Ang)"""
+    """Interpolation of DFTB+ of `table` (first row at `dist` Bohr) as a function of r (Ang)"""
     n = len(table)
     rmax = n * dist + _TAIL
     y, dy, ddy = _END @ table[-_NPOL:]
@@ -97,18 +100,23 @@ class skfSileDFTB(SileDFTB):
             raise NotImplementedError(
                 f"{self.__class__.__name__} does not read the extended format (f shells) of {self.file}"
             )
-        dist, n = _floats(line)[:2]
-        onsite = _floats(self.readline())[2::-1] if homo else None
+        dist, n = _floats(line, 2)
+        n = int(n) - 1
+        if n <= _NPOL:
+            raise ValueError(
+                f"{self.__class__.__name__} needs more than {_NPOL} rows for the interpolation in {self.file}"
+            )
+        onsite = _floats(self.readline(), 3)[::-1] if homo else None
         # mass and polynomial repulsive
         self.readline()
         table = []
-        for _ in range(int(n) - 1):
-            row = _floats(self.readline())
+        for _ in range(n):
+            row = _floats(self.readline(), 20)
             if len(row) < 20:
                 raise ValueError(
-                    f"{self.__class__.__name__} needs {int(n) - 1} rows of 20 integrals in {self.file}"
+                    f"{self.__class__.__name__} needs {n} rows of 20 integrals in {self.file}"
                 )
-            table.append(row[:20])
+            table.append(row)
         return dist, np.array(table), onsite
 
     def read_slater_koster(self, shells: Mapping[str, Sequence[str]]) -> SlaterKoster:
@@ -145,6 +153,10 @@ class skfSileDFTB(SileDFTB):
         A, B = tags
         ls = {}
         for X in (A, B):
+            if X not in shells:
+                raise ValueError(
+                    f"{self.__class__.__name__} needs the shells of {X} for {file.name}"
+                )
             ls[X] = {}
             for label in shells[X]:
                 l = _shell(label)[1]

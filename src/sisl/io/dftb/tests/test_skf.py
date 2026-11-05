@@ -35,7 +35,7 @@ def _table(sign=1):
 def _write(path, T, homo=False):
     lines = [f"{_DIST}, {_N + 1},2"]
     if homo:
-        lines.append("-0.1 -0.2 -0.3, 0.0 0.4 0.4 0.4 0.0 4.0 2.0")
+        lines.append("-0.1 -0.2 -0.3, 0.0 0.4 0.4 0.4 0.0 4.0 2.0 T 1 0.3")
     lines.append("12.0, 19*0.0,")
     lines += ["3*0.25 " + " ".join(f"{v:.17e}" for v in row[3:]) for row in T]
     lines += [
@@ -147,6 +147,8 @@ def test_skf_errors(tmp_path):
         sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster(
             {"X": ["1s", "2s"], "Y": ["1s"]}
         )
+    with pytest.raises(ValueError, match="shells of Y"):
+        sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster({"X": ["1s"]})
     (tmp_path / "XY.skf").write_text("")
     with pytest.raises(ValueError, match="A-B.skf"):
         sisl.get_sile(tmp_path / "XY.skf").read_slater_koster(shells)
@@ -155,4 +157,7 @@ def test_skf_errors(tmp_path):
         sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster(shells)
     (tmp_path / "Y-Y.skf").write_text("0.1 30\n" + "0 " * 10 + "\n" + "20*0\n" * 10)
     with pytest.raises(ValueError, match="rows of 20"):
+        sisl.get_sile(tmp_path / "Y-Y.skf").read_slater_koster(shells)
+    (tmp_path / "Y-Y.skf").write_text("0.1 9\n" + "0 " * 10 + "\n" + "20*0\n" * 10)
+    with pytest.raises(ValueError, match="more than 8 rows"):
         sisl.get_sile(tmp_path / "Y-Y.skf").read_slater_koster(shells)

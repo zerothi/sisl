@@ -88,11 +88,14 @@ The f2py module `sisl.io.siesta._siesta` holds the Fortran readers and writers
 The format is from the v1.0 format document of DFTB+. That document does not tell the orientation,
 the sign, the interpolation or the Fortran syntax. These come from the code of DFTB+.
 
-- The table has `nGridPoints - 1` rows. Row `k` is at `r = k gridDist`.
+- The table has `nGridPoints - 1` rows. The first row is at `r = gridDist`, the next rows are `gridDist` apart.
+  DFTB+ stops if the table has fewer than 9 rows (8 points of the interpolation, and 1 more). sisl raises.
   A file can have more rows (`mio` `O-H.skf`: 518 rows for `nGridPoints = 500`).
   DFTB+ reads only `nGridPoints - 1` rows, thus sisl does the same.
 - DFTB+ reads each line with the list-directed read of Fortran. Thus `,` is a separator,
-  `n*value` is `n` times `value`, and line 1 can have more fields (`mio`: `0.02, 500,2`).
+  and `n*value` is `n` times `value`. A read uses the first values of a line and ignores the other fields.
+  Thus the reader converts only the values that it uses: line 1 of `mio` is `0.02, 500,2`,
+  and line 2 of the homonuclear files of `matsci` and `magsil` ends with `T` and more fields.
 - The extended format (`@`, f shells) raises: `SlaterKoster` stops at `l=2`.
 - In `A-B.skf`, the shell with the lower `l` is on `A`. The sign is that of Slater and Koster, as in sisl:
   `Hsp` has `s` of `A` at the origin and `p` of `B` along `+z`. Thus the reader changes no sign.
