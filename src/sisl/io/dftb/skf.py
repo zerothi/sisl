@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import xml.etree.ElementTree as ET
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 
@@ -90,7 +91,52 @@ def _interpolate(table: np.ndarray, dist: float):
 
 @set_module("sisl.io.dftb")
 class skfSileDFTB(SileDFTB):
-    """DFTB Slater-Koster file ``A-B.skf`` of the atoms with tags ``A`` and ``B``"""
+    """DFTB Slater-Koster file of the elements ``A`` and ``B``, e.g. ``A-B.skf``"""
+
+    @sile_fh_open(True)
+    def read_documentation(self) -> str:
+        """The XML section ``<Documentation>`` of the file (author, elements, basis, ...)
+
+        An empty string if the file has no documentation.
+        """
+        text = self.fh.read()
+        i = text.find("<Documentation>")
+        j = text.find("</Documentation>", i)
+        return "" if i < 0 or j < 0 else text[i : j + len("</Documentation>")]
+
+    def _r_pair(self) -> tuple[str, str, str]:
+        """Tags ``A``, ``B`` in the order of the file name, and the file name of ``B-A``
+
+        The documentation gives the elements, the file name gives their order.
+        Without them, the file name must be ``A-B.skf``.
+        """
+        file, stem = Path(self.file), Path(self.file).stem
+        doc = self.read_documentation()
+        general = ET.fromstring(doc).find("General") if doc else None
+        elements = []
+        if general is not None:
+            elements = [
+                general.findtext(t, "").strip() for t in ("Element1", "Element2")
+            ]
+            elements = [e for e in elements if e]
+        if elements:
+            for A, B in ((elements[0], elements[-1]), (elements[-1], elements[0])):
+                j = stem.find(B, len(A))
+                if stem.startswith(A) and j >= 0:
+                    other = f"{B}{stem[len(A) : j]}{A}{stem[j + len(B) :]}"
+                    return A, B, other + file.suffix
+            warn(
+                f"{self.__class__.__name__} found the elements {elements} of the "
+                f"documentation not in the name {file.name}"
+            )
+        tags = stem.split("-")
+        if len(tags) != 2:
+            raise ValueError(
+                f"{self.__class__.__name__} needs <Element1> in the documentation, "
+                f"or a file name A-B.skf, got {file.name}"
+            )
+        A, B = tags
+        return A, B, f"{B}-{A}{file.suffix}"
 
     @sile_fh_open(True)
     def _r_table(self, homo: bool):
@@ -122,6 +168,9 @@ class skfSileDFTB(SileDFTB):
     def read_slater_koster(self, shells: Mapping[str, Sequence[str]]) -> SlaterKoster:
         """Slater-Koster model of the species pair of this file, and of ``B-A.skf`` next to it
 
+        The elements come from the documentation of the file (`read_documentation`),
+        and their order from the file name. The name of ``B-A.skf`` swaps only the
+        two elements, e.g. ``N-H_short.skf`` and ``H-N_short.skf``.
         A file holds the integrals with the lower :math:`l` on its first atom, thus a pair
         of two species needs both files. Integrals of equal :math:`l` must agree in both files.
         A homonuclear file also gives the on-site energies.
@@ -145,12 +194,8 @@ class skfSileDFTB(SileDFTB):
         ... )
         """
         file = Path(self.file)
-        tags = file.stem.split("-")
-        if len(tags) != 2:
-            raise ValueError(
-                f"{self.__class__.__name__} needs a file name A-B.skf, got {file.name}"
-            )
-        A, B = tags
+        A, B, other = self._r_pair()
+        other = file.with_name(other)
         ls = {}
         for X in (A, B):
             if X not in shells:
@@ -168,7 +213,6 @@ class skfSileDFTB(SileDFTB):
 
         files = {(A, B): self}
         if A != B:
-            other = file.with_name(f"{B}-{A}{file.suffix}")
             if other.is_file():
                 files[(B, A)] = self.__class__(other)
             else:

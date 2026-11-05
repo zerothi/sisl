@@ -104,6 +104,17 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   and of `B` to `A` from `B-A.skf`, without a check. A `SlaterKoster` has one integral for both directions.
   Thus one call reads both files, takes the equal-`l` integrals from `A-B.skf`, and raises if `B-A.skf`
   does not agree (relative 1e-10). If `B-A.skf` is not there, the call warns (decided by the maintainer).
+- The file names of a set have different forms: `A-B.skf`, `AB.skf` (`rare`), `A-B_short.skf` (`pbc`).
+  The elements of a file are in the XML section `<Documentation>`, `<General>` (`<Element1>`, `<Element2>`;
+  many homonuclear files have only `<Element1>`). Thus the reader finds the two elements in the file name,
+  and the name of `B-A` swaps only the elements (decided by the maintainer: the species never change).
+  The tags are the elements. A suffix such as `_short` is not part of a tag.
+- The order of `A` and `B` comes from the file name, not from the documentation. DFTB+ uses the file name,
+  and the documentation can be wrong: `H-B.skf` of `borg` and five `H-X.skf` of `hyb`, `chalc` and `miomod-nh`
+  have the elements of `X-H.skf`; `hyb` `As-As.skf` has `<Element1>Si</Element1>`.
+  If the elements are not in the name, the reader warns and uses the name `A-B.skf`.
+- The documentation is XML from outside. `xml.etree` does not load external entities,
+  and expat 2.4.1 and later limits the expansion of entities. No other code reads it.
 - The repulsive energy (polynomial and `Spline`) is not part of `H`. The reader does not read it.
 
 ### Interpolation

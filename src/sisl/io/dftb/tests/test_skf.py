@@ -40,7 +40,7 @@ def _scale(sign=1):
     return scale
 
 
-def _write(path, scale, homo=False):
+def _write(path, scale, homo=False, elements=()):
     T = scale * _poly(_DIST * np.arange(1, _N + 1))[:, None]
     fmt = lambda v: " ".join(f"{x:.17e}" for x in v)
     lines = [f"{_DIST}, {_N + 1},2"]
@@ -50,7 +50,11 @@ def _write(path, scale, homo=False):
     # equal Sdd0 and Sdd1 test the short form n*value
     lines += [f"{fmt(row[:10])}, 2*{row[10]:.17e} {fmt(row[12:])}" for row in T]
     lines += ["20*0.0", "Spline", "1 4.0", "1 2 3", "1.0 4.0 0 0 0 0 0 0"]
-    lines.append("<Documentation>")
+    if elements:
+        tags = "".join(
+            f"<Element{i}>{e}</Element{i}>" for i, e in enumerate(elements, 1)
+        )
+        lines.append(f"<Documentation><General>{tags}</General></Documentation>")
     path.write_text("\n".join(lines) + "\n")
 
 
@@ -208,3 +212,29 @@ def test_skf_errors(tmp_path):
     (tmp_path / "Y-Y.skf").write_text("0.1 9\n" + "0 " * 10 + "\n" + "20*0\n" * 10)
     with pytest.raises(ValueError, match="more than 8 rows"):
         sisl.get_sile(tmp_path / "Y-Y.skf").read_slater_koster(shells)
+
+
+@pytest.mark.parametrize("name", ["{}-{}", "{}{}", "{}-{}_short"])
+def test_skf_names(tmp_path, name):
+    shells = {"X": _SHELLS, "Y": _SHELLS}
+    _write(tmp_path / f"{name.format('X', 'Y')}.skf", _scale(), elements="XY")
+    # the documentation of the partner has the order of the other file
+    _write(tmp_path / f"{name.format('Y', 'X')}.skf", _scale(-2), elements="XY")
+    sile = sisl.get_sile(tmp_path / f"{name.format('X', 'Y')}.skf")
+    assert "<Element2>Y</Element2>" in sile.read_documentation()
+    sk = sile.read_slater_koster(shells)
+    assert sk._tags == {"X", "Y"}
+    ref = sisl.get_sile(tmp_path / f"{name.format('Y', 'X')}.skf").read_slater_koster(
+        shells
+    )
+    r = np.array([1.1, 2.3])
+    for key in [(("X", "Y"), ("1s", "2p")), (("Y", "X"), ("1s", "2p"))]:
+        AB, (a, b) = key
+        f = dict(sk._hopping[AB][_shell(a), _shell(b)])[0]
+        g = dict(ref._hopping[AB][_shell(a), _shell(b)])[0]
+        assert np.allclose(f(r), g(r))
+
+    _write(tmp_path / "X-X.skf", _scale(), homo=True, elements="Z")
+    with pytest.warns(sisl.SislWarning, match="Z"):
+        sk = sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster(shells)
+    assert sk._tags == {"X"}
