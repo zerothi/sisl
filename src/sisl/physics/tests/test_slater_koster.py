@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 import pytest
 
@@ -247,3 +249,70 @@ def test_sk_spin():
     )
     with pytest.raises(ValueError, match="Hermitian"):
         sisl.Hamiltonian(geom, spin="so").construct(sk)
+
+
+@pytest.mark.parametrize(
+    "spin, dtype",
+    [
+        ("unpolarized", np.float64),
+        ("polarized", np.float64),
+        ("nc", np.complex128),
+        ("so", np.float64),
+    ],
+)
+def test_sk_from_hamiltonian(spin, dtype):
+    # bonds of different lengths along random directions: H comes back
+    rng = np.random.default_rng(3)
+    labels = {"A": ["2s", "2p"], "B": ["3s", "3d"]}
+    A, B = (_atom(t, l) for t, l in labels.items())
+    xyz = rng.uniform(0, 2.5, (3, 3))
+    geom = sisl.Geometry(xyz, [A, B, A], lattice=[20, 20, 20])
+    shape = {"unpolarized": (), "polarized": (2,)}.get(spin, (2, 2))
+
+    def value(herm):
+        v = rng.normal(size=shape)
+        if len(shape) == 2:
+            v = v + 1j * rng.normal(size=shape)
+            if herm or spin == "nc":
+                v = (v + v.conj().T) / 2
+        return v
+
+    hopping, overlap = {}, {}
+    for P in [("A", "A"), ("A", "B"), ("B", "B")]:
+        for i, a in enumerate(labels[P[0]]):
+            for b in labels[P[1]][i if P[0] == P[1] else 0 :]:
+                mus = ("sigma", "pi", "delta")[
+                    : min("spd".index(a[1]), "spd".index(b[1])) + 1
+                ]
+                herm = P[0] == P[1] and a == b
+                hopping.setdefault(P, {})[a, b] = {mu: value(herm) for mu in mus}
+                overlap.setdefault(P, {})[a, b] = {mu: rng.normal() for mu in mus}
+    onsite = {t: {a: value(True) for a in l} for t, l in labels.items()}
+    sk = sisl.SlaterKoster(hopping, onsite, overlap, R=6.0)
+    H = sisl.Hamiltonian(geom, spin=spin, dtype=dtype, orthogonal=False)
+    H.construct(sk)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        sk = sisl.SlaterKoster.from_hamiltonian(H)
+    H2 = sisl.Hamiltonian(geom, spin=spin, dtype=dtype, orthogonal=False)
+    H2.construct(sk)
+    assert H2.nnz == H.nnz
+    for f in ("Hk", "Sk"):
+        M, M2 = getattr(H, f)(format="array"), getattr(H2, f)(format="array")
+        assert np.allclose(M2, M, rtol=0, atol=1e-12)
+
+
+def test_sk_from_hamiltonian_pz():
+    # p_z in a plane: V_pp_sigma has no effect, thus H does not determine it
+    C = sisl.Atom(6, sisl.AtomicOrbital("2pzZ1", R=1.5), tag="C")
+    sk = sisl.SlaterKoster(
+        {("C", "C"): {("2p", "2p"): {"pi": (1.5, -2.7)}}}, onsite={"C": {"2p": 0.1}}
+    )
+    H = sisl.Hamiltonian(sisl.geom.graphene(atoms=C))
+    H.construct(sk)
+    with pytest.warns(sisl.SislWarning, match="does not determine"):
+        sk = sisl.SlaterKoster.from_hamiltonian(H)
+    H2 = sisl.Hamiltonian(H.geometry)
+    H2.construct(sk)
+    k = [0.1, 0.2, 0]
+    assert np.allclose(H2.Hk(k, format="array"), H.Hk(k, format="array"), atol=1e-12)
