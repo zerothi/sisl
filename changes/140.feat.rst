@@ -9,3 +9,6 @@ Values can depend on the spin: ``[up, down]`` or a 2x2 spin matrix.
 Hamiltonian, for example of Siesta, as in McMahan and Klepeis (1997).
 The integrals of the bonds of each length are a least-squares fit.
 ``H - H2`` with ``H2.construct(sk)`` is the part that is not two-center.
+
+`SlaterKoster.merge` joins models, for example one for each species pair.
+A coupling that two models have raises an error.

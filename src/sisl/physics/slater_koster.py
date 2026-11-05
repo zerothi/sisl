@@ -558,6 +558,58 @@ class SlaterKoster:
         }
         return cls(hopping, onsite=onsite, overlap=None if H.orthogonal else overlap)
 
+    @classmethod
+    def merge(cls, *sks: SlaterKoster) -> SlaterKoster:
+        r"""One model with the parameters of all `sks`
+
+        Each integral keeps its range.
+        A coupling that two models have raises an error: an on-site shell,
+        or a hopping or overlap shell pair (also in the reverse direction).
+
+        Parameters
+        ----------
+        *sks :
+            the models, all orthogonal or all non-orthogonal
+
+        Examples
+        --------
+        >>> sk = sisl.SlaterKoster.merge(sk_CC, sk_CH, sk_HH)
+        """
+        if len({sk.orthogonal for sk in sks}) > 1:
+            raise ValueError(
+                f"{cls.__name__}.merge needs models that are all orthogonal "
+                "or all non-orthogonal"
+            )
+        dup = []
+
+        def join(dicts, what):
+            out = {}
+            for d in dicts:
+                for key, ints in d.items():
+                    joined = out.setdefault(key, {})
+                    for s in ints.keys() & joined.keys():
+                        if isinstance(key, str):
+                            dup.append(f"{what} {key}: {_label(s)}")
+                        elif (key, s) <= (key[::-1], s[::-1]):
+                            dup.append(
+                                f"{what} ({', '.join(key)}): ({_label(s[0])}, {_label(s[1])})"
+                            )
+                    joined.update(ints)
+            return out
+
+        out = cls({})
+        out._onsite = join((sk._onsite for sk in sks), "on-site")
+        out._hopping = join((sk._hopping for sk in sks), "hopping")
+        if sks and not sks[0].orthogonal:
+            out._overlap = join((sk._overlap for sk in sks), "overlap")
+        if dup:
+            raise ValueError(
+                f"{cls.__name__}.merge got these couplings more than once: {'; '.join(dup)}"
+            )
+        out._R = max((sk.R for sk in sks), default=0.0)
+        out._tags = set().union(*(sk._tags for sk in sks))
+        return out
+
     def __call__(self, H, ia: int, atoms=None, atoms_xyz=None):
         """Set the rows of atom `ia` in `H` (signature of `construct`)"""
         if self._cache is None or self._cache[0] is not H:

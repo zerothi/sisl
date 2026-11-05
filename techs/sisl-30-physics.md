@@ -371,6 +371,17 @@ A sign error in `_P` or `_D` fails the test. Keep it independent of `_sk_factors
 - Atomic spin-orbit coupling (λ L·S) couples different m of a shell. A value for each shell pair cannot hold it.
   It is not implemented (decided by the maintainer: later).
 
+### Merge
+
+`SlaterKoster.merge(*sks)` joins the parsed dicts (`_onsite`, `_hopping`, `_overlap`) of the models.
+A model of a material can then come from one source for each species pair, for example one DFTB file.
+
+- A coupling that two models have raises one error that lists each duplicate. It never overrides.
+  The keys are expanded to both directions, thus a pair in the reverse direction is also a duplicate.
+  The error lists each pair once, in one direction.
+- A merge of orthogonal and non-orthogonal models raises: `construct` would warn for the pairs without overlap.
+- Each integral keeps its function and its range. `R` is the largest range.
+
 ### Extraction from a Hamiltonian
 
 `SlaterKoster.from_hamiltonian` is the inverse of `construct`, as in McMahan and Klepeis (1997).
