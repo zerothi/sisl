@@ -40,7 +40,7 @@ def _scale(sign=1):
     return scale
 
 
-def _write(path, scale, homo=False, elements=()):
+def _write(path, scale, homo=False, elements=(), basis=()):
     T = scale * _poly(_DIST * np.arange(1, _N + 1))[:, None]
     fmt = lambda v: " ".join(f"{x:.17e}" for x in v)
     lines = [f"{_DIST}, {_N + 1},2"]
@@ -54,7 +54,14 @@ def _write(path, scale, homo=False, elements=()):
         tags = "".join(
             f"<Element{i}>{e}</Element{i}>" for i, e in enumerate(elements, 1)
         )
-        lines.append(f"<Documentation><General>{tags}</General></Documentation>")
+        basis = "".join(
+            f'<Basis atom="{i}"><Shells>{b} </Shells></Basis>'
+            for i, b in enumerate(basis, 1)
+        )
+        lines.append(
+            f"<Documentation><General>{tags}</General>"
+            f"<SK_table>{basis}</SK_table></Documentation>"
+        )
     path.write_text("\n".join(lines) + "\n")
 
 
@@ -238,3 +245,22 @@ def test_skf_names(tmp_path, name):
     with pytest.warns(sisl.SislWarning, match="Z"):
         sk = sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster(shells)
     assert sk._tags == {"X"}
+
+
+def test_skf_default_shells(tmp_path):
+    _write(tmp_path / "X-X.skf", _scale(), homo=True, elements="X", basis=["1s 2p"])
+    _write(tmp_path / "Y-Y.skf", _scale(), homo=True, elements="Y", basis=["1s"])
+    # the basis of the heteronuclear files is not used
+    for name in ["X-Y_short", "Y-X_short"]:
+        _write(tmp_path / f"{name}.skf", _scale(), elements="XY", basis=["4f", "4f"])
+    sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster()
+    assert set(sk._hopping["X", "Y"]) == {
+        (_shell("1s"), _shell("1s")),
+        (_shell("2p"), _shell("1s")),
+    }
+    # given shells win
+    sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster({"Y": ["2s"]})
+    assert (_shell("1s"), _shell("2s")) in sk._hopping["X", "Y"]
+    _write(tmp_path / "X-Z.skf", _scale(), elements="XZ")
+    with pytest.raises(ValueError, match="no Z-Z.skf"):
+        sisl.get_sile(tmp_path / "X-Z.skf").read_slater_koster({"X": ["1s"]})

@@ -113,8 +113,19 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   and the documentation can be wrong: `H-B.skf` of `borg` and five `H-X.skf` of `hyb`, `chalc` and `miomod-nh`
   have the elements of `X-H.skf`; `hyb` `As-As.skf` has `<Element1>Si</Element1>`.
   If the elements are not in the name, the reader warns and uses the name `A-B.skf`.
-- The documentation is XML from outside. `xml.etree` does not load external entities,
-  and expat 2.4.1 and later limits the expansion of entities. No other code reads it.
+- The documentation is XML from outside. `xml_parse` (`sisl/_help.py`) reads it, as the other XML siles:
+  `defusedxml` if it is installed, else `xml.etree`. `xml.etree` does not load external entities,
+  and expat 2.4.1 and later limits the expansion of entities.
+- `shells` is optional. An element without shells gets the `<Basis>` `<Shells>` of its homonuclear file
+  next to the file: `X{sep}X{rest}.skf`, else `X{sep}X.skf` (`pbc`: `N-H_short.skf` and `N-N.skf`).
+  The `<Basis>` of a heteronuclear file is not used: `<Basis atom="1|2">` disagrees with the other files
+  of the set in 19 heteronuclear files with the order of the elements in the documentation,
+  and in 23 with the order of the file name (`hyb`, `pbc`, `trans3d`, `znorg`, ...).
+  The homonuclear file has one basis, and it also gives the on-site energies. In `dftb-slako` 24-043,
+  where both homonuclear files are there, they agree with the heteronuclear basis in 486 of 488 files.
+  The 2 others are `pbc` `Si-O.skf` and `O-Si.skf` (Si `3s 3p 3d`, `Si-Si.skf` has `3s 3p`).
+  An element of a set that extends another set (for example C of `hyb`) has no homonuclear file:
+  the user gives its shells, else the reader raises.
 - The repulsive energy (polynomial and `Spline`) is not part of `H`. The reader does not read it.
 
 ### Interpolation

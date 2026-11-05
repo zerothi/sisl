@@ -3,12 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-import xml.etree.ElementTree as ET
 from collections.abc import Mapping, Sequence
+from io import StringIO
 from pathlib import Path
 
 import numpy as np
 
+from sisl._help import xml_parse
 from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.physics import SlaterKoster
@@ -104,27 +105,31 @@ class skfSileDFTB(SileDFTB):
         j = text.find("</Documentation>", i)
         return "" if i < 0 or j < 0 else text[i : j + len("</Documentation>")]
 
-    def _r_pair(self) -> tuple[str, str, str]:
-        """Tags ``A``, ``B`` in the order of the file name, and the file name of ``B-A``
+    def _r_xml(self):
+        """Root element of the documentation, or None"""
+        doc = self.read_documentation()
+        return xml_parse(StringIO(doc)).getroot() if doc else None
+
+    def _r_pair(self) -> tuple[str, str, str, str]:
+        """Tags ``A``, ``B`` in the order of the file name, and the text between and after them
 
         The documentation gives the elements, the file name gives their order.
         Without them, the file name must be ``A-B.skf``.
         """
         file, stem = Path(self.file), Path(self.file).stem
-        doc = self.read_documentation()
-        general = ET.fromstring(doc).find("General") if doc else None
+        root = self._r_xml()
         elements = []
-        if general is not None:
+        if root is not None:
             elements = [
-                general.findtext(t, "").strip() for t in ("Element1", "Element2")
+                root.findtext(f"General/{t}", "").strip()
+                for t in ("Element1", "Element2")
             ]
             elements = [e for e in elements if e]
         if elements:
             for A, B in ((elements[0], elements[-1]), (elements[-1], elements[0])):
                 j = stem.find(B, len(A))
                 if stem.startswith(A) and j >= 0:
-                    other = f"{B}{stem[len(A) : j]}{A}{stem[j + len(B) :]}"
-                    return A, B, other + file.suffix
+                    return A, B, stem[len(A) : j], stem[j + len(B) :]
             warn(
                 f"{self.__class__.__name__} found the elements {elements} of the "
                 f"documentation not in the name {file.name}"
@@ -135,8 +140,17 @@ class skfSileDFTB(SileDFTB):
                 f"{self.__class__.__name__} needs <Element1> in the documentation, "
                 f"or a file name A-B.skf, got {file.name}"
             )
-        A, B = tags
-        return A, B, f"{B}-{A}{file.suffix}"
+        return *tags, "-", ""
+
+    def _r_basis(self) -> list[str]:
+        """Shell labels of the first atom in the documentation"""
+        root = self._r_xml()
+        shells = None if root is None else root.findtext(".//Basis[@atom='1']/Shells")
+        if not shells:
+            raise ValueError(
+                f"{self.__class__.__name__} found no <Basis> with <Shells> in {self.file}"
+            )
+        return shells.split()
 
     @sile_fh_open(True)
     def _r_table(self, homo: bool):
@@ -165,7 +179,9 @@ class skfSileDFTB(SileDFTB):
             table.append(row)
         return dist, np.array(table), onsite
 
-    def read_slater_koster(self, shells: Mapping[str, Sequence[str]]) -> SlaterKoster:
+    def read_slater_koster(
+        self, shells: Mapping[str, Sequence[str]] | None = None
+    ) -> SlaterKoster:
         """Slater-Koster model of the species pair of this file, and of ``B-A.skf`` next to it
 
         The elements come from the documentation of the file (`read_documentation`),
@@ -185,23 +201,30 @@ class skfSileDFTB(SileDFTB):
         shells :
             the shell labels (``<n><l>[Z<zeta>][P]``) of each tag, one for each :math:`l`,
             e.g. ``{"O": ["2s", "2p"], "H": ["1s"]}``. Only these shells get integrals.
+            An element without shells gets the ``<Basis>`` of its homonuclear file
+            next to this file (``X-X.skf``, or ``X-X_short.skf`` for ``A-B_short.skf``).
 
         Examples
         --------
-        >>> shells = {"O": ["2s", "2p"], "H": ["1s"]}
         >>> sk = sisl.SlaterKoster.merge(
-        ...     *(sisl.get_sile(f).read_slater_koster(shells) for f in ["O-O.skf", "O-H.skf", "H-H.skf"])
+        ...     *(sisl.get_sile(f).read_slater_koster() for f in ["O-O.skf", "O-H.skf", "H-H.skf"])
         ... )
         """
         file = Path(self.file)
-        A, B, other = self._r_pair()
-        other = file.with_name(other)
+        A, B, sep, rest = self._r_pair()
+        name = lambda X, Y, rest: file.with_name(f"{X}{sep}{Y}{rest}{file.suffix}")
+        other = name(B, A, rest)
+        shells = dict(shells or {})
+        for X in {A, B} - shells.keys():
+            homo = [f for f in (name(X, X, rest), name(X, X, "")) if f.is_file()]
+            if not homo:
+                raise ValueError(
+                    f"{self.__class__.__name__} needs the shells of {X}: "
+                    f"found no {name(X, X, '').name}"
+                )
+            shells[X] = self.__class__(homo[0])._r_basis()
         ls = {}
         for X in (A, B):
-            if X not in shells:
-                raise ValueError(
-                    f"{self.__class__.__name__} needs the shells of {X} for {file.name}"
-                )
             ls[X] = {}
             for label in shells[X]:
                 l = _shell(label)[1]
