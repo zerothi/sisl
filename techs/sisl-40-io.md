@@ -93,7 +93,7 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   A file can have more rows (`mio` `O-H.skf`: 518 rows for `nGridPoints = 500`).
   DFTB+ reads only `nGridPoints - 1` rows, thus sisl does the same.
 - DFTB+ reads each line with the list-directed read of Fortran. Thus `,` is a separator,
-  and `n*value` is `n` times `value`. A read uses the first values of a line and ignores the other fields.
+  `n*value` is `n` times `value`, and `D` is an exponent (`1.0D-02`). A read uses the first values of a line and ignores the other fields.
   Thus the reader converts only the values that it uses: line 1 of `mio` is `0.02, 500,2`,
   and line 2 of the homonuclear files of `matsci` and `magsil` ends with `T` and more fields.
 - The extended format (`@`, f shells) raises: `SlaterKoster` stops at `l=2`.
@@ -108,15 +108,20 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   The elements of a file are in the XML section `<Documentation>`, `<General>` (`<Element1>`, `<Element2>`;
   many homonuclear files have only `<Element1>`). Thus the reader finds the two elements in the file name,
   and the name of `B-A` swaps only the elements (decided by the maintainer: the species never change).
-  The tags are the elements. A suffix such as `_short` is not part of a tag.
+- A name matches `<A><no letters><B><rest>`, and the rest does not start with a lowercase letter.
+  Without this rule, `C-Cl.skf` and `Co-C.skf` with only `<Element1>C</Element1>` would be `C-C` files.
+- The tags are the elements with the rest of the name: `N-H_short.skf` gives `N_short` and `H_short`
+  (decided by the maintainer). Thus a model of the `_short` files is for atoms with these tags.
 - The order of `A` and `B` comes from the file name, not from the documentation. DFTB+ uses the file name,
   and the documentation can be wrong: `H-B.skf` of `borg` and five `H-X.skf` of `hyb`, `chalc` and `miomod-nh`
   have the elements of `X-H.skf`; `hyb` `As-As.skf` has `<Element1>Si</Element1>`.
-  If the elements are not in the name, the reader warns and uses the name `A-B.skf`.
+  If the elements are not in the name, the reader warns and uses the name with element symbols
+  (`[A-Z][a-z]?` for `A` and `B`). It also uses the name if the file has no documentation, or no end tag.
 - The documentation is XML from outside. `xml_parse` (`sisl/_help.py`) reads it, as the other XML siles:
   `defusedxml` if it is installed, else `xml.etree`. `xml.etree` does not load external entities,
   and expat 2.4.1 and later limits the expansion of entities.
-- `shells` is optional. An element without shells gets the `<Basis>` `<Shells>` of its homonuclear file
+  DFTB+ does not read the documentation, thus XML that does not parse gives a warning, and the reader uses the name.
+- `shells` is optional. A tag without shells gets the `<Basis>` `<Shells>` of the homonuclear file of its element
   next to the file: `X{sep}X{rest}.skf`, else `X{sep}X.skf` (`pbc`: `N-H_short.skf` and `N-N.skf`).
   The `<Basis>` of a heteronuclear file is not used: `<Basis atom="1|2">` disagrees with the other files
   of the set in 19 heteronuclear files with the order of the elements in the documentation,

@@ -40,10 +40,12 @@ def _scale(sign=1):
     return scale
 
 
-def _write(path, scale, homo=False, elements=(), basis=()):
+def _write(path, scale, homo=False, elements=(), basis=(), doc=""):
     T = scale * _poly(_DIST * np.arange(1, _N + 1))[:, None]
     fmt = lambda v: " ".join(f"{x:.17e}" for x in v)
-    lines = [f"{_DIST}, {_N + 1},2"]
+    # the Fortran exponent D
+    assert _DIST == 0.1
+    lines = [f"1.0D-01, {_N + 1},2"]
     if homo:
         lines.append("-0.1 -0.2 -0.3, 0.0 0.4 0.4 0.4 0.0 4.0 2.0 T 1 0.3")
     lines.append("12.0, 19*0.0,")
@@ -58,10 +60,11 @@ def _write(path, scale, homo=False, elements=(), basis=()):
             f'<Basis atom="{i}"><Shells>{b} </Shells></Basis>'
             for i, b in enumerate(basis, 1)
         )
-        lines.append(
+        doc = (
             f"<Documentation><General>{tags}</General>"
             f"<SK_table>{basis}</SK_table></Documentation>"
         )
+    lines.append(doc)
     path.write_text("\n".join(lines) + "\n")
 
 
@@ -207,9 +210,9 @@ def test_skf_errors(tmp_path):
         )
     with pytest.raises(ValueError, match="shells of Y"):
         sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster({"X": ["1s"]})
-    (tmp_path / "XY.skf").write_text("")
+    (tmp_path / "xy.skf").write_text("")
     with pytest.raises(ValueError, match="A-B.skf"):
-        sisl.get_sile(tmp_path / "XY.skf").read_slater_koster(shells)
+        sisl.get_sile(tmp_path / "xy.skf").read_slater_koster(shells)
     (tmp_path / "X-X.skf").write_text("@ extended\n0.1 30\n")
     with pytest.raises(NotImplementedError):
         sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster(shells)
@@ -221,46 +224,90 @@ def test_skf_errors(tmp_path):
         sisl.get_sile(tmp_path / "Y-Y.skf").read_slater_koster(shells)
 
 
-@pytest.mark.parametrize("name", ["{}-{}", "{}{}", "{}-{}_short"])
-def test_skf_names(tmp_path, name):
-    shells = {"X": _SHELLS, "Y": _SHELLS}
-    _write(tmp_path / f"{name.format('X', 'Y')}.skf", _scale(), elements="XY")
+@pytest.mark.parametrize(
+    "name, A, B, rest",
+    [
+        ("{}-{}", "X", "Y", ""),
+        ("{}{}", "Hf", "H", ""),
+        ("{}-{}_short", "C", "Cl", "_short"),
+    ],
+)
+def test_skf_names(tmp_path, name, A, B, rest):
+    tA, tB = A + rest, B + rest
+    shells = {tA: _SHELLS, tB: _SHELLS}
+    ab, ba = (tmp_path / f"{name.format(*e)}.skf" for e in ((A, B), (B, A)))
     # the documentation of the partner has the order of the other file
-    _write(tmp_path / f"{name.format('Y', 'X')}.skf", _scale(-2), elements="XY")
-    sile = sisl.get_sile(tmp_path / f"{name.format('X', 'Y')}.skf")
-    assert "<Element2>Y</Element2>" in sile.read_documentation()
-    sk = sile.read_slater_koster(shells)
-    assert sk._tags == {"X", "Y"}
-    ref = sisl.get_sile(tmp_path / f"{name.format('Y', 'X')}.skf").read_slater_koster(
-        shells
-    )
-    r = np.array([1.1, 2.3])
-    for key in [(("X", "Y"), ("1s", "2p")), (("Y", "X"), ("1s", "2p"))]:
-        AB, (a, b) = key
-        f = dict(sk._hopping[AB][_shell(a), _shell(b)])[0]
-        g = dict(ref._hopping[AB][_shell(a), _shell(b)])[0]
-        assert np.allclose(f(r), g(r))
+    _write(ab, _scale(), elements=[A, B])
+    _write(ba, _scale(-2), elements=[A, B])
+    assert f"<Element2>{B}</Element2>" in sisl.get_sile(ab).read_documentation()
+    sk = sisl.get_sile(ab).read_slater_koster(shells)
+    assert sk._tags == {tA, tB}
 
+    def same(sk, ref):
+        r = np.array([1.1, 2.3])
+        for AB in [(tA, tB), (tB, tA)]:
+            key = (_shell("1s"), _shell("2p"))
+            assert np.allclose(
+                dict(sk._hopping[AB][key])[0](r), dict(ref._hopping[AB][key])[0](r)
+            )
+
+    same(sk, sisl.get_sile(ba).read_slater_koster(shells))
+    # the name alone: without documentation, or without its end
+    _write(ab, _scale())
+    _write(ba, _scale(-2), doc=f"<Documentation><General><Element1>{A}</Element1>")
+    same(sk, sisl.get_sile(ab).read_slater_koster(shells))
+
+
+def test_skf_names_documentation(tmp_path):
+    shells = {"C": ["1s"], "Cl": ["1s"]}
+    # one element that is the start of the other
+    _write(tmp_path / "C-Cl.skf", _scale(), elements="C")
+    _write(
+        tmp_path / "Cl-C.skf",
+        _scale(),
+        doc="<Documentation><Ref>A & B</Ref></Documentation>",
+    )
+    with pytest.warns(sisl.SislWarning, match=r"\['C'\]"):
+        sk = sisl.get_sile(tmp_path / "C-Cl.skf").read_slater_koster(shells)
+    assert sk._tags == {"C", "Cl"}
+    with pytest.warns(sisl.SislWarning, match="could not read the documentation"):
+        sk = sisl.get_sile(tmp_path / "Cl-C.skf").read_slater_koster(shells)
+    assert sk._tags == {"C", "Cl"}
+    _write(tmp_path / "Co-C.skf", _scale(), elements="C")
+    _write(tmp_path / "C-Co.skf", _scale(), elements=["C", "Co"])
+    with pytest.warns(sisl.SislWarning, match=r"\['C'\]"):
+        sk = sisl.get_sile(tmp_path / "Co-C.skf").read_slater_koster(
+            {"C": ["1s"], "Co": ["1s"]}
+        )
+    assert sk._tags == {"C", "Co"}
     _write(tmp_path / "X-X.skf", _scale(), homo=True, elements="Z")
     with pytest.warns(sisl.SislWarning, match="Z"):
-        sk = sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster(shells)
+        sk = sisl.get_sile(tmp_path / "X-X.skf").read_slater_koster({"X": _SHELLS})
     assert sk._tags == {"X"}
 
 
 def test_skf_default_shells(tmp_path):
-    _write(tmp_path / "X-X.skf", _scale(), homo=True, elements="X", basis=["1s 2p"])
+    # X-X_short wins over X-X; Y has only Y-Y
+    _write(tmp_path / "X-X.skf", _scale(), homo=True, elements="X", basis=["1s"])
+    _write(
+        tmp_path / "X-X_short.skf", _scale(), homo=True, elements="X", basis=["1s 2p"]
+    )
     _write(tmp_path / "Y-Y.skf", _scale(), homo=True, elements="Y", basis=["1s"])
     # the basis of the heteronuclear files is not used
     for name in ["X-Y_short", "Y-X_short"]:
         _write(tmp_path / f"{name}.skf", _scale(), elements="XY", basis=["4f", "4f"])
     sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster()
-    assert set(sk._hopping["X", "Y"]) == {
+    assert set(sk._hopping["X_short", "Y_short"]) == {
         (_shell("1s"), _shell("1s")),
         (_shell("2p"), _shell("1s")),
     }
     # given shells win
-    sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster({"Y": ["2s"]})
-    assert (_shell("1s"), _shell("2s")) in sk._hopping["X", "Y"]
-    _write(tmp_path / "X-Z.skf", _scale(), elements="XZ")
-    with pytest.raises(ValueError, match="no Z-Z.skf"):
-        sisl.get_sile(tmp_path / "X-Z.skf").read_slater_koster({"X": ["1s"]})
+    sk = sisl.get_sile(tmp_path / "X-Y_short.skf").read_slater_koster(
+        {"Y_short": ["2s"]}
+    )
+    assert (_shell("1s"), _shell("2s")) in sk._hopping["X_short", "Y_short"]
+    _write(tmp_path / "X-Z_short.skf", _scale(), elements="XZ")
+    with pytest.raises(ValueError, match="no Z-Z_short.skf or Z-Z.skf"):
+        sisl.get_sile(tmp_path / "X-Z_short.skf").read_slater_koster(
+            {"X_short": ["1s"]}
+        )

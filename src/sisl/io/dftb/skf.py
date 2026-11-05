@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping, Sequence
 from io import StringIO
 from pathlib import Path
@@ -32,6 +33,7 @@ _COLS = {
     (0, 1): (8,),
     (0, 0): (9,),
 }
+_ELEMENT = "[A-Z][a-z]?"
 # interpolation of DFTB+: 8 grid points, and a tail of 1 Bohr
 _NPOL = 8
 _TAIL = 1.0
@@ -57,8 +59,14 @@ def _floats(line: str, n: int) -> list[float]:
         if len(out) >= n:
             break
         k, _, v = t.rpartition("*")
-        out.extend([float(v)] * int(k or 1))
+        out.extend([float(v.replace("D", "E").replace("d", "e"))] * int(k or 1))
     return out[:n]
+
+
+def _split(stem: str, A: str, B: str):
+    """``(A, text between, B, rest)`` of a file name, or None; the rest does not continue `B`"""
+    m = re.fullmatch(f"({A})([^A-Za-z]*)({B})((?![a-z]).*)", stem)
+    return None if m is None else m.groups()
 
 
 def _interpolate(table: np.ndarray, dist: float):
@@ -108,15 +116,23 @@ class skfSileDFTB(SileDFTB):
     def _r_xml(self):
         """Root element of the documentation, or None"""
         doc = self.read_documentation()
-        return xml_parse(StringIO(doc)).getroot() if doc else None
+        if not doc:
+            return None
+        try:
+            return xml_parse(StringIO(doc)).getroot()
+        except (SyntaxError, ValueError) as e:
+            warn(
+                f"{self.__class__.__name__} could not read the documentation of {self.file}: {e}"
+            )
+        return None
 
     def _r_pair(self) -> tuple[str, str, str, str]:
-        """Tags ``A``, ``B`` in the order of the file name, and the text between and after them
+        """Elements ``A``, ``B`` in the order of the file name, the text between them, and the rest
 
         The documentation gives the elements, the file name gives their order.
-        Without them, the file name must be ``A-B.skf``.
+        Without them, the file name must be ``A-B.skf`` (or ``AB``, ``A-B_rest``) of element symbols.
         """
-        file, stem = Path(self.file), Path(self.file).stem
+        stem = Path(self.file).stem
         root = self._r_xml()
         elements = []
         if root is not None:
@@ -127,20 +143,20 @@ class skfSileDFTB(SileDFTB):
             elements = [e for e in elements if e]
         if elements:
             for A, B in ((elements[0], elements[-1]), (elements[-1], elements[0])):
-                j = stem.find(B, len(A))
-                if stem.startswith(A) and j >= 0:
-                    return A, B, stem[len(A) : j], stem[j + len(B) :]
+                m = _split(stem, re.escape(A), re.escape(B))
+                if m is not None:
+                    return m
             warn(
                 f"{self.__class__.__name__} found the elements {elements} of the "
-                f"documentation not in the name {file.name}"
+                f"documentation not in the name {Path(self.file).name}"
             )
-        tags = stem.split("-")
-        if len(tags) != 2:
+        m = _split(stem, _ELEMENT, _ELEMENT)
+        if m is None:
             raise ValueError(
                 f"{self.__class__.__name__} needs <Element1> in the documentation, "
-                f"or a file name A-B.skf, got {file.name}"
+                f"or a file name A-B.skf, got {Path(self.file).name}"
             )
-        return *tags, "-", ""
+        return m
 
     def _r_basis(self) -> list[str]:
         """Shell labels of the first atom in the documentation"""
@@ -187,6 +203,7 @@ class skfSileDFTB(SileDFTB):
         The elements come from the documentation of the file (`read_documentation`),
         and their order from the file name. The name of ``B-A.skf`` swaps only the
         two elements, e.g. ``N-H_short.skf`` and ``H-N_short.skf``.
+        The tags are the elements and the rest of the name, e.g. ``N_short`` and ``H_short``.
         A file holds the integrals with the lower :math:`l` on its first atom, thus a pair
         of two species needs both files. Integrals of equal :math:`l` must agree in both files.
         A homonuclear file also gives the on-site energies.
@@ -201,8 +218,8 @@ class skfSileDFTB(SileDFTB):
         shells :
             the shell labels (``<n><l>[Z<zeta>][P]``) of each tag, one for each :math:`l`,
             e.g. ``{"O": ["2s", "2p"], "H": ["1s"]}``. Only these shells get integrals.
-            An element without shells gets the ``<Basis>`` of its homonuclear file
-            next to this file (``X-X.skf``, or ``X-X_short.skf`` for ``A-B_short.skf``).
+            A tag without shells gets the ``<Basis>`` of the homonuclear file of its element
+            next to this file: ``X-X_short.skf`` for ``A-B_short.skf``, else ``X-X.skf``.
 
         Examples
         --------
@@ -211,16 +228,20 @@ class skfSileDFTB(SileDFTB):
         ... )
         """
         file = Path(self.file)
-        A, B, sep, rest = self._r_pair()
+        eA, sep, eB, rest = self._r_pair()
+        A, B = eA + rest, eB + rest
         name = lambda X, Y, rest: file.with_name(f"{X}{sep}{Y}{rest}{file.suffix}")
-        other = name(B, A, rest)
+        other = name(eB, eA, rest)
         shells = dict(shells or {})
-        for X in {A, B} - shells.keys():
-            homo = [f for f in (name(X, X, rest), name(X, X, "")) if f.is_file()]
+        for X, e in {A: eA, B: eB}.items():
+            if X in shells:
+                continue
+            names = list(dict.fromkeys([name(e, e, rest), name(e, e, "")]))
+            homo = [f for f in names if f.is_file()]
             if not homo:
                 raise ValueError(
-                    f"{self.__class__.__name__} needs the shells of {X}: "
-                    f"found no {name(X, X, '').name}"
+                    f"{self.__class__.__name__} needs the shells of {X}: found no "
+                    f"{' or '.join(f.name for f in names)}"
                 )
             shells[X] = self.__class__(homo[0])._r_basis()
         ls = {}

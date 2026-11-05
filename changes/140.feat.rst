@@ -16,3 +16,4 @@ A coupling that two models have raises an error.
 `sisl.io.dftb.skfSileDFTB` reads DFTB Slater-Koster files (``A-B.skf`` and ``B-A.skf``)
 into a `SlaterKoster` with the interpolation of DFTB+, and their XML documentation.
 The shells come from the documentation of the homonuclear files, or the user gives them.
+The tags are the elements and the suffix of the file name, e.g. ``N_short`` for ``N-H_short.skf``.
