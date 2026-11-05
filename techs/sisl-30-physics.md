@@ -395,9 +395,14 @@ A model of a material can then come from one source for each species pair, for e
   `find_nsc` (method `atoms`, also in `sisl.geom`) uses `maxR` as the largest distance of two atoms.
   Thus `find_nsc` gives a supercell that holds all pairs of the model. Half the range (`R1 + R2`) would give
   a supercell that is too small. Each parsed integral keeps its range, `(imu, func, range)`, for this.
-  A tag without integrals has no range (`R` is not set).
-- The element is the longest start of the tag (2 or 1 characters) that is an element symbol,
-  for example `"C_edge"` is carbon. A tag without an element symbol raises (decided by the maintainer).
+  A tag without integrals has the range 0: `R=None` or `R<0` makes `SphericalOrbital` search a radius
+  of the zero radial function, with a warning. `sisl.geom` runs `find_nsc` only when all atoms have `R > 0`,
+  thus a geometry with such an atom keeps the default `nsc`.
+- The element is the full tag if `PeriodicTable` knows it (a symbol, a name or a number),
+  else the start of 2 or 1 letters that is a symbol (decided by the maintainer).
+  For example `"Carbon"`, `"6"` and `"C_edge"` are carbon. Only letters for the start:
+  `PeriodicTable` also knows numbers, and `"12C"` is not magnesium.
+  A tag without an element raises, also a tag that is not a string (`construct` cannot match it).
 
 ### Extraction from a Hamiltonian
 

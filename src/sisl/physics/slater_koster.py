@@ -414,14 +414,16 @@ class SlaterKoster:
         ``(n, l, zeta, P)``, as in Siesta. The orbitals have no radial function.
         Their range `~sisl.Orbital.R` is the largest range of the integrals of the atom:
         thus ``find_nsc`` gives the supercell that `~sisl.physics.Hamiltonian.construct` needs.
-        The element is the start of the tag, e.g. ``"C_edge"`` is carbon.
+        An atom without integrals has the range 0.
+        The element is the tag, or else the element symbol at its start,
+        e.g. ``"Carbon"`` and ``"C_edge"`` are carbon.
 
         Examples
         --------
         >>> geometry = sisl.geom.graphene(atoms=sk.atoms["C"])
         """
         atoms = []
-        for tag in sorted(self._tags):
+        for tag in sorted(self._tags, key=str):
             shells = set(self._onsite.get(tag, ()))
             ranges = []
             for (A, _), pairs in [
@@ -431,8 +433,18 @@ class SlaterKoster:
                 if A == tag:
                     shells.update(sa for sa, _ in pairs)
                     ranges.extend(r for funcs in pairs.values() for *_, r in funcs)
-            R = max(ranges, default=None)
-            symbol = next((tag[:n] for n in (2, 1) if tag[:n] in _ptbl._Z_int), None)
+            R = max(ranges, default=0.0)
+            symbol = None
+            if isinstance(tag, str):
+                # the full tag may be a name or a number, a start must be a symbol
+                symbol = next(
+                    (
+                        s
+                        for i, s in enumerate((tag, tag[:2], tag[:1]))
+                        if s in _ptbl._Z_int and (i == 0 or s.isalpha())
+                    ),
+                    None,
+                )
             if symbol is None:
                 raise ValueError(
                     f"{self.__class__.__name__}.atoms needs tags that start with "

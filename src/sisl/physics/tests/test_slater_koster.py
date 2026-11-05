@@ -385,8 +385,16 @@ def test_sk_atoms():
     k = [0.1, 0.2, 0.3]
     assert np.allclose(H.Hk(k).toarray(), Href.Hk(k).toarray())
 
-    with pytest.raises(ValueError, match="element symbol"):
-        sisl.SlaterKoster({}, onsite={"X1": {"1s": 0}}).atoms
+    # tags without integrals: the element is the tag or its leading symbol
+    tags = ["Carbon", "6", "C1", "CH3", "Co_x", "Cl"]
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        atoms = sisl.SlaterKoster({}, onsite={t: {"1s": 0} for t in tags}).atoms
+    assert [atoms[t].symbol for t in tags] == ["C", "C", "C", "C", "Co", "Cl"]
+    assert all(np.all(atoms[t].R == 0) for t in tags)
+    for tag in ["X1", "12C", 6]:
+        with pytest.raises(ValueError, match="element symbol"):
+            sisl.SlaterKoster({}, onsite={tag: {"1s": 0}}).atoms
 
 
 def test_sk_atoms_siesta(sisl_files):
