@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 import pytest
 
@@ -211,7 +213,7 @@ def test_skf_errors(tmp_path):
     with pytest.raises(ValueError, match="shells of Y"):
         sisl.get_sile(tmp_path / "X-Y.skf").read_slater_koster({"X": ["1s"]})
     (tmp_path / "xy.skf").write_text("")
-    with pytest.raises(ValueError, match="A-B.skf"):
+    with pytest.raises(ValueError, match="two elements"):
         sisl.get_sile(tmp_path / "xy.skf").read_slater_koster(shells)
     (tmp_path / "X-X.skf").write_text("@ extended\n0.1 30\n")
     with pytest.raises(NotImplementedError):
@@ -248,8 +250,12 @@ def test_skf_names(tmp_path, name, A, B):
 
     same(sk, sisl.get_sile(ba).read_slater_koster(shells))
     # the name alone: without documentation, or without its end
+    _write(ab, _scale(), doc=f"<Documentation><General><Element1>{A}</Element1>")
+    _write(ba, _scale(-2))
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        same(sk, sisl.get_sile(ab).read_slater_koster(shells))
     _write(ab, _scale())
-    _write(ba, _scale(-2), doc=f"<Documentation><General><Element1>{A}</Element1>")
     same(sk, sisl.get_sile(ab).read_slater_koster(shells))
 
 

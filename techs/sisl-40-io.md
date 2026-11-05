@@ -108,7 +108,7 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   The elements of a file are in the XML section `<Documentation>`, `<General>` (`<Element1>`, `<Element2>`;
   many homonuclear files have only `<Element1>`). Thus the reader finds the two elements in the file name,
   and the name of `B-A` swaps only the elements (decided by the maintainer: the species never change).
-- A name matches `<A><no letters><B><rest>`, and the rest does not start with a lowercase letter.
+- A name matches `<A><no letters or digits><B><rest>`, and the rest does not start with a lowercase letter.
   Without this rule, `C-Cl.skf` and `Co-C.skf` with only `<Element1>C</Element1>` would be `C-C` files.
 - The tags are the elements. A file with a suffix is another model of the same pair:
   `pbc` `N-H_short.skf` has `<Identifier>N-H.skf</Identifier>` and the partners `N-N.skf` and `H-H.skf`.
@@ -124,6 +124,7 @@ the sign, the interpolation or the Fortran syntax. These come from the code of D
   `defusedxml` if it is installed, else `xml.etree`. `xml.etree` does not load external entities,
   and expat 2.4.1 and later limits the expansion of entities.
   DFTB+ does not read the documentation, thus XML that does not parse gives a warning, and the reader uses the name.
+  The section starts at `<Documentation>`, thus it has no DOCTYPE. Only `ParseError` can occur, also with `defusedxml`.
 - `shells` is optional. A tag without shells gets the `<Basis>` `<Shells>` of the homonuclear file of its element
   next to the file: `X{sep}X{rest}.skf`, else `X{sep}X.skf` (`pbc`: `N-H_short.skf` and `N-N.skf`).
   The `<Basis>` of a heteronuclear file is not used: `<Basis atom="1|2">` disagrees with the other files

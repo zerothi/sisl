@@ -70,8 +70,9 @@ array([-24.85, -12.6 , -10.39,  -9.04,  10.2 ,  15.46])
   same pair: read ``N-H_short.skf`` in place of ``N-H.skf``, with ``N-N.skf`` and ``H-H.skf``.
 - **Shells.** By default, the shells of an element are the basis that its homonuclear file
   (``O-O.skf``) documents, here ``2s 2p`` for O and ``1s`` for H. The orbitals of the atoms
-  must have these labels. Use the ``shells`` argument to select other shells, or when the
-  homonuclear file is in another set (for example the ``hyb`` set, which extends ``mio``):
+  must have these labels. Use the ``shells`` argument (a shell list for each tag) to select
+  other shells, or when the homonuclear file is in another set (for example ``H-H.skf`` for
+  the ``hyb`` set, which is used together with ``mio``):
 
   >>> sk_OH = sisl.get_sile("O-H.skf").read_slater_koster({"O": ["2s", "2p"], "H": ["1s"]})
 

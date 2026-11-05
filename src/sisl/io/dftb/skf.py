@@ -7,6 +7,7 @@ import re
 from collections.abc import Mapping, Sequence
 from io import StringIO
 from pathlib import Path
+from xml.etree.ElementTree import ParseError
 
 import numpy as np
 
@@ -65,7 +66,7 @@ def _floats(line: str, n: int) -> list[float]:
 
 def _split(stem: str, A: str, B: str):
     """``(A, text between, B, rest)`` of a file name, or None; the rest does not continue `B`"""
-    m = re.fullmatch(f"({A})([^A-Za-z]*)({B})((?![a-z]).*)", stem)
+    m = re.fullmatch(f"({A})([^A-Za-z0-9]*)({B})((?![a-z]).*)", stem)
     return None if m is None else m.groups()
 
 
@@ -120,7 +121,7 @@ class skfSileDFTB(SileDFTB):
             return None
         try:
             return xml_parse(StringIO(doc)).getroot()
-        except (SyntaxError, ValueError) as e:
+        except ParseError as e:
             warn(
                 f"{self.__class__.__name__} could not read the documentation of {self.file}: {e}"
             )
@@ -153,8 +154,8 @@ class skfSileDFTB(SileDFTB):
         m = _split(stem, _ELEMENT, _ELEMENT)
         if m is None:
             raise ValueError(
-                f"{self.__class__.__name__} needs <Element1> in the documentation, "
-                f"or a file name A-B.skf, got {Path(self.file).name}"
+                f"{self.__class__.__name__} needs a file name of two elements, "
+                f"e.g. A-B.skf, got {Path(self.file).name}"
             )
         return m
 
