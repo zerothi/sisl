@@ -60,6 +60,7 @@ pytest -m "not slow"
 python tools/dev/t.py src/sisl/_core/tests/test_geometry.py -k rotate
 python tools/dev/envcheck.py [path...]
 python tools/dev/sym.py <file> [Class.method] [--sig]
+python tools/dev/prompts.py [main..HEAD | <commit>...]   # prompts and sources of commits
 # GitHub conversations (no credentials; stored in gh/): sync once, then read items
 python tools/gh.py sync
 python tools/gh.py issue <N>   # or: pr <N>, discussion <N> (needs GITHUB_TOKEN)
@@ -154,6 +155,8 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 
 - **Compare with `main`** (`git diff main...HEAD`) unless told otherwise, and review
   each commit in `main..HEAD`, not only the final diff.
+- **Compare the requests with the change:** `python tools/dev/prompts.py main..HEAD` lists the prompts
+  and sources; report work that no prompt asks for, and prompts that the change does not do.
 - **Read before you run:** changes to `conftest.py`, build files, pre-commit hooks and `tools/`.
 - **No code unrelated to sisl:** report scratch files, tool configuration, copied, generated or unexplained code.
 - **No trojan horses:** examine every commit, also merges (`git log -p --remerge-diff`), for the

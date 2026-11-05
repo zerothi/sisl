@@ -10,6 +10,7 @@ They are for developers and agents.
 | [`sym.py`](#sym) | Where is a function or a class, and what is its source? |
 | [`envcheck.py`](#envcheck) | Is the sisl that runs the sisl of this source tree? |
 | [`t.py`](#t) | Do the tests pass? |
+| [`prompts.py`](#prompts) | Which user prompts and sources caused these commits? |
 
 ## Why the scripts exist
 
@@ -118,6 +119,40 @@ For the full output, run `pytest` directly.
 
 The `-p no:cacheprovider` option stops `pytest` from writing `.pytest_cache` into the tree.
 
+## prompts
+
+```bash
+python tools/dev/prompts.py                     # the commits of main..HEAD
+python tools/dev/prompts.py HEAD                # one commit
+python tools/dev/prompts.py main..wt-branch abc1234
+```
+
+The script reads the `Prompt:` block of each commit message
+([agent-02 · User prompts in the message](agent-02-git.md#user-prompts-in-the-message)).
+A `REV` with `..` is a range. A different `REV` is one commit.
+It prints the commits from the oldest to the newest, in the order of the `REV` arguments.
+In a range, it skips merge commits, because they have no prompts.
+A merge commit that you give as one `REV` shows with the commits without a `Prompt:` line.
+The `REV` comes after `--end-of-options`. Thus `git log` cannot read a `REV` as an option,
+for example `--output`, which writes a file.
+
+The report has two parts:
+
+1. **Prompts.** Each prompt has a number (`P1`) and the commits that quote it.
+   The commits of one session quote the same prompts. Thus the script prints a prompt
+   only one time, at its first commit. Two prompts are the same when their text is the same.
+2. **Sources.** Each source has its score, its detail lines and the prompts that it follows.
+   A source is the same when its kind and its reference are the same.
+   When commits give different scores, the line shows all of them, for example `FILE[6/4]`.
+   A source without a score shows `?`, for example `URL[?]`.
+
+A last part names the commits without a `Prompt:` line.
+The script ignores the trailer block: the last paragraph, when each line of it is a trailer,
+for example `Assisted-by:`. A line before that block that looks like a trailer does not stop the script.
+Thus a malformed line does not hide the prompts after it.
+Use it to compare the requests with the change of a branch
+([agent-06 · Compare the requests with the change](agent-06-review.md#compare-the-requests-with-the-change)).
+
 ## Rules for the scripts
 
 - Use only the Python standard library. The scripts must run in each environment that runs sisl.
@@ -125,6 +160,6 @@ The `-p no:cacheprovider` option stops `pytest` from writing `.pytest_cache` int
 - Do not change files. The scripts only read and report.
 - Do not read from the network. See [dev-10 · Security](dev-10-security.md).
 - Use `subprocess` only with a fixed list of arguments and no shell.
-  `envcheck.py` runs `git` to find the tree and its `.pyx` files. `t.py` runs `pytest`.
+  `envcheck.py` runs `git` to find the tree and its `.pyx` files. `t.py` runs `pytest`. `prompts.py` runs `git log`.
 - `envcheck.py` imports `sisl`, and finds the modules of the tree with `importlib.util.find_spec`.
   This runs the `__init__.py` files of the packages, as `import sisl` does.
