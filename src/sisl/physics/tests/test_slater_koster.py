@@ -316,3 +316,38 @@ def test_sk_from_hamiltonian_pz():
     H2.construct(sk)
     k = [0.1, 0.2, 0]
     assert np.allclose(H2.Hk(k, format="array"), H.Hk(k, format="array"), atol=1e-12)
+
+
+def test_sk_merge():
+    A, B = _atom("A", ["1s"]), _atom("B", ["1s", "2p"])
+    geom = sisl.Geometry([[0, 0, 0], [0.6, 0.7, 0.8]], [A, B], lattice=[2.5, 10, 10])
+    geom.set_nsc([3, 1, 1])
+    AA = {("A", "A"): {("1s", "1s"): {"sigma": (2.5, -0.5)}}}
+    AB = {("A", "B"): {("1s", "2p"): {"sigma": (1.5, 0.7)}}}
+    BB = {("B", "B"): {("2p", "2p"): {"sigma": (2.6, 0.4), "pi": (2.6, -0.1)}}}
+    S = {("A", "B"): {("1s", "1s"): {"sigma": (1.5, 0.1)}}}
+    on = {"A": {"1s": -1.0}, "B": {"1s": 0.5, "2p": 2.0}}
+    sk = sisl.SlaterKoster(AA | AB | BB, onsite=on, overlap=S)
+    sk1 = sisl.SlaterKoster(AA, onsite={"A": on["A"]}, overlap=S)
+    sk2 = sisl.SlaterKoster(AB | BB, onsite={"B": on["B"]}, overlap={})
+    merged = sisl.SlaterKoster.merge(sk1, sk2)
+    assert merged.R == sk.R == 2.6
+    H, H2 = (sisl.Hamiltonian(geom, orthogonal=False) for _ in range(2))
+    H.construct(sk)
+    H2.construct(merged)
+    k = [0.1, 0.2, 0.3]
+    assert np.allclose(H.Hk(k).toarray(), H2.Hk(k).toarray())
+    assert np.allclose(H.Sk(k).toarray(), H2.Sk(k).toarray())
+
+    rev = {("B", "A"): {("2p", "1s"): {"sigma": (1.5, -0.7)}}}
+    for dup, match in [
+        (dict(hopping=AB), r"hopping \(A, B\): \(1sZ1, 2pZ1\)"),
+        (dict(hopping=rev), r"hopping \(A, B\): \(1sZ1, 2pZ1\)"),
+        (dict(hopping={}, overlap=S), r"overlap \(A, B\): \(1sZ1, 1sZ1\)"),
+        (dict(hopping={}, onsite={"B": {"2p": 0}}), "on-site B: 2pZ1"),
+    ]:
+        dup.setdefault("overlap", {})
+        with pytest.raises(ValueError, match=match):
+            sisl.SlaterKoster.merge(sk, sisl.SlaterKoster(**dup))
+    with pytest.raises(ValueError, match="orthogonal"):
+        sisl.SlaterKoster.merge(sk, sisl.SlaterKoster(BB))

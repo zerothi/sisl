@@ -12,7 +12,9 @@ tight-binding models.
 
    hamrealSileDFTB -- the Hamiltonian output file
    overrealSileDFTB -- the overlap output file
+   skfSileDFTB -- Slater-Koster file
 
 """
 from .sile import *  # isort: split
 from .realdat import *
+from .skf import *
