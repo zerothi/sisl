@@ -60,6 +60,7 @@ pytest -m "not slow"
 python tools/dev/t.py src/sisl/_core/tests/test_geometry.py -k rotate
 python tools/dev/envcheck.py [path...]
 python tools/dev/sym.py <file> [Class.method] [--sig]
+python tools/dev/prompts.py [main..HEAD | <commit>...]   # prompts and sources of commits
 # GitHub conversations (no credentials; stored in gh/): sync once, then read items
 python tools/gh.py sync
 python tools/gh.py issue <N>   # or: pr <N>, discussion <N> (needs GITHUB_TOKEN)
