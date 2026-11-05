@@ -76,6 +76,8 @@ pre-commit, changelog fragments in `changes/`).
 
 - **Ask first, then wait:** Cython ports, fixes to slow idioms, new required dependencies,
   changes to CI, pre-commit or build hooks, public API changes.
+- **Issues and pull requests:** for each reference (`I123`, `#123`, `PR456`), search
+  `gh/issues/N.md` or `gh/pulls/N.md` (closed ones in `closed/N.md`) of the main checkout.
 - **Report** what you did, the branch and commits, and each check you did not run, and why.
 
 **Branch, worktree, commit** — [agent-02](techs/agent-02-git.md), extends [dev-07](techs/dev-07-git.md):
