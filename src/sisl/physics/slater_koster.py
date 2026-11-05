@@ -92,6 +92,21 @@ def _shell(label: str) -> tuple[int, int, int, bool]:
     return int(n), l, int(zeta or 1), P is not None
 
 
+def _atom_shells(atom) -> dict:
+    """Orbitals of each shell ``(n, l, zeta, P)`` of `atom`: (orbital offsets, m + l)"""
+    sh = {}
+    for io, orb in enumerate(atom):
+        if not isinstance(orb, AtomicOrbital):
+            raise TypeError(
+                f"{SlaterKoster.__name__} needs AtomicOrbital orbitals, "
+                f"the atom with tag {atom.tag!r} has {orb.__class__.__name__}"
+            )
+        o, m = sh.setdefault((orb.n, orb.l, orb.zeta, orb.P), ([], []))
+        o.append(io)
+        m.append(orb.m + orb.l)
+    return {k: (np.array(o), np.array(m)) for k, (o, m) in sh.items()}
+
+
 def _label(shell: tuple[int, int, int, bool]) -> str:
     n, l, zeta, P = shell
     return f"{n}{'spd'[l]}Z{zeta}{'P' if P else ''}"
@@ -400,21 +415,9 @@ class SlaterKoster:
         species = atoms.species
         firsto = geometry.firsto
 
-        # orbitals of each shell: (n, l, zeta, P) -> (orbital offsets, m + l)
-        shells = []
-        for atom in atoms.atom:
-            sh = {}
-            if atom.tag in self._tags:
-                for io, orb in enumerate(atom):
-                    if not isinstance(orb, AtomicOrbital):
-                        raise TypeError(
-                            f"{self.__class__.__name__} needs AtomicOrbital orbitals, "
-                            f"the atom with tag {atom.tag!r} has {orb.__class__.__name__}"
-                        )
-                    o, m = sh.setdefault((orb.n, orb.l, orb.zeta, orb.P), ([], []))
-                    o.append(io)
-                    m.append(orb.m + orb.l)
-            shells.append({k: (np.array(o), np.array(m)) for k, (o, m) in sh.items()})
+        shells = [
+            _atom_shells(atom) if atom.tag in self._tags else {} for atom in atoms.atom
+        ]
 
         # spin values are (n,), (n, 2) or (n, 2, 2)
         ndim = {Spin.UNPOLARIZED: 0, Spin.POLARIZED: 1}.get(H.spin.kind, 2)
