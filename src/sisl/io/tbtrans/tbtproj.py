@@ -770,7 +770,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             state = mol.variables[suf][:]
         else:
             state = mol.variables["Re" + suf][:] + 1j * mol.variables["Im" + suf][:]
-        eig = mol.variables["eig"][:]
+        eig = mol.variables["eig"][:] * Ry2eV
 
         if eig.ndim > 1:
             raise NotImplementedError(
