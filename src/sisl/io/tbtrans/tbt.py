@@ -2034,7 +2034,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             T_I^{|a|} &=\frac 12 \sum_{\{J\}} \Big| \sum_{i\in I}\sum_{j\in J} \mathbf T_{ij} \Big|
             \\
             T_I^{|o|} &=\frac 12 \sum_{i\in I}\sum_{j\in\{J\}} \big| T_{ij} \big|
-        .. math::
 
         If the *activity* is requested (``activity=True``)
         :math:`T_I^{\mathcal A} = \sqrt{T_I^{|a|} T_I^{|o|} }` is returned.
