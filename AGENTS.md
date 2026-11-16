@@ -123,6 +123,7 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 - **Lean code:** no unneeded options, abstractions, checks or copies of sisl functions.
   Read your diff and remove what is not needed.
 - **Own the code:** be its first user. Make and extend it only with its public API, also in tests.
+  Tests of data management (copies, shared memory) can read and assert private values.
   Keep the usual case simple; get flexibility from general inputs, not from more options.
 - **Fast tests, no redundant tests:** CI runs each test many times. Smallest system; extend or parametrize an existing test; mark slow tests `slow`.
 - **When complete:** ask in one message: 1. review the branch ([agent-06](techs/agent-06-review.md))?
