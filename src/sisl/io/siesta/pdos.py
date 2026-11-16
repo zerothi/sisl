@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from typing import Optional
+
 import numpy as np
 
 from sisl._array import arrayd, arrayi, asarrayi
@@ -16,6 +18,7 @@ from sisl.utils import (
     default_ArgumentParser,
     default_namespace,
     direction,
+    list2str,
     lstranges,
     run_actions,
     strmap,
@@ -41,16 +44,19 @@ class pdosSileSiesta(SileSiesta):
         return self.read_data()[0]
 
     @sile_fh_open(True)
-    def read_fermi_level(self) -> float:
-        """Returns the fermi-level"""
+    def read_fermi_level(self) -> Optional[float]:
+        """Returns the fermi-level, or ``None`` if it is not in the file"""
         # Get the element-tree
         root = xml_parse(self.fh).getroot()
 
         # Try and find the fermi-level
         Ef = root.find("fermi_energy")
         if Ef is None:
-            warn(f"{self!s}.read_data could not locate the Fermi-level in the XML tree")
-        return Ef
+            warn(
+                f"{self!s}.read_fermi_level could not locate the Fermi-level in the XML tree"
+            )
+            return None
+        return float(Ef.text)
 
     @sile_fh_open(True)
     def read_data(self, as_dataarray: bool = False):
@@ -349,6 +355,42 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
             _data=[],
             _data_description=[],
             _data_header=[],
+        )
+
+        pdos = self
+
+        class Info(argparse.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                geom, E, PDOS = ns._geometry, ns._E, ns._PDOS
+
+                print(f"PDOS file: {pdos.file}")
+                spin = {
+                    1: "unpolarized",
+                    2: "polarized, --spin up, down, sum, z",
+                    4: "non-collinear, --spin sum, x, y, z (or xy, ...)",
+                }[PDOS.shape[0]]
+                print(f"Spin: {spin}")
+                Ef = pdos.read_fermi_level()
+                if Ef is None:
+                    Ef = "absolute (E_F not in file)"
+                else:
+                    Ef = f"relative to E_F = {Ef:.5f} eV"
+                print(
+                    f"Energy: {E.min():.5f} to {E.max():.5f} eV, {len(E)} points, "
+                    f"dE = {(E.max() - E.min()) / (len(E) - 1):.5f} eV, {Ef}"
+                )
+
+                print("Atoms and orbitals (1-based, as --atom 'atoms[orbitals]'):")
+                for atom, ia in geom.atoms.iter(True):
+                    orbs = ", ".join(f"{i}: {o.name()}" for i, o in enumerate(atom, 1))
+                    print(f"  {list2str(list(ia + 1))}: {atom.symbol} [{orbs}]")
+
+        p.add_argument(
+            "--info",
+            "-i",
+            nargs=0,
+            action=Info,
+            help="Print the spin, energies, atoms and orbitals in the PDOS file.",
         )
 
         def ensure_E(func):

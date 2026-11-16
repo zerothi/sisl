@@ -69,6 +69,13 @@ Follow `io/xyz.py`:
 4. Import the module in the `__init__.py` of the package.
 5. Add tests. Put test files in `sisl-files`. See [dev-02 · External test files](dev-02-testing.md#external-test-files).
 
+## Command line information
+
+A `--info` argument of `sdata` shows only the data of its file.
+It does not read other files, for example the fdf next to it, to fill in missing data.
+The input file can be different from the input of the run, which makes such data incorrect.
+Thus `pdosSileSiesta` shows no k-points: the PDOS file does not keep them.
+
 ## Siesta and Fortran
 
 The f2py module `sisl.io.siesta._siesta` holds the Fortran readers and writers
