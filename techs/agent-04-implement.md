@@ -60,8 +60,10 @@ The API must be simple to use, and also flexible:
 - **Flexible.** A user can extend the code to a new case without a change to the code.
   Get this from general inputs, for example array-like values or a callable,
   not from more options ([Write lean code](#write-lean-code)).
-- **Public only.** Tests and examples use only the public API.
+- **Public only.** Tests and examples make, extend and call objects only with the public API.
   If they must set a private attribute, the API is not complete.
+  A test of data management can read and assert private values.
+  For example, a copy has the full state of the original, or two objects share no memory (`np.shares_memory`).
 
 A change to the public API still needs approval ([agent-01 · Ask first](agent-01-harness.md#ask-first)).
 
