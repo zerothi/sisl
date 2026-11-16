@@ -77,6 +77,15 @@ At Γ, sisl applies no phase.
   `iter` (default), `average`, `sum`, `array`/`ndarray`, `none`, `list`, `oplist`, `dataarray`/`xarray`.
   `grid` is only for `MonkhorstPack`.
 - `physics/__init__.py` imports this module after the physics classes.
+- One `copy` in `physics/_ufuncs_brillouinzone.py` is for all Brillouin zone classes.
+  It copies each attribute of `__dict__` with `copy.copy`, except `parent`.
+  Thus a copy keeps the state that `__init__` cannot make again:
+  the `_jump_idx` of a `BandStructure` and the k-points of a `MonkhorstPack` changed by `replace`.
+  Rejected: a `copy` for each class that calls `__init__`. It lost these states.
+  Rejected: copy through `__getstate__`. It serializes the parent, for example a large Hamiltonian.
+- `copy.copy` copies one level. An attribute that holds arrays in a list or a `dict` shares them with the copy.
+  Thus keep such attributes constant, or reset them in a `copy` of the class.
+- A copy of a `GaussKronrodGrid` has no `integrate` result (`_last`): it is a new integrator with the same settings.
 - Parallel execution uses `pathos` when it is installed. It maps the k-points with `pool.imap`.
   Set the pool with `bz.apply.renew(pool=...)`.
 - `MonkhorstPack.grid()` handles the time-reversal symmetry reduction.

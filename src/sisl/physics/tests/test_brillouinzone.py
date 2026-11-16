@@ -12,6 +12,7 @@ import pytest
 from sisl import (
     BandStructure,
     BrillouinZone,
+    GaussKronrodGrid,
     Lattice,
     LatticeChild,
     MonkhorstPack,
@@ -1036,3 +1037,38 @@ class TestBandStructure:
         d = np.empty([nk + 1])
         with pytest.raises(ValueError):
             bs.insert_jump(d)
+
+
+@pytest.mark.parametrize("kind", ["bz", "mp-replace", "bs-jump", "gk"])
+def test_copy(kind):
+    lattice = Lattice(1.0)
+    if kind == "bz":
+        bz = BrillouinZone(lattice, [[0, 0, 0], [0.5, 0, 0]], [0.25, 0.75])
+    elif kind == "mp-replace":
+        bz = MonkhorstPack(lattice, [4, 1, 1], trs=True)
+        bz.replace([0] * 3, MonkhorstPack(lattice, [3, 1, 1], size=[0.25, 1, 1]))
+    elif kind == "bs-jump":
+        points = [[0, 0, 0], [0.5, 0, 0], None, [0, 0.5, 0], [0, 0, 0]]
+        bz = BandStructure(lattice, points, 10, names="ABCD")
+    else:
+        bz = GaussKronrodGrid(lattice, [3, 0, 0])
+        bz.integrate(lambda k: k[0] ** 2)
+
+    other = Lattice(2.0)
+    for parent in (None, other):
+        c = bz.copy(parent=parent)
+        assert c.__class__ is bz.__class__
+        assert c.parent is (bz.parent if parent is None else other)
+        assert c.__dict__.keys() == bz.__dict__.keys()
+        for key, value in bz.__dict__.items():
+            if key == "parent" or (kind == "gk" and key == "_last"):
+                continue
+            np.testing.assert_equal(c.__dict__[key], value)
+            if isinstance(value, np.ndarray):
+                assert not np.shares_memory(c.__dict__[key], value)
+    if kind == "bs-jump":
+        assert np.allclose(bz.copy().lineartick()[0], bz.lineartick()[0])
+    elif kind == "gk":
+        assert len(bz.last_bz()) > 0
+        with pytest.raises(SislError, match="integrate"):
+            bz.copy().last_bz()

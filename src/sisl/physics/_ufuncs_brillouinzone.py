@@ -3,12 +3,15 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
+from copy import copy as _copy
+
 import numpy as np
 
 from sisl._ufuncs import register_sisl_dispatch
 from sisl.typing import SileLike
 
-from .brillouinzone import BandStructure, BrillouinZone, MonkhorstPack
+from ._brillouinzone_adaptive import GaussKronrodGrid
+from .brillouinzone import BrillouinZone
 
 # Nothing gets exposed here
 __all__ = []
@@ -23,46 +26,30 @@ def copy(bz: BrillouinZone, parent=None) -> BrillouinZone:
     parent : optional
        change the parent
     """
-    if parent is None:
-        parent = bz.parent
-    out = bz.__class__(parent, bz._k.copy(), bz.weight.copy())
+    out = bz.__class__.__new__(bz.__class__)
+    out.__dict__.update(
+        (key, _copy(value)) for key, value in bz.__dict__.items() if key != "parent"
+    )
+    out.set_parent(bz.parent if parent is None else parent)
     return out
 
 
-@register_sisl_dispatch(MonkhorstPack, module="sisl.physics")
-def copy(mp: MonkhorstPack, parent=None) -> MonkhorstPack:
+_copy_bz = copy
+
+
+@register_sisl_dispatch(GaussKronrodGrid, module="sisl.physics")
+def copy(gk: GaussKronrodGrid, parent=None) -> GaussKronrodGrid:
     """Create a copy of this object, optionally changing the parent
+
+    The copy has no result of `integrate`. Thus `last_bz` requires a new `integrate`.
 
     Parameters
     ----------
     parent : optional
        change the parent
     """
-    if parent is None:
-        parent = mp.parent
-    out = mp.__class__(
-        parent, mp._diag, mp._displ, mp._size, mp._centered, mp._trs >= 0
-    )
-    # this is required due to replace calls
-    out._k = mp._k.copy()
-    out._w = mp._w.copy()
-    return out
-
-
-@register_sisl_dispatch(BandStructure, module="sisl.physics")
-def copy(bs: BandStructure, parent=None) -> BandStructure:
-    """Create a copy of this object, optionally changing the parent
-
-    Parameters
-    ----------
-    parent : optional
-       change the parent
-    """
-    if parent is None:
-        parent = bs.parent
-    out = bs.__class__(
-        parent, bs.points.copy(), bs.divisions.copy(), bs.names[:], jump_dk=bs._jump_dk
-    )
+    out = _copy_bz(gk, parent)
+    out._last = None
     return out
 
 
