@@ -122,6 +122,8 @@ with [dev-01](techs/dev-01-build.md#editable-installs-and-worktrees):
 - **Find the module that runs:** `_x.py` and `_x.pyx` are distinct; `python tools/dev/envcheck.py <path>`.
 - **Lean code:** no unneeded options, abstractions, checks or copies of sisl functions.
   Read your diff and remove what is not needed.
+- **Own the code:** be its first user. Make and extend it only with its public API, also in tests.
+  Keep the usual case simple; get flexibility from general inputs, not from more options.
 - **Fast tests, no redundant tests:** CI runs each test many times. Smallest system; extend or parametrize an existing test; mark slow tests `slow`.
 - **When complete:** ask in one message: 1. review the branch ([agent-06](techs/agent-06-review.md))?
   2. merge if the review passes? 3. remove the branch and the worktree after the merge?
