@@ -1,0 +1,250 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview: module code &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e6be679b"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=7800a641"></script>
+      <script src="../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview: module code</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>All modules for which code is available</h1>
+<ul><li><a href="sisl/_category.html">sisl._category</a></li>
+<li><a href="sisl/_core/atom.html">sisl._core.atom</a></li>
+<li><a href="sisl/_core/geometry.html">sisl._core.geometry</a></li>
+<li><a href="sisl/_core/grid.html">sisl._core.grid</a></li>
+<li><a href="sisl/_core/lattice.html">sisl._core.lattice</a></li>
+<li><a href="sisl/_core/oplist.html">sisl._core.oplist</a></li>
+<li><a href="sisl/_core/orbital.html">sisl._core.orbital</a></li>
+<li><a href="sisl/_core/periodictable.html">sisl._core.periodictable</a></li>
+<li><a href="sisl/_core/quaternion.html">sisl._core.quaternion</a></li>
+<li><a href="sisl/_core/sparse.html">sisl._core.sparse</a></li>
+<li><a href="sisl/_core/sparse_geometry.html">sisl._core.sparse_geometry</a></li>
+<li><a href="sisl/category.html">sisl.category</a></li>
+<li><a href="sisl/constant.html">sisl.constant</a></li>
+<li><a href="sisl/geom/_category/_coord.html">sisl.geom._category._coord</a></li>
+<li><a href="sisl/geom/_category/_kind.html">sisl.geom._category._kind</a></li>
+<li><a href="sisl/geom/_category/_neighbors.html">sisl.geom._category._neighbors</a></li>
+<li><a href="sisl/geom/_composite.html">sisl.geom._composite</a></li>
+<li><a href="sisl/geom/_neighbors/_finder.html">sisl.geom._neighbors._finder</a></li>
+<li><a href="sisl/geom/_neighbors/_neighborlists.html">sisl.geom._neighbors._neighborlists</a></li>
+<li><a href="sisl/geom/flat.html">sisl.geom.flat</a></li>
+<li><a href="sisl/io/DFTB.html">sisl.io.DFTB</a></li>
+<li><a href="sisl/io/bigdft/ascii.html">sisl.io.bigdft.ascii</a></li>
+<li><a href="sisl/io/cube.html">sisl.io.cube</a></li>
+<li><a href="sisl/io/dftb/realdat.html">sisl.io.dftb.realdat</a></li>
+<li><a href="sisl/io/fhiaims/_geometry.html">sisl.io.fhiaims._geometry</a></li>
+<li><a href="sisl/io/gulp/fc.html">sisl.io.gulp.fc</a></li>
+<li><a href="sisl/io/gulp/got.html">sisl.io.gulp.got</a></li>
+<li><a href="sisl/io/molden.html">sisl.io.molden</a></li>
+<li><a href="sisl/io/openmx/omx.html">sisl.io.openmx.omx</a></li>
+<li><a href="sisl/io/orca/stdout.html">sisl.io.orca.stdout</a></li>
+<li><a href="sisl/io/orca/txt.html">sisl.io.orca.txt</a></li>
+<li><a href="sisl/io/pdb.html">sisl.io.pdb</a></li>
+<li><a href="sisl/io/phtrans.html">sisl.io.phtrans</a></li>
+<li><a href="sisl/io/scaleup/orbocc.html">sisl.io.scaleup.orbocc</a></li>
+<li><a href="sisl/io/scaleup/ref.html">sisl.io.scaleup.ref</a></li>
+<li><a href="sisl/io/scaleup/rham.html">sisl.io.scaleup.rham</a></li>
+<li><a href="sisl/io/siesta/bands.html">sisl.io.siesta.bands</a></li>
+<li><a href="sisl/io/siesta/basis.html">sisl.io.siesta.basis</a></li>
+<li><a href="sisl/io/siesta/binaries.html">sisl.io.siesta.binaries</a></li>
+<li><a href="sisl/io/siesta/eig.html">sisl.io.siesta.eig</a></li>
+<li><a href="sisl/io/siesta/fa.html">sisl.io.siesta.fa</a></li>
+<li><a href="sisl/io/siesta/fc.html">sisl.io.siesta.fc</a></li>
+<li><a href="sisl/io/siesta/fdf.html">sisl.io.siesta.fdf</a></li>
+<li><a href="sisl/io/siesta/kp.html">sisl.io.siesta.kp</a></li>
+<li><a href="sisl/io/siesta/orb_indx.html">sisl.io.siesta.orb_indx</a></li>
+<li><a href="sisl/io/siesta/pdos.html">sisl.io.siesta.pdos</a></li>
+<li><a href="sisl/io/siesta/siesta_grid.html">sisl.io.siesta.siesta_grid</a></li>
+<li><a href="sisl/io/siesta/siesta_nc.html">sisl.io.siesta.siesta_nc</a></li>
+<li><a href="sisl/io/siesta/stdout.html">sisl.io.siesta.stdout</a></li>
+<li><a href="sisl/io/siesta/struct.html">sisl.io.siesta.struct</a></li>
+<li><a href="sisl/io/siesta/times.html">sisl.io.siesta.times</a></li>
+<li><a href="sisl/io/siesta/transiesta_grid.html">sisl.io.siesta.transiesta_grid</a></li>
+<li><a href="sisl/io/siesta/xv.html">sisl.io.siesta.xv</a></li>
+<li><a href="sisl/io/sile.html">sisl.io.sile</a></li>
+<li><a href="sisl/io/table.html">sisl.io.table</a></li>
+<li><a href="sisl/io/tbtrans/delta.html">sisl.io.tbtrans.delta</a></li>
+<li><a href="sisl/io/tbtrans/pht.html">sisl.io.tbtrans.pht</a></li>
+<li><a href="sisl/io/tbtrans/se.html">sisl.io.tbtrans.se</a></li>
+<li><a href="sisl/io/tbtrans/tbt.html">sisl.io.tbtrans.tbt</a></li>
+<li><a href="sisl/io/tbtrans/tbtproj.html">sisl.io.tbtrans.tbtproj</a></li>
+<li><a href="sisl/io/vasp/car.html">sisl.io.vasp.car</a></li>
+<li><a href="sisl/io/vasp/chg.html">sisl.io.vasp.chg</a></li>
+<li><a href="sisl/io/vasp/doscar.html">sisl.io.vasp.doscar</a></li>
+<li><a href="sisl/io/vasp/eigenval.html">sisl.io.vasp.eigenval</a></li>
+<li><a href="sisl/io/vasp/locpot.html">sisl.io.vasp.locpot</a></li>
+<li><a href="sisl/io/vasp/outcar.html">sisl.io.vasp.outcar</a></li>
+<li><a href="sisl/io/wannier90/seedname.html">sisl.io.wannier90.seedname</a></li>
+<li><a href="sisl/io/xsf.html">sisl.io.xsf</a></li>
+<li><a href="sisl/io/xyz.html">sisl.io.xyz</a></li>
+<li><a href="sisl/mixing/base.html">sisl.mixing.base</a></li>
+<li><a href="sisl/mixing/diis.html">sisl.mixing.diis</a></li>
+<li><a href="sisl/mixing/linear.html">sisl.mixing.linear</a></li>
+<li><a href="sisl/physics/bloch.html">sisl.physics.bloch</a></li>
+<li><a href="sisl/physics/brillouinzone.html">sisl.physics.brillouinzone</a></li>
+<li><a href="sisl/physics/densitymatrix.html">sisl.physics.densitymatrix</a></li>
+<li><a href="sisl/physics/dynamicalmatrix.html">sisl.physics.dynamicalmatrix</a></li>
+<li><a href="sisl/physics/electron.html">sisl.physics.electron</a></li>
+<li><a href="sisl/physics/energydensitymatrix.html">sisl.physics.energydensitymatrix</a></li>
+<li><a href="sisl/physics/hamiltonian.html">sisl.physics.hamiltonian</a></li>
+<li><a href="sisl/physics/overlap.html">sisl.physics.overlap</a></li>
+<li><a href="sisl/physics/phonon.html">sisl.physics.phonon</a></li>
+<li><a href="sisl/physics/self_energy.html">sisl.physics.self_energy</a></li>
+<li><a href="sisl/physics/sparse.html">sisl.physics.sparse</a></li>
+<li><a href="sisl/physics/spin.html">sisl.physics.spin</a></li>
+<li><a href="sisl/physics/state.html">sisl.physics.state</a></li>
+<li><a href="sisl/shape/_cylinder.html">sisl.shape._cylinder</a></li>
+<li><a href="sisl/shape/base.html">sisl.shape.base</a></li>
+<li><a href="sisl/shape/ellipsoid.html">sisl.shape.ellipsoid</a></li>
+<li><a href="sisl/shape/prism4.html">sisl.shape.prism4</a></li>
+<li><a href="sisl/utils/_arrays.html">sisl.utils._arrays</a></li>
+<li><a href="sisl/utils/misc.html">sisl.utils.misc</a></li>
+<li><a href="sisl/utils/ranges.html">sisl.utils.ranges</a></li>
+<li><a href="sisl/viz/figure/figure.html">sisl.viz.figure.figure</a></li>
+<li><a href="sisl/viz/plot.html">sisl.viz.plot</a></li>
+<li><a href="sisl/viz/plots/bands.html">sisl.viz.plots.bands</a></li>
+<li><a href="sisl/viz/plots/geometry.html">sisl.viz.plots.geometry</a></li>
+<li><a href="sisl/viz/plots/grid.html">sisl.viz.plots.grid</a></li>
+<li><a href="sisl/viz/plots/matrix.html">sisl.viz.plots.matrix</a></li>
+<li><a href="sisl/viz/plots/merged.html">sisl.viz.plots.merged</a></li>
+<li><a href="sisl/viz/plots/pdos.html">sisl.viz.plots.pdos</a></li>
+<li><a href="sisl_toolbox/btd/_btd.html">sisl_toolbox.btd._btd</a></li>
+<li><a href="sisl_toolbox/btd/_electrode.html">sisl_toolbox.btd._electrode</a></li>
+<li><a href="sisl_toolbox/btd/_green.html">sisl_toolbox.btd._green</a></li>
+<li><a href="sisl_toolbox/siesta/atom/_atom.html">sisl_toolbox.siesta.atom._atom</a></li>
+</ul>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geometry creation – part 1 &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e6be679b"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=7800a641"></script>
+      <script src="../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Geometry creation – part 2" href="tutorial_02.html" />
+    <link rel="prev" title="Siesta — graphene" href="tutorial_siesta_2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial_es_1.html">Electronic structure calculation – a walk-through</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_es_2.html">Berry phase calculation for graphene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_siesta_2_ahc.html">Anomalous Hall conductivity (AHC) for graphene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#siesta-transiesta-support">Siesta/TranSiesta support</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#deprecated-tutorials">Deprecated tutorials</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Geometry creation -- part 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_02.html">Geometry creation -- part 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_04.html">Supercells</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_05.html">Electronic structure setup -- part 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_06.html">Electronic structure setup -- part 2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Geometry creation – part 1</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/tutorial_01.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="geometry-creation-part-1">
+<span id="tutorial-01"></span><h1>Geometry creation – part 1<a class="headerlink" href="#geometry-creation-part-1" title="Link to this heading"></a></h1>
+<p>To create a <em class="xref py py-obj">Geometry</em> one needs to define a set of attributes.
+The <em>only</em> required information is the atomic coordinates:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">single_hydrogen</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">single_hydrogen</span><span class="p">)</span>
+<span class="go">{na: 1, no: 1, species:</span>
+<span class="go"> {Atoms(1):</span>
+<span class="go">    (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000],</span>
+<span class="go"> },</span>
+<span class="go"> nsc: [1, 1, 1], maxR: -1.0</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>this will create a <em class="xref py py-obj">Geometry</em> object with 1 Hydrogen atom with a single orbital
+(default if not specified), and a lattice of 10 A in each Cartesian direction.
+When printing a <em class="xref py py-obj">Geometry</em> object a list of information is printed in an
+XML-like fashion. <code class="docutils literal notranslate"><span class="pre">na</span></code> corresponds to the total number of atoms in the
+geometry, while <code class="docutils literal notranslate"><span class="pre">no</span></code> refers to the total number of orbitals.
+The species are printed in a sub-tree and <code class="docutils literal notranslate"><span class="pre">Atoms(1)</span></code> means that there is
+one distinct atomic specie in the geometry. That atom is a Hydrogen, with mass
+listed in atomic-units. <code class="docutils literal notranslate"><span class="pre">maxR</span></code> refers to the maximum range of all the orbitals
+associated with that atom. A negative number means that there is no specified
+range.
+Lastly <code class="docutils literal notranslate"><span class="pre">nsc</span></code> refers to the number of neighbouring super-cells that is represented
+by the object. In this case <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></code> means that it is a molecule and there
+are no super-cells (only the unit-cell).</p>
+<p>To specify the atomic specie one may do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">single_carbon</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]],</span> <span class="n">Atom</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>which changes the Hydrogen to a Carbon atom.</p>
+<p>To create a geometry with two different atomic species, for instance a chain
+of alternating Natrium an Chloride atoms, separated by 1.6 A one may do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+<span class="go">                      [1.6, 0., 0.]], [Atom(&#39;Na&#39;), Atom(&#39;Cl&#39;)],</span>
+<span class="go">                      [3.2, 10., 10.])</span>
+</pre></div>
+</div>
+<p>note the last argument which specifies the Cartesian lattice vectors.
+sisl is clever enough to repeat atomic species if the number of atomic
+coordinates is a multiple of the number of passed atoms, i.e.:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chainx2</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+<span class="go">                        [1.6, 0., 0.],</span>
+<span class="go">                        [3.2, 0., 0.],</span>
+<span class="go">                        [4.8, 0., 0.]]], [Atom(&#39;Na&#39;), Atom(&#39;Cl&#39;)],</span>
+<span class="go">                        [6.4, 10., 10.])</span>
+</pre></div>
+</div>
+<p>which is twice the length of the first chain with alternating Natrium and Chloride atoms,
+but otherwise identical.</p>
+<p>This is the most basic form of creating geometries in sisl and is the starting
+point of almost anything related to sisl.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial_siesta_2.html" class="btn btn-neutral float-left" title="Siesta — graphene" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_02.html" class="btn btn-neutral float-right" title="Geometry creation – part 2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

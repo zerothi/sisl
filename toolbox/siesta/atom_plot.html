@@ -1,0 +1,230 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotting atom output &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=e6be679b"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=7800a641"></script>
+      <script src="../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl_toolbox.siesta.atom.AtomInput" href="../generated/sisl_toolbox.siesta.atom.AtomInput.html" />
+    <link rel="prev" title="solve_poisson" href="../transiesta/generated/sisl_toolbox.transiesta.poisson.solve_poisson.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Toolboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../transiesta/ts_fft.html">TranSiesta Hartree correction for FFT Poisson solver</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting <em class="xref py py-obj">atom</em> output</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-tool">Command line tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-generation">Input generation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../generated/sisl_toolbox.siesta.atom.AtomInput.html">sisl_toolbox.siesta.atom.AtomInput</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../btd/btd.html">Block-tri-diagonal inversion algorithms</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Toolboxes</a></li>
+      <li class="breadcrumb-item active">Plotting <em class="xref py py-obj">atom</em> output</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/toolbox/siesta/atom_plot.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="plotting-atom-output">
+<span id="module-sisl_toolbox.siesta.atom"></span><span id="toc-tool-atom-plot"></span><h1>Plotting <em class="xref py py-obj">atom</em> output<a class="headerlink" href="#plotting-atom-output" title="Link to this heading"></a></h1>
+<p>Suggestions and improvements to this utility is most welcome!</p>
+<p>Creating pseudopotentials using <a class="reference external" href="https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html">atom</a> will often require users to
+post-analyze the output of the program.</p>
+<p>Here we aid this visualization process by adding a command line interface
+for plotting details of the output via a simple command.</p>
+<section id="command-line-tool">
+<h2>Command line tool<a class="headerlink" href="#command-line-tool" title="Link to this heading"></a></h2>
+<p>It may be called using</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">stoolbox atom-plot &lt;atom-output-directory&gt;</span>
+</pre></div>
+</div>
+<p>which by default will create 4 plots.</p>
+<a class="reference internal image-reference" href="../../_images/atom_plot_output.png"><img alt="Default `stoolbox atom-plot` output" class="align-center" src="../../_images/atom_plot_output.png" style="width: 500px;" />
+</a>
+<p>It mimicks the shell commands provided by <a class="reference external" href="https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html">atom</a> for plotting with some additional details.</p>
+<p>By default the program will output details regarding the core-charge and valence charge
+overlap (use full for determining whether core-corrections should be used).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Total charge in atom: 82.00213</span>
+<span class="go">Core-correction r_pc [2.0, 1.5, 1]: [0.8656676967, 0.9330918445, 1.0573356051] Bohr</span>
+</pre></div>
+</div>
+<p>Here it is for lead and the first line gives the total charge in the atom calculation.
+Note that the deviation stems from the different integration schemes used in the toolbox
+and in <a class="reference external" href="https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html">atom</a>.
+The 2nd line prints details about the where the core charge is some factor larger than
+the pseudo potential valence charge. In this case it prints the radii <span class="math notranslate nohighlight">\(r_i\)</span> where
+<span class="math notranslate nohighlight">\(\rho_{\mathrm{core}}(r_i)/\rho_{\mathrm{valence}}(r_i)\)</span> equals <span class="math notranslate nohighlight">\(2\)</span>, <span class="math notranslate nohighlight">\(1.5\)</span> and <span class="math notranslate nohighlight">\(1\)</span>.</p>
+<p>The full overlap is printed in the title of the charge plot. It is calculated as:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal O = \int \mathrm{min}(\rho_{\mathrm{core}}(r), \rho_{\mathrm{valence}}(r)) \mathrm dr\]</div>
+</section>
+<section id="input-generation">
+<h2>Input generation<a class="headerlink" href="#input-generation" title="Link to this heading"></a></h2>
+<p>The tool can also be used to generate the input files for <a class="reference external" href="https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html">atom</a>. While it is possible to read
+input files from <code class="docutils literal notranslate"><span class="pre">INP</span></code> files, one may also define a specific <em class="xref py py-obj">Atom</em> object which
+will be used to generate the input file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl_toolbox.siesta.atom</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">2.4</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.6</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">1.4</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">2.</span><span class="p">)</span>
+
+<span class="n">Ag</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;Ag&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">f</span><span class="p">])</span>
+
+<span class="n">atom_input</span> <span class="o">=</span> <span class="n">AtomInput</span><span class="p">(</span><span class="n">Ag</span><span class="p">,</span> <span class="n">rcore</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">xc</span><span class="o">=</span><span class="s2">&quot;pb&quot;</span><span class="p">,</span> <span class="n">flavor</span><span class="o">=</span><span class="s2">&quot;tm2&quot;</span><span class="p">)</span>
+
+<span class="c1"># write the INP file in current directory</span>
+<span class="n">atom_input</span><span class="o">.</span><span class="n">pg</span><span class="p">()</span>
+</pre></div>
+</div>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput" title="sisl_toolbox.siesta.atom.AtomInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomInput</span></code></a></p></td>
+<td><p>Input for the <code class="docutils literal notranslate"><span class="pre">atom</span></code> program see <a class="reference internal" href="../generated/sisl_toolbox.siesta.atom.AtomInput.html#atomlicense" id="id1"><span>[AtomLicense]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../transiesta/generated/sisl_toolbox.transiesta.poisson.solve_poisson.html" class="btn btn-neutral float-left" title="solve_poisson" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../generated/sisl_toolbox.siesta.atom.AtomInput.html" class="btn btn-neutral float-right" title="sisl_toolbox.siesta.atom.AtomInput" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

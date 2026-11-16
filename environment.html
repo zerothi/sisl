@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Environment variables &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=e6be679b"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=7800a641"></script>
+      <script src="_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Toolboxes" href="toolbox/index.html" />
+    <link rel="prev" title="sisl.typing.SeqOrScalarFloat" href="api/generated/sisl.typing.SeqOrScalarFloat.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Environment variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#code-specific-environment-variables">Code specific environment variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#siesta">Siesta</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Environment variables</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/environment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="environment-variables">
+<span id="environment"></span><h1>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h1>
+<p>sisl understands some environment variables that may be used to tweak, or change
+the default behavior of sisl.</p>
+<p>Here we list the different options:</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_NUM_PROCS</span> <span class="pre">=</span> <span class="pre">1</span></code></dt><dd><p>Default the number of processors used in parallel calculations.
+Currently only certain Brillouin zone operations has this enabled.</p>
+<p>Please test this for your machine before relying on it giving a lot
+of performance. Especially in conjunction with the <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code>
+flag for OpenMP in linear algebra libraries.
+Benchmark and see if it actually improves (certain combinations will
+severely hurt performance, while others will greatly improve performance).
+This value together with <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> and <code class="docutils literal notranslate"><span class="pre">SISL_PAR_CHUNKSIZE</span></code>
+should be tuned for your case study.</p>
+<p>It is <em>very</em> easy to encounter deadlocks when using parallel processing in
+<a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>. The main problem is the interplay between the BLAS library and the
+threading in the multiprocessing library. Always try first by maximizing
+<code class="docutils literal notranslate"><span class="pre">SISL_NUM_PROCS</span></code> and set <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS=1</span></code> to test whether it works
+on your machine, then further tuning can be done by ensuring that
+<code class="docutils literal notranslate"><span class="pre">SISL_NUM_PROCS</span> <span class="pre">*</span> <span class="pre">OMP_NUM_THREADS</span> <span class="pre">&lt;=</span> <span class="pre">CORES</span></code>.</p>
+<p>Generally one can get the maximum number of cores by:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">nprocs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sched_getaffinity</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="c1"># If your CPU has hyper-threads, then you have to divide by 2:</span>
+<span class="n">nprocs</span> <span class="o">=</span> <span class="n">nprocs</span> <span class="o">//</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_PAR_CHUNKSIZE</span> <span class="pre">=</span> <span class="pre">0.2</span></code></dt><dd><p>Default size of chunk for each processor when running parallel things.</p>
+<p>The chunksize can be an <em class="xref py py-obj">int</em>, in which case it is directly determining
+the chunksize.
+If it is a <em class="xref py py-obj">float</em>, it is understood as the fraction of chunks each
+processor will get, so a chunksize of <code class="docutils literal notranslate"><span class="pre">0.5</span></code> means that each processor
+gets 2 chunks (the actual chunksize will be adjusted depending on the number
+of iterations). For <code class="docutils literal notranslate"><span class="pre">0.1</span></code>, it results in 10 chunks per processor.</p>
+<p>When doing parallel jobs the chunksize can greatly improve efficiency.
+For example a chunksize of 1 and 2 processors for a brillouinzone object
+means an execution like this:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&lt;initialization&gt;
+proc-0:<span class="w"> </span>k<span class="o">[</span><span class="m">0</span><span class="o">]</span>
+proc-1:<span class="w"> </span>k<span class="o">[</span><span class="m">1</span><span class="o">]</span>
+&lt;collection<span class="w"> </span>of<span class="w"> </span>results&gt;
+proc-0:<span class="w"> </span>k<span class="o">[</span><span class="m">2</span><span class="o">]</span>
+proc-1:<span class="w"> </span>k<span class="o">[</span><span class="m">3</span><span class="o">]</span>
+&lt;collection<span class="w"> </span>of<span class="w"> </span>results&gt;
+...
+</pre></div>
+</div>
+<p>With a chunksize of 2 it will look like:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>&lt;initialization&gt;
+proc-0:<span class="w"> </span>k<span class="o">[</span><span class="m">0</span><span class="o">]</span>
+proc-0:<span class="w"> </span>k<span class="o">[</span><span class="m">1</span><span class="o">]</span>
+proc-1:<span class="w"> </span>k<span class="o">[</span><span class="m">2</span><span class="o">]</span>
+proc-1:<span class="w"> </span>k<span class="o">[</span><span class="m">3</span><span class="o">]</span>
+&lt;collection<span class="w"> </span>of<span class="w"> </span>results&gt;
+...
+</pre></div>
+</div>
+<p>this can greatly improve performance, however, a too high chunksize can
+hurt performance, as well as a too low.
+A rule-of-thumb would be to select a chunksize such that
+the number of iterations is divisible by the chunksize.
+For <em class="xref py py-obj">BrillouinZone</em> objects, the number of iterations is equivalent to the number
+of k-points.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_SHOW_PROGRESS</span> <span class="pre">=</span> <span class="pre">false</span></code></dt><dd><p>Certain sisl routines has a builtin progress bar. This variable can default
+whether or not those will be shown. It can be nice for <em>slow</em> brillouinzone calculations
+to see if progress is actually being made.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_IO_DEFAULT</span> <span class="pre">=</span> <span class="pre">''</span></code></dt><dd><p>The default IO methods <code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.get_sile</span></code> will select files with this file-endings.
+For instance there are many <code class="docutils literal notranslate"><span class="pre">stdout</span></code> file types (for each DFT code).
+Setting this to <code class="docutils literal notranslate"><span class="pre">Siesta</span></code> would force all files to first search for classes ending
+in <code class="docutils literal notranslate"><span class="pre">Siesta</span></code> (see <a class="reference internal" href="api/io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code></a> for class names).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_TMP</span> <span class="pre">=</span> <span class="pre">'.sisl_tmp'</span></code></dt><dd><p>certain internal methods of sisl will use a temporary folder for storing data.
+The default is a new folder in the currently executed directory.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_FILES_TESTS</span></code></dt><dd><p>Full path to a folder containing tests files. Primarily used for developers.</p>
+<p>This can be used like this:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span>stripped<span class="w"> </span>--single-branch<span class="w"> </span>https://github.com/zerothi/sisl-files.git
+<span class="nv">SISL_FILES_TESTS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/sisl-files<span class="w"> </span>pytest<span class="w"> </span>--pyargs<span class="w"> </span>sisl
+</pre></div>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_CONFIGDIR</span> <span class="pre">=</span> <span class="pre">~/.config/sisl</span></code></dt><dd><p>where certain configuration files should be stored.</p>
+<p>Currently not in use.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_LOG_FILE</span></code></dt><dd><p>if provided <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will log to the provided file.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_LOG_LEVEL</span> <span class="pre">=</span> <span class="pre">&quot;info&quot;</span></code></dt><dd><p>the log-level used if writing to a log-file.
+The value will be taken from the <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logging</span></code></a> module,
+so it should be a variable in that module.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_CODATA</span> <span class="pre">=</span> <span class="pre">2010</span> <span class="pre">|</span> <span class="pre">2014</span> <span class="pre">|</span> <span class="pre">2018</span> <span class="pre">|</span> <span class="pre">2022</span></code></dt><dd><p>default internal values used for units and constants.</p>
+</dd>
+</dl>
+<section id="code-specific-environment-variables">
+<h2>Code specific environment variables<a class="headerlink" href="#code-specific-environment-variables" title="Link to this heading"></a></h2>
+<section id="siesta">
+<h3>Siesta<a class="headerlink" href="#siesta" title="Link to this heading"></a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_UNIT_SIESTA</span> <span class="pre">=</span> <span class="pre">codata2018</span> <span class="pre">|</span> <span class="pre">legacy</span></code></dt><dd><p>determine the default units for Siesta files.</p>
+<p>Since Siesta 5.0, the default units are updated to follow
+the CODATA 2018 values. Since Siesta 6.0 it will be 2022.
+The change from 4 to 5 meant that quite a bit of
+results changed. This will force the internal variables
+to be consistent with these changes. Adapt to the same version used
+by your Siesta version.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api/generated/sisl.typing.SeqOrScalarFloat.html" class="btn btn-neutral float-left" title="sisl.typing.SeqOrScalarFloat" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="toolbox/index.html" class="btn btn-neutral float-right" title="Toolboxes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

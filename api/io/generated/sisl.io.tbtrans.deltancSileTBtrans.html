@@ -1,0 +1,533 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io.tbtrans.deltancSileTBtrans &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=e6be679b"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
+      <script src="../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="sisl.io.tbtrans.tbtgfSileTBtrans" href="sisl.io.tbtrans.tbtgfSileTBtrans.html" />
+    <link rel="prev" title="sisl.io.tbtrans.tbtncSileTBtrans" href="sisl.io.tbtrans.tbtncSileTBtrans.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.mixing</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../viz/index.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core.html">Functional programming</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Input/Output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code>)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#the-sile-framework">The sile framework</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#i-o-from-buffers-and-zip-files">I/O from buffers and zip files</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#list-of-available-siles">List of available siles</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../generic.html">Generic files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bigdft.html">BigDFT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../dftb.html">DFTB+</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fhiaims.html">FHIaims</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../gulp.html">GULP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../openmx.html">OpenMX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../orca.html">ORCA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../scaleup.html">ScaleUP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../siesta.html">Siesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../siesta.html#transiesta">TranSiesta</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../tbtrans.html">TBtrans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tbtrans.html#phtrans">PHtrans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../vasp.html">VASP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../wannier90.html">Wannier90</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Input/Output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code>)</a></li>
+          <li class="breadcrumb-item"><a href="../tbtrans.html">TBtrans</a></li>
+      <li class="breadcrumb-item active">sisl.io.tbtrans.deltancSileTBtrans</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/io/generated/sisl.io.tbtrans.deltancSileTBtrans.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sisl-io-tbtrans-deltancsiletbtrans">
+<h1>sisl.io.tbtrans.deltancSileTBtrans<a class="headerlink" href="#sisl-io-tbtrans-deltancsiletbtrans" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.io.tbtrans.</span></span><span class="sig-name descname"><span class="pre">deltancSileTBtrans</span></span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="sisl.io.tbtrans.SileCDFTBtrans.html#sisl.io.tbtrans.SileCDFTBtrans" title="sisl.io.tbtrans.SileCDFTBtrans"><code class="xref py py-class docutils literal notranslate"><span class="pre">SileCDFTBtrans</span></code></a></p>
+<p>TBtrans <span class="math notranslate nohighlight">\(\delta\)</span> file object</p>
+<p>The <span class="math notranslate nohighlight">\(\delta\)</span> file object is an extension enabled in <a class="reference external" href="https://siesta-project.org">TBtrans</a> which
+allows changing the Hamiltonian in transport problems.</p>
+<div class="math notranslate nohighlight">
+\[\mathbf H'(\mathbf k) = \mathbf H(\mathbf k) +
+    \delta\mathbf H(E, \mathbf k) + \delta\boldsymbol\Sigma(E, \mathbf k)\]</div>
+<p>This file may either be used directly as the <span class="math notranslate nohighlight">\(\delta\mathbf H\)</span> or the
+<span class="math notranslate nohighlight">\(\delta\boldsymbol\Sigma\)</span>.</p>
+<p>When writing <span class="math notranslate nohighlight">\(\delta\)</span> terms using <a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.write_delta" title="sisl.io.tbtrans.deltancSileTBtrans.write_delta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_delta</span></code></a> one may add <code class="docutils literal notranslate"><span class="pre">k</span></code> or <code class="docutils literal notranslate"><span class="pre">E</span></code> arguments
+to make the <span class="math notranslate nohighlight">\(\delta\)</span> dependent on <code class="docutils literal notranslate"><span class="pre">k</span></code> and/or <code class="docutils literal notranslate"><span class="pre">E</span></code>.</p>
+<p>Refer to the TBtrans manual on how to use this feature.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dH</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="s1">&#39;deltaH.dH.nc&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dH</span><span class="o">.</span><span class="n">write_delta</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dH</span><span class="o">.</span><span class="n">write_delta</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="c1"># Gamma only</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dH</span><span class="o">.</span><span class="n">write_delta</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span> <span class="c1"># only at 1 eV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.</span><span class="n">j</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dH</span><span class="o">.</span><span class="n">write_delta</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="c1"># only at 1 eV and Gamma-point</span>
+</pre></div>
+</div>
+<p class="rubric">Plotting</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.plot" title="sisl.io.tbtrans.deltancSileTBtrans.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a></p></td>
+<td><p>Plotting functions for the <a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans" title="sisl.io.tbtrans.deltancSileTBtrans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deltancSileTBtrans</span></code></a> class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.plot.geometry" title="sisl.io.tbtrans.deltancSileTBtrans.plot.geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot.geometry</span></code></a>(*args[, ...])</p></td>
+<td><p>Calls <code class="docutils literal notranslate"><span class="pre">read_geometry</span></code> and creates a <code class="docutils literal notranslate"><span class="pre">GeometryPlot</span></code> from its output.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.base_directory" title="sisl.io.tbtrans.deltancSileTBtrans.base_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_directory</span></code></a>([relative_to])</p></td>
+<td><p>Retrieve the base directory of the file, relative to the path <em class="xref py py-obj">relative_to</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.close" title="sisl.io.tbtrans.deltancSileTBtrans.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.dir_file" title="sisl.io.tbtrans.deltancSileTBtrans.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.has_level" title="sisl.io.tbtrans.deltancSileTBtrans.has_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_level</span></code></a>(ilvl)</p></td>
+<td><p>Query whether the file has level <em class="xref py py-obj">ilvl</em> content</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.iter" title="sisl.io.tbtrans.deltancSileTBtrans.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([group, dimension, variable, levels, root])</p></td>
+<td><p>Iterator on all groups, variables and dimensions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.merge" title="sisl.io.tbtrans.deltancSileTBtrans.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(fname, *deltas, **kwargs)</p></td>
+<td><p>Merge several delta files into one Sile which contains the sum of the content</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.read" title="sisl.io.tbtrans.deltancSileTBtrans.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Generic read method which should be overloaded in child-classes</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.read_delta" title="sisl.io.tbtrans.deltancSileTBtrans.read_delta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_delta</span></code></a>(**kwargs)</p></td>
+<td><p>Reads a delta model from the file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.read_geometry" title="sisl.io.tbtrans.deltancSileTBtrans.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Returns the <em class="xref py py-obj">Geometry</em> object from this file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.read_lattice" title="sisl.io.tbtrans.deltancSileTBtrans.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
+<td><p>Returns the <em class="xref py py-obj">Lattice</em> object from this file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.write" title="sisl.io.tbtrans.deltancSileTBtrans.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Generic write method which should be overloaded in child-classes</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.write_delta" title="sisl.io.tbtrans.deltancSileTBtrans.write_delta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_delta</span></code></a>(delta, **kwargs)</p></td>
+<td><p>Writes a <span class="math notranslate nohighlight">\(\delta\)</span> term to the file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.write_geometry" title="sisl.io.tbtrans.deltancSileTBtrans.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry)</p></td>
+<td><p>Creates the NetCDF file and writes the geometry information</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.write_lattice" title="sisl.io.tbtrans.deltancSileTBtrans.write_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_lattice</span></code></a>(lattice)</p></td>
+<td><p>Creates the NetCDF file and writes the supercell information</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.base_file" title="sisl.io.tbtrans.deltancSileTBtrans.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.file" title="sisl.io.tbtrans.deltancSileTBtrans.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.base_directory">
+<span class="sig-name descname"><span class="pre">base_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.base_directory" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the base directory of the file, relative to the path <em class="xref py py-obj">relative_to</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.close" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.dir_file">
+<span class="sig-name descname"><span class="pre">dir_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.dir_file" title="Link to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.has_level">
+<span class="sig-name descname"><span class="pre">has_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ilvl</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.has_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.has_level" title="Link to this definition"></a></dt>
+<dd><p>Query whether the file has level <em class="xref py py-obj">ilvl</em> content</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ilvl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the level to be queried, one of 1, 2, 3 or 4</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.iter">
+<span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.iter" title="Link to this definition"></a></dt>
+<dd><p>Iterator on all groups, variables and dimensions.</p>
+<p>This iterator iterates through all groups, variables and dimensions in the <code class="docutils literal notranslate"><span class="pre">Dataset</span></code></p>
+<p>The generator sequence will _always_ be:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Group</p></li>
+<li><p>Dimensions in group</p></li>
+<li><p>Variables in group</p></li>
+</ol>
+</div></blockquote>
+<p>As the dimensions are generated before the variables it is possible to copy
+groups, dimensions, and then variables such that one always ensures correct
+dependencies in the generation of a new <code class="docutils literal notranslate"><span class="pre">SileCDF</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Group</em> instances</p></li>
+<li><p><strong>dimension</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Dimension</em> instances</p></li>
+<li><p><strong>variable</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Variable</em> instances</p></li>
+<li><p><strong>levels</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code> (<em class="xref py py-obj">-1</em>)) – number of levels to traverse, with respect to <code class="docutils literal notranslate"><span class="pre">root</span></code> variable, i.e. number of
+sub-groups this iterator will return.</p></li>
+<li><p><strong>root</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> (<em class="xref py py-obj">None</em>)) – the base root to start iterating from.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Script for looping and checking each instance.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">gv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isGroup</span><span class="p">(</span><span class="n">gv</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="c1"># is group</span>
+<span class="gp">... </span>    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDimension</span><span class="p">(</span><span class="n">gv</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="c1"># is dimension</span>
+<span class="gp">... </span>    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isVariable</span><span class="p">(</span><span class="n">gv</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="c1"># is variable</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.merge">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">deltas</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.merge" title="Link to this definition"></a></dt>
+<dd><p>Merge several delta files into one Sile which contains the sum of the content</p>
+<p>In cases where implementors use several different delta files it is necessary
+to merge them into a single delta file before use in TBtrans.
+This method does exactly that.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>The code checks whether <em class="xref py py-obj">fname</em> is different from all <em class="xref py py-obj">deltas</em> and that
+all <em class="xref py py-obj">deltas</em> are the same class.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>) – the output name of the merged file</p></li>
+<li><p><strong>*deltas</strong> (<a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans" title="sisl.io.tbtrans.deltancSileTBtrans"><code class="xref py py-class docutils literal notranslate"><span class="pre">deltancSileTBtrans</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>) – all the delta files that should be merged</p></li>
+<li><p><strong>**kwargs</strong> – arguments passed directly to the init of <code class="docutils literal notranslate"><span class="pre">cls(fname,</span> <span class="pre">**kwargs)</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.plot.geometry">
+<span class="sig-prename descclassname"><span class="pre">plot.</span></span><span class="sig-name descname"><span class="pre">geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x',</span> <span class="pre">'y',</span> <span class="pre">'z']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_colorscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drawing_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_bonds_to_ats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_per_bond</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds_colorscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'box'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_ndim_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(16,</span> <span class="pre">16,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds_ndim_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataaxis_1d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'plotly'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.plot.geometry" title="Link to this definition"></a></dt>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">read_geometry</span></code> and creates a <code class="docutils literal notranslate"><span class="pre">GeometryPlot</span></code> from its output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>Axes</em>) – The axes to project the geometry to.</p></li>
+<li><p><strong>atoms</strong> (<a class="reference internal" href="../../generated/sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – The atoms to plot. If None, all atoms are plotted.</p></li>
+<li><p><strong>atoms_style</strong> (<em>Sequence</em><em>[</em><em>AtomsStyleSpec</em><em>]</em>) – List of style specifications for the atoms. See the showcase notebooks for examples.</p></li>
+<li><p><strong>atoms_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Scaling factor for the size of all atoms.</p></li>
+<li><p><strong>atoms_colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the atoms in case the color attribute is an array of values.
+If None, the default colorscale is used for each backend.</p></li>
+<li><p><strong>drawing_mode</strong> (<em>Literal</em><em>[</em><em>'scatter'</em><em>, </em><em>'balls'</em><em>, </em><em>None</em><em>]</em>) – The method used to draw the atoms.</p></li>
+<li><p><strong>bind_bonds_to_ats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display only bonds between atoms that are being displayed.</p></li>
+<li><p><strong>points_per_bond</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – When the points are drawn using points instead of lines (e.g. in some frameworks
+to draw multicolor bonds), the number of points used per bond.</p></li>
+<li><p><strong>bonds_style</strong> (<em>StyleSpec</em>) – Style specification for the bonds. See the showcase notebooks for examples.</p></li>
+<li><p><strong>bonds_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Scaling factor for the width of all bonds.</p></li>
+<li><p><strong>bonds_colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the bonds in case the color attribute is an array of values.
+If None, the default colorscale is used for each backend.</p></li>
+<li><p><strong>show_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display the atoms.</p></li>
+<li><p><strong>show_bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display the bonds.</p></li>
+<li><p><strong>show_cell</strong> (<em>Literal</em><em>[</em><em>'box'</em><em>, </em><em>'axes'</em><em>, </em><em>False</em><em>]</em>) – Mode to display the cell. If False, the cell is not displayed.</p></li>
+<li><p><strong>cell_style</strong> (<em>StyleSpec</em>) – Style specification for the cell. See the showcase notebooks for examples.</p></li>
+<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – Number of unit cells to display in each direction.</p></li>
+<li><p><strong>atoms_ndim_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – Scaling factor for the size of the atoms for different dimensionalities (1D, 2D, 3D).</p></li>
+<li><p><strong>bonds_ndim_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – Scaling factor for the width of the bonds for different dimensionalities (1D, 2D, 3D).</p></li>
+<li><p><strong>dataaxis_1d</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>np.ndarray</em><em>, </em><em>Callable</em><em>]</em><em>]</em>) – Only meaningful for 1D plots. The data to plot on the Y axis.</p></li>
+<li><p><strong>arrows</strong> (<em>Sequence</em><em>[</em><em>AtomArrowSpec</em><em>]</em>) – List of arrow specifications to display. See the showcase notebooks for examples.</p></li>
+<li><p><strong>backend</strong> – The backend to use to generate the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../viz/generated/sisl.viz.GeometryPlot.html#sisl.viz.GeometryPlot" title="sisl.viz.plots.geometry.GeometryPlot"><em>GeometryPlot</em></a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeometryPlot</span></code></dt><dd><p>The plot class used to generate the plot.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></dt><dd><p>The method called to get the data.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.read" title="Link to this definition"></a></dt>
+<dd><p>Generic read method which should be overloaded in child-classes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
+and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.read_delta">
+<span class="sig-name descname"><span class="pre">read_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.read_delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.read_delta" title="Link to this definition"></a></dt>
+<dd><p>Reads a delta model from the file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.read_geometry">
+<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.read_geometry" title="Link to this definition"></a></dt>
+<dd><p>Returns the <em class="xref py py-obj">Geometry</em> object from this file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.read_lattice">
+<span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.read_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.read_lattice" title="Link to this definition"></a></dt>
+<dd><p>Returns the <em class="xref py py-obj">Lattice</em> object from this file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.write" title="Link to this definition"></a></dt>
+<dd><p>Generic write method which should be overloaded in child-classes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – keyword arguments will try and search for the attribute <em class="xref py py-obj">write_</em>
+and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.write_delta">
+<span class="sig-name descname"><span class="pre">write_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.write_delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.write_delta" title="Link to this definition"></a></dt>
+<dd><p>Writes a <span class="math notranslate nohighlight">\(\delta\)</span> term to the file</p>
+<p>This term may be of</p>
+<ul class="simple">
+<li><p>level-1: no E or k dependence</p></li>
+<li><p>level-2: k-dependent</p></li>
+<li><p>level-3: E-dependent</p></li>
+<li><p>level-4: k- and E-dependent</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SparseOrbitalBZSpin</span></code>) – the model to be saved in the NC file</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <em>optional</em>) – a specific k-point <span class="math notranslate nohighlight">\(\delta\)</span> term. I.e. only save the <span class="math notranslate nohighlight">\(\delta\)</span> term for
+the given k-point. May be combined with <em class="xref py py-obj">E</em> for a specific k and energy point.</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – an energy dependent <span class="math notranslate nohighlight">\(\delta\)</span> term. I.e. only save the <span class="math notranslate nohighlight">\(\delta\)</span> term for
+the given energy. May be combined with <em class="xref py py-obj">k</em> for a specific k and energy point.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>The input options for <a class="reference external" href="https://siesta-project.org">TBtrans</a> determine whether this is a self-energy term
+or a Hamiltonian term.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.write_geometry">
+<span class="sig-name descname"><span class="pre">write_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.write_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.write_geometry" title="Link to this definition"></a></dt>
+<dd><p>Creates the NetCDF file and writes the geometry information</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.write_lattice">
+<span class="sig-name descname"><span class="pre">write_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lattice</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.write_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.write_lattice" title="Link to this definition"></a></dt>
+<dd><p>Creates the NetCDF file and writes the supercell information</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.base_file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_file</span></span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.base_file" title="Link to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.file" title="Link to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.plot" title="Link to this definition"></a></dt>
+<dd><p>Plotting functions for the <a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans" title="sisl.io.tbtrans.deltancSileTBtrans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deltancSileTBtrans</span></code></a> class.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.io.tbtrans.tbtncSileTBtrans.html" class="btn btn-neutral float-left" title="sisl.io.tbtrans.tbtncSileTBtrans" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.io.tbtrans.tbtgfSileTBtrans.html" class="btn btn-neutral float-right" title="sisl.io.tbtrans.tbtgfSileTBtrans" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

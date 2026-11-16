@@ -1,0 +1,242 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Range routines &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e6be679b"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=7800a641"></script>
+      <script src="../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="strmap" href="generated/sisl.utils.strmap.html" />
+    <link rel="prev" title="sisl.shape.NullShape" href="generated/sisl.shape.NullShape.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mixing.html">Mixing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.mixing</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="viz/index.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="utilities.shape.html">Shapes</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Range routines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.strmap.html">strmap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.strseq.html">strseq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.lstranges.html">lstranges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.erange.html">erange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.list2str.html">list2str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.fileindex.html">fileindex</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#miscellaneous-routines">Miscellaneous routines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.str_spec.html">str_spec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.direction.html">direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.listify.html">sisl.utils.listify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.angle.html">angle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.iter_shape.html">iter_shape</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.math_eval.html">math_eval</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.batched_indices.html">batched_indices</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">Functional programming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io/index.html">Input/Output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a></li>
+      <li class="breadcrumb-item active">Range routines</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/utilities.misc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p id="utilities-misc">Several utility functions are used throughout sisl.</p>
+<section id="range-routines">
+<h1>Range routines<a class="headerlink" href="#range-routines" title="Link to this heading"></a></h1>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.strmap.html#sisl.utils.strmap" title="sisl.utils.strmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strmap</span></code></a>(func, s[, start, end, sep])</p></td>
+<td><p>Parse a string as though it was a slice and map all entries using <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.strseq.html#sisl.utils.strseq" title="sisl.utils.strseq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strseq</span></code></a>(cast, s[, start, end])</p></td>
+<td><p>Accept a string and return the casted tuples of content based on ranges.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.lstranges.html#sisl.utils.lstranges" title="sisl.utils.lstranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstranges</span></code></a>(lst[, cast, end])</p></td>
+<td><p>Convert a <a class="reference internal" href="generated/sisl.utils.strmap.html#sisl.utils.strmap" title="sisl.utils.strmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strmap</span></code></a> list into expanded ranges</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.erange.html#sisl.utils.erange" title="sisl.utils.erange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">erange</span></code></a>(start, step[, end])</p></td>
+<td><p>Returns the range with both ends includede</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.list2str.html#sisl.utils.list2str" title="sisl.utils.list2str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list2str</span></code></a>(lst)</p></td>
+<td><p>Convert a list of elements into a string of ranges</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.fileindex.html#sisl.utils.fileindex" title="sisl.utils.fileindex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fileindex</span></code></a>(f[, cast])</p></td>
+<td><p>Parses a filename string into the filename and the indices.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="miscellaneous-routines">
+<h1>Miscellaneous routines<a class="headerlink" href="#miscellaneous-routines" title="Link to this heading"></a></h1>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.str_spec.html#sisl.utils.str_spec" title="sisl.utils.str_spec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str_spec</span></code></a>(name)</p></td>
+<td><p>Split into a tuple of name and specifier, delimited by <code class="docutils literal notranslate"><span class="pre">{...}</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.direction.html#sisl.utils.direction" title="sisl.utils.direction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></a>(d[, abc, xyz])</p></td>
+<td><p>Index coordinate transformation from int/str to an integer</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.listify.html#sisl.utils.listify" title="sisl.utils.listify"><code class="xref py py-obj docutils literal notranslate"><span class="pre">listify</span></code></a></p></td>
+<td><p>Convert arguments to an iterable-like (any iterable, default to <em class="xref py py-obj">list</em>)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.angle.html#sisl.utils.angle" title="sisl.utils.angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angle</span></code></a>(s[, rad, in_rad])</p></td>
+<td><p>Convert the input string to an angle, either radians or degrees.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.iter_shape.html#sisl.utils.iter_shape" title="sisl.utils.iter_shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_shape</span></code></a>(shape)</p></td>
+<td><p>Generator for iterating a shape by returning consecutive slices</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.math_eval.html#sisl.utils.math_eval" title="sisl.utils.math_eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">math_eval</span></code></a>(expr)</p></td>
+<td><p>Evaluate a mathematical expression using a safe evaluation method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.batched_indices.html#sisl.utils.batched_indices" title="sisl.utils.batched_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">batched_indices</span></code></a>(ref, y[, axis, atol, ...])</p></td>
+<td><p>Locate <em class="xref py py-obj">x</em> in <em class="xref py py-obj">ref</em> by examining <code class="docutils literal notranslate"><span class="pre">np.abs(diff_func(ref</span> <span class="pre">-</span> <span class="pre">y))</span> <span class="pre">&lt;=</span> <span class="pre">atol</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="generated/sisl.shape.NullShape.html" class="btn btn-neutral float-left" title="sisl.shape.NullShape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/sisl.utils.strmap.html" class="btn btn-neutral float-right" title="strmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

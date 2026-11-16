@@ -1,0 +1,605 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.viz.GeometryPlot &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=e6be679b"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=7800a641"></script>
+      <script src="../../../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="sisl.viz.SitesPlot" href="sisl.viz.SitesPlot.html" />
+    <link rel="prev" title="sisl.viz.FatbandsPlot" href="sisl.viz.FatbandsPlot.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../geom/index.html">Geometry handling (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.mixing</span></code>)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Visualization</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#plot-classes">Plot classes</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.Plot.html">sisl.viz.Plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.BandsPlot.html">sisl.viz.BandsPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.FatbandsPlot.html">sisl.viz.FatbandsPlot</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.viz.GeometryPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.SitesPlot.html">sisl.viz.SitesPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.GridPlot.html">sisl.viz.GridPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.WavefunctionPlot.html">sisl.viz.WavefunctionPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.PdosPlot.html">sisl.viz.PdosPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.AtomicMatrixPlot.html">sisl.viz.AtomicMatrixPlot</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.utils</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core.html">Functional programming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../io/index.html">Input/Output (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../typing.html">Typing (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.typing</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Visualization</a></li>
+      <li class="breadcrumb-item active">sisl.viz.GeometryPlot</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/viz/generated/sisl.viz.GeometryPlot.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sisl-viz-geometryplot">
+<h1>sisl.viz.GeometryPlot<a class="headerlink" href="#sisl-viz-geometryplot" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.viz.</span></span><span class="sig-name descname"><span class="pre">GeometryPlot</span></span><a class="reference internal" href="../../../_modules/sisl/viz/plots/geometry.html#GeometryPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.GeometryPlot" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="sisl.viz.Plot.html#sisl.viz.Plot" title="sisl.viz.plot.Plot"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plot</span></code></a></p>
+<p>Plots a geometry structure, with plentiful of customization options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometry</strong> – The geometry to plot.</p></li>
+<li><p><strong>axes</strong> – The axes to project the geometry to.</p></li>
+<li><p><strong>atoms</strong> – The atoms to plot. If None, all atoms are plotted.</p></li>
+<li><p><strong>atoms_style</strong> – List of style specifications for the atoms. See the showcase notebooks for examples.</p></li>
+<li><p><strong>atoms_scale</strong> – Scaling factor for the size of all atoms.</p></li>
+<li><p><strong>atoms_colorscale</strong> – Colorscale to use for the atoms in case the color attribute is an array of values.
+If None, the default colorscale is used for each backend.</p></li>
+<li><p><strong>drawing_mode</strong> – The method used to draw the atoms.</p></li>
+<li><p><strong>bind_bonds_to_ats</strong> – Whether to display only bonds between atoms that are being displayed.</p></li>
+<li><p><strong>points_per_bond</strong> – When the points are drawn using points instead of lines (e.g. in some frameworks
+to draw multicolor bonds), the number of points used per bond.</p></li>
+<li><p><strong>bonds_style</strong> – Style specification for the bonds. See the showcase notebooks for examples.</p></li>
+<li><p><strong>bonds_scale</strong> – Scaling factor for the width of all bonds.</p></li>
+<li><p><strong>bonds_colorscale</strong> – Colorscale to use for the bonds in case the color attribute is an array of values.
+If None, the default colorscale is used for each backend.</p></li>
+<li><p><strong>show_atoms</strong> – Whether to display the atoms.</p></li>
+<li><p><strong>show_bonds</strong> – Whether to display the bonds.</p></li>
+<li><p><strong>show_cell</strong> – Mode to display the cell. If False, the cell is not displayed.</p></li>
+<li><p><strong>cell_style</strong> – Style specification for the cell. See the showcase notebooks for examples.</p></li>
+<li><p><strong>nsc</strong> – Number of unit cells to display in each direction.</p></li>
+<li><p><strong>atoms_ndim_scale</strong> – Scaling factor for the size of the atoms for different dimensionalities (1D, 2D, 3D).</p></li>
+<li><p><strong>bonds_ndim_scale</strong> – Scaling factor for the width of the bonds for different dimensionalities (1D, 2D, 3D).</p></li>
+<li><p><strong>dataaxis_1d</strong> – Only meaningful for 1D plots. The data to plot on the Y axis.</p></li>
+<li><p><strong>arrows</strong> – List of arrow specifications to display. See the showcase notebooks for examples.</p></li>
+<li><p><strong>backend</strong> – The backend to use to generate the figure.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.evaluate_input_node" title="sisl.viz.GeometryPlot.evaluate_input_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_input_node</span></code></a>(node)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.final_node_key" title="sisl.viz.GeometryPlot.final_node_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">final_node_key</span></code></a>(*args)</p></td>
+<td><p>Returns the key of the final (output) node of the workflow.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.find_node_key" title="sisl.viz.GeometryPlot.find_node_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_node_key</span></code></a>(node, *args)</p></td>
+<td><p>Returns the identifier key of a node in this workflow</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.from_func" title="sisl.viz.GeometryPlot.from_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_func</span></code></a>([func, context, module])</p></td>
+<td><p>Builds a node from a function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.from_node_tree" title="sisl.viz.GeometryPlot.from_node_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node_tree</span></code></a>(output_node[, workflow_name])</p></td>
+<td><p>Creates a workflow class from a node.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.function" title="sisl.viz.GeometryPlot.function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function</span></code></a>(geometry[, axes, atoms, ...])</p></td>
+<td><p>Plots a geometry structure, with plentiful of customization options.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.get" title="sisl.viz.GeometryPlot.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>()</p></td>
+<td><p>Returns the up to date output of the workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.get_diagram_label" title="sisl.viz.GeometryPlot.get_diagram_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_diagram_label</span></code></a>()</p></td>
+<td><p>Returns the label to be used in diagrams when displaying this node.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.get_input" title="sisl.viz.GeometryPlot.get_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_input</span></code></a>(key)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.get_tree" title="sisl.viz.GeometryPlot.get_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tree</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.is_output_outdated" title="sisl.viz.GeometryPlot.is_output_outdated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_output_outdated</span></code></a>(evaluated_inputs)</p></td>
+<td><p>Checks if the node needs to be ran</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.map_inputs" title="sisl.viz.GeometryPlot.map_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_inputs</span></code></a>(inputs, func[, only_nodes, exclude])</p></td>
+<td><p>Maps all inputs of the node applying a given function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.merge" title="sisl.viz.GeometryPlot.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(*others, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.plot_class_key" title="sisl.viz.GeometryPlot.plot_class_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_class_key</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.recursive_update_inputs" title="sisl.viz.GeometryPlot.recursive_update_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recursive_update_inputs</span></code></a>([cls])</p></td>
+<td><p>Updates the inputs of the node recursively.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.setup" title="sisl.viz.GeometryPlot.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Sets up the node based on its initial inputs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.update_inputs" title="sisl.viz.GeometryPlot.update_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_inputs</span></code></a>(**inputs)</p></td>
+<td><p>Updates the inputs of the workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.update_settings" title="sisl.viz.GeometryPlot.update_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_settings</span></code></a>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.DELETE_KWARG" title="sisl.viz.GeometryPlot.DELETE_KWARG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DELETE_KWARG</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.context" title="sisl.viz.GeometryPlot.context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">context</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.default_inputs" title="sisl.viz.GeometryPlot.default_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_inputs</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.dryrun_nodes" title="sisl.viz.GeometryPlot.dryrun_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dryrun_nodes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.geometry" title="sisl.viz.GeometryPlot.geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.get_syntax" title="sisl.viz.GeometryPlot.get_syntax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_syntax</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.inputs" title="sisl.viz.GeometryPlot.inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.last_log" title="sisl.viz.GeometryPlot.last_log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_log</span></code></a></p></td>
+<td><p>Last time the logs of this node were updated</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.network" title="sisl.viz.GeometryPlot.network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.nodes" title="sisl.viz.GeometryPlot.nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.GeometryPlot.logs" title="sisl.viz.GeometryPlot.logs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logs</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.__call__" title="Link to this definition"></a></dt>
+<dd><p>Call self as a function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.evaluate_input_node">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate_input_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.evaluate_input_node" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>Node</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.final_node_key">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">final_node_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.final_node_key" title="Link to this definition"></a></dt>
+<dd><p>Returns the key of the final (output) node of the workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.find_node_key">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_node_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.find_node_key" title="Link to this definition"></a></dt>
+<dd><p>Returns the identifier key of a node in this workflow</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.from_func">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.from_func" title="Link to this definition"></a></dt>
+<dd><p>Builds a node from a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<a class="reference internal" href="#sisl.viz.GeometryPlot.function" title="sisl.viz.GeometryPlot.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">function</span></code></a>, <em>optional</em>) – <p>The function to be converted to a node.</p>
+<p>If not provided, the return of this method is just a lambda function that expects
+the function. This is useful if you want to use this method as a decorator while
+also providing extra arguments (like the context argument).</p>
+</p></li>
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – The context to be used as the default for the node class that
+will be created.</p></li>
+<li><p><strong>module</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><em>None</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.from_node_tree">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_node_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.from_node_tree" title="Link to this definition"></a></dt>
+<dd><p>Creates a workflow class from a node.</p>
+<p>It does so by recursively traversing the tree in the inputs direction until
+it finds the leaves.
+All the nodes found are included in the workflow. For each node, inputs
+that are not nodes are connected to the inputs of the workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_node</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code>) – The final node, that should be connected to the output of the workflow.</p></li>
+<li><p><strong>workflow_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – The name of the new workflow class. If None, the name of the output node
+will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The newly created workflow class.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Workflow</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.function">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['x',</span> <span class="pre">'y',</span> <span class="pre">'z']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_colorscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drawing_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind_bonds_to_ats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_per_bond</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds_colorscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'box'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_ndim_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(16,</span> <span class="pre">16,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds_ndim_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataaxis_1d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'plotly'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.function" title="Link to this definition"></a></dt>
+<dd><p>Plots a geometry structure, with plentiful of customization options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – The geometry to plot.</p></li>
+<li><p><strong>axes</strong> (<em>Axes</em>) – The axes to project the geometry to.</p></li>
+<li><p><strong>atoms</strong> (<a class="reference internal" href="../../generated/sisl.typing.AtomsIndex.html#sisl.typing.AtomsIndex" title="sisl.typing.AtomsIndex"><em>AtomsIndex</em></a>) – The atoms to plot. If None, all atoms are plotted.</p></li>
+<li><p><strong>atoms_style</strong> (<em>Sequence</em><em>[</em><em>AtomsStyleSpec</em><em>]</em>) – List of style specifications for the atoms. See the showcase notebooks for examples.</p></li>
+<li><p><strong>atoms_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Scaling factor for the size of all atoms.</p></li>
+<li><p><strong>atoms_colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the atoms in case the color attribute is an array of values.
+If None, the default colorscale is used for each backend.</p></li>
+<li><p><strong>drawing_mode</strong> (<em>Literal</em><em>[</em><em>'scatter'</em><em>, </em><em>'balls'</em><em>, </em><em>None</em><em>]</em>) – The method used to draw the atoms.</p></li>
+<li><p><strong>bind_bonds_to_ats</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display only bonds between atoms that are being displayed.</p></li>
+<li><p><strong>points_per_bond</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – When the points are drawn using points instead of lines (e.g. in some frameworks
+to draw multicolor bonds), the number of points used per bond.</p></li>
+<li><p><strong>bonds_style</strong> (<em>StyleSpec</em>) – Style specification for the bonds. See the showcase notebooks for examples.</p></li>
+<li><p><strong>bonds_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Scaling factor for the width of all bonds.</p></li>
+<li><p><strong>bonds_colorscale</strong> (<em>Optional</em><em>[</em><em>Colorscale</em><em>]</em>) – Colorscale to use for the bonds in case the color attribute is an array of values.
+If None, the default colorscale is used for each backend.</p></li>
+<li><p><strong>show_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display the atoms.</p></li>
+<li><p><strong>show_bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to display the bonds.</p></li>
+<li><p><strong>show_cell</strong> (<em>Literal</em><em>[</em><em>'box'</em><em>, </em><em>'axes'</em><em>, </em><em>False</em><em>]</em>) – Mode to display the cell. If False, the cell is not displayed.</p></li>
+<li><p><strong>cell_style</strong> (<em>StyleSpec</em>) – Style specification for the cell. See the showcase notebooks for examples.</p></li>
+<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>]</em>) – Number of unit cells to display in each direction.</p></li>
+<li><p><strong>atoms_ndim_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – Scaling factor for the size of the atoms for different dimensionalities (1D, 2D, 3D).</p></li>
+<li><p><strong>bonds_ndim_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>]</em>) – Scaling factor for the width of the bonds for different dimensionalities (1D, 2D, 3D).</p></li>
+<li><p><strong>dataaxis_1d</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>np.ndarray</em><em>, </em><em>Callable</em><em>]</em><em>]</em>) – Only meaningful for 1D plots. The data to plot on the Y axis.</p></li>
+<li><p><strong>arrows</strong> (<em>Sequence</em><em>[</em><em>AtomArrowSpec</em><em>]</em>) – List of arrow specifications to display. See the showcase notebooks for examples.</p></li>
+<li><p><strong>backend</strong> – The backend to use to generate the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="sisl.viz.Figure.html#sisl.viz.Figure" title="sisl.viz.Figure"><em>Figure</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.get" title="Link to this definition"></a></dt>
+<dd><p>Returns the up to date output of the workflow.</p>
+<p>It will recompute it if necessary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.get_diagram_label">
+<span class="sig-name descname"><span class="pre">get_diagram_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.get_diagram_label" title="Link to this definition"></a></dt>
+<dd><p>Returns the label to be used in diagrams when displaying this node.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.get_input">
+<span class="sig-name descname"><span class="pre">get_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.get_input" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.get_tree">
+<span class="sig-name descname"><span class="pre">get_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.get_tree" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.is_output_outdated">
+<span class="sig-name descname"><span class="pre">is_output_outdated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evaluated_inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.is_output_outdated" title="Link to this definition"></a></dt>
+<dd><p>Checks if the node needs to be ran</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>evaluated_inputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><em>Any</em></a><em>]</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.map_inputs">
+<span class="sig-name descname"><span class="pre">map_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.map_inputs" title="Link to this definition"></a></dt>
+<dd><p>Maps all inputs of the node applying a given function.</p>
+<p>It considers the args and kwargs keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict[str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Any]</span></code>) – The inputs of the node.</p></li>
+<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to apply to each value.</p></li>
+<li><p><strong>only_nodes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – Whether to apply the function only to nodes, by default False.</p></li>
+<li><p><strong>exclude</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence[str]</span></code>, <em>optional</em>) – The keys to exclude from the mapping. This means that these keys are returned
+as they are.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.merge" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.plot_class_key">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">plot_class_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.plot_class_key" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.recursive_update_inputs">
+<span class="sig-name descname"><span class="pre">recursive_update_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.recursive_update_inputs" title="Link to this definition"></a></dt>
+<dd><p>Updates the inputs of the node recursively.</p>
+<p>This method updates the inputs of get node and all its children.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Optional[Union[Type</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple[Type</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">]]]</span></code>, <em>optional</em>) – Only update nodes of this class. If None, update all nodes.</p></li>
+<li><p><strong>inputs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict[str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Any]</span></code>) – The inputs to update.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.setup" title="Link to this definition"></a></dt>
+<dd><p>Sets up the node based on its initial inputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.update_inputs">
+<span class="sig-name descname"><span class="pre">update_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.update_inputs" title="Link to this definition"></a></dt>
+<dd><p>Updates the inputs of the workflow.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.update_settings">
+<span class="sig-name descname"><span class="pre">update_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.GeometryPlot.update_settings" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.DELETE_KWARG">
+<span class="sig-name descname"><span class="pre">DELETE_KWARG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;object</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sisl.viz.GeometryPlot.DELETE_KWARG" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.context">
+<span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">NodeContext</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">NodeContext({},</span> <span class="pre">{},</span> <span class="pre">{},</span> <span class="pre">{},</span> <span class="pre">{'lazy':</span> <span class="pre">True,</span> <span class="pre">'lazy_init':</span> <span class="pre">None,</span> <span class="pre">'log_level':</span> <span class="pre">'INFO',</span> <span class="pre">'raise_custom_errors':</span> <span class="pre">False,</span> <span class="pre">'on_init':</span> <span class="pre">None,</span> <span class="pre">'batch_iter':</span> <span class="pre">'zip'})</span></em><a class="headerlink" href="#sisl.viz.GeometryPlot.context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.default_inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_inputs</span></span><a class="headerlink" href="#sisl.viz.GeometryPlot.default_inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.dryrun_nodes">
+<span class="sig-name descname"><span class="pre">dryrun_nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">WorkflowNodes</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;nodify.workflow.WorkflowNodes</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sisl.viz.GeometryPlot.dryrun_nodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.geometry">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geometry</span></span><a class="headerlink" href="#sisl.viz.GeometryPlot.geometry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.get_syntax">
+<span class="sig-name descname"><span class="pre">get_syntax</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sisl.viz.GeometryPlot.get_syntax" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inputs</span></span><a class="headerlink" href="#sisl.viz.GeometryPlot.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.last_log">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">last_log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#sisl.viz.GeometryPlot.last_log" title="Link to this definition"></a></dt>
+<dd><p>Last time the logs of this node were updated</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.logs">
+<span class="sig-name descname"><span class="pre">logs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#sisl.viz.GeometryPlot.logs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.network">
+<span class="sig-name descname"><span class="pre">network</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;nodify.workflow.Network</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sisl.viz.GeometryPlot.network" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.GeometryPlot.nodes">
+<span class="sig-name descname"><span class="pre">nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">WorkflowNodes</span></em><a class="headerlink" href="#sisl.viz.GeometryPlot.nodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.viz.FatbandsPlot.html" class="btn btn-neutral float-left" title="sisl.viz.FatbandsPlot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.viz.SitesPlot.html" class="btn btn-neutral float-right" title="sisl.viz.SitesPlot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

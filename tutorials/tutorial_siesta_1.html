@@ -1,0 +1,901 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Siesta — the H2O molecule &mdash; sisl</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom_styles.css?v=cafe85c1" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e6be679b"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=7800a641"></script>
+      <script src="../_static/tabs.js?v=3ee01567"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Siesta — graphene" href="tutorial_siesta_2.html" />
+    <link rel="prev" title="Anomalous Hall conductivity (AHC) for graphene" href="tutorial_siesta_2_ahc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial_es_1.html">Electronic structure calculation – a walk-through</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_es_2.html">Berry phase calculation for graphene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_siesta_2_ahc.html">Anomalous Hall conductivity (AHC) for graphene</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#siesta-transiesta-support">Siesta/TranSiesta support</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Siesta — the H2O molecule</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Creating-the-geometry">Creating the geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Creating-the-electronic-structure">Creating the electronic structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Hamiltonian-eigenstates">Hamiltonian eigenstates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Real-space-charge">Real space charge</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_siesta_2.html">Siesta — graphene</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#deprecated-tutorials">Deprecated tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization (<code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/index.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/index.html">Contributing to sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extras</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical notation convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Related software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Siesta — the H2O molecule</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/tutorial_siesta_1.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div align="right">
+<a href="https://raw.githubusercontent.com/zerothi/sisl/main/docs/tutorials/tutorial_siesta_1.ipynb">
+    <img alt="ipynb download badge"
+        src="https://img.shields.io/badge/download-ipynb-blue.svg"
+        style="vertical-align:text-bottom">
+</a>
+&nbsp;
+<a href="https://mybinder.org/v2/gh/zerothi/sisl/main?filepath=docs/tutorials/tutorial_siesta_1.ipynb">
+   <img alt="Binder badge"
+        src="https://mybinder.org/badge_logo.svg"
+        style="vertical-align:text-bottom">
+</a>
+</div><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">&quot;siesta_1&quot;</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sisl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">si</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.viz</span><span class="w"> </span><span class="kn">import</span> <span class="n">merge_plots</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sisl.viz.processors.math</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<section id="Siesta-----the-H2O-molecule">
+<h1>Siesta — the H2O molecule<a class="headerlink" href="#Siesta-----the-H2O-molecule" title="Link to this heading"></a></h1>
+<p>This tutorial will describe a complete walk-through of some of the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> functionalities that may be related to the <a class="reference external" href="https://gitlab.com/siesta-project/siesta">Siesta code</a>.</p>
+<section id="Creating-the-geometry">
+<h2>Creating the geometry<a class="headerlink" href="#Creating-the-geometry" title="Link to this heading"></a></h2>
+<p>Our system of interest will be the <span class="math notranslate nohighlight">\(\mathrm H_2\mathrm O\)</span> system. The first task will be to create the molecule geometry. This is done using lists of atomic coordinates and atomic species. Additionally one needs to define the lattice (or if you prefer: unit-cell) where the molecule resides in. Siesta is a periodic DFT code and thus all directions are periodic. I.e. when simulating molecules it is vital to have a large vacuum gap between periodic images. In this case we use a supercell of
+side-lengths <span class="math notranslate nohighlight">\(10\mathrm{Ang}\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]],</span>
+    <span class="p">[</span><span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">),</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">),</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">)],</span>
+    <span class="n">lattice</span><span class="o">=</span><span class="n">si</span><span class="o">.</span><span class="n">Lattice</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The input are the 1) xyz coordinates, 2) the atomic species and 3) the lattice that is attached.</p>
+<p>By printing the object one gets basic information regarding the geometry, such as 1) number of atoms, 2) species of atoms, 3) number of orbitals, 4) orbitals associated with each atom and 5) number of supercells (should be 1 for molecules).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">h2o</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Geometry{na: 3, no: 3,
+ Atoms{species: 2,
+  Atom{O, Z: 8, mass(au): 15.99940, maxR: -1.00000,
+   Orbital{R: -1.00000, q0: 0.0}
+  }: 1,
+  Atom{H, Z: 1, mass(au): 1.00794, maxR: -1.00000,
+   Orbital{R: -1.00000, q0: 0.0}
+  }: 2,
+ },
+ maxR: -1.00000,
+ Lattice{nsc: [1 1 1],
+  origin=[-5.0000, -5.0000, -5.0000],
+  A=[10.0000, 0.0000, 0.0000],
+  B=[0.0000, 10.0000, 0.0000],
+  C=[0.0000, 0.0000, 10.0000],
+  bc=[Periodic,
+      Periodic,
+      Periodic]
+ }
+}
+</pre></div></div>
+</div>
+<div class="line-block">
+<div class="line">So there are 3 atoms, 1 Oxygen and 2 Hydrogen. Currently there are only 1 orbital per atom.</div>
+<div class="line">Later we will look into the details of <em>orbitals</em> associated with <em>atoms</em> and how they may be used for wavefunctions etc.</div>
+</div>
+<p>Lets visualize the atomic positions (here adding atomic indices)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<script type="text/javascript">
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+</script>
+<script type="module">import "https://cdn.plot.ly/plotly-3.1.1.min"</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.1.min.js" integrity="sha256-HUEFyfiTnZJxCxur99FjbKYTvKSzwDaD3/x5TqHpFu4=" crossorigin="anonymous"></script>                <div id="55788282-2aa8-401b-a88d-6be7aaeb17a0" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("55788282-2aa8-401b-a88d-6be7aaeb17a0")) {                    Plotly.newPlot(                        "55788282-2aa8-401b-a88d-6be7aaeb17a0",                        [{"line":{"color":"gray","width":1.0},"meta":{},"mode":"lines","name":"Bonds","opacity":1.0,"x":{"dtype":"f8","bdata":"AAAAAAAAAADtWIEw0o6lP+1YgTDSjrU\u002fsgJhpB0rwD\u002ftWIEw0o7FPyivobyG8so\u002fsgJhpB0r0D\u002fPLXHq99zSP+1YgTDSjtU\u002fC4SRdqxA2D8or6G8hvLaP0fasQJhpN0\u002fsgJhpB0r4D9AGGnHCoThP88tcer33OI\u002fX0N5DeU15D\u002ftWIEw0o7lP3xuiVO\u002f5+Y\u002fC4SRdqxA6D+amZmZmZnpPwAAAAAAAPh\u002fAAAAAAAAAADtWIEw0o6lv+1YgTDSjrW\u002fsgJhpB0rwL\u002ftWIEw0o7FvyivobyG8sq\u002fsgJhpB0r0L\u002fPLXHq99zSv+1YgTDSjtW\u002fC4SRdqxA2L8or6G8hvLav0fasQJhpN2\u002fsgJhpB0r4L9AGGnHCoThv88tcer33OK\u002fX0N5DeU15L\u002ftWIEw0o7lv3xuiVO\u002f5+a\u002fC4SRdqxA6L+amZmZmZnpvwAAAAAAAPh\u002f"},"y":{"dtype":"f8","bdata":"AAAAAAAAAACxAmGkHSugP7ECYaQdK7A\u002fCoSRdqxAuD+xAmGkHSvAP15DeQ3lNcQ\u002fCoSRdqxAyD+3xKnfc0vMP7ECYaQdK9A\u002fCCPtWIEw0j9eQ3kN5TXUP7VjBcJIO9Y\u002fCoSRdqxA2D9gpB0rEEbaP7fEqd9zS9w\u002fDeU1lNdQ3j+xAmGkHSvgP9wSp37PLeE\u002fCCPtWIEw4j8zMzMzMzPjPwAAAAAAAPh\u002fAAAAAAAAAACxAmGkHSugP7ECYaQdK7A\u002fCoSRdqxAuD+xAmGkHSvAP15DeQ3lNcQ\u002fCoSRdqxAyD+3xKnfc0vMP7ECYaQdK9A\u002fCCPtWIEw0j9eQ3kN5TXUP7VjBcJIO9Y\u002fCoSRdqxA2D9gpB0rEEbaP7fEqd9zS9w\u002fDeU1lNdQ3j+xAmGkHSvgP9wSp37PLeE\u002fCCPtWIEw4j8zMzMzMzPjPwAAAAAAAPh\u002f"},"type":"scatter"},{"marker":{"color":["#FF0D0D","#EDEADE","#EDEADE"],"opacity":1.0,"size":{"dtype":"f8","bdata":"uB6F61G4HkD2KFyPwvUgQPYoXI\u002fC9SBA"},"line":{"width":1,"color":"black"}},"meta":{},"mode":"markers","name":"Atoms","opacity":1,"x":{"dtype":"f8","bdata":"AAAAAAAAAACamZmZmZnpP5qZmZmZmem\u002f"},"y":{"dtype":"f8","bdata":"AAAAAAAAAAAzMzMzMzPjPzMzMzMzM+M\u002f"},"type":"scatter"},{"meta":{},"mode":"lines","name":"Unit cell","x":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAACRAAAAAAAAAJEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+H8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkQAAAAAAAACRAAAAAAAAAAAAAAAAAAAD4fwAAAAAAACRAAAAAAAAAJEAAAAAAAAD4fwAAAAAAACRAAAAAAAAAJEA="},"y":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAkQAAAAAAAACRAAAAAAAAAJEAAAAAAAAAkQAAAAAAAACRAAAAAAAAA+H8AAAAAAAAkQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4fwAAAAAAACRAAAAAAAAAAAAAAAAAAAD4fwAAAAAAACRAAAAAAAAAAAA="},"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}},"xaxis":{"scaleanchor":"y","scaleratio":1,"title":{"text":"X axis [Ang]"}},"scene":{"aspectmode":"data","xaxis":{"title":{"text":"X axis [Ang]"}},"yaxis":{"title":{"text":"Y axis [Ang]"}}},"yaxis":{"title":{"text":"Y axis [Ang]"}}},                        {"responsive": true}                    ).then(function(){
+
+var gd = document.getElementById('55788282-2aa8-401b-a88d-6be7aaeb17a0');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div>
+</div>
+<p>Now we need to create the input fdf file for Siesta:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;RUN.fdf&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;%include STRUCT.fdf</span>
+<span class="sd">SystemLabel siesta_1</span>
+<span class="sd">PAO.BasisSize SZP</span>
+<span class="sd">MeshCutoff 250. Ry</span>
+<span class="sd">CDF.Save true</span>
+<span class="sd">CDF.Compress 9</span>
+<span class="sd">SaveHS true</span>
+<span class="sd">SaveRho true</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="p">)</span>
+<span class="n">h2o</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;STRUCT.fdf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">The first block of code simply writes a text-file with the required input, the last line of code tells the geometry (<code class="docutils literal notranslate"><span class="pre">h2o</span></code>) to write its information to the file <code class="docutils literal notranslate"><span class="pre">STRUCT.fdf</span></code>.</div>
+<div class="line">It automatically writes the following geometry information to the fdf file:</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LatticeConstant</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LatticeVectors</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NumberOfAtoms</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AtomicCoordinatesFormat</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AtomicCoordinatesAndAtomicSpecies</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NumberOfSpecies</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ChemicalSpeciesLabel</span></code></p></li>
+</ul>
+</section>
+<section id="Creating-the-electronic-structure">
+<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Link to this heading"></a></h2>
+<p>Before continuing we need to run Siesta to calculate the electronic structure.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>siesta<span class="w"> </span>RUN.fdf
+</pre></div>
+</div>
+<p>After having completed the Siesta run we may read the Siesta output to manipulate and extract different information.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fdf</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;RUN.fdf&quot;</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">()</span>
+<span class="c1"># Create a short-hand to handle the geometry</span>
+<span class="n">h2o</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Hamiltonian{non-zero: 289, orthogonal: False,
+ Spin{unpolarized},
+ Geometry{na: 3, no: 17,
+  Atoms{species: 2,
+   Atom{O, Z: 8, mass(au): 16.00000, maxR: 2.05640,
+    AtomicOrbital{2sZ1, q0: 2.0, SphericalOrbital{l: 0, R: 1.7096999999999989, q0: 2.0}},
+    AtomicOrbital{2pyZ1, q0: 1.3333333333333333, SphericalOrbital{l: 1, R: 2.036900000000015, q0: 4.0}},
+    AtomicOrbital{2pzZ1, q0: 1.3333333333333333, SphericalOrbital{l: 1, R: 2.036900000000015, q0: 4.0}},
+    AtomicOrbital{2pxZ1, q0: 1.3333333333333333, SphericalOrbital{l: 1, R: 2.036900000000015, q0: 4.0}},
+    AtomicOrbital{2dxyZ1P, q0: 0.0, SphericalOrbital{l: 2, R: 2.0564000000000138, q0: 0.0}},
+    AtomicOrbital{2dyzZ1P, q0: 0.0, SphericalOrbital{l: 2, R: 2.0564000000000138, q0: 0.0}},
+    AtomicOrbital{2dz2Z1P, q0: 0.0, SphericalOrbital{l: 2, R: 2.0564000000000138, q0: 0.0}},
+    AtomicOrbital{2dxzZ1P, q0: 0.0, SphericalOrbital{l: 2, R: 2.0564000000000138, q0: 0.0}},
+    AtomicOrbital{2dx2-y2Z1P, q0: 0.0, SphericalOrbital{l: 2, R: 2.0564000000000138, q0: 0.0}}
+   }: 1,
+   Atom{H, Z: 1, mass(au): 1.01000, maxR: 2.52120,
+    AtomicOrbital{1sZ1, q0: 1.0, SphericalOrbital{l: 0, R: 2.4978000000000167, q0: 1.0}},
+    AtomicOrbital{1pyZ1P, q0: 0.0, SphericalOrbital{l: 1, R: 2.521200000000003, q0: 0.0}},
+    AtomicOrbital{1pzZ1P, q0: 0.0, SphericalOrbital{l: 1, R: 2.521200000000003, q0: 0.0}},
+    AtomicOrbital{1pxZ1P, q0: 0.0, SphericalOrbital{l: 1, R: 2.521200000000003, q0: 0.0}}
+   }: 2,
+  },
+  maxR: 2.52120,
+  Lattice{nsc: [1 1 1],
+   origin=[0.0000, 0.0000, 0.0000],
+   A=[10.0000, 0.0000, 0.0000],
+   B=[0.0000, 10.0000, 0.0000],
+   C=[0.0000, 0.0000, 10.0000],
+   bc=[Periodic,
+       Periodic,
+       Periodic]
+  }
+ }
+}
+</pre></div></div>
+</div>
+<div class="line-block">
+<div class="line">A lot of new information has appeared. The Hamiltonian object describes the non-orthogonal basis and the “hopping” elements between the orbitals. We see it is a non-orthogonal basis via: <code class="docutils literal notranslate"><span class="pre">orthogonal:</span> <span class="pre">False</span></code>. Secondly, we see it was an un-polarized calculation (<code class="docutils literal notranslate"><span class="pre">Spin{unpolarized...</span></code>).</div>
+<div class="line">Lastly the geometry information is printed again. Contrary to the previous printing of the geometry we now find additional information based on the orbitals on each of the atoms. This information is read from the Siesta output and thus the basic information regarding the orbital symmetry and the basis functions are now handled by <code class="docutils literal notranslate"><span class="pre">sisl</span></code>. The oxygen has 9 orbitals (<span class="math notranslate nohighlight">\(s+p+d\)</span> where the <span class="math notranslate nohighlight">\(d\)</span> orbitals are <span class="math notranslate nohighlight">\(p\)</span>-polarizations denoted by capital <code class="docutils literal notranslate"><span class="pre">P</span></code>). We also see that it is a
+single-<span class="math notranslate nohighlight">\(\zeta\)</span> calculation <code class="docutils literal notranslate"><span class="pre">Z1</span></code> (for double-<span class="math notranslate nohighlight">\(\zeta\)</span> <code class="docutils literal notranslate"><span class="pre">Z2</span></code> would also appear in the list). The hydrogens only has 4 orbitals <span class="math notranslate nohighlight">\(s+p\)</span>. For each orbital one can see its maximal radial part and how initial charges are distributed.</div>
+</div>
+<section id="Plotting-orbitals">
+<h3>Plotting orbitals<a class="headerlink" href="#Plotting-orbitals" title="Link to this heading"></a></h3>
+<p>Often it may be educational (and fun) to plot the orbital wavefunctions. To do this we use the intrinsic method in the <code class="docutils literal notranslate"><span class="pre">Orbital</span></code> class named <code class="docutils literal notranslate"><span class="pre">toGrid</span></code>. The below code is rather complicated, but the complexity is simply because we want to show the orbitals in a rectangular grid of plots.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_atom</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+    <span class="n">no</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>  <span class="c1"># number of orbitals</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">no</span> <span class="o">//</span> <span class="mi">4</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">no</span> <span class="o">//</span> <span class="n">nx</span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span> <span class="o">&lt;</span> <span class="n">no</span><span class="p">:</span>
+        <span class="n">nx</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">nx</span><span class="p">))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Atom: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">symbol</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">my_plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">orb</span><span class="p">):</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">toGrid</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="n">atom</span><span class="p">)</span>
+        <span class="c1"># In case you want to plot it with external software</span>
+        <span class="c1"># Just uncomment the following line:</span>
+        <span class="c1"># grid.write(&quot;{}_{}.cube&quot;.format(atom.symbol, orb.name()))</span>
+        <span class="n">c</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">i</span> <span class="o">//</span> <span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span>
+        <span class="k">if</span> <span class="n">nx</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">r</span><span class="p">]</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$</span><span class="si">{}</span><span class="s2">$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="kc">True</span><span class="p">)))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$x$ [Ang]&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$y$ [Ang]&quot;</span><span class="p">)</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">atom</span><span class="p">:</span>
+        <span class="n">my_plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">orb</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span><span class="p">:</span>
+        <span class="c1"># This removes the empty plots</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span><span class="p">):</span>
+            <span class="n">c</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">j</span> <span class="o">//</span> <span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span>
+            <span class="k">if</span> <span class="n">nx</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">r</span><span class="p">]</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">delaxes</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+
+<span class="n">plot_atom</span><span class="p">(</span><span class="n">h2o</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plot_atom</span><span class="p">(</span><span class="n">h2o</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_siesta_1_14_0.png" src="../_images/tutorials_tutorial_siesta_1_14_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_siesta_1_14_1.png" src="../_images/tutorials_tutorial_siesta_1_14_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Hamiltonian-eigenstates">
+<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Link to this heading"></a></h2>
+<p>At this point we have the full Hamiltonian as well as the basis functions used in the Siesta calculation. This completes what is needed to calculate a great deal of physical quantities, e.g. eigenstates, density of states, projected density of states and wavefunctions.</p>
+<p>To begin with we calculate the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point eigenstates and plot a subset of the eigenstates’ norm on the geometry. An important aspect of the electronic structure handled by Siesta is that it is shifted to <span class="math notranslate nohighlight">\(E_F=0\)</span> meaning that the HOMO level is the smallest negative eigenvalue, while the LUMO is the smallest positive eigenvalue:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">es</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">()</span>
+
+<span class="c1"># We specify an origin to center the molecule in the grid</span>
+<span class="n">h2o</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+
+<span class="c1"># Reduce the contained eigenstates to only the HOMO and LUMO</span>
+<span class="c1"># Find the index of the smallest positive eigenvalue</span>
+<span class="n">idx_lumo</span> <span class="o">=</span> <span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">es</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">sub</span><span class="p">([</span><span class="n">idx_lumo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">idx_lumo</span><span class="p">])</span>
+
+<span class="n">plots</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">h2o</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span> <span class="n">atoms_style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">normalize</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">c</span><span class="p">})</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="n">h2o</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">es</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;orbital&quot;</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+            <span class="n">mapper</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">h2o</span><span class="o">.</span><span class="n">a2o</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">merge_plots</span><span class="p">(</span><span class="o">*</span><span class="n">plots</span><span class="p">,</span> <span class="n">composite_method</span><span class="o">=</span><span class="s2">&quot;subplots&quot;</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO    Task(Task-2) nodify.node.140016375691312:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016371886288:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016424180080:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372235680:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372364688:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016371886288:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016424180080:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372235680:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372364688:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370687424:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016371881920:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016375068576:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372354800:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373689008:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370695296:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373222528:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372354992:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373461552:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370693232:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016371886768:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372364016:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016375066848:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016374736576:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373818880:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370690640:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372355088:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373693424:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372134064:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370693712:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372363776:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370690160:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016374478176:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370968352:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370742192:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016426642240:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373692224:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370694864:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370687424:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016371881920:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016374426864:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016374430128:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370693232:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016375678208:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372135552:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016423294960:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372136944:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016423475520:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370691024:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016375064832:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016424505072:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372134064:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372356624:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373127776:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016423387264:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370696160:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372221520:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370694480:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372226224:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370693280:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016423294960:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372364976:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370690160:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016426642240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016373692224:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370694864:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370687424:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016371881920:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016374426864:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016374430128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370693232:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016375678208:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372135552:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016423294960:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372136944:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016373464000:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370695824:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370687424:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016371881920:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370692800:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372354416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372227520:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370693232:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372356672:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819312:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373982816:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372351344:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370784048:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370963408:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370791920:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370963216:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370963024:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370963408:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370791920:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370963216:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370963024:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372220656:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370781984:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370779872:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370958416:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370964416:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370788944:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370964224:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370963264:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370962832:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370788896:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370962640:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370962352:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370789424:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370962016:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370792448:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370958416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370784240:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370961920:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370961728:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370958416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370960432:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370792400:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370961632:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372222816:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016374728032:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372359888:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016371127008:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370790576:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370778624:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370791248:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372220656:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370781984:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778864:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370779776:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370788896:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778672:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370789712:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370782608:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370780496:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016372221952:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370958416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778960:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370958464:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370793120:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370958416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370960432:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370781936:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370780064:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370958416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370960672:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370959568:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370958416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370966288:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370789328:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370966096:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370788848:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370782608:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370961776:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372222816:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370790576:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778624:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370791248:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372220656:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370781984:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778864:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370779776:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370788896:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778672:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370789712:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370782608:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370780496:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370783520:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016426646128:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016372220656:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370781984:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370958416:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016373819360:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370778240:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370967104:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370788896:node.py:get()- No need to evaluate
+INFO    Task(Task-2) nodify.node.140016370966144:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370961296:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370967248:node.py:get()- Evaluated because inputs changed.
+INFO    Task(Task-2) nodify.node.140016370968112:node.py:get()- Evaluated because inputs changed.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.1.1.min.js" integrity="sha256-HUEFyfiTnZJxCxur99FjbKYTvKSzwDaD3/x5TqHpFu4=" crossorigin="anonymous"></script>                <div id="998d4ab6-c8d7-421f-82e3-48742b45d4f5" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("998d4ab6-c8d7-421f-82e3-48742b45d4f5")) {                    Plotly.newPlot(                        "998d4ab6-c8d7-421f-82e3-48742b45d4f5",                        [{"line":{"color":"gray","width":1.0},"meta":{"i_plot":0},"mode":"lines","name":"Bonds","opacity":1.0,"x":{"dtype":"f8","bdata":"AAAAAAAAAACgL6fA0o6lP6Avp8DSjrU\u002fuGN9EB4rwD+gL6fA0o7FP4j70HCH8so\u002fuGN9EB4r0D+sSZJo+NzSP6Avp8DSjtU\u002flBW8GK1A2D+I+9Bwh\u002fLaP3zh5chhpN0\u002fuGN9EB4r4D+x1oc8C4ThP6xJkmj43OI\u002fpryclOU15D+gL6fA0o7lP5misey\u002f5+Y\u002flBW8GK1A6D+OiMZEmpnpPwAAAAAAAPh\u002fAAAAAAAAAACgL6fA0o6lv6Avp8DSjrW\u002fuGN9EB4rwL+gL6fA0o7Fv4j70HCH8sq\u002fuGN9EB4r0L+sSZJo+NzSv6Avp8DSjtW\u002flBW8GK1A2L+I+9Bwh\u002fLav3zh5chhpN2\u002fuGN9EB4r4L+x1oc8C4Thv6xJkmj43OK\u002fpryclOU15L+gL6fA0o7lv5misey\u002f5+a\u002flBW8GK1A6L+OiMZEmpnpvwAAAAAAAPh\u002f"},"y":{"dtype":"f8","bdata":"AAAAAAAAAAC3Y30QHiugP7djfRAeK7A\u002fkxW8GK1AuD+3Y30QHivAP6W8nJTlNcQ\u002fkxW8GK1AyD+BbtucdEvMP7djfRAeK9A\u002fLhCN0oEw0j+lvJyU5TXUPx1prFZJO9Y\u002fkxW8GK1A2D8JwsvaEEbaP4Fu25x0S9w\u002f+BrrXthQ3j+3Y30QHivgP\u002fI5hfHPLeE\u002fLhCN0oEw4j9q5pSzMzPjPwAAAAAAAPh\u002fAAAAAAAAAAC3Y30QHiugP7djfRAeK7A\u002fkxW8GK1AuD+3Y30QHivAP6W8nJTlNcQ\u002fkxW8GK1AyD+BbtucdEvMP7djfRAeK9A\u002fLhCN0oEw0j+lvJyU5TXUPx1prFZJO9Y\u002fkxW8GK1A2D8JwsvaEEbaP4Fu25x0S9w\u002f+BrrXthQ3j+3Y30QHivgP\u002fI5hfHPLeE\u002fLhCN0oEw4j9q5pSzMzPjPwAAAAAAAPh\u002f"},"type":"scatter","xaxis":"x","yaxis":"y"},{"marker":{"color":"red","opacity":1.0,"size":{"dtype":"f8","bdata":"AAAAAAAAMEA\u002f2mT71o71PAAAAAAAAAAA"},"line":{"width":1,"color":"black"}},"meta":{"i_plot":0},"mode":"markers","name":"Atoms","opacity":1,"x":{"dtype":"f8","bdata":"AAAAAAAAAACOiMZEmpnpP46IxkSamem\u002f"},"y":{"dtype":"f8","bdata":"AAAAAAAAAABq5pSzMzPjP2rmlLMzM+M\u002f"},"type":"scatter","xaxis":"x","yaxis":"y"},{"meta":{"i_plot":0},"mode":"lines","name":"Unit cell","x":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAAAK8au4UAACRArxq7hQAAJEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+H8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACvGruFAAAkQK8au4UAACRAAAAAAAAAAAAAAAAAAAD4f68au4UAACRArxq7hQAAJEAAAAAAAAD4f68au4UAACRArxq7hQAAJEA="},"y":{"dtype":"f8","bdata":"AAAAAAAAAACvGruFAAAkQK8au4UAACRArxq7hQAAJECvGruFAAAkQK8au4UAACRAAAAAAAAA+H+vGruFAAAkQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4f68au4UAACRAAAAAAAAAAAAAAAAAAAD4f68au4UAACRAAAAAAAAAAAA="},"type":"scatter","xaxis":"x","yaxis":"y"},{"line":{"color":"gray","width":1.0},"meta":{"i_plot":1},"mode":"lines","name":"Bonds","opacity":1.0,"x":{"dtype":"f8","bdata":"AAAAAAAAAACgL6fA0o6lP6Avp8DSjrU\u002fuGN9EB4rwD+gL6fA0o7FP4j70HCH8so\u002fuGN9EB4r0D+sSZJo+NzSP6Avp8DSjtU\u002flBW8GK1A2D+I+9Bwh\u002fLaP3zh5chhpN0\u002fuGN9EB4r4D+x1oc8C4ThP6xJkmj43OI\u002fpryclOU15D+gL6fA0o7lP5misey\u002f5+Y\u002flBW8GK1A6D+OiMZEmpnpPwAAAAAAAPh\u002fAAAAAAAAAACgL6fA0o6lv6Avp8DSjrW\u002fuGN9EB4rwL+gL6fA0o7Fv4j70HCH8sq\u002fuGN9EB4r0L+sSZJo+NzSv6Avp8DSjtW\u002flBW8GK1A2L+I+9Bwh\u002fLav3zh5chhpN2\u002fuGN9EB4r4L+x1oc8C4Thv6xJkmj43OK\u002fpryclOU15L+gL6fA0o7lv5misey\u002f5+a\u002flBW8GK1A6L+OiMZEmpnpvwAAAAAAAPh\u002f"},"y":{"dtype":"f8","bdata":"AAAAAAAAAAC3Y30QHiugP7djfRAeK7A\u002fkxW8GK1AuD+3Y30QHivAP6W8nJTlNcQ\u002fkxW8GK1AyD+BbtucdEvMP7djfRAeK9A\u002fLhCN0oEw0j+lvJyU5TXUPx1prFZJO9Y\u002fkxW8GK1A2D8JwsvaEEbaP4Fu25x0S9w\u002f+BrrXthQ3j+3Y30QHivgP\u002fI5hfHPLeE\u002fLhCN0oEw4j9q5pSzMzPjPwAAAAAAAPh\u002fAAAAAAAAAAC3Y30QHiugP7djfRAeK7A\u002fkxW8GK1AuD+3Y30QHivAP6W8nJTlNcQ\u002fkxW8GK1AyD+BbtucdEvMP7djfRAeK9A\u002fLhCN0oEw0j+lvJyU5TXUPx1prFZJO9Y\u002fkxW8GK1A2D8JwsvaEEbaP4Fu25x0S9w\u002f+BrrXthQ3j+3Y30QHivgP\u002fI5hfHPLeE\u002fLhCN0oEw4j9q5pSzMzPjPwAAAAAAAPh\u002f"},"type":"scatter","xaxis":"x2","yaxis":"y2"},{"marker":{"color":"blue","opacity":1.0,"size":{"dtype":"f8","bdata":"AAAAAAAAAACJ\u002fv\u002f\u002f\u002f\u002f8vQAAAAAAAADBA"},"line":{"width":1,"color":"black"}},"meta":{"i_plot":1},"mode":"markers","name":"Atoms","opacity":1,"x":{"dtype":"f8","bdata":"AAAAAAAAAACOiMZEmpnpP46IxkSamem\u002f"},"y":{"dtype":"f8","bdata":"AAAAAAAAAABq5pSzMzPjP2rmlLMzM+M\u002f"},"type":"scatter","xaxis":"x2","yaxis":"y2"},{"meta":{"i_plot":1},"mode":"lines","name":"Unit cell","x":{"dtype":"f8","bdata":"AAAAAAAAAAAAAAAAAAAAAK8au4UAACRArxq7hQAAJEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+H8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACvGruFAAAkQK8au4UAACRAAAAAAAAAAAAAAAAAAAD4f68au4UAACRArxq7hQAAJEAAAAAAAAD4f68au4UAACRArxq7hQAAJEA="},"y":{"dtype":"f8","bdata":"AAAAAAAAAACvGruFAAAkQK8au4UAACRArxq7hQAAJECvGruFAAAkQK8au4UAACRAAAAAAAAA+H+vGruFAAAkQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4f68au4UAACRAAAAAAAAAAAAAAAAAAAD4f68au4UAACRAAAAAAAAAAAA="},"type":"scatter","xaxis":"x2","yaxis":"y2"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}},"xaxis":{"anchor":"y","domain":[0.0,0.45],"scaleanchor":"y","scaleratio":1,"title":{"text":"X axis [Ang]"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Y axis [Ang]"}},"xaxis2":{"anchor":"y2","domain":[0.55,1.0],"scaleanchor":"y2","scaleratio":1,"title":{"text":"X axis [Ang]"}},"yaxis2":{"anchor":"x2","domain":[0.0,1.0],"title":{"text":"Y axis [Ang]"}},"scene":{"aspectmode":"data","xaxis":{"title":{"text":"X axis [Ang]"}},"yaxis":{"title":{"text":"Y axis [Ang]"}}}},                        {"responsive": true}                    ).then(function(){
+
+var gd = document.getElementById('998d4ab6-c8d7-421f-82e3-48742b45d4f5');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div></div>
+</div>
+<p>These are not that interesting. The projection of the HOMO and LUMO states show where the largest weight of the HOMO and LUMO states, however we can’t see the orbital symmetry differences between the HOMO and LUMO states.</p>
+<p>Instead of plotting the weight on each orbital it is more interesting to plot the actual wavefunctions which contains the orbital symmetries, however, matplotlib is currently not capable of plotting real-space iso-surface plots. To do this, please use VMD or your preferred software.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;Real space integrated wavefunction: </span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">dvolume</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">h2o</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span>
+<span class="n">es</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">wavefunction</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="n">integrate</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="c1"># g.write(&#39;HOMO.cube&#39;)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># reset the grid values to 0</span>
+<span class="n">es</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">wavefunction</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="n">integrate</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="c1"># g.write(&#39;LUMO.cube&#39;)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+info:0: SislInfo:
+
+wavefunction: coordinates may be outside your primary unit-cell. Translating all into the primary unit cell could disable this information
+
+info:0: SislInfo:
+
+wavefunction: coordinates may be outside your primary unit-cell. Translating all into the primary unit cell could disable this information
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Real space integrated wavefunction: 1.0000
+Real space integrated wavefunction: 1.0003
+</pre></div></div>
+</div>
+</section>
+<section id="Real-space-charge">
+<h2>Real space charge<a class="headerlink" href="#Real-space-charge" title="Link to this heading"></a></h2>
+<p>Since we have the basis functions we can also plot the charge in the grid. We can do this via either reading the density matrix or read in the charge output directly from Siesta. Since both should yield the same value we can compare the output from Siesta with that calculated in <code class="docutils literal notranslate"><span class="pre">sisl</span></code>.</p>
+<p>You will notice that re-creating the density on a real space grid in sisl is much slower than creating the wavefunction. This is because we need <em>orbital multiplications</em>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DM</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">read_density_matrix</span><span class="p">()</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;siesta_1.nc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_grid</span><span class="p">(</span><span class="s2">&quot;Rho&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Create a new grid that is the negative of the readed charge density, then use sisl to calculate the charge density. This will check whether sisl and Siesta creates the same charge density.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">DM</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Real space integrated density difference: </span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">diff</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">diff</span><span class="o">.</span><span class="n">dvolume</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Real space integrated density difference: -3.966e-04
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial_siesta_2_ahc.html" class="btn btn-neutral float-left" title="Anomalous Hall conductivity (AHC) for graphene" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_siesta_2.html" class="btn btn-neutral float-right" title="Siesta — graphene" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025, sisl developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
