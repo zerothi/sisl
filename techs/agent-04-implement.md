@@ -48,6 +48,23 @@ and each line costs time to read, test and keep.
 - Prefer a small generalization to a new class ([overview-01 · Few strong classes](overview-01-concepts.md#few-strong-classes)).
 - Before you commit, read your diff. Remove dead code, debug output and lines that the task does not need.
 
+## Own the code that you make
+
+You own the code that you implement, and you are its first user.
+Before you tell that the code is complete, make its objects and extend them with the public API,
+as a user does. If this is difficult, the API is not complete. Change the API, not the test.
+
+The API must be simple to use, and also flexible:
+
+- **Simple.** The usual case needs only a small number of arguments, and the defaults give a correct result.
+- **Flexible.** A user can extend the code to a new case without a change to the code.
+  Get this from general inputs, for example array-like values or a callable,
+  not from more options ([Write lean code](#write-lean-code)).
+- **Public only.** Tests and examples use only the public API.
+  If they must set a private attribute, the API is not complete.
+
+A change to the public API still needs approval ([agent-01 · Ask first](agent-01-harness.md#ask-first)).
+
 ## Tests and verification
 
 Before you evaluate or test, check that `import sisl` loads the code of your worktree
