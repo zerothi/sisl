@@ -34,8 +34,20 @@ def merge_plots(
         which controls the arrangement ("rows", "cols" or "square").
     """
 
+    figures_to_pass = []
+    for fig in figures:
+        if isinstance(fig, Plot):
+            fig = fig.get()
+            if isinstance(fig, Figure):
+                figures_to_pass.append(fig)
+            else:
+                # This has to be a batch
+                figures_to_pass.extend(list(fig))
+        else:
+            figures_to_pass.append(fig)
+
     plot_actions = combined(
-        *[fig.plot_actions for fig in figures],
+        *[fig.plot_actions for fig in figures_to_pass],
         composite_method=composite_method,
         **kwargs,
     )
